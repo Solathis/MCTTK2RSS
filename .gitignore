@@ -11,6 +11,9 @@ output/*.json
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪
 
+# 日志文件
+logs/
+
 old/
 
 # 验证码临时文件

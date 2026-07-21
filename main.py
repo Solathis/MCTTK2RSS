@@ -28,6 +28,7 @@ import time
 import traceback
 
 from converter import convert_json_file
+from log_setup import setup_logging, get_logger, log_info, log_error, log_debug
 from scraper import (
     FeedbackScraper,
     classify_news_type,
@@ -402,9 +403,14 @@ def main():
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
+    # 初始化日志系统
+    logger = setup_logging(log_level=logging.DEBUG)
+
     print("=" * 60)
     print("  MCTTK — Minecraft 新闻自动爬取 + 翻译 + 发布")
     print("=" * 60)
+
+    log_info("程序启动")
 
     # 加载配置
     if args.config:

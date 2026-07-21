@@ -26,6 +26,19 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup, NavigableString, Tag
 
+# 导入日志模块
+try:
+    from log_setup import get_logger, log_info, log_error, log_debug, log_warning
+    logger = get_logger()
+except ImportError:
+    # 如果日志模块不可用，使用简单的 print 替代
+    import logging
+    logger = logging.getLogger("mcttk")
+    def log_info(msg): print(f"[INFO] {msg}")
+    def log_error(msg, exc_info=False): print(f"[ERROR] {msg}")
+    def log_debug(msg): print(f"[DEBUG] {msg}")
+    def log_warning(msg): print(f"[WARNING] {msg}")
+
 # 尝试导入 curl_cffi（用于 Feedback 网站爬取，绕过 Cloudflare）
 try:
     from curl_cffi import requests as cffi_requests
@@ -518,22 +531,62 @@ class FeedbackScraper:
         }
         self.session = cffi_requests.Session()
 
-    def fetch_page(self, url, referer=None):
-        try:
-            full_url = urljoin(self.base_url, url)
-            headers = self.headers.copy()
-            if referer:
-                headers['Referer'] = referer
-            response = self.session.get(
-                full_url, headers=headers,
-                timeout=self.timeout, impersonate="chrome"
-            )
-            response.raise_for_status()
-            response.encoding = 'utf-8'
-            return BeautifulSoup(response.text, 'html.parser')
-        except Exception as e:
-            print(f"[Feedback] 获取页面失败 {full_url}: {e}")
-            return None
+    def fetch_page(self, url, referer=None, max_retries=3):
+        full_url = urljoin(self.base_url, url)
+        headers = self.headers.copy()
+        if referer:
+            headers['Referer'] = referer
+
+        log_debug(f"[Feedback] 请求 URL: {full_url}")
+        log_debug(f"[Feedback] 请求头: {headers}")
+
+        for attempt in range(max_retries):
+            try:
+                if attempt > 0:
+                    wait = attempt * 5
+                    log_warning(f"[Feedback] 第 {attempt} 次重试，等待 {wait} 秒...")
+                    time.sleep(wait)
+
+                log_debug(f"[Feedback] 发送请求 (尝试 {attempt + 1}/{max_retries})")
+                response = self.session.get(
+                    full_url, headers=headers,
+                    timeout=self.timeout, impersonate="chrome"
+                )
+
+                # 记录响应详情
+                log_debug(f"[Feedback] 响应状态码: {response.status_code}")
+                log_debug(f"[Feedback] 响应头: {dict(response.headers)}")
+
+                # 检查是否为 Cloudflare 挑战页面
+                if response.status_code == 403:
+                    log_error(f"[Feedback] 403 Forbidden - 可能触发 Cloudflare 防护")
+                    log_debug(f"[Feedback] 响应内容前500字符: {response.text[:500]}")
+                    # 检查是否是 Cloudflare 挑战
+                    if 'cf-mitigated' in response.headers or 'cloudflare' in response.text.lower():
+                        log_error(f"[Feedback] 检测到 Cloudflare 挑战页面")
+                    if attempt < max_retries - 1:
+                        continue
+                    return None
+
+                if response.status_code == 429:
+                    log_error(f"[Feedback] 429 Too Many Requests - 请求过于频繁")
+                    if attempt < max_retries - 1:
+                        continue
+                    return None
+
+                response.raise_for_status()
+                response.encoding = 'utf-8'
+                log_info(f"[Feedback] 页面获取成功: {full_url}")
+                return BeautifulSoup(response.text, 'html.parser')
+
+            except Exception as e:
+                log_error(f"[Feedback] 获取页面失败 {full_url}: {type(e).__name__}: {e}")
+                if hasattr(e, 'response') and e.response is not None:
+                    log_debug(f"[Feedback] 错误响应状态码: {e.response.status_code}")
+                    log_debug(f"[Feedback] 错误响应头: {dict(e.response.headers)}")
+                if attempt < max_retries - 1:
+                    continue
+        return None
 
     def parse_knowledge_base(self, soup):
         sections_data = {}
@@ -578,9 +631,9 @@ class FeedbackScraper:
     def get_latest_articles(self, limit_per_section=6):
         knowledge_base_url = self.feedback_config.get('knowledge_base_url')
         if not knowledge_base_url:
-            print("[Feedback] 未配置 knowledge_base_url")
+            log_error("[Feedback] 未配置 knowledge_base_url")
             return {}
-        print(f"[Feedback] 获取 Knowledge Base: {knowledge_base_url}")
+        log_info(f"[Feedback] 获取 Knowledge Base: {knowledge_base_url}")
         soup = self.fetch_page(knowledge_base_url)
         if not soup:
             return {}
@@ -604,7 +657,7 @@ class FeedbackScraper:
         return result
 
     def fetch_article_content(self, article_url):
-        print(f"[Feedback] 获取文章: {article_url}")
+        log_info(f"[Feedback] 获取文章: {article_url}")
         referer = self.feedback_config.get('knowledge_base_url', self.base_url)
         soup = self.fetch_page(article_url, referer=referer)
         if not soup:
@@ -630,7 +683,7 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
     scraper = FeedbackScraper(config)
     article_content = scraper.fetch_article_content(news_item['url'])
     if not article_content:
-        print("[Feedback] 无法获取文章内容")
+        log_error("[Feedback] 无法获取文章内容")
         return None
 
     title_to_translate = article_content['title']
@@ -640,8 +693,8 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
         config=config,
     ) or ""
     if translated_title:
-        print(f"  原标题: {title_to_translate}")
-        print(f"  译标题: {translated_title}")
+        log_info(f"  原标题: {title_to_translate}")
+        log_info(f"  译标题: {translated_title}")
 
     feedback_base_url = config.get('feedback_site', {}).get('base_url', 'https://feedback.minecraft.net')
     full_url = urljoin(feedback_base_url, news_item['url'])

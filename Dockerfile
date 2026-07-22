@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制项目文件
 COPY . .
 
-# 创建输出目录
-RUN mkdir -p output
+# 创建输出和日志目录
+RUN mkdir -p output logs
 
 CMD ["python", "scheduler.py"]

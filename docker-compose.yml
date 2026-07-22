@@ -7,6 +7,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./output:/app/output
+      - ./logs:/app/logs
       - ./config.json:/app/config.json:ro
       - ./modules_config.json:/app/modules_config.json:ro
       - ./glossary.json:/app/glossary.json:ro

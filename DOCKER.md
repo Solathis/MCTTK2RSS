@@ -41,6 +41,7 @@ docker run -d \
   --name mcttk-scraper \
   --restart unless-stopped \
   -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
@@ -62,6 +63,7 @@ docker run -d \
   --name mcttk-scraper \
   --restart unless-stopped \
   -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
@@ -110,6 +112,7 @@ docker run -d \
   --name mcttk-scraper \
   --restart unless-stopped \
   -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
@@ -126,10 +129,14 @@ docker run -d \
 ## 管理命令
 
 ```bash
-# 查看实时日志
+# 查看实时日志（Docker 输出）
 docker-compose logs -f
 # 或
 docker logs -f mcttk-scraper
+
+# 查看持久化日志文件（按日期命名）
+ls logs/
+cat logs/mcttk_2026-07-22.log
 
 # 停止服务
 docker-compose down
@@ -153,6 +160,7 @@ docker stats mcttk-scraper
 
 - 容器启动后由 `scheduler.py` 每 10 分钟自动运行一次 `main.py`
 - `output/` 目录通过 volume 挂载到宿主机，数据持久化
+- `logs/` 目录通过 volume 挂载到宿主机，日志持久化（按日期轮转，单文件最大 5MB，保留 5 个备份）
 - `config.json` 等配置文件以只读方式挂载，修改宿主机文件后重启容器即可生效
 - 内存限制 512MB，预留 256MB；每次运行后自动垃圾回收
 - `restart: unless-stopped`：容器异常退出或系统重启后自动拉起
@@ -163,3 +171,4 @@ docker stats mcttk-scraper
 - 状态文件 `output/.state.json` 和 `output/.posted.json` 持久化保存在宿主机
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
+- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，可配合 `logrotate` 等工具管理宿主机日志

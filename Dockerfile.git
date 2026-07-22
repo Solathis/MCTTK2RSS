@@ -11,7 +11,7 @@ RUN git clone -b docker https://github.com/jiubook/MCTTK.git .
 # 安装依赖
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 创建输出目录
-RUN mkdir -p output
+# 创建输出和日志目录
+RUN mkdir -p output logs
 
 CMD ["python", "scheduler.py"]

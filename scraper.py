@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 # 导入日志模块
 try:
-    from log_setup import get_logger, log_info, log_error, log_debug, log_warning
+    from log_setup import get_logger, log_debug, log_error, log_info, log_warning
     logger = get_logger()
 except ImportError:
     # 如果日志模块不可用，使用简单的 print 替代
@@ -559,17 +559,17 @@ class FeedbackScraper:
 
                 # 检查是否为 Cloudflare 挑战页面
                 if response.status_code == 403:
-                    log_error(f"[Feedback] 403 Forbidden - 可能触发 Cloudflare 防护")
+                    log_error("[Feedback] 403 Forbidden - 可能触发 Cloudflare 防护")
                     log_debug(f"[Feedback] 响应内容前500字符: {response.text[:500]}")
                     # 检查是否是 Cloudflare 挑战
                     if 'cf-mitigated' in response.headers or 'cloudflare' in response.text.lower():
-                        log_error(f"[Feedback] 检测到 Cloudflare 挑战页面")
+                        log_error("[Feedback] 检测到 Cloudflare 挑战页面")
                     if attempt < max_retries - 1:
                         continue
                     return None
 
                 if response.status_code == 429:
-                    log_error(f"[Feedback] 429 Too Many Requests - 请求过于频繁")
+                    log_error("[Feedback] 429 Too Many Requests - 请求过于频繁")
                     if attempt < max_retries - 1:
                         continue
                     return None

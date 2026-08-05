@@ -1,6 +1,6 @@
 import json
 
-from rss_generator import generate_rss
+from rss_generator import _blocks_to_html, _is_short_translation, generate_rss
 
 
 def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
@@ -53,3 +53,19 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
     assert "<atom:logo>https://solathis.github.io/MCTTK2RSS/logo.png</atom:logo>" in xml
     assert "😀" in xml
     assert "https://solathis.github.io/MCTTK2RSS/logo.png" in xml
+
+
+def test_short_translation_stays_on_source_line():
+    html = _blocks_to_html([
+        {"type": "h2", "source_text": "Snapshot", "translated_text": "快照"},
+    ])
+
+    assert "Snapshot <span" in html
+    assert "（快照）" in html
+    assert html.count("<h2") == 1
+
+
+def test_translation_word_limit_uses_words_not_characters():
+    assert _is_short_translation("one two three")
+    assert _is_short_translation("一二三四五六七八九")
+    assert not _is_short_translation("one two three four five six seven eight nine ten")

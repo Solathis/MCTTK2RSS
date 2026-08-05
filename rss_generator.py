@@ -95,12 +95,27 @@ def _markdown_to_html(text: str) -> str:
     )
 
 
+def _is_short_translation(text: str) -> bool:
+    """少于10个词的译文与原文同行，避免标题和短标签各占一行。"""
+    html = _markdown_to_html(text)
+    plain_text = unescape(bleach.clean(html, tags=[], strip=True)).strip()
+    words = re.findall(r"[A-Za-z0-9]+|[\u3400-\u9fff]", plain_text)
+    return bool(words) and len(words) < 10
+
+
 def _render_text_block(block: dict, tag: str = "p") -> str:
-    """按“原文一行、译文一行”渲染文本 block。"""
+    """长文本分行，短译文跟在原文后面。"""
     source = (block.get("source_text") or "").strip()
     translated = _clean_model_text(block.get("translated_text", ""))
     if not source and not translated:
         return ""
+
+    if source and translated and _is_short_translation(translated):
+        return (
+            f'<{tag} style="display:block;color:#333;margin:0 0 0.8em">'
+            f'{_markdown_to_html(source)} '
+            f'<span style="color:#999">（{_markdown_to_html(translated)}）</span></{tag}>'
+        )
 
     rendered = []
     if source:
@@ -247,7 +262,14 @@ def _build_content_html(article: dict, link: str) -> str:
 
     meta_parts = []
     if title_en and title_en != title_cn:
-        meta_parts.append(f"<p><strong>原标题：</strong>{escape(title_en)}</p>")
+        if title_cn and _is_short_translation(title_cn):
+            title_cn_html = _markdown_to_html(title_cn)
+            meta_parts.append(
+                f'<p><strong>原标题：</strong>{escape(title_en)} '
+                f'<span style="color:#999">（{title_cn_html}）</span></p>'
+            )
+        else:
+            meta_parts.append(f"<p><strong>原标题：</strong>{escape(title_en)}</p>")
     if author:
         meta_parts.append(f"<p><strong>作者：</strong>{escape(author)}</p>")
     if link:

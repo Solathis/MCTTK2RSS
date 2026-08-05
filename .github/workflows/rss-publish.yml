@@ -17,6 +17,11 @@ on:
         required: false
         default: 'false'
         type: boolean
+      skip_first_run_protection:
+        description: '跳过首次运行保护（首次运行即处理所有新闻）'
+        required: false
+        default: 'false'
+        type: boolean
 
 permissions:
   contents: write
@@ -46,6 +51,7 @@ jobs:
           MCTTK2RSS_AI_HOST: ${{ secrets.MCTTK2RSS_AI_HOST }}
           MCTTK2RSS_AI_MODEL: ${{ secrets.MCTTK2RSS_AI_MODEL }}
           MCTTK2RSS_OPENAI_API_KEY: ${{ secrets.MCTTK2RSS_OPENAI_API_KEY }}
+          SKIP_FRP: ${{ inputs.skip_first_run_protection }}
         run: |
           python -c "
           import json, os
@@ -58,6 +64,9 @@ jobs:
           if host:  oc['host'] = host
           if model: oc['model'] = model
           if api_key: oc['api_key'] = api_key
+          if os.environ.get('SKIP_FRP') == 'true':
+              cfg['first_run_protection'] = False
+              print('[CI] 已跳过首次运行保护')
           with open('config.json', 'w', encoding='utf-8') as f:
               json.dump(cfg, f, ensure_ascii=False, indent=2)
           print('[CI] config.json 已注入 Secrets: host=%s model=%s key=%s' % ('set' if host else 'skip', 'set' if model else 'skip', 'set' if api_key else 'skip'))

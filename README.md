@@ -168,7 +168,8 @@ python rss_generator.py --dir output --out output/feed.xml
    - 可选参数（通常不需要）：
      - `dry_run` — 仅检测新新闻，不实际处理
      - `rss_only` — 仅从已有 JSON 重新生成 RSS，不爬取
-6. 点击绿色 **Run workflow** 确认运行
+     - `skip_first_run_protection` — **首次使用时勾选**，跳过首次运行保护，立即处理所有新闻并发布 RSS
+3. 点击绿色 **Run workflow** 确认运行
 
 运行进度和日志在 Actions 页面对应运行记录中查看。
 

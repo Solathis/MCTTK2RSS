@@ -144,6 +144,11 @@ def generate_rss(
     fg.description(feed_description)
     fg.language("zh-CN")
 
+    # RSS channel logo（feed.xml 中的 <image> 元素）
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
+    if os.path.exists(logo_path):
+        fg.image(url=base_link.rstrip("/") + "/logo.png", title=feed_title, link=base_link)
+
     for article in articles:
         title_cn = (article.get("translated_title") or "").strip()
         title_en = (article.get("title") or "").strip()

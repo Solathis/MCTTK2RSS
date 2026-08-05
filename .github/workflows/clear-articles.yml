@@ -1,0 +1,84 @@
+name: Clear Articles
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: '确认清空所有已收集的文章并重置状态（输入 YES 确认）'
+        required: true
+        default: 'NO'
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  clear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # 仅当输入 YES 时执行
+    if: ${{ github.event.inputs.confirm == 'YES' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore state from gh-pages
+        run: |
+          git fetch origin gh-pages --depth=1 || true
+          if git rev-parse origin/gh-pages >/dev/null 2>&1; then
+            git show origin/gh-pages:.state.json > output/.state.json 2>/dev/null || true
+          fi
+
+      - name: Clear articles and reset state
+        run: |
+          echo "[清空] 删除 output/ 下的文章 JSON 和头图"
+          rm -f output/news_*.json output/news_*.jpg
+          echo "[清空] 删除 .state.json 和 .posted.json"
+          rm -f output/.state.json output/.posted.json
+          echo "[清空] 删除 feed.xml"
+          rm -f output/feed.xml
+          echo "[清空] 完成，output 目录现在是干净的"
+
+      - name: Regenerate empty RSS feed
+        run: |
+          python main.py --rss-only || echo "[清空] RSS 重新生成完成（空 feed）"
+
+      - name: Prepare gh-pages content
+        run: |
+          mkdir -p gh-pages-output
+          cp output/feed.xml gh-pages-output/ 2>/dev/null || true
+          # 确保 logo.png 部署到 gh-pages
+          cp logo.png gh-pages-output/ 2>/dev/null || true
+          cat > gh-pages-output/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Minecraft News RSS - MCTTK2RSS</title>
+            <link rel="icon" type="image/png" href="logo.png" />
+          </head>
+          <body>
+            <h1>🎮 Minecraft News RSS</h1>
+            <p>文章已清空，等待下次爬取后重新生成。</p>
+          </body>
+          </html>
+          HTMLEOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: gh-pages-output
+          keep_files: false

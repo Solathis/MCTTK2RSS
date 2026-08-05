@@ -23,6 +23,11 @@ Dockerfile.git merge=ours
 
 # GitHub Actions workflow
 .github/workflows/rss-publish.yml merge=ours
+.github/workflows/docker-build.yml merge=ours
+.github/workflows/clear-articles.yml merge=ours
+
+# 上游同步文档
+UPSTREAM_SYNC.md merge=ours
 
 # 以下文件允许上游覆盖（上游应持续维护爬取逻辑）
 # scraper.py
@@ -34,3 +39,5 @@ Dockerfile.git merge=ours
 #
 # 注意：scraper.py 中的 load_config() 已被我们修改（移除环境变量逻辑），
 # 上游可能恢复该逻辑。合并时需检查 scraper.py 的 load_config 函数。
+# 注意：scraper.py 的 translate_blocks 解析逻辑已增强（兼容 text/translated_text
+# 和 {"translations":[...]} 格式），上游合并后需检查翻译解析是否被覆盖。

@@ -7,9 +7,13 @@
 **我们的自定义改动**：
 - 移除了 BBCode/Markdown 转换功能（`converter.py` 调用）
 - 移除了 MCBBS 论坛自动发布功能（`poster.py` 调用）
-- 新增了 RSS Feed 生成功能（`rss_generator.py`）
+- 新增了 RSS Feed 生成功能（`rss_generator.py`，用 feedgen 库）
 - 新增了通过 GitHub Actions 定时发布 RSS 到 GitHub Pages 的 workflow
-- 修改了 Docker 部署配置
+- 修改了 Docker 部署配置（内置 HTTP 服务器）
+- 移除了环境变量配置，改为纯 config.json 驱动
+- 新增 JSON Schema 结构化输出支持
+- 新增 server.py（容器内置 HTTP 服务器）
+- 新增 scheduler.py cron 调度
 
 **我们希望持续接收上游的更新**：
 - `scraper.py`（爬取逻辑、翻译、Feedback 爬虫）
@@ -87,7 +91,7 @@ git diff HEAD upstream/main -- main.py  # 查看差异
 git merge upstream/main                  # merge=ours 自动保留我们的版本
 ```
 
-### 6. 如果上游也修改了 load_config
+### 6. 如果上游也修改了 load_config 或 translate_blocks
 
 我们移除了 `scraper.py` `load_config()` 中读取环境变量的逻辑。上游可能恢复该逻辑。
 
@@ -103,6 +107,13 @@ if env_var:
     if env_key:
         config["openai_compat"]["api_key"] = env_key
 ```
+
+同样检查 `translate_blocks` 函数的解析逻辑：
+- 应兼容 `translated_text` 和 `text` 两种字段名
+- 应兼容 `{"translations": [...]}` 和直接 `[...]` 两种返回格式
+- 应支持 `response_schema` 参数传入 `translate_text`
+
+如果上游覆盖了这些增强，需手动恢复。
 
 ### 5. 替代方案：cherry-pick 上游的 scraper.py
 
@@ -123,15 +134,24 @@ git push origin main
 |------|------|------|
 | `main.py` | `merge=ours` | 编排流程已修改为 RSS，上游版本不兼容 |
 | `rss_generator.py` | `merge=ours` | 我们的新文件，上游不存在 |
-| `config.json` | `merge=ours` | RSS 配置是自定义的 |
-| `docker-compose.yml` | `merge=ours` | 移除了 MCBBS 环境变量 |
-| `Dockerfile` | `merge=ours` | 容器配置可能不同 |
-| `.env.sample` | `merge=ours` | 移除了 MCBBS 变量 |
-| `.github/workflows/rss-publish.yml` | `merge=ours` | 我们的 CI workflow |
+| `scheduler.py` | `merge=ours` | 重写为从 config.json 读取 cron + 内置 HTTP |
+| `server.py` | `merge=ours` | 我们的新文件，上游不存在 |
+| `init_state.py` | `merge=ours` | 移除了 load_dotenv 调用 |
+| `config.json` | `merge=ours` | RSS/scheduler/server 配置是自定义的 |
+| `docker-compose.yml` | `merge=ours` | 移除了 MCBBS 环境变量 + 内置 nginx 替代 |
+| `Dockerfile` | `merge=ours` | 添加了 curl_cffi 系统依赖 + EXPOSE 8080 |
+| `Dockerfile.git` | `merge=ours` | 上游的独立 Dockerfile，不使用 |
+| `.env.sample` | `merge=ours` | 移除了 MCBBS/API_KEY 变量 |
+| `.github/workflows/rss-publish.yml` | `merge=ours` | 我们的 RSS 发布 workflow |
+| `.github/workflows/docker-build.yml` | `merge=ours` | 我们的 Docker 构建 workflow |
+| `UPSTREAM_SYNC.md` | `merge=ours` | 本文档 |
 | `scraper.py` | 正常合并 | 爬取逻辑由上游维护 |
 | `glossary.json` | 正常合并 | 词汇表由上游维护 |
 | `utils.py` | 正常合并 | 工具函数由上游维护 |
 | `log_setup.py` | 正常合并 | 日志系统由上游维护 |
+| `converter.py` | 正常合并 | 上游模块，保留但不调用 |
+| `poster.py` | 正常合并 | 上游模块，保留但不调用 |
+| `modules_config.json` | 正常合并 | 上游模块配置，保留但不使用 |
 
 ## 故障排除
 

@@ -1,6 +1,8 @@
-# MCTTK2RSS
-
-> Minecraft 新闻自动爬取 + 翻译 + RSS 生成
+<div align="center">
+  <img src="logo.png" alt="MCTTK2RSS" width="200" />
+  <h1>MCTTK2RSS</h1>
+  <p>Minecraft 新闻自动爬取 + 翻译 + RSS 生成</p>
+</div>
 
 基于 [jiubook/MCTTK](https://github.com/jiubook/MCTTK) 的 fork，移除了 BBCode/Markdown 转换和 MCBBS 论坛自动发布功能，改为自动生成 RSS Feed，支持通过 GitHub Actions 和 Docker 部署。
 
@@ -57,7 +59,8 @@ MCTTK2RSS/
 ├── .github/workflows/
 │   ├── ci.yml           # CI 测试
 │   ├── rss-publish.yml  # RSS 定时爬取 + GitHub Pages 发布
-│   └── docker-build.yml # Docker 镜像构建 + 推送到 GHCR
+│   ├── docker-build.yml # Docker 镜像构建 + 推送到 GHCR
+│   └── clear-articles.yml # 清空已收集文章并重置状态
 ├── docker-compose.yml   # Docker 部署配置
 ├── Dockerfile           # Docker 镜像构建
 ├── .gitattributes       # 上游同步保护策略
@@ -174,6 +177,7 @@ python rss_generator.py --dir output --out output/feed.xml
 2. 在左侧列表选择要运行的 workflow：
    - **Scrape & Publish RSS** — 爬取新闻并发布 RSS 到 GitHub Pages
    - **Docker Build & Push** — 构建并推送 Docker 镜像到 GHCR
+   - **Clear Articles** — 清空所有已收集的文章并重置状态（需输入 YES 确认）
 3. 点击右侧 **Run workflow** 按钮
 4. 选择分支（`main`）
 5. 对于 **Scrape & Publish RSS**，可直接点击 **Run workflow** 运行完整流程（爬取 → 翻译 → 生成 RSS → 发布），无需勾选任何参数

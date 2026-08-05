@@ -11,7 +11,7 @@
 ## 功能特性
 
 - **自动爬取**：从 Minecraft 官方 API 获取最新新闻，同时支持从 Feedback 网站爬取更新日志
-- **Cloudflare 绕过**：使用 `curl_cffi` 模拟真实浏览器，绕过 Feedback 网站的 Cloudflare 防护
+- **Cloudflare 访问控制**：使用 `curl_cffi` 模拟浏览器，并通过请求间隔、challenge 冷却和会话复用减少 Feedback 网站的重复触发；如果运行环境 IP 被 Cloudflare 挑战，程序会停止重试并等待冷却
 - **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译
 - **智能词汇表**：动态检测专业术语，自动添加译名对照到提示词（`glossary.json`）
 - **RSS 生成**：将爬取翻译后的新闻自动生成 RSS 2.0 Feed（含 `content:encoded` 全文）
@@ -274,7 +274,19 @@ docker run -d --name mcttk-rss -p 8080:8080 \
 
 ### Feedback 网站
 
-从 `https://feedback.minecraft.net` 爬取更新日志，在 `config.json` 的 `feedback_site` 中配置各 section 的启用状态和文章数量。
+从 `https://feedback.minecraft.net` 爬取更新日志，在 `config.json` 的 `feedback_site` 中配置各 section 的启用状态和文章数量。请求默认间隔 2 秒；遇到 Cloudflare challenge 后默认冷却 15 分钟，不会继续重复请求：
+
+```json
+{
+  "feedback_site": {
+    "request_interval_seconds": 2,
+    "challenge_cooldown_seconds": 900,
+    "max_retries": 0
+  }
+}
+```
+
+Cloudflare challenge 通常与运行环境 IP、网络出口或站点策略有关，程序无法保证绕过挑战；冷却机制用于避免继续加重封锁。
 
 ## 新闻类型过滤
 

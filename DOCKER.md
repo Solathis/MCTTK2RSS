@@ -136,7 +136,7 @@ docker logs -f mcttk-scraper
 
 # 查看持久化日志文件（按日期命名）
 ls logs/
-cat logs/mcttk_2026-07-22.log
+cat logs/mcttk2rss_2026-07-22.log
 
 # 停止服务
 docker-compose down
@@ -171,4 +171,4 @@ docker stats mcttk-scraper
 - 状态文件 `output/.state.json` 和 `output/.posted.json` 持久化保存在宿主机
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
-- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，可配合 `logrotate` 等工具管理宿主机日志
+- 日志文件保存在 `logs/` 目录，格式为 `mcttk2rss_YYYY-MM-DD.log`，可配合 `logrotate` 等工具管理宿主机日志

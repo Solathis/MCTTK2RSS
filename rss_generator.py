@@ -16,6 +16,8 @@ import json
 import os
 import re
 from datetime import UTC, datetime, timedelta
+from html import unescape
+from urllib.parse import urlsplit
 from xml.sax.saxutils import escape
 
 import bleach
@@ -34,6 +36,18 @@ _ALLOWED_ATTRIBUTES = {
     "img": ["src", "alt", "title", "width", "height", "loading"],
 }
 _ALLOWED_PROTOCOLS = ["http", "https"]
+_MARKDOWN_LINK = re.compile(r"\\?\[([^\]]+)\\?\]\\?\((https?://[^)\s]+)\\?\)")
+
+
+def _image_key(url: str) -> str:
+    """按 URL 主体去重图片，忽略缓存查询参数。"""
+    parsed = urlsplit((url or "").strip())
+    return parsed._replace(query="", fragment="").geturl().rstrip("/").lower()
+
+
+def _normalize_markdown_links(text: str) -> str:
+    """兼容 AI 添加反斜杠后的 Markdown 链接写法。"""
+    return _MARKDOWN_LINK.sub(r"[\1](\2)", text or "")
 
 
 def _clean_model_text(text: str) -> str:
@@ -71,7 +85,7 @@ def _clean_model_text(text: str) -> str:
 
 def _markdown_to_html(text: str) -> str:
     """将文章文本转为安全 HTML，保留链接、代码、强调和高亮。"""
-    html = _MARKDOWN.renderInline(_clean_model_text(text))
+    html = _MARKDOWN.renderInline(_normalize_markdown_links(_clean_model_text(text)))
     return bleach.clean(
         html,
         tags=_ALLOWED_TAGS,
@@ -156,6 +170,7 @@ def _blocks_to_html(blocks: list[dict]) -> str:
     html_parts = []
     list_items = []
     list_tag = "ul"
+    seen_images = set()
 
     def flush_list():
         nonlocal list_tag
@@ -168,6 +183,12 @@ def _blocks_to_html(blocks: list[dict]) -> str:
         btype = (block.get("type") or "p").lower()
         if btype == "img":
             flush_list()
+            image_url = (block.get("meta") or {}).get("src", "")
+            image_key = _image_key(image_url)
+            if image_key and image_key in seen_images:
+                continue
+            if image_key:
+                seen_images.add(image_key)
             image_html = _render_image(block)
             if image_html:
                 html_parts.append(image_html)
@@ -234,7 +255,12 @@ def _build_content_html(article: dict, link: str) -> str:
         meta_parts.append(f'<p><strong>原文：</strong><a href="{safe_link}">{escape(link)}</a></p>')
 
     header_image = article.get("header_image_url") or ""
-    if header_image:
+    block_image_keys = {
+        _image_key((block.get("meta") or {}).get("src", ""))
+        for block in article.get("blocks", [])
+        if block.get("type") == "img"
+    }
+    if header_image and _image_key(header_image) not in block_image_keys:
         alt = article.get("imageAltText") or title_cn or title_en
         meta_parts.append(
             f'<figure><img src="{escape(header_image)}" alt="{escape(alt)}" loading="lazy" /></figure>'
@@ -252,7 +278,9 @@ def _translated_summary(article: dict) -> str:
             continue
         text = _clean_model_text(block.get("translated_text", ""))
         if text:
-            translated_parts.append(text)
+            summary_html = _markdown_to_html(text)
+            summary_text = bleach.clean(summary_html, tags=[], strip=True)
+            translated_parts.append(unescape(summary_text))
     return re.sub(r"\s+", " ", " ".join(translated_parts)).strip()
 
 
@@ -282,10 +310,17 @@ def generate_rss(
     fg.description(feed_description)
     fg.language("zh-CN")
 
-    # RSS channel logo（feed.xml 中的 <image> 元素）
+    logo_url = ""
     logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logo.png")
     if os.path.exists(logo_path):
-        fg.image(url=base_link.rstrip("/") + "/logo.png", title=feed_title, link=base_link)
+        logo_url = base_link.rstrip("/") + "/logo.png"
+        fg.image(
+            url=logo_url,
+            title=feed_title,
+            link=base_link,
+            width="144",
+            height="144",
+        )
 
     for article in articles:
         title_cn = (article.get("translated_title") or "").strip()
@@ -294,7 +329,7 @@ def generate_rss(
         link = article.get("url", "")
 
         fe = fg.add_entry()
-        fe.id(link or f"mcttk-{re.sub(r'[^a-zA-Z0-9]', '', title_en)[:50]}")
+        fe.id(link or f"mcttk2rss-{re.sub(r'[^a-zA-Z0-9]', '', title_en)[:50]}")
         fe.title(title)
         fe.link(href=link or base_link)
 
@@ -331,6 +366,9 @@ def generate_rss(
         os.makedirs(out_dir, exist_ok=True)
 
     rss_xml = fg.rss_str(pretty=True)
+    if logo_url:
+        atom_logo = f"<atom:logo>{escape(logo_url)}</atom:logo>".encode()
+        rss_xml = rss_xml.replace(b"<channel>", atom_logo + b"<channel>", 1)
     with open(output_path, "wb") as f:
         f.write(rss_xml)
 

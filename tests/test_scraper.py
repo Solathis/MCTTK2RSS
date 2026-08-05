@@ -365,3 +365,39 @@ class TestLoadGlossary:
         result = load_glossary(str(f))
         assert result["terms"]["玖书"] == "jiubook"
         assert result["terms"]["玖布克"] == "1501743"
+
+
+def test_feedback_challenge_stops_retries_and_enters_cooldown(monkeypatch):
+    import scraper as scraper_module
+
+    if not scraper_module.CURL_CFFI_AVAILABLE:
+        pytest.skip("curl_cffi unavailable")
+
+    class ChallengeResponse:
+        status_code = 403
+        headers = {"cf-mitigated": "challenge"}
+        text = "Just a moment..."
+
+    class FakeSession:
+        def __init__(self):
+            self.calls = 0
+
+        def get(self, *args, **kwargs):
+            self.calls += 1
+            return ChallengeResponse()
+
+    session = FakeSession()
+    monkeypatch.setattr(scraper_module.cffi_requests, "Session", lambda: session)
+    config = {
+        "feedback_site": {
+            "base_url": "https://feedback.minecraft.net",
+            "request_interval_seconds": 0,
+            "challenge_cooldown_seconds": 900,
+            "max_retries": 3,
+        }
+    }
+    feedback_scraper = scraper_module.FeedbackScraper(config)
+
+    assert feedback_scraper.fetch_page("/first") is None
+    assert feedback_scraper.fetch_page("/second") is None
+    assert session.calls == 1

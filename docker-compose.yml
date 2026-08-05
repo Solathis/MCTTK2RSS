@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  mcttk-rss:
+  mcttk2rss:
     # 方式一：使用 GHCR 预构建镜像（推荐，无需本地构建）
     image: ghcr.io/solathis/mcttk2rss:latest
     # 方式二：本地构建（取消注释下面一行，注释掉上面的 image）
     # build: .
-    container_name: mcttk-rss
+    container_name: mcttk2rss
     restart: unless-stopped
     ports:
       # RSS Feed HTTP 服务端口

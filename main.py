@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-main.py — MCTTK 新闻自动爬取 + 翻译 + RSS 生成 编排器
+main.py — MCTTK2RSS 新闻自动爬取 + 翻译 + RSS 生成 编排器
 
 工作流程：
   1. 从 Minecraft 官方 API 获取最新新闻
@@ -275,7 +275,7 @@ def run_rss(config: dict):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="MCTTK — Minecraft 新闻自动爬取+翻译+RSS生成",
+        description="MCTTK2RSS — Minecraft 新闻自动爬取+翻译+RSS生成",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
             "示例:\n"
@@ -297,7 +297,7 @@ def main():
     setup_logging(log_level=logging.DEBUG)
 
     print("=" * 60)
-    print("  MCTTK — Minecraft 新闻自动爬取 + 翻译 + RSS 生成")
+    print("  MCTTK2RSS — Minecraft 新闻自动爬取 + 翻译 + RSS 生成")
     print("=" * 60)
 
     log_info("程序启动")

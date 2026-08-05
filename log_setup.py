@@ -40,10 +40,10 @@ def setup_logging(
 
     # 生成日志文件名（按日期）
     today = datetime.now().strftime("%Y-%m-%d")
-    log_file = os.path.join(log_dir, f"mcttk_{today}.log")
+    log_file = os.path.join(log_dir, f"mcttk2rss_{today}.log")
 
     # 创建 logger
-    logger = logging.getLogger("mcttk")
+    logger = logging.getLogger("mcttk2rss")
     logger.setLevel(log_level)
 
     # 清除已有的处理器（避免重复添加）
@@ -81,7 +81,7 @@ def setup_logging(
 
 def get_logger() -> logging.Logger:
     """获取已配置的 logger 实例"""
-    return logging.getLogger("mcttk")
+    return logging.getLogger("mcttk2rss")
 
 
 # 便捷函数

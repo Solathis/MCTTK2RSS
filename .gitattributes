@@ -9,9 +9,12 @@ rss_generator.py merge=ours
 scheduler.py merge=ours
 server.py merge=ours
 init_state.py merge=ours
+scraper.py merge=ours
+log_setup.py merge=ours
 
 # 配置：RSS 配置是自定义的
 config.json merge=ours
+pyproject.toml merge=ours
 
 # Docker 部署配置
 docker-compose.yml merge=ours
@@ -30,14 +33,11 @@ Dockerfile.git merge=ours
 UPSTREAM_SYNC.md merge=ours
 
 # 以下文件允许上游覆盖（上游应持续维护爬取逻辑）
-# scraper.py
 # glossary.json
 # utils.py
-# log_setup.py
 # converter.py（若上游维护该模块）
 # modules_config.json（若上游维护该模块）
 #
-# 注意：scraper.py 中的 load_config() 已被我们修改（移除环境变量逻辑），
-# 上游可能恢复该逻辑。合并时需检查 scraper.py 的 load_config 函数。
-# 注意：scraper.py 的 translate_blocks 解析逻辑已增强（兼容 text/translated_text
-# 和 {"translations":[...]} 格式），上游合并后需检查翻译解析是否被覆盖。
+# 注意：scraper.py 现包含本项目的配置驱动、结构化翻译和 Feedback 节流逻辑，
+# 上游合并后需检查这些自定义逻辑是否仍然存在。
+# 注意：日志名称已统一为 MCTTK2RSS，合并后需检查。

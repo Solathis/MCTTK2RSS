@@ -20,6 +20,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from threading import Lock
 from urllib.parse import urljoin
 
 import requests
@@ -33,7 +34,7 @@ try:
 except ImportError:
     # 如果日志模块不可用，使用简单的 print 替代
     import logging
-    logger = logging.getLogger("mcttk")
+    logger = logging.getLogger("mcttk2rss")
     def log_info(msg): print(f"[INFO] {msg}")
     def log_error(msg, exc_info=False): print(f"[ERROR] {msg}")
     def log_debug(msg): print(f"[DEBUG] {msg}")
@@ -97,6 +98,15 @@ DEFAULT_CONFIG = {
         "sortType": "Recent",
         "category": "News",
         "site_base": "https://www.minecraft.net"
+    },
+    "feedback_site": {
+        "enabled": True,
+        "base_url": "https://feedback.minecraft.net",
+        "knowledge_base_url": "https://feedback.minecraft.net/hc/en-us/categories/115000410252-Knowledge-Base",
+        "timeout": 30,
+        "request_interval_seconds": 2,
+        "challenge_cooldown_seconds": 900,
+        "max_retries": 0
     },
     "http": {
         "verify_ssl": False,
@@ -524,8 +534,12 @@ def extract_blocks_in_order(container: Tag, blocks: list, base_url: str = ""):
 class FeedbackScraper:
     """
     Minecraft Feedback 网站爬虫类
-    使用 curl_cffi 模拟真实浏览器，绕过 Cloudflare Bot Management 防护
+    使用 curl_cffi 模拟浏览器，并通过节流和 challenge 冷却减少重复触发
     """
+
+    _global_request_lock = Lock()
+    _global_next_request_at = 0.0
+    _global_challenge_until = 0.0
 
     def __init__(self, config):
         if not CURL_CFFI_AVAILABLE:
@@ -537,6 +551,11 @@ class FeedbackScraper:
         self.feedback_config = config.get('feedback_site', {})
         self.base_url = self.feedback_config.get('base_url', 'https://feedback.minecraft.net')
         self.timeout = self.feedback_config.get('timeout', 30)
+        self.request_interval = max(float(self.feedback_config.get('request_interval_seconds', 2)), 0)
+        self.challenge_cooldown = max(
+            float(self.feedback_config.get('challenge_cooldown_seconds', 900)), 0
+        )
+        self.max_retries = max(int(self.feedback_config.get('max_retries', 0)), 0)
         self.headers = {
             'Accept': (
                 'text/html,application/xhtml+xml,application/xml;q=0.9,'
@@ -553,46 +572,62 @@ class FeedbackScraper:
         }
         self.session = cffi_requests.Session()
 
-    def fetch_page(self, url, referer=None, max_retries=3):
+    def _wait_for_request_slot(self) -> bool:
+        """跨实例串行限速 Feedback 请求；Cloudflare 冷却期间拒绝新请求。"""
+        with type(self)._global_request_lock:
+            now = time.monotonic()
+            if now < type(self)._global_challenge_until:
+                return False
+            wait = max(type(self)._global_next_request_at - now, 0)
+            type(self)._global_next_request_at = max(type(self)._global_next_request_at, now)
+            type(self)._global_next_request_at += self.request_interval
+
+        if wait:
+            time.sleep(wait)
+        return True
+
+    def _start_challenge_cooldown(self):
+        with type(self)._global_request_lock:
+            type(self)._global_challenge_until = time.monotonic() + self.challenge_cooldown
+
+    def fetch_page(self, url, referer=None, max_retries=None):
         full_url = urljoin(self.base_url, url)
         headers = self.headers.copy()
         if referer:
             headers['Referer'] = referer
 
+        retry_limit = self.max_retries if max_retries is None else max(int(max_retries), 0)
         log_debug(f"[Feedback] 请求 URL: {full_url}")
-        log_debug(f"[Feedback] 请求头: {headers}")
 
-        for attempt in range(max_retries):
+        for attempt in range(retry_limit + 1):
+            if not self._wait_for_request_slot():
+                log_warning("[Feedback] Cloudflare 冷却中，跳过后续请求")
+                return None
             try:
-                if attempt > 0:
-                    wait = attempt * 5
-                    log_warning(f"[Feedback] 第 {attempt} 次重试，等待 {wait} 秒...")
-                    time.sleep(wait)
-
-                log_debug(f"[Feedback] 发送请求 (尝试 {attempt + 1}/{max_retries})")
+                log_debug(f"[Feedback] 发送请求 (尝试 {attempt + 1}/{retry_limit + 1})")
                 response = self.session.get(
                     full_url, headers=headers,
                     timeout=self.timeout, impersonate="chrome"
                 )
+                status = response.status_code
+                log_debug(f"[Feedback] 响应状态码: {status}")
 
-                # 记录响应详情
-                log_debug(f"[Feedback] 响应状态码: {response.status_code}")
-                log_debug(f"[Feedback] 响应头: {dict(response.headers)}")
-
-                # 检查是否为 Cloudflare 挑战页面
-                if response.status_code == 403:
-                    log_error("[Feedback] 403 Forbidden - 可能触发 Cloudflare 防护")
-                    log_debug(f"[Feedback] 响应内容前500字符: {response.text[:500]}")
-                    # 检查是否是 Cloudflare 挑战
-                    if 'cf-mitigated' in response.headers or 'cloudflare' in response.text.lower():
-                        log_error("[Feedback] 检测到 Cloudflare 挑战页面")
-                    if attempt < max_retries - 1:
-                        continue
+                if status == 403:
+                    is_challenge = (
+                        response.headers.get('cf-mitigated', '').lower() == 'challenge'
+                        or 'cloudflare' in response.text[:1000].lower()
+                    )
+                    if is_challenge:
+                        self._start_challenge_cooldown()
+                        log_error("[Feedback] 检测到 Cloudflare challenge，停止重试并进入冷却")
+                    else:
+                        log_error("[Feedback] 403 Forbidden，停止重试")
                     return None
 
-                if response.status_code == 429:
-                    log_error("[Feedback] 429 Too Many Requests - 请求过于频繁")
-                    if attempt < max_retries - 1:
+                if status == 429:
+                    log_warning("[Feedback] 429 Too Many Requests")
+                    if attempt < retry_limit:
+                        time.sleep(min(30, 5 * (attempt + 1)))
                         continue
                     return None
 
@@ -603,11 +638,9 @@ class FeedbackScraper:
 
             except Exception as e:
                 log_error(f"[Feedback] 获取页面失败 {full_url}: {type(e).__name__}: {e}")
-                if hasattr(e, 'response') and e.response is not None:
-                    log_debug(f"[Feedback] 错误响应状态码: {e.response.status_code}")
-                    log_debug(f"[Feedback] 错误响应头: {dict(e.response.headers)}")
-                if attempt < max_retries - 1:
-                    continue
+                if attempt >= retry_limit:
+                    return None
+                time.sleep(min(30, 5 * (attempt + 1)))
         return None
 
     def parse_knowledge_base(self, soup):

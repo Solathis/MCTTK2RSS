@@ -9,6 +9,7 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
         "translated_title": "测试 😀",
         "release_date": "2026-01-01",
         "url": "https://example.com/article",
+        "header_image_url": "https://example.com/image.png",
         "blocks": [
             {
                 "type": "p",
@@ -42,10 +43,13 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
 
     assert "<![CDATA[" in xml
     assert "&lt;p&gt;" not in xml
+    assert "](" not in xml
     assert "<strong>高亮</strong>" in xml
     assert '<a href="https://example.com">链接</a>' in xml
     assert "<ul>" in xml and "<li>" in xml
     assert "color:#333" in xml and "color:#999" in xml
     assert 'src="https://example.com/image.png"' in xml
+    assert xml.count('src="https://example.com/image.png"') == 1
+    assert "<atom:logo>https://solathis.github.io/MCTTK2RSS/logo.png</atom:logo>" in xml
     assert "😀" in xml
     assert "https://solathis.github.io/MCTTK2RSS/logo.png" in xml

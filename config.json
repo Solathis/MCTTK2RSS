@@ -1,5 +1,5 @@
 {
-  "_comment": "MCTTK_MC新闻自动爬取+翻译+发布 统一配置",
+  "_comment": "MCTTK2RSS Minecraft 新闻自动爬取+翻译+RSS 生成统一配置",
   "openai_compat": {
     "host": "api.videocaptioner.cn",
     "endpoint": "/v1/chat/completions",
@@ -56,6 +56,9 @@
     "base_url": "https://feedback.minecraft.net",
     "knowledge_base_url": "https://feedback.minecraft.net/hc/en-us/categories/115000410252-Knowledge-Base",
     "timeout": 30,
+    "request_interval_seconds": 2,
+    "challenge_cooldown_seconds": 900,
+    "max_retries": 0,
     "sections": [
       {
         "name": "Release Changelogs",

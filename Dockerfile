@@ -1,5 +1,10 @@
 FROM python:3.13-slim
 
+# curl_cffi 需要 libcurl 和 libssl
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # 安装依赖

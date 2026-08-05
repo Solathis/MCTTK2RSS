@@ -152,7 +152,7 @@ python rss_generator.py --dir output --out output/feed.xml
 
 4. 将该 RSS 地址添加到你的 RSS 阅读器即可
 
-也可在 Actions 页面手动触发（支持 dry_run 和 rss_only 模式）。
+也可在 Actions 页面手动触发。
 
 #### 手动运行 workflow
 
@@ -163,10 +163,12 @@ python rss_generator.py --dir output --out output/feed.xml
    - **Scrape & Publish RSS** — 爬取新闻并发布 RSS 到 GitHub Pages
    - **Docker Build & Push** — 构建并推送 Docker 镜像到 GHCR
 3. 点击右侧 **Run workflow** 按钮
-4. 选择分支（`main`），对于 **Scrape & Publish RSS** 可勾选：
-   - `dry_run` — 仅检测新新闻，不实际处理
-   - `rss_only` — 仅从已有 JSON 重新生成 RSS，不爬取
-5. 点击绿色 **Run workflow** 确认运行
+4. 选择分支（`main`）
+5. 对于 **Scrape & Publish RSS**，可直接点击 **Run workflow** 运行完整流程（爬取 → 翻译 → 生成 RSS → 发布），无需勾选任何参数
+   - 可选参数（通常不需要）：
+     - `dry_run` — 仅检测新新闻，不实际处理
+     - `rss_only` — 仅从已有 JSON 重新生成 RSS，不爬取
+6. 点击绿色 **Run workflow** 确认运行
 
 运行进度和日志在 Actions 页面对应运行记录中查看。
 
@@ -174,76 +176,37 @@ python rss_generator.py --dir output --out output/feed.xml
 
 ### 方式二：Docker 部署
 
-Docker 部署时所有配置从挂载的 `config.json` 读取，数据通过 volume 挂载写回宿主机。
+Docker 部署时所有配置从挂载的 `config.json` 读取，数据通过 volume 挂载写回宿主机。`docker-compose.yml` 内置了 Nginx 容器提供 RSS 的 HTTP 访问。
 
 ```bash
 # 1. 编辑 config.json 填入 API 配置和定时规则
 # 2. 启动容器
 docker-compose up -d
+# 3. 访问 RSS Feed：http://localhost:8080/feed.xml
 ```
 
 **配置文件挂载**：
-- `config.json` 挂载为只读（配置不应由容器修改）
-- `output/` 目录挂载为读写（容器写回 feed.xml 和文章数据）
+- `config.json` 挂载为只读（配置不应由容器修改，修改后重启容器生效）
+- `output/` 目录挂载为读写（容器写回 feed.xml 和文章数据，同时挂载到 Nginx 提供访问）
 - `logs/` 目录挂载为读写
 
-也可使用 GHCR 预构建镜像（无需本地构建）：
+#### 使用 GHCR 预构建镜像
 
-```bash
-# docker-compose.yml 中取消注释 image: ghcr.io/solathis/mcttk2rss:latest
-docker-compose up -d
-```
+`docker-compose.yml` 默认使用 GitHub Container Registry 上的预构建镜像 `ghcr.io/solathis/mcttk2rss:latest`，无需本地构建。
 
-**Docker 镜像构建**：`.github/workflows/docker-build.yml` 会在 push 到 main 时自动构建多架构镜像（linux/amd64 + linux/arm64）并推送到 GHCR。
+如需本地构建（如修改了源码），编辑 `docker-compose.yml` 将 `image` 行注释，取消注释 `build: .`。
 
 #### 访问 RSS Feed
 
-容器本身只生成 `feed.xml` 文件，不内置 Web 服务器。需要通过以下方式之一对外提供 HTTP 访问：
+Docker 部署后，`docker-compose.yml` 中的 `rss-server` 容器（Nginx）自动提供 HTTP 访问：
 
-**方法 A：配置 Nginx 反向代理（推荐）**
-
-```nginx
-server {
-    listen 80;
-    server_name rss.example.com;
-
-    location /feed.xml {
-        alias /path/to/output/feed.xml;
-        default_type application/rss+xml;
-        add_header Cache-Control "no-cache";
-    }
-}
+```
+http://localhost:8080/feed.xml
 ```
 
-将 `/path/to/output` 替换为 docker-compose.yml 中 `output` 挂载的宿主机路径。
+将该地址添加到 RSS 阅读器即可。如需外部访问，可修改 `docker-compose.yml` 中 `ports` 映射（如 `80:80`），或在宿主机上配置 Nginx/Caddy 反向代理。
 
-**方法 B：使用 Python 内置 HTTP 服务器**
-
-适合临时或低频访问场景，在宿主机上运行：
-
-```bash
-cd output
-python -m http.server 8080
-# RSS 地址: http://localhost:8080/feed.xml
-```
-
-**方法 C：在 docker-compose.yml 中增加 Nginx 容器**
-
-```yaml
-services:
-  rss-server:
-    image: nginx:alpine
-    ports:
-      - "8080:80"
-    volumes:
-      - ./output:/usr/share/nginx/html:ro
-    depends_on:
-      - mcttk-rss
-```
-
-启动后访问 `http://localhost:8080/feed.xml` 即可。
-
-无论哪种方式，最终 RSS Feed 地址就是 `feed.xml` 文件的 HTTP URL，添加到 RSS 阅读器即可。
+**Docker 镜像构建**：`.github/workflows/docker-build.yml` 会在 push 到 main 时自动构建多架构镜像（linux/amd64 + linux/arm64）并推送到 GHCR，也可在 Actions 页面手动触发。
 
 ## 新闻来源
 

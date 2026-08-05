@@ -39,7 +39,8 @@ MCTTK2RSS/
 ├── main.py              # 编排器：串联爬取→翻译→RSS生成
 ├── scraper.py           # 爬取与翻译模块（含 Feedback 爬虫，上游维护）
 ├── rss_generator.py     # RSS Feed 生成器（本项目新增）
-├── scheduler.py         # 定时调度器（从 config.json 读取 cron）
+├── scheduler.py         # 定时调度器 + 内置 HTTP 服务器（从 config.json 读取 cron）
+├── server.py           # 轻量 HTTP 服务器（提供 feed.xml 静态访问）
 ├── utils.py             # 公共工具（上游维护）
 ├── log_setup.py         # 日志系统（上游维护）
 ├── init_state.py        # 初始化状态工具（测试用）
@@ -100,6 +101,10 @@ pip install -r requirements.txt
     "cron": "0 */6 * * *",
     "interval_seconds": 21600,
     "timeout_seconds": 600
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
@@ -177,7 +182,7 @@ python rss_generator.py --dir output --out output/feed.xml
 
 ### 方式二：Docker 部署
 
-Docker 部署时所有配置从挂载的 `config.json` 读取，数据通过 volume 挂载写回宿主机。`docker-compose.yml` 内置了 Nginx 容器提供 RSS 的 HTTP 访问。
+Docker 部署时所有配置从挂载的 `config.json` 读取，数据通过 volume 挂载写回宿主机。容器内置 HTTP 服务器，直接在 8080 端口提供 RSS Feed 访问。
 
 ```bash
 # 1. 编辑 config.json 填入 API 配置和定时规则
@@ -187,8 +192,8 @@ docker-compose up -d
 ```
 
 **配置文件挂载**：
-- `config.json` 挂载为只读（配置不应由容器修改，修改后重启容器生效）
-- `output/` 目录挂载为读写（容器写回 feed.xml 和文章数据，同时挂载到 Nginx 提供访问）
+- `config.json` 挂载为只读（修改后重启容器生效）
+- `output/` 目录挂载为读写（容器写回 feed.xml 和文章数据）
 - `logs/` 目录挂载为读写
 
 #### 使用 GHCR 预构建镜像
@@ -199,15 +204,56 @@ docker-compose up -d
 
 #### 访问 RSS Feed
 
-Docker 部署后，`docker-compose.yml` 中的 `rss-server` 容器（Nginx）自动提供 HTTP 访问：
+容器内置 HTTP 服务器（`server.py`），随 `scheduler.py` 一同启动，监听 `config.json` 中 `server.port` 指定的端口（默认 8080）：
 
 ```
 http://localhost:8080/feed.xml
 ```
 
-将该地址添加到 RSS 阅读器即可。如需外部访问，可修改 `docker-compose.yml` 中 `ports` 映射（如 `80:80`），或在宿主机上配置 Nginx/Caddy 反向代理。
+将该地址添加到 RSS 阅读器即可。如需外部访问，可修改 `docker-compose.yml` 中 `ports` 映射，或在宿主机上配置 Nginx/Caddy 反向代理。
 
 **Docker 镜像构建**：`.github/workflows/docker-build.yml` 会在 push 到 main 时自动构建多架构镜像（linux/amd64 + linux/arm64）并推送到 GHCR，也可在 Actions 页面手动触发。
+
+### 方式三：docker run 单命令启动
+
+无需 docker-compose，直接使用 `docker run` 启动：
+
+```bash
+docker run -d \
+  --name mcttk-rss \
+  -p 8080:8080 \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  -v $(pwd)/glossary.json:/app/glossary.json:ro \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
+  --restart unless-stopped \
+  ghcr.io/solathis/mcttk2rss:latest
+```
+
+启动后访问 `http://localhost:8080/feed.xml`。参数说明：
+
+| 参数 | 说明 |
+|---|---|
+| `-d` | 后台运行 |
+| `-p 8080:8080` | 映射 HTTP 服务端口（左侧可改为宿主机任意端口） |
+| `-v .../config.json:ro` | 挂载配置文件（只读） |
+| `-v .../glossary.json:ro` | 挂载词汇表（只读） |
+| `-v .../output` | 挂载输出目录（读写，存储 feed.xml 和文章数据） |
+| `-v .../logs` | 挂载日志目录（读写） |
+| `--restart unless-stopped` | 容器崩潢后自动重启 |
+
+本地构建运行：
+
+```bash
+docker build -t mcttk2rss .
+docker run -d --name mcttk-rss -p 8080:8080 \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  -v $(pwd)/glossary.json:/app/glossary.json:ro \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
+  --restart unless-stopped \
+  mcttk2rss
+```
 
 ## 新闻来源
 
@@ -390,6 +436,10 @@ Minecraft 官方 API          Feedback 网站
     "cron": "0 */6 * * *",
     "interval_seconds": 21600,
     "timeout_seconds": 600
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",

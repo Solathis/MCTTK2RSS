@@ -17,4 +17,7 @@ COPY . .
 # 创建输出和日志目录
 RUN mkdir -p output logs
 
+# HTTP 服务端口
+EXPOSE 8080
+
 CMD ["python", "scheduler.py"]

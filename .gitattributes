@@ -3,10 +3,11 @@
 # 上游对这些文件的更改不会覆盖我们的自定义实现
 # 配合手动 cherry-pick 或 merge 时可追加 --strategy-option=theirs 指定单次反选
 
-# 核心自定义文件：RSS 生成 + 编排流程
+# 核心自定义文件：RSS 生成 + 编排流程 + HTTP 服务
 main.py merge=ours
 rss_generator.py merge=ours
 scheduler.py merge=ours
+server.py merge=ours
 init_state.py merge=ours
 
 # 配置：RSS 配置是自定义的

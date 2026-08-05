@@ -6,7 +6,10 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
+
+from server import serve as serve_http
 
 # cron 解析：将 5 字段 cron 表达式解析为秒级间隔
 # 支持格式: "0 */6 * * *" "0 0,6,12,18 * * *" "0 0 * * *" 等
@@ -59,6 +62,8 @@ def load_scheduler_config() -> dict:
         "cron": "0 */6 * * *",
         "interval_seconds": 21600,
         "timeout_seconds": 600,
+        "server_host": "0.0.0.0",  # noqa: S104
+        "server_port": 8080,
     }
     if os.path.exists(config_path):
         try:
@@ -66,6 +71,11 @@ def load_scheduler_config() -> dict:
                 full_cfg = json.load(f)
             sched = full_cfg.get("scheduler", {})
             defaults.update(sched)
+            srv = full_cfg.get("server", {})
+            if srv.get("host"):
+                defaults["server_host"] = srv["host"]
+            if srv.get("port"):
+                defaults["server_port"] = srv["port"]
         except (OSError, ValueError) as e:
             print(f"[调度器] 配置加载失败，使用默认值: {e}")
     return defaults
@@ -105,11 +115,21 @@ if __name__ == "__main__":
     )
     run_timeout = cfg.get("timeout_seconds", 600)
     cron_expr = cfg.get("cron", "0 */6 * * *")
+    srv_host = cfg.get("server_host", "0.0.0.0")  # noqa: S104
+    srv_port = cfg.get("server_port", 8080)
+
+    # 启动 HTTP 服务器（守护线程）
+    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
+    srv_thread = threading.Thread(
+        target=serve_http, args=(output_dir, srv_host, srv_port), daemon=True
+    )
+    srv_thread.start()
 
     print("[调度器] 启动")
     print(f"[调度器] Cron 规则: {cron_expr}")
     print(f"[调度器] 执行间隔: {interval} 秒 ({interval // 3600} 小时)")
     print(f"[调度器] 单次超时: {run_timeout} 秒")
+    print(f"[调度器] HTTP 服务: http://{srv_host}:{srv_port}/feed.xml")
 
     while True:
         run_main(run_timeout)

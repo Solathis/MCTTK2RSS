@@ -96,6 +96,10 @@
     "interval_seconds": 21600,
     "timeout_seconds": 600
   },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080
+  },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
     "feed_link": "",

@@ -72,6 +72,7 @@ DEFAULT_CONFIG = {
             "要求：\n"
             "- 保留版本号/编号（如 MC-12345）、URL、代码片段\n"
             "- 如包含 Markdown 链接 [text](url)，请只翻译 visible text\n"
+            "- 保留 Markdown/HTML 的粗体、斜体、下划线、删除线和 <mark>高亮标记\n"
             "- 仅输出译文，不要解释"
         ),
         "translate_blocks_system": (
@@ -82,8 +83,9 @@ DEFAULT_CONFIG = {
             "1. translations 数组中每项的 id 必须与输入数组中的 id 一一对应\n"
             "2. 保持与输入相同的条目数量和顺序\n"
             "3. 只翻译文本内容，保留 URL / MC-编号 / 代码块 / 版本号不翻译\n"
-            "4. 保留原文的换行\n"
-            "5. translated_text 字段为翻译后的简体中文"
+            "4. 保留输入中的 Markdown/HTML 粗体、斜体、下划线、删除线和 <mark>高亮标记\n"
+            "5. 保留原文的换行\n"
+            "6. translated_text 字段为翻译后的简体中文"
         ),
         "translate_title_system": (
             "请将 Minecraft 新闻标题翻译成简体中文。要求：保留版本号/编号/专有名词的拼写，只输出译文标题。"
@@ -346,6 +348,7 @@ def _normalize_whitespace(s: str) -> str:
 
 
 def _extract_text_preserve_links(tag: Tag, base_url: str = "", stop_at_lists: bool = False) -> str:
+    """提取文本并保留链接、代码、强调和高亮标记。"""
     parts = []
 
     def walk(node):
@@ -376,10 +379,25 @@ def _extract_text_preserve_links(tag: Tag, base_url: str = "", stop_at_lists: bo
         if tag_name in ("code", "kbd", "samp"):
             code_text = _normalize_whitespace(node.get_text(" ", strip=True))
             if code_text:
-                parts.append(f"\u00A0`{code_text}`\u00A0")
+                parts.append(f" `{code_text}` ")
             return
+        wrappers = {
+            "strong": ("**", "**"),
+            "b": ("**", "**"),
+            "em": ("*", "*"),
+            "i": ("*", "*"),
+            "mark": ("<mark>", "</mark>"),
+            "u": ("<u>", "</u>"),
+            "del": ("<del>", "</del>"),
+            "s": ("<del>", "</del>"),
+        }
+        wrapper = wrappers.get(tag_name)
+        if wrapper:
+            parts.append(wrapper[0])
         for child in node.children:
             walk(child)
+        if wrapper:
+            parts.append(wrapper[1])
         if tag_name in ("p", "li", "blockquote"):
             parts.append("\n")
 
@@ -472,7 +490,11 @@ def extract_blocks_in_order(container: Tag, blocks: list, base_url: str = ""):
                                     li_text_parts.append(text)
                     li_text = " ".join(li_text_parts).strip()
                     if li_text:
-                        add_text_block("li", li_text, meta={"indent_level": indent_level})
+                        add_text_block(
+                            "li",
+                            li_text,
+                            meta={"indent_level": indent_level, "list_type": list_node.name.lower()},
+                        )
                     for nested_list in li.find_all(["ul", "ol"], recursive=False):
                         process_list(nested_list, indent_level + 1)
             process_list(node, indent_level=0)
@@ -716,6 +738,36 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
 
 
 # ── 翻译 ─────────────────────────────────────────────
+
+def _clean_translation_value(value: str) -> str:
+    """清理翻译字段中的代码围栏、说明前缀和意外 JSON 外壳。"""
+    text = (value or "").strip()
+    text = re.sub(r"^```(?:json|markdown|text|html)?\s*", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s*```$", "", text).strip()
+    text = re.sub(r"^(?:以下是翻译后的内容|翻译后的内容|译文)\s*[:：]\s*", "", text).strip()
+    for marker in ("[{", "{\"translations\"", "{\"translated_text\""):
+        index = text.find(marker)
+        if index < 0:
+            continue
+        try:
+            parsed = json.JSONDecoder().raw_decode(text[index:])[0]
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict):
+            parsed = parsed.get("translations") or parsed.get("translated_text")
+        if isinstance(parsed, list):
+            values = []
+            for item in parsed:
+                if isinstance(item, dict):
+                    item_text = item.get("translated_text") or item.get("text")
+                    if item_text:
+                        values.append(str(item_text).strip())
+            if values:
+                return "\n".join(values)
+        if isinstance(parsed, str):
+            return parsed.strip()
+    return text
+
 
 def translate_text(text, system_prompt=None, use_glossary=True, config=None, glossary=None, response_schema=None):
     """
@@ -1177,6 +1229,7 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                     tid = str(obj["id"])
                     # 兼容 API 返回 translated_text 或 text 两种字段名
                     val = obj.get("translated_text") or obj.get("text") or ""
+                    val = _clean_translation_value(str(val))
                     if tid.startswith("t") and val:
                         with contextlib.suppress(ValueError):
                             batch_translations[int(tid[1:])] = str(val)
@@ -1186,7 +1239,7 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                 tid = str(item["id"])
                 if tid.startswith("t"):
                     with contextlib.suppress(ValueError):
-                        batch_translations[int(tid[1:])] = line
+                        batch_translations[int(tid[1:])] = _clean_translation_value(line)
 
         print(f"[翻译] 批次 {batch_index + 1}/{len(batches)} 完成: {len(batch_translations)} 项")
         return batch_translations

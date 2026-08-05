@@ -10,8 +10,8 @@
     "timeout": 120
   },
   "prompts": {
-    "translate_text_default": "你是专业的 Minecraft 游戏翻译。请将下面文本翻译成简体中文。\n翻译规则（非常重要）：\n1. 使用 Minecraft 官方中文译名（Java版）。\n2. 不要直译游戏术语。\n要求：\n- 保留版本号/编号（如 MC-12345）、URL、代码片段、反引号内容不被改写\n- 如包含 Markdown 链接 [text](url)，请只翻译 visible text\n- 仅输出译文，不要解释",
-    "translate_blocks_system": "你是 Minecraft 官方更新日志翻译专家，请把用户提供的 JSON 数组逐条翻译成简体中文。保持游戏特有的语气，专业且简洁。\n翻译规则（非常重要）：\n1. 使用 Minecraft 官方中文译名（Java版）。\n2. 不要直译游戏术语。\n输出要求：\n1. 只输出 JSON 数组\n2. 每项格式：{\"id\":..., \"translated_text\":...}\n3. 不要输出任何解释\n4. 保留 URL / MC-编号 / 代码\n5. 保留换行",
+    "translate_text_default": "你是专业的 Minecraft 游戏翻译。请将下面文本翻译成简体中文。\n翻译规则（非常重要）：\n1. 使用 Minecraft 官方中文译名（Java版）。\n2. 不要直译游戏术语。\n要求：\n- 保留版本号/编号（如 MC-12345）、URL、代码片段、反引号内容不被改写\n- 如包含 Markdown 链接 [text](url)，请只翻译 visible text\n- 保留 Markdown/HTML 的粗体、斜体、下划线、删除线和 <mark>高亮标记\n- 仅输出译文，不要解释",
+    "translate_blocks_system": "你是 Minecraft 官方更新日志翻译专家，请把用户提供的 JSON 数组逐条翻译成简体中文。保持游戏特有的语气，专业且简洁。\n翻译规则（非常重要）：\n1. 使用 Minecraft 官方中文译名（Java版）。\n2. 不要直译游戏术语。\n输出格式：返回一个 JSON 对象，格式为：{\"translations\": [{\"id\": \"t0000\", \"translated_text\": \"翻译后的中文\"}]}\n要求：\n1. translations 数组中每项的 id 必须与输入数组中的 id 一一对应\n2. 保持与输入相同的条目数量和顺序\n3. 只翻译文本内容，保留 URL / MC-编号 / 代码块 / 版本号不翻译\n4. 保留输入中的 Markdown/HTML 粗体、斜体、下划线、删除线和 <mark>高亮标记\n5. 保留原文的换行\n6. translated_text 字段为翻译后的简体中文",
     "translate_title_system": "请将 Minecraft 新闻标题翻译成简体中文。要求：保留版本号/编号/专有名词的拼写，不要添加额外解释，只输出译文标题。"
   },
   "minecraft_api": {
@@ -103,7 +103,7 @@
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
-    "feed_link": "",
+    "feed_link": "https://solathis.github.io/MCTTK2RSS",
     "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     "output_path": "output/feed.xml",
     "max_items": 50

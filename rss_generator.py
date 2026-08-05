@@ -18,10 +18,88 @@ import re
 from datetime import UTC, datetime, timedelta
 from xml.sax.saxutils import escape
 
+import bleach
 from feedgen.feed import FeedGenerator
+from markdown_it import MarkdownIt
 
 # 东八区时区
 _TZ_CN = timedelta(hours=8)
+_MARKDOWN = MarkdownIt("commonmark", {"html": True, "breaks": True})
+_ALLOWED_TAGS = [
+    "a", "blockquote", "br", "code", "del", "em", "figcaption", "figure", "h1", "h2", "h3", "h4",
+    "img", "li", "mark", "ol", "p", "pre", "strong", "u", "ul",
+]
+_ALLOWED_ATTRIBUTES = {
+    "a": ["href", "title", "target", "rel"],
+    "img": ["src", "alt", "title", "width", "height", "loading"],
+}
+_ALLOWED_PROTOCOLS = ["http", "https"]
+
+
+def _clean_model_text(text: str) -> str:
+    """清理 AI 偶发输出的代码围栏、说明前缀和 JSON 外壳。"""
+    value = (text or "").strip()
+    value = re.sub(r"^```(?:json|markdown|text|html)?\s*", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"\s*```$", "", value).strip()
+    value = re.sub(r"^(?:以下是翻译后的内容|翻译后的内容|译文)\s*[:：]\s*", "", value).strip()
+
+    candidates = [value]
+    for marker in ("[{", "{\"translations\"", "{\"translated_text\""):
+        index = value.find(marker)
+        if index >= 0:
+            candidates.append(value[index:])
+    for candidate in candidates:
+        try:
+            parsed = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict):
+            if parsed.get("translated_text"):
+                return str(parsed["translated_text"]).strip()
+            parsed = parsed.get("translations")
+        if isinstance(parsed, list):
+            values = []
+            for item in parsed:
+                if isinstance(item, dict):
+                    item_text = item.get("translated_text") or item.get("text")
+                    if item_text:
+                        values.append(str(item_text).strip())
+            if values:
+                return "\n".join(values)
+    return value
+
+
+def _markdown_to_html(text: str) -> str:
+    """将文章文本转为安全 HTML，保留链接、代码、强调和高亮。"""
+    html = _MARKDOWN.renderInline(_clean_model_text(text))
+    return bleach.clean(
+        html,
+        tags=_ALLOWED_TAGS,
+        attributes=_ALLOWED_ATTRIBUTES,
+        protocols=_ALLOWED_PROTOCOLS,
+        strip=True,
+    )
+
+
+def _render_text_block(block: dict) -> str:
+    """渲染一个文本 block；翻译缺失时回退原文。"""
+    translated = _clean_model_text(block.get("translated_text", ""))
+    source = block.get("source_text", "")
+    return _markdown_to_html(translated or source)
+
+
+def _render_image(block: dict) -> str:
+    """渲染图片 block，避免空 source_text 导致图片被跳过。"""
+    meta = block.get("meta") or {}
+    src_url = (meta.get("src") or "").strip()
+    if not src_url:
+        return ""
+    alt = meta.get("alt") or ""
+    return (
+        f'<figure><img src="{escape(src_url)}" alt="{escape(alt)}" '
+        f'loading="lazy" />'
+        f'{f"<figcaption>{escape(alt)}</figcaption>" if alt else ""}</figure>'
+    )
 
 
 def _parse_date(date_str: str) -> datetime | None:
@@ -45,34 +123,49 @@ def _parse_date(date_str: str) -> datetime | None:
 
 
 def _blocks_to_html(blocks: list[dict]) -> str:
-    """将文章 blocks 渲染为 HTML 用于 RSS content:encoded"""
-    if not blocks or not isinstance(blocks, list):
+    """将结构化 blocks 渲染为合法 HTML，用于 RSS content:encoded。"""
+    if not isinstance(blocks, list):
         return ""
+
     html_parts = []
+    list_items = []
+    list_tag = "ul"
+
+    def flush_list():
+        nonlocal list_tag
+        if list_items:
+            html_parts.append(f"<{list_tag}>" + "".join(list_items) + f"</{list_tag}>")
+            list_items.clear()
+            list_tag = "ul"
+
     for block in blocks:
         btype = (block.get("type") or "p").lower()
-        tr = (block.get("translated_text") or "").strip()
-        src = (block.get("source_text") or "").strip()
-        text = tr or src
-        if not text:
+        if btype == "img":
+            flush_list()
+            image_html = _render_image(block)
+            if image_html:
+                html_parts.append(image_html)
             continue
+        if btype == "li":
+            current_list_tag = "ol" if (block.get("meta") or {}).get("list_type") == "ol" else "ul"
+            if list_items and current_list_tag != list_tag:
+                flush_list()
+            list_tag = current_list_tag
+            list_items.append(f"<li>{_render_text_block(block)}</li>")
+            continue
+
+        flush_list()
         if btype in ("h1", "h2", "h3", "h4"):
-            level = int(btype[-1])
-            html_parts.append(f"<h{level}>{escape(text)}</h{level}>")
+            html_parts.append(f"<{btype}>{_render_text_block(block)}</{btype}>")
         elif btype in ("pre", "code"):
+            text = _clean_model_text(block.get("translated_text") or block.get("source_text", ""))
             html_parts.append(f"<pre><code>{escape(text)}</code></pre>")
-        elif btype == "img":
-            meta = block.get("meta") or {}
-            src_url = meta.get("src", "")
-            alt = meta.get("alt", "")
-            if src_url:
-                html_parts.append(f'<img src="{escape(src_url)}" alt="{escape(alt)}" />')
-        elif btype == "li":
-            html_parts.append(f"<li>{escape(text)}</li>")
         elif btype in ("blockquote", "quote"):
-            html_parts.append(f"<blockquote>{escape(text)}</blockquote>")
+            html_parts.append(f"<blockquote>{_render_text_block(block)}</blockquote>")
         else:
-            html_parts.append(f"<p>{escape(text)}</p>")
+            html_parts.append(f"<p>{_render_text_block(block)}</p>")
+
+    flush_list()
     return "\n".join(html_parts)
 
 
@@ -101,7 +194,7 @@ def _load_articles(save_dir: str, max_items: int = 50) -> list[dict]:
 
 
 def _build_content_html(article: dict, link: str) -> str:
-    """构建单篇文章的 content:encoded HTML"""
+    """构建单篇文章的 content:encoded HTML。"""
     title_en = (article.get("title") or "").strip()
     title_cn = (article.get("translated_title") or "").strip()
     author = (article.get("author") or "").strip()
@@ -112,10 +205,30 @@ def _build_content_html(article: dict, link: str) -> str:
     if author:
         meta_parts.append(f"<p><strong>作者：</strong>{escape(author)}</p>")
     if link:
-        meta_parts.append(f'<p><strong>原文：</strong><a href="{link}">{link}</a></p>')
+        safe_link = escape(link, {"\"": "&quot;"})
+        meta_parts.append(f'<p><strong>原文：</strong><a href="{safe_link}">{escape(link)}</a></p>')
+
+    header_image = article.get("header_image_url") or ""
+    if header_image:
+        alt = article.get("imageAltText") or title_cn or title_en
+        meta_parts.append(
+            f'<figure><img src="{escape(header_image)}" alt="{escape(alt)}" loading="lazy" /></figure>'
+        )
 
     content_html = _blocks_to_html(article.get("blocks", []))
-    return "\n".join(meta_parts) + content_html if content_html else "\n".join(meta_parts)
+    return "\n".join(meta_parts) + ("\n" + content_html if content_html else "")
+
+
+def _translated_summary(article: dict) -> str:
+    """从翻译后的 blocks 生成纯文本摘要，避免 description 回退到英文。"""
+    translated_parts = []
+    for block in article.get("blocks", []):
+        if block.get("type") == "img":
+            continue
+        text = _clean_model_text(block.get("translated_text", ""))
+        if text:
+            translated_parts.append(text)
+    return re.sub(r"\s+", " ", " ".join(translated_parts)).strip()
 
 
 def generate_rss(
@@ -160,12 +273,14 @@ def generate_rss(
         fe.title(title)
         fe.link(href=link or base_link)
 
-        # 摘要
-        description = (article.get("description") or "").strip()
+        # 摘要优先使用翻译后的 blocks，避免把英文 description 放入 RSS
+        description = _translated_summary(article)
         if not description:
-            translated = (article.get("translated_content") or "").strip()
-            description = translated[:200] + "…" if len(translated) > 200 else translated
+            description = _clean_model_text(article.get("translated_content", ""))
+        if not description:
+            description = (article.get("description") or "").strip()
         if description:
+            description = description[:300] + "…" if len(description) > 300 else description
             fe.description(description)
 
         # 发布日期
@@ -177,7 +292,8 @@ def generate_rss(
         # content:encoded 全文
         content_html = _build_content_html(article, link)
         if content_html:
-            fe.content(content_html, type="html")
+            # feedgen 的 CDATA 模式保留 HTML 标签，避免输出 &lt;p&gt; 这类转义文本
+            fe.content(content_html, type="CDATA")
 
         # 作者
         author = (article.get("author") or "").strip()

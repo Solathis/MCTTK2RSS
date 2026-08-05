@@ -455,7 +455,7 @@ Minecraft 官方 API          Feedback 网站
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
-    "feed_link": "",
+    "feed_link": "https://solathis.github.io/MCTTK2RSS",
     "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     "output_path": "output/feed.xml",
     "max_items": 50

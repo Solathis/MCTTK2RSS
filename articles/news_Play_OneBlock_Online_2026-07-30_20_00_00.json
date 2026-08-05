@@ -1,0 +1,106 @@
+{
+  "title": "Play OneBlock Online",
+  "translated_title": "在线玩 OneBlock",
+  "release_date": "2026-07-30T20:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/oneblock-online",
+  "author": "Cristina Anderca",
+  "imageAltText": "Promotional artwork for OneBlock Online showing a Minecraft character standing on and breaking a lone floating grass block.",
+  "description": "Play OneBlock Online and take on the classic Minecraft skyblock-inspired challenge with friends. Start with a single regenerating OneBlock, grow your island, unlock permanent upgrades, and automate your base with helpful minions. Head out to battle custom monsters, earn powerful gear and enchantments, compete in PvP, and decorate your island with over 1,000 furniture items. With a player-driven economy, regular events, leaderboards, and plenty more to discover, OneBlock Online is packed with reasons to keep coming back.",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/marketplace/OneblockOnline_Launch_DotNetBlog_1170x500.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "It starts with one block. I don’t know why, but no matter how many times I mine it, it doesn’t break. And yet my inventory is filling up with a variety of blocks?... It’s OneBlock, of course! This is the iconic Minecraft game mode that challenges you to expand your domain in the sky – now with friends! OneBlock Online not only introduces multiplayer, but also improved automation systems, long-term progression systems that will keep your island interesting for years to come, and more. Jump into this multiplayer adventure now via the Server tab in Bedrock Edition!",
+      "translated_text": "一切从一个方块开始。我不知道为什么，但无论我挖多少次，这个方块都不会破碎。然而，我的背包里却不断增加着各种各样的方块……当然是“OneBlock”模式了！这是Minecraft标志性的游戏模式，它挑战你在空中拓展自己的领地——现在还可以和朋友一起玩！“OneBlock Online”不仅引入了多人游戏功能，还提升了自动化系统，以及长期发展机制，让你的岛屿在未来多年里都保持吸引力。立即通过基岩版（Bedrock Edition）的“服务器”选项卡加入这场多人冒险吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "h2",
+      "source_text": "Your OneBlock, islands, and co-op",
+      "translated_text": "属于你的“OneBlock”模式、岛屿以及合作体验",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "You start with a single OneBlock on your island, which progresses through 29 unique phases, each yielding increasingly valuable loot. We'll also add more phases, blocks, and items in future updates!",
+      "translated_text": "游戏开始时，你的岛屿上只有一个“OneBlock”方块，它会经历29个独特的阶段，每个阶段都会掉落越来越珍贵的战利品。我们在未来的更新中还会增加更多的阶段、方块和物品！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "p",
+      "source_text": "Aside from mining, you can complete daily and weekly quests to gain XP and spend it on permanent island upgrades such as increased island size, faster crop growth, improved spawner rates, and more!",
+      "translated_text": "除了采矿之外，你还可以完成每日和每周的任务来获取经验值（XP），并用这些经验值来升级岛屿，比如增加岛屿面积、加快作物生长速度、提高生物生成速率等等！",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "p",
+      "source_text": "Plus, not only can you own multiple islands, but each island also supports multiple OneBlocks, so you can invite friends to join you so you can work together.",
+      "translated_text": "此外，你不仅可以拥有多个岛屿，每个岛屿还可以容纳多个“OneBlocks”区域，因此你可以邀请朋友加入，一起协作游戏。",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "h2",
+      "source_text": "Monster islands, bone forge, and enchantments",
+      "translated_text": "怪物岛、骨锻造厂以及制作魔法的工具（如魔杖等）",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "p",
+      "source_text": "Want more loot than your OneBlock has to offer? Travel to a monster island and fight your way to rare drops and other rewards. Progress through increasingly difficult islands with custom monsters that bring some serious challenge to the OneBlock experience.",
+      "translated_text": "想要比“OneBlocks”所能提供的更多战利品吗？前往怪物岛，与怪物战斗以获取稀有物品和其他奖励。随着难度逐渐增加的怪物挑战，你的“OneBlocks”游戏体验也将变得更加精彩。",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "p",
+      "source_text": "You can also collect resources to upgrade your gear via PvP (in a dedicated arena) and PvE (on the monster islands). Unlock powerful custom enchantments and armor set effects that allow you to personalize your gear to your playstyle.",
+      "translated_text": "你还可以通过 PvP（在专用竞技场）和 PvE（在怪物岛屿上）收集资源来升级你的装备。解锁强大的自定义附魔和护甲效果，让你的装备更符合你的游戏风格。",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "h2",
+      "source_text": "Island automation, customization, and cosmetics",
+      "translated_text": "岛屿自动化、定制化以及外观装饰",
+      "meta": {}
+    },
+    {
+      "id": "b0010",
+      "type": "p",
+      "source_text": "While you’re out adventuring, your island needs to stay productive – and that’s where the worker minions and automation come in. Minions are upgradable and customizable assistants that can help you with farming, chopping trees, harvesting crops, and killing mobs. You can also make them part of production chains in combination with items like chunk hoppers, auto-crafting chests, and auto-sell chests.",
+      "translated_text": "当你外出探险时，你的岛屿依然需要保持高效运转——这时勤劳的奴仆和自动化工具就派上用场了。这些奴仆是可以升级和定制的辅助角色，可以帮助你进行耕作、砍伐树木、收获作物以及消灭怪物。你还可以将它们与诸如区块传送器、自动制作箱和自动销售箱等物品结合使用，构建生产链。",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "p",
+      "source_text": "But it’s not all about productivity! After all, what’s the point of having an island if you can’t decorate it? Visit the furniture shop to peruse a catalog of over 1000 items, as well as rotating seasonal furniture items for the collectors out there. You can also customize your character with chat titles, pins, wings, hats, chat colors, and more!",
+      "translated_text": "不过，这并不只是关于生产力！毕竟，如果你不能装饰自己的岛屿，拥有它又有什么意义呢？前往家具商店，浏览超过1000种商品，以及为收藏家准备的季节性家具。你还可以通过聊天标题、徽章、翅膀、帽子、聊天颜色等方式来个性化你的角色！",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "p",
+      "source_text": "But that’s only part of what OneBlock Online has to offer. This multiplayer adventure also features a player-based economy, a rewarded leaderboard system, and server-wide events that range from fishing rewards to double XP and PvP competitions.",
+      "translated_text": "但这仅仅是OneBlock Online所提供的部分功能。这款多人冒险游戏还拥有基于玩家的经济系统、奖励排行榜系统，以及各种服务器范围内的活动，从钓鱼奖励到PvP比赛应有尽有。",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "p",
+      "source_text": "Ready to become the ruler of your own island? See how far you can get in OneBlock Online!",
+      "translated_text": "准备好成为自己岛屿的统治者了吗？看看你在OneBlock Online中能走多远吧！",
+      "meta": {}
+    }
+  ],
+  "content": "It starts with one block. I don’t know why, but no matter how many times I mine it, it doesn’t break. And yet my inventory is filling up with a variety of blocks?... It’s OneBlock, of course! This is the iconic Minecraft game mode that challenges you to expand your domain in the sky – now with friends! OneBlock Online not only introduces multiplayer, but also improved automation systems, long-term progression systems that will keep your island interesting for years to come, and more. Jump into this multiplayer adventure now via the Server tab in Bedrock Edition!\n\nYour OneBlock, islands, and co-op\n\nYou start with a single OneBlock on your island, which progresses through 29 unique phases, each yielding increasingly valuable loot. We'll also add more phases, blocks, and items in future updates!\n\nAside from mining, you can complete daily and weekly quests to gain XP and spend it on permanent island upgrades such as increased island size, faster crop growth, improved spawner rates, and more!\n\nPlus, not only can you own multiple islands, but each island also supports multiple OneBlocks, so you can invite friends to join you so you can work together.\n\nMonster islands, bone forge, and enchantments\n\nWant more loot than your OneBlock has to offer? Travel to a monster island and fight your way to rare drops and other rewards. Progress through increasingly difficult islands with custom monsters that bring some serious challenge to the OneBlock experience.\n\nYou can also collect resources to upgrade your gear via PvP (in a dedicated arena) and PvE (on the monster islands). Unlock powerful custom enchantments and armor set effects that allow you to personalize your gear to your playstyle.\n\nIsland automation, customization, and cosmetics\n\nWhile you’re out adventuring, your island needs to stay productive – and that’s where the worker minions and automation come in. Minions are upgradable and customizable assistants that can help you with farming, chopping trees, harvesting crops, and killing mobs. You can also make them part of production chains in combination with items like chunk hoppers, auto-crafting chests, and auto-sell chests.\n\nBut it’s not all about productivity! After all, what’s the point of having an island if you can’t decorate it? Visit the furniture shop to peruse a catalog of over 1000 items, as well as rotating seasonal furniture items for the collectors out there. You can also customize your character with chat titles, pins, wings, hats, chat colors, and more!\n\nBut that’s only part of what OneBlock Online has to offer. This multiplayer adventure also features a player-based economy, a rewarded leaderboard system, and server-wide events that range from fishing rewards to double XP and PvP competitions.\n\nReady to become the ruler of your own island? See how far you can get in OneBlock Online!",
+  "translated_content": "一切从一个方块开始。我不知道为什么，但无论我挖多少次，这个方块都不会破碎。然而，我的背包里却不断增加着各种各样的方块……当然是“OneBlock”模式了！这是Minecraft标志性的游戏模式，它挑战你在空中拓展自己的领地——现在还可以和朋友一起玩！“OneBlock Online”不仅引入了多人游戏功能，还提升了自动化系统，以及长期发展机制，让你的岛屿在未来多年里都保持吸引力。立即通过基岩版（Bedrock Edition）的“服务器”选项卡加入这场多人冒险吧！\n\n属于你的“OneBlock”模式、岛屿以及合作体验\n\n游戏开始时，你的岛屿上只有一个“OneBlock”方块，它会经历29个独特的阶段，每个阶段都会掉落越来越珍贵的战利品。我们在未来的更新中还会增加更多的阶段、方块和物品！\n\n除了采矿之外，你还可以完成每日和每周的任务来获取经验值（XP），并用这些经验值来升级岛屿，比如增加岛屿面积、加快作物生长速度、提高生物生成速率等等！\n\n此外，你不仅可以拥有多个岛屿，每个岛屿还可以容纳多个“OneBlocks”区域，因此你可以邀请朋友加入，一起协作游戏。\n\n怪物岛、骨锻造厂以及制作魔法的工具（如魔杖等）\n\n想要比“OneBlocks”所能提供的更多战利品吗？前往怪物岛，与怪物战斗以获取稀有物品和其他奖励。随着难度逐渐增加的怪物挑战，你的“OneBlocks”游戏体验也将变得更加精彩。\n\n你还可以通过 PvP（在专用竞技场）和 PvE（在怪物岛屿上）收集资源来升级你的装备。解锁强大的自定义附魔和护甲效果，让你的装备更符合你的游戏风格。\n\n岛屿自动化、定制化以及外观装饰\n\n当你外出探险时，你的岛屿依然需要保持高效运转——这时勤劳的奴仆和自动化工具就派上用场了。这些奴仆是可以升级和定制的辅助角色，可以帮助你进行耕作、砍伐树木、收获作物以及消灭怪物。你还可以将它们与诸如区块传送器、自动制作箱和自动销售箱等物品结合使用，构建生产链。\n\n不过，这并不只是关于生产力！毕竟，如果你不能装饰自己的岛屿，拥有它又有什么意义呢？前往家具商店，浏览超过1000种商品，以及为收藏家准备的季节性家具。你还可以通过聊天标题、徽章、翅膀、帽子、聊天颜色等方式来个性化你的角色！\n\n但这仅仅是OneBlock Online所提供的部分功能。这款多人冒险游戏还拥有基于玩家的经济系统、奖励排行榜系统，以及各种服务器范围内的活动，从钓鱼奖励到PvP比赛应有尽有。\n\n准备好成为自己岛屿的统治者了吗？看看你在OneBlock Online中能走多远吧！",
+  "source": "minecraft_api"
+}

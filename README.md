@@ -17,8 +17,8 @@
 - **Docker 部署**：支持 Docker Compose 一键部署，定时爬取并生成 RSS
 - **类型过滤**：通过配置控制只处理指定类型的新闻
 - **安全去重**：基于 URL 的状态追踪，不会重复爬取
-- **首次运行保护**：首次运行时自动将所有现有新闻标记为已处理，避免刷屏
-- **纯配置文件驱动**：不依赖环境变量，定时规则也写在 config.json 中
+- **首次运行保护**：首次运行时自动将所有现有新闻标记为已处理，避免刷屏（可通过 `first_run_protection` 配置关闭）
+- **纯配置文件驱动**：不依赖环境变量，定时规则和首次运行保护开关均写在 config.json 中
 
 ## 与上游 MCTTK 的区别
 
@@ -30,6 +30,7 @@
 | 验证码识别 | ddddocr | 已移除 |
 | 定时调度 | 固定 10 分钟 | config.json 中 cron 规则可配 |
 | 默认爬取范围 | Java + 基岩 | 仅 Java 端更新日志 |
+| 首次运行保护 | 不可配 | 通过 `first_run_protection` 可配开关 |
 
 ## 项目结构
 
@@ -94,6 +95,7 @@ pip install -r requirements.txt
     "max_tokens": 10000,
     "timeout": 120
   },
+  "first_run_protection": true,
   "scheduler": {
     "cron": "0 */6 * * *",
     "interval_seconds": 21600,
@@ -292,6 +294,17 @@ Minecraft 官方 API          Feedback 网站
          生成 RSS Feed (output/feed.xml)
 ```
 
+## 首次运行保护
+
+通过 `config.json` 的 `first_run_protection` 字段控制：
+
+| 值 | 行为 |
+|---|---|
+| `true`（默认） | 首次运行时将当前所有新闻标记为已处理，下次运行才开始处理新新闻，避免刷屏 |
+| `false` | 取消首次运行保护，首次运行即处理所有爬取到的新闻 |
+
+首次运行状态记录在 `output/.state.json` 的 `_first_run` 字段中，首次执行后自动移除。
+
 ## 上游同步
 
 本仓库是 [jiubook/MCTTK](https://github.com/jiubook/MCTTK) 的 fork，支持持续接收上游爬取逻辑更新而不影响自定义功能。
@@ -343,6 +356,7 @@ Minecraft 官方 API          Feedback 网站
     "bedrock_release": false,
     "bedrock_beta": false
   },
+  "first_run_protection": true,
   "scheduler": {
     "cron": "0 */6 * * *",
     "interval_seconds": 21600,
@@ -373,7 +387,7 @@ Minecraft 官方 API          Feedback 网站
 ## 注意事项
 
 - **配置方式**：所有配置仅从 `config.json` 读取，不使用环境变量
-- **首次运行**：程序会自动将当前所有新闻标记为已处理，下次运行才开始处理真正的新新闻，避免刷屏
+- **首次运行保护**：通过 `config.json` 的 `first_run_protection` 字段控制（默认 `true`）。设为 `false` 时首次运行即处理所有新闻
 - **默认爬取范围**：默认只爬取 Java 端更新日志（Java 正式版/快照/预发布/RC + Feedback Snapshot section），基岩版默认禁用
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻

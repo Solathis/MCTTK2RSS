@@ -2,14 +2,20 @@ version: '3.8'
 
 services:
   mcttk-rss:
+    # 方式一：从 GHCR 拉取预构建镜像
+    # image: ghcr.io/solathis/mcttk2rss:latest
+    # 方式二：本地构建
     build: .
     container_name: mcttk-rss
     restart: unless-stopped
     volumes:
+      # 输出目录（feed.xml 会在这里生成）
       - ./output:/app/output
       - ./logs:/app/logs
+      # 配置文件挂载（运行时读取，修改后重启容器生效）
       - ./config.json:/app/config.json:ro
       - ./glossary.json:/app/glossary.json:ro
+      # 源码挂载（本地构建时方便热更新，使用预构建镜像时可删除）
       - ./main.py:/app/main.py:ro
       - ./scraper.py:/app/scraper.py:ro
       - ./rss_generator.py:/app/rss_generator.py:ro
@@ -17,6 +23,7 @@ services:
       - ./scheduler.py:/app/scheduler.py:ro
       - ./init_state.py:/app/init_state.py:ro
     environment:
+      # API Key 通过环境变量注入，不写入镜像
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     mem_limit: 512m
     mem_reservation: 256m

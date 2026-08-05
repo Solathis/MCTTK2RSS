@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "requests>=2.31",
     "beautifulsoup4>=4.12",
+    "feedgen>=1.0.0",
     "urllib3>=2.0",
 ]
 

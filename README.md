@@ -148,7 +148,13 @@ python rss_generator.py --dir output --out output/feed.xml
 
    Workflow 运行时会将这些 Secrets 注入到 config.json 中，不使用环境变量。
 
-2. 在仓库 **Settings → Pages** 中设置 Source 为 **GitHub Actions**
+2. 在仓库 **Settings → Pages** 中配置部署来源：
+   - Source 选择 **Deploy from a branch**
+   - 分支选择 **gh-pages**
+   - 目录选择 **/ (root)**
+   - 点击 **Save**
+
+   > Workflow 使用 `peaceiris/actions-gh-pages` 将内容推送到 `gh-pages` 分支，因此 Pages 必须设置为从 `gh-pages` 分支部署。
 
 3. Workflow `.github/workflows/rss-publish.yml` 会自动：
    - 每 6 小时爬取最新新闻

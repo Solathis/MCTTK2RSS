@@ -75,8 +75,10 @@ DEFAULT_CONFIG = {
         ),
         "translate_blocks_system": (
             "你是 Minecraft 官方更新日志翻译专家，请把用户提供的 JSON 数组逐条翻译成简体中文。\n"
-            "输出要求：\n1. 只输出 JSON 数组\n2. 每项格式：{\"id\":..., \"translated_text\":...}\n"
-            "3. 不要输出任何解释\n4. 保留 URL / MC-编号 / 代码\n5. 保留换行"
+            "输出要求：\n1. 只输出 JSON 数组，不输出任何解释或 markdown 代码块标记\n"
+            "2. 每项格式：{\"id\":..., \"translated_text\":\"翻译后的中文\"}\n"
+            "3. 保持与输入相同的条目数量和顺序\n"
+            "4. 保留 URL / MC-编号 / 代码块\n5. 保留换行"
         ),
         "translate_title_system": (
             "请将 Minecraft 新闻标题翻译成简体中文。要求：保留版本号/编号/专有名词的拼写，只输出译文标题。"
@@ -1127,11 +1129,13 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         batch_translations = {}
         if isinstance(parsed_result, list):
             for obj in parsed_result:
-                if isinstance(obj, dict) and "id" in obj and "translated_text" in obj:
+                if isinstance(obj, dict) and "id" in obj:
                     tid = str(obj["id"])
-                    if tid.startswith("t"):
+                    # 兼容 API 返回 translated_text 或 text 两种字段名
+                    val = obj.get("translated_text") or obj.get("text") or ""
+                    if tid.startswith("t") and val:
                         with contextlib.suppress(ValueError):
-                            batch_translations[int(tid[1:])] = str(obj["translated_text"])
+                            batch_translations[int(tid[1:])] = str(val)
         else:
             lines = [line.strip() for line in (translated_result or "").splitlines() if line.strip()]
             for item, line in zip(batch, lines, strict=False):

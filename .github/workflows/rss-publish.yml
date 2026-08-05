@@ -77,7 +77,17 @@ jobs:
           # 从 gh-pages 分支恢复 .state.json（记录已处理的 URL）
           git fetch origin gh-pages --depth=1 || true
           if git rev-parse origin/gh-pages >/dev/null 2>&1; then
-            git show origin/gh-pages:.state.json > output/.state.json 2>/dev/null || true
+            # 仅在 state 文件存在且非空时恢复，避免生成空 JSON
+            if git cat-file -e origin/gh-pages:.state.json 2>/dev/null; then
+              git show origin/gh-pages:.state.json > output/.state.json.tmp
+              if [ -s output/.state.json.tmp ]; then
+                mv output/.state.json.tmp output/.state.json
+              else
+                rm -f output/.state.json.tmp
+              fi
+            fi
+            # 恢复历史文章，确保 RSS 重建包含之前已处理的内容
+            git archive origin/gh-pages articles 2>/dev/null | tar -x -C output --strip-components=1 || true
           fi
           if [ -f output/.state.json ]; then
             echo "[CI] 已恢复 state: $(python -c "import json; print(len(json.load(open('output/.state.json')).get('posted_urls', [])))" 2>/dev/null || echo "?") 条 URL"

@@ -5,6 +5,7 @@
     "endpoint": "/v1/chat/completions",
     "api_key": "",
     "model": "gpt-5-mini-2025-08-07",
+    "json_schema": true,
     "max_tokens": 10000,
     "timeout": 120
   },

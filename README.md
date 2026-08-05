@@ -93,6 +93,7 @@ pip install -r requirements.txt
     "endpoint": "/v1/chat/completions",
     "api_key": "sk-xxx",
     "model": "gpt-4o",
+    "json_schema": true,
     "max_tokens": 10000,
     "timeout": 120
   },
@@ -407,6 +408,7 @@ Minecraft 官方 API          Feedback 网站
     "endpoint": "/v1/chat/completions",
     "api_key": "",
     "model": "gpt-4o",
+    "json_schema": true,
     "max_tokens": 10000,
     "timeout": 120
   },
@@ -472,6 +474,7 @@ Minecraft 官方 API          Feedback 网站
 ## 注意事项
 
 - **配置方式**：所有配置仅从 `config.json` 读取，不使用环境变量
+- **JSON Schema 结构化输出**：`openai_compat.json_schema`（默认 `true`），开启后翻译 blocks 时通过 `response_format` 的 `json_schema` 强制 AI 返回标准 JSON，避免翻译结果因格式问题被丢弃。设为 `false` 时退回纯文本模式解析（兼容不支持结构化输出的 API）
 - **首次运行保护**：通过 `config.json` 的 `first_run_protection` 字段控制（默认 `true`）。设为 `false` 时首次运行即处理所有新闻
 - **默认爬取范围**：默认只爬取 Java 端更新日志（Java 正式版/快照/预发布/RC + Feedback Snapshot section），基岩版默认禁用
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突

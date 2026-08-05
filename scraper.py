@@ -59,6 +59,7 @@ DEFAULT_CONFIG = {
         "endpoint": "/v1/chat/completions",
         "api_key": "",
         "model": "your-model-name",
+        "json_schema": True,
         "max_tokens": 10000,
         "timeout": 120
     },
@@ -75,10 +76,14 @@ DEFAULT_CONFIG = {
         ),
         "translate_blocks_system": (
             "你是 Minecraft 官方更新日志翻译专家，请把用户提供的 JSON 数组逐条翻译成简体中文。\n"
-            "输出要求：\n1. 只输出 JSON 数组，不输出任何解释或 markdown 代码块标记\n"
-            "2. 每项格式：{\"id\":..., \"translated_text\":\"翻译后的中文\"}\n"
-            "3. 保持与输入相同的条目数量和顺序\n"
-            "4. 保留 URL / MC-编号 / 代码块\n5. 保留换行"
+            "输出格式：返回一个 JSON 对象，格式为：\n"
+            "{\"translations\": [{\"id\": \"t0000\", \"translated_text\": \"翻译后的中文\"}]}\n"
+            "要求：\n"
+            "1. translations 数组中每项的 id 必须与输入数组中的 id 一一对应\n"
+            "2. 保持与输入相同的条目数量和顺序\n"
+            "3. 只翻译文本内容，保留 URL / MC-编号 / 代码块 / 版本号不翻译\n"
+            "4. 保留原文的换行\n"
+            "5. translated_text 字段为翻译后的简体中文"
         ),
         "translate_title_system": (
             "请将 Minecraft 新闻标题翻译成简体中文。要求：保留版本号/编号/专有名词的拼写，只输出译文标题。"
@@ -712,7 +717,7 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
 
 # ── 翻译 ─────────────────────────────────────────────
 
-def translate_text(text, system_prompt=None, use_glossary=True, config=None, glossary=None):
+def translate_text(text, system_prompt=None, use_glossary=True, config=None, glossary=None, response_schema=None):
     """
     调用 OpenAI 兼容 API 翻译文本（支持自动重试）
 
@@ -722,6 +727,7 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
         use_glossary: 是否使用词汇表动态添加术语对照（默认 True）
         config: 配置字典，None 时使用模块级 CFG
         glossary: 词汇表字典，None 时使用模块级 GLOSSARY
+        response_schema: JSON Schema dict，传入时启用结构化输出（需配置 openai_compat.json_schema=true）
     """
     cfg = config or _get_cfg()
     gls = glossary if glossary is not None else _get_glossary()
@@ -769,6 +775,18 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
         ],
         "max_tokens": max_tokens
     }
+
+    # 结构化输出：当提供了 response_schema 且配置开启时使用
+    use_json_schema = cfg.get("openai_compat", {}).get("json_schema", True)
+    if response_schema and use_json_schema:
+        payload["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "translation_result",
+                "strict": True,
+                "schema": response_schema
+            }
+        }
 
     retry_count = 0
     while retry_count <= max_retries:
@@ -1097,6 +1115,27 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     system_prompt = cfg["prompts"]["translate_blocks_system"]
     translate_idx_to_translation = {}
 
+    # blocks 翻译的 JSON Schema（固定结构，适应任意 batch）
+    blocks_schema = {
+        "type": "object",
+        "properties": {
+            "translations": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "string"},
+                        "translated_text": {"type": "string"}
+                    },
+                    "required": ["id", "translated_text"],
+                    "additionalProperties": False
+                }
+            }
+        },
+        "required": ["translations"],
+        "additionalProperties": False
+    }
+
     def translate_batch(batch_index, batch):
         batch_json = json.dumps(batch, ensure_ascii=False, indent=0)
 
@@ -1112,7 +1151,8 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                 print(f"[词汇表] 批次 {batch_index + 1} 添加 {len(relevant_terms)} 个术语")
 
         translated_result = translate_text(
-            batch_json, system_prompt=batch_system_prompt, use_glossary=False, config=cfg
+            batch_json, system_prompt=batch_system_prompt, use_glossary=False, config=cfg,
+            response_schema=blocks_schema
         )
         if not translated_result:
             print(f"[翻译] 批次 {batch_index + 1} 失败，跳过")
@@ -1127,8 +1167,12 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
             with contextlib.suppress(json.JSONDecodeError):
                 parsed_result = json.loads(cleaned)
         batch_translations = {}
-        if isinstance(parsed_result, list):
-            for obj in parsed_result:
+        # 兼容两种返回格式： {"translations": [...]} 或直接 [...]
+        items_list = parsed_result
+        if isinstance(parsed_result, dict) and "translations" in parsed_result:
+            items_list = parsed_result["translations"]
+        if isinstance(items_list, list):
+            for obj in items_list:
                 if isinstance(obj, dict) and "id" in obj:
                     tid = str(obj["id"])
                     # 兼容 API 返回 translated_text 或 text 两种字段名

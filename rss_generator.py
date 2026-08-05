@@ -12,7 +12,7 @@ import argparse
 import json
 import os
 import re
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 from email.utils import formatdate
 from xml.sax.saxutils import escape
 
@@ -41,7 +41,7 @@ def _parse_date_to_dt(date_str: str) -> datetime | None:
 
 def _dt_to_rfc822(dt: datetime) -> str:
     """datetime 转 RFC 822 格式字符串"""
-    return formatdate(float(dt.replace(tzinfo=timezone.utc).timestamp()), usegmt=True)
+    return formatdate(float(dt.replace(tzinfo=UTC).timestamp()), usegmt=True)
 
 
 def _blocks_to_html(blocks: list[dict]) -> str:

@@ -302,7 +302,8 @@ Cloudflare challenge 通常与运行环境 IP、网络出口或站点策略有�
     "java_prerelease": true,
     "java_rc":        true,
     "bedrock_release": false,
-    "bedrock_beta":   false
+    "bedrock_beta":   false,
+    "other":          false
   }
 }
 ```
@@ -409,7 +410,7 @@ Minecraft 官方 API          Feedback 网站
 
 详见 [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md)。
 
-核心策略：通过 `.gitattributes` 的 `merge=ours` 策略保护自定义文件（`main.py`、`rss_generator.py`、`scheduler.py`、`config.json` 等），上游的 `scraper.py`、`glossary.json` 等可正常合并更新。
+核心策略：通过 `.gitattributes` 的 `merge=ours` 策略保护自定义文件（包括 `main.py`、`scraper.py`、`rss_generator.py`、`scheduler.py`、`config.json` 和 workflow）。普通上游合并不会覆盖这些文件；`scraper.py` 的上游爬取更新需先查看 diff，再人工移植。`glossary.json`、`utils.py` 等未保护文件仍可正常接收上游更新。
 
 **注意**：`scraper.py` 的 `load_config()` 已被我们修改（移除环境变量逻辑），上游合并恢复该逻辑时需手动删除。
 
@@ -430,7 +431,7 @@ Minecraft 官方 API          Feedback 网站
   },
   "minecraft_api": {
     "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
-    "pageSize": 5,
+    "pageSize": 20,
     "sortType": "Recent",
     "category": "News",
     "site_base": "https://www.minecraft.net"
@@ -453,7 +454,8 @@ Minecraft 官方 API          Feedback 网站
     "java_prerelease": true,
     "java_rc": true,
     "bedrock_release": false,
-    "bedrock_beta": false
+    "bedrock_beta": false,
+    "other": false
   },
   "first_run_protection": true,
   "scheduler": {

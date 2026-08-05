@@ -71,6 +71,9 @@ class TestConfigStructure:
         assert isinstance(http["timeout"], int) and http["timeout"] > 0
         assert isinstance(http["proxies"], dict)
 
+    def test_api_fetch_window(self, config):
+        assert config["minecraft_api"]["pageSize"] >= 20
+
     def test_output_save_dir(self, config):
         assert "save_dir" in config["output"]
         assert isinstance(config["output"]["save_dir"], str)

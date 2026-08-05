@@ -94,7 +94,7 @@ DEFAULT_CONFIG = {
     },
     "minecraft_api": {
         "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
-        "pageSize": 10,
+        "pageSize": 20,
         "sortType": "Recent",
         "category": "News",
         "site_base": "https://www.minecraft.net"

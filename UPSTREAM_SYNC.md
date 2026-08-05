@@ -16,12 +16,12 @@
 - 新增 scheduler.py cron 调度
 
 **我们希望持续接收上游的更新**：
-- `scraper.py`（爬取逻辑、翻译、Feedback 爬虫）
+- `scraper.py`（包含本项目的配置驱动、Java-only 新闻过滤、API 候选窗口、翻译和 Feedback 节流逻辑；上游更新需人工检查后合并）
 - `glossary.json`（专业术语词汇表）
 - `utils.py`（公共工具，如 `classify_article_type`）
 - `log_setup.py`（日志系统）
 
-## 分支结构
+**保护原则**：`main.py`、`config.json`、`scraper.py` 和 workflow 都已标记为 `merge=ours`。普通 `git merge upstream/main` 不会覆盖这些文件；上游的 `scraper.py` 爬取更新需要通过 diff 人工挑选，避免覆盖 Java-only 过滤、pageSize 和配置驱动逻辑。
 
 ```
 upstream/main (jiubook/MCTTK)      origin/main (Solathis/MCTTK2RSS)
@@ -67,17 +67,18 @@ git merge upstream/main -m "Merge upstream scraper updates"
 git push origin main
 ```
 
-### 3. 只需爬取逻辑更新的场景
+### 3. 只需查看上游爬取逻辑更新的场景
 
-如果上游仅更新了 `scraper.py`（最常见的情况），合并过程会非常顺利：
+由于 `scraper.py` 包含本项目的 Java-only 过滤、API 候选窗口、配置驱动和 Feedback 节流逻辑，不能直接用上游版本覆盖。建议先查看差异：
 
 ```bash
 git fetch upstream
-git merge upstream/main
-git push origin main
+git diff HEAD upstream/main -- scraper.py
 ```
 
-由于 `main.py`、`rss_generator.py`、`config.json` 等已标记 `merge=ours`，上游对它们的任何更改都不会覆盖我们的版本。
+确认某个上游修复与本项目逻辑兼容后，再手动移植对应代码，并运行完整测试。
+
+由于 `main.py`、`config.json`、`rss-publish.yml` 等已标记 `merge=ours`，普通合并不会覆盖这些自定义文件。
 
 ### 4. 如果上游也修改了 main.py
 
@@ -145,7 +146,7 @@ git push origin main
 | `.github/workflows/rss-publish.yml` | `merge=ours` | 我们的 RSS 发布 workflow |
 | `.github/workflows/docker-build.yml` | `merge=ours` | 我们的 Docker 构建 workflow |
 | `UPSTREAM_SYNC.md` | `merge=ours` | 本文档 |
-| `scraper.py` | 正常合并 | 爬取逻辑由上游维护 |
+| `scraper.py` | `merge=ours` | 包含 Java-only 过滤、API 候选窗口、配置驱动、结构化翻译和 Feedback 节流逻辑；上游更新需人工移植 |
 | `glossary.json` | 正常合并 | 词汇表由上游维护 |
 | `utils.py` | 正常合并 | 工具函数由上游维护 |
 | `log_setup.py` | 正常合并 | 日志系统由上游维护 |
@@ -178,6 +179,6 @@ git checkout --theirs main.py   # 临时采纳上游版本
 
 ### 合并冲突如何解决
 
-1. `scraper.py` 冲突：优先采纳入上游版本（爬取逻辑更新）
-2. `main.py` 冲突：保留我们的版本（`git checkout --ours main.py`）
+1. `scraper.py`：普通合并保留我们的版本；先用 `git diff HEAD upstream/main -- scraper.py` 检查，再人工移植上游爬取修复
+2. `main.py`：保留我们的版本（`git checkout --ours main.py`）
 3. 其他文件冲突：根据 `merge=ours` 策略自动保留我们的版本

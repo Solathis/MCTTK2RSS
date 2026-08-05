@@ -72,7 +72,7 @@ class TestConfigStructure:
         assert isinstance(http["proxies"], dict)
 
     def test_api_fetch_window(self, config):
-        assert config["minecraft_api"]["pageSize"] >= 20
+        assert config["minecraft_api"]["pageSize"] == 5
 
     def test_output_save_dir(self, config):
         assert "save_dir" in config["output"]

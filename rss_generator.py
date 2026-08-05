@@ -95,6 +95,15 @@ def _markdown_to_html(text: str) -> str:
     )
 
 
+def _distinct_translation(source: str, translated: str) -> str:
+    """相同译文不重复展示，避免原文和译文占用两份版面。"""
+    source_text = _clean_model_text(source).strip()
+    translated_text = _clean_model_text(translated).strip()
+    if not translated_text or translated_text == source_text:
+        return ""
+    return translated_text
+
+
 def _is_short_translation(text: str) -> bool:
     """少于10个词的译文与原文同行，避免标题和短标签各占一行。"""
     html = _markdown_to_html(text)
@@ -106,7 +115,7 @@ def _is_short_translation(text: str) -> bool:
 def _render_text_block(block: dict, tag: str = "p") -> str:
     """长文本分行，短译文跟在原文后面。"""
     source = (block.get("source_text") or "").strip()
-    translated = _clean_model_text(block.get("translated_text", ""))
+    translated = _distinct_translation(source, block.get("translated_text", ""))
     if not source and not translated:
         return ""
 
@@ -134,7 +143,7 @@ def _render_text_block(block: dict, tag: str = "p") -> str:
 def _render_code_block(block: dict) -> str:
     """代码块也按原文、译文分两行，避免代码内容被 Markdown 再解析。"""
     source = (block.get("source_text") or "").strip()
-    translated = _clean_model_text(block.get("translated_text", ""))
+    translated = _distinct_translation(source, block.get("translated_text", ""))
     rendered = []
     if source:
         rendered.append(f'<pre style="color:#333;margin:0 0 0.35em"><code>{escape(source)}</code></pre>')
@@ -298,7 +307,9 @@ def _translated_summary(article: dict) -> str:
     for block in article.get("blocks", []):
         if block.get("type") == "img":
             continue
-        text = _clean_model_text(block.get("translated_text", ""))
+        text = _distinct_translation(
+            block.get("source_text", ""), block.get("translated_text", "")
+        )
         if text:
             summary_html = _markdown_to_html(text)
             summary_text = bleach.clean(summary_html, tags=[], strip=True)

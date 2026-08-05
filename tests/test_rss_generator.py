@@ -1,6 +1,6 @@
 import json
 
-from rss_generator import _blocks_to_html, _is_short_translation, generate_rss
+from rss_generator import _blocks_to_html, _distinct_translation, _is_short_translation, generate_rss
 
 
 def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
@@ -69,3 +69,15 @@ def test_translation_word_limit_uses_words_not_characters():
     assert _is_short_translation("one two three")
     assert _is_short_translation("一二三四五六七八九")
     assert not _is_short_translation("one two three four five six seven eight nine ten")
+
+
+def test_identical_translation_is_not_rendered():
+    html = _blocks_to_html([
+        {"type": "p", "source_text": "same text", "translated_text": "same text"},
+        {"type": "pre", "source_text": "code", "translated_text": "code"},
+    ])
+
+    assert _distinct_translation("same text", "same text") == ""
+    assert "（same text）" not in html
+    assert html.count("color:#999") == 0
+    assert html.count("<pre") == 1

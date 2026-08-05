@@ -131,7 +131,7 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
     类型过滤 + 加载状态 + 首次运行检测 + 过滤已处理。
 
     Returns:
-        (new_news, state, posted_urls) 或 None（首次运行/无新内容时）
+        (new_news, state, posted_urls) 或 None（首次运行跳过）
     """
     api_items = [n for n in all_news if n.get('_source') == 'minecraft_api']
     feedback_items = [n for n in all_news if n.get('_source') == 'feedback']
@@ -141,14 +141,14 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
     state = load_state(state_file)
     posted_urls = set(state.get("posted_urls", []))
 
-    if state.get("_first_run", False):
+    first_run_protection = config.get("first_run_protection", True)
+    if first_run_protection and state.get("_first_run", False):
         print(f"[主] 检测到首次运行，将当前 {len(filtered)} 条新闻标记为已处理")
         posted_urls.update(n['url'] for n in filtered)
         state["posted_urls"] = list(posted_urls)
         state.pop("_first_run", None)
         save_state(state_file, state)
 
-        # 首次运行：标记现有新闻为已处理，同时初始化 .posted.json 为空列表
         save_dir = config["output"]["save_dir"]
         posted_state_file = os.path.join(save_dir, ".posted.json")
         if not os.path.exists(posted_state_file):

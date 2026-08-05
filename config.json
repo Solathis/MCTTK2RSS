@@ -90,6 +90,7 @@
       }
     ]
   },
+  "first_run_protection": true,
   "scheduler": {
     "cron": "0 */6 * * *",
     "interval_seconds": 21600,

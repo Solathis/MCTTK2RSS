@@ -99,6 +99,7 @@ DEFAULT_CONFIG = {
         "proxies": { "http": "", "https": "" },
         "timeout": 120
     },
+    "first_run_protection": True,
     "output": { "save_dir": "output" },
     "retry": {
         "translation": { "max_retries": 3, "wait_for_input": False },

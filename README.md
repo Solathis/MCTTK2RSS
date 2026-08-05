@@ -4,6 +4,8 @@
 
 基于 [jiubook/MCTTK](https://github.com/jiubook/MCTTK) 的 fork，移除了 BBCode/Markdown 转换和 MCBBS 论坛自动发布功能，改为自动生成 RSS Feed，支持通过 GitHub Actions 和 Docker 部署。
 
+**所有配置均从 `config.json` 读取，不使用环境变量。** Docker 部署时通过 volume 挂载 config.json；GitHub Actions 部署时通过 Secrets（前缀 `MCTTK2RSS_`）注入到 config.json。
+
 ## 功能特性
 
 - **自动爬取**：从 Minecraft 官方 API 获取最新新闻，同时支持从 Feedback 网站爬取更新日志
@@ -16,6 +18,7 @@
 - **类型过滤**：通过配置控制只处理指定类型的新闻
 - **安全去重**：基于 URL 的状态追踪，不会重复爬取
 - **首次运行保护**：首次运行时自动将所有现有新闻标记为已处理，避免刷屏
+- **纯配置文件驱动**：不依赖环境变量，定时规则也写在 config.json 中
 
 ## 与上游 MCTTK 的区别
 
@@ -23,8 +26,10 @@
 |------|-----------|-----------------|
 | 输出格式 | BBCode + Markdown | RSS 2.0 XML |
 | 发布方式 | 自动发布到 MCBBS 论坛 | GitHub Pages / Docker 部署 |
+| 配置方式 | config.json + 环境变量 | 仅 config.json |
 | 验证码识别 | ddddocr | 已移除 |
-| 配置项 | `mcbbs` 模块 | `rss` 模块 |
+| 定时调度 | 固定 10 分钟 | config.json 中 cron 规则可配 |
+| 默认爬取范围 | Java + 基岩 | 仅 Java 端更新日志 |
 
 ## 项目结构
 
@@ -33,24 +38,24 @@ MCTTK2RSS/
 ├── main.py              # 编排器：串联爬取→翻译→RSS生成
 ├── scraper.py           # 爬取与翻译模块（含 Feedback 爬虫，上游维护）
 ├── rss_generator.py     # RSS Feed 生成器（本项目新增）
+├── scheduler.py         # 定时调度器（从 config.json 读取 cron）
 ├── utils.py             # 公共工具（上游维护）
 ├── log_setup.py         # 日志系统（上游维护）
-├── scheduler.py         # 定时调度器（每 10 分钟运行一次）
 ├── init_state.py        # 初始化状态工具（测试用）
-├── config.json          # 统一配置文件
+├── config.json          # 统一配置文件（所有配置仅在此处）
 ├── glossary.json        # 专业术语词汇表（上游维护）
 ├── pyproject.toml       # 项目配置（依赖声明、Ruff 规则、pytest 路径）
 ├── requirements.txt     # pip 依赖（Docker 构建用）
 ├── tests/               # 单元测试（pytest）
-├── .env                 # 本地环境变量（不提交）
-├── output/              # 输出目录（自动生成，不提交）
+├── output/              # 输出目录（自动生成，不提交，Docker 挂载写回）
 │   ├── .state.json      # 处理状态（URL 级别去重）
 │   ├── news_*.json      # 翻译后的文章数据
 │   ├── feed.xml         # RSS Feed 输出
 │   └── news_*.jpg       # 文章头图
 ├── .github/workflows/
 │   ├── ci.yml           # CI 测试
-│   └── rss-publish.yml  # RSS 定时爬取 + GitHub Pages 发布
+│   ├── rss-publish.yml  # RSS 定时爬取 + GitHub Pages 发布
+│   └── docker-build.yml # Docker 镜像构建 + 推送到 GHCR
 ├── docker-compose.yml   # Docker 部署配置
 ├── Dockerfile           # Docker 镜像构建
 ├── .gitattributes       # 上游同步保护策略
@@ -77,7 +82,7 @@ pip install -r requirements.txt
 
 ### 2. 配置
 
-编辑 `config.json`，配置 AI 翻译接口和 RSS：
+所有配置写在 `config.json` 中，不使用任何环境变量：
 
 ```json
 {
@@ -89,20 +94,17 @@ pip install -r requirements.txt
     "max_tokens": 10000,
     "timeout": 120
   },
+  "scheduler": {
+    "cron": "0 */6 * * *",
+    "interval_seconds": 21600,
+    "timeout_seconds": 600
+  },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
-    "feed_link": "",
-    "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     "output_path": "output/feed.xml",
     "max_items": 50
   }
 }
-```
-
-通过 `.env` 文件或环境变量传入 API Key：
-
-```
-OPENAI_API_KEY=sk-xxx
 ```
 
 ### 3. 运行
@@ -125,10 +127,19 @@ python rss_generator.py --dir output --out output/feed.xml
 
 ### 方式一：GitHub Actions（推荐）
 
-无需服务器，GitHub Actions 每 6 小时自动运行并发布 RSS 到 GitHub Pages。
+无需服务器，GitHub Actions 定时运行并发布 RSS 到 GitHub Pages。
 
-1. 在仓库 **Settings → Secrets and variables → Actions** 中添加：
-   - `OPENAI_API_KEY` — AI 翻译 API 密钥
+**定时规则**：GitHub Actions 的 cron 在 workflow yml 中配置（默认每 6 小时），应与 config.json 中 `scheduler.cron` 保持一致。Docker 部署时由 config.json 的 cron 控制。
+
+1. 在仓库 **Settings → Secrets and variables → Actions** 中添加以下 Secrets（前缀 `MCTTK2RSS_`）：
+
+   | Secret 名称 | 说明 |
+   |---|---|
+   | `MCTTK2RSS_AI_HOST` | AI 翻译 API 地址（如 `api.your-provider.com`） |
+   | `MCTTK2RSS_AI_MODEL` | AI 模型名称（如 `gpt-4o`） |
+   | `MCTTK2RSS_OPENAI_API_KEY` | AI 翻译 API 密钥 |
+
+   Workflow 运行时会将这些 Secrets 注入到 config.json 中，不使用环境变量。
 
 2. 在仓库 **Settings → Pages** 中设置 Source 为 **GitHub Actions**
 
@@ -139,22 +150,33 @@ python rss_generator.py --dir output --out output/feed.xml
 
 4. 将该 RSS 地址添加到你的 RSS 阅读器即可
 
-也可在 Actions 页面手动触发 workflow（支持 dry_run 和 rss_only 模式）。
+也可在 Actions 页面手动触发（支持 dry_run 和 rss_only 模式）。
 
 **状态持久化**：`.state.json` 会被保存到 gh-pages 分支，下次运行时自动恢复，避免重复处理。
 
 ### 方式二：Docker 部署
 
-```bash
-# 配置环境变量
-cp .env.sample .env
-# 编辑 .env 填入 OPENAI_API_KEY
+Docker 部署时所有配置从挂载的 `config.json` 读取，数据通过 volume 挂载写回宿主机。
 
-# 启动容器（每 10 分钟自动运行）
+```bash
+# 1. 编辑 config.json 填入 API 配置和定时规则
+# 2. 启动容器
 docker-compose up -d
 ```
 
-RSS Feed 输出到 `output/feed.xml`，可通过 Nginx 等反向代理对外提供服务。
+**配置文件挂载**：
+- `config.json` 挂载为只读（配置不应由容器修改）
+- `output/` 目录挂载为读写（容器写回 feed.xml 和文章数据）
+- `logs/` 目录挂载为读写
+
+也可使用 GHCR 预构建镜像（无需本地构建）：
+
+```bash
+# docker-compose.yml 中取消注释 image: ghcr.io/solathis/mcttk2rss:latest
+docker-compose up -d
+```
+
+**Docker 镜像构建**：`.github/workflows/docker-build.yml` 会在 push 到 main 时自动构建多架构镜像（linux/amd64 + linux/arm64）并推送到 GHCR。
 
 ## 新闻来源
 
@@ -168,20 +190,24 @@ RSS Feed 输出到 `output/feed.xml`，可通过 Nginx 等反向代理对外提�
 
 ## 新闻类型过滤
 
-在 `config.json` 的 `news_types` 中控制只处理哪些类型的官方 API 新闻：
+在 `config.json` 的 `news_types` 中控制只处理哪些类型的官方 API 新闻。
+
+**默认配置（只爬 Java 端更新日志）**：
 
 ```json
 {
   "news_types": {
     "java_release":   true,
     "java_snapshot":  true,
-    "java_prerelease": false,
-    "java_rc":        false,
-    "bedrock_release": true,
-    "bedrock_beta":   true
+    "java_prerelease": true,
+    "java_rc":        true,
+    "bedrock_release": false,
+    "bedrock_beta":   false
   }
 }
 ```
+
+Feedback 网站默认也只启用 Java 快照 section，基岩版 section 全部禁用。
 
 | 关键词 | 类型 |
 |---|---|
@@ -191,6 +217,29 @@ RSS Feed 输出到 `output/feed.xml`，可通过 Nginx 等反向代理对外提�
 | `Java Edition` / 版本号如 `1.21` | `java_release` |
 | `Bedrock` | `bedrock_release` |
 | `Beta` / `Preview` | `bedrock_beta` |
+
+## 定时调度
+
+定时规则在 `config.json` 的 `scheduler` 中配置：
+
+```json
+{
+  "scheduler": {
+    "cron": "0 */6 * * *",
+    "interval_seconds": 21600,
+    "timeout_seconds": 600
+  }
+}
+```
+
+| 字段 | 说明 | 默认值 |
+|------|------|--------|
+| `cron` | cron 表达式（5 字段标准格式），scheduler.py 会解析 `*/N` 语法为执行间隔 | `0 */6 * * *` |
+| `interval_seconds` | 执行间隔秒数（优先于 cron 解析结果） | `21600`（6 小时） |
+| `timeout_seconds` | 单次 main.py 执行超时 | `600` |
+
+- **Docker 部署**：scheduler.py 读取此配置控制调度
+- **GitHub Actions**：cron 在 workflow yml 中配置（应与此处保持一致）
 
 ## 智能词汇表
 
@@ -249,7 +298,9 @@ Minecraft 官方 API          Feedback 网站
 
 详见 [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md)。
 
-核心策略：通过 `.gitattributes` 的 `merge=ours` 策略保护自定义文件（`main.py`、`rss_generator.py`、`config.json` 等），上游的 `scraper.py`、`glossary.json` 等可正常合并更新。
+核心策略：通过 `.gitattributes` 的 `merge=ours` 策略保护自定义文件（`main.py`、`rss_generator.py`、`scheduler.py`、`config.json` 等），上游的 `scraper.py`、`glossary.json` 等可正常合并更新。
+
+**注意**：`scraper.py` 的 `load_config()` 已被我们修改（移除环境变量逻辑），上游合并恢复该逻辑时需手动删除。
 
 ## 配置参考
 
@@ -260,7 +311,6 @@ Minecraft 官方 API          Feedback 网站
   "openai_compat": {
     "host": "api.example.com",
     "endpoint": "/v1/chat/completions",
-    "api_key_env": "OPENAI_API_KEY",
     "api_key": "",
     "model": "gpt-4o",
     "max_tokens": 10000,
@@ -290,8 +340,13 @@ Minecraft 官方 API          Feedback 网站
     "java_snapshot": true,
     "java_prerelease": true,
     "java_rc": true,
-    "bedrock_release": true,
-    "bedrock_beta": true
+    "bedrock_release": false,
+    "bedrock_beta": false
+  },
+  "scheduler": {
+    "cron": "0 */6 * * *",
+    "interval_seconds": 21600,
+    "timeout_seconds": 600
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
@@ -317,8 +372,9 @@ Minecraft 官方 API          Feedback 网站
 
 ## 注意事项
 
+- **配置方式**：所有配置仅从 `config.json` 读取，不使用环境变量
 - **首次运行**：程序会自动将当前所有新闻标记为已处理，下次运行才开始处理真正的新新闻，避免刷屏
-- **API Key**：支持通过环境变量 `OPENAI_API_KEY` 传入，优先级高于 config.json
+- **默认爬取范围**：默认只爬取 Java 端更新日志（Java 正式版/快照/预发布/RC + Feedback Snapshot section），基岩版默认禁用
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理

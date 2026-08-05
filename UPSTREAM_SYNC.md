@@ -87,6 +87,23 @@ git diff HEAD upstream/main -- main.py  # 查看差异
 git merge upstream/main                  # merge=ours 自动保留我们的版本
 ```
 
+### 6. 如果上游也修改了 load_config
+
+我们移除了 `scraper.py` `load_config()` 中读取环境变量的逻辑。上游可能恢复该逻辑。
+
+合并后检查 `scraper.py` 的 `load_config` 函数，确保没有 `os.getenv` 或 `api_key_env` 相关代码。
+
+如果上游恢复了环境变量逻辑，可手动删除：
+
+```python
+# 删除这段（如果上游恢复了它）：
+env_var = config.get("openai_compat", {}).get("api_key_env", "OPENAI_API_KEY")
+if env_var:
+    env_key = os.getenv(env_var)
+    if env_key:
+        config["openai_compat"]["api_key"] = env_key
+```
+
 ### 5. 替代方案：cherry-pick 上游的 scraper.py
 
 如果只想更新爬取逻辑，不合并全部：
@@ -97,6 +114,8 @@ git checkout upstream/main -- scraper.py glossary.json utils.py log_setup.py
 git commit -m "Update scraper, glossary, utils, log_setup from upstream"
 git push origin main
 ```
+
+**注意**：cherry-pick `scraper.py` 后需检查 `load_config` 函数是否被上游恢复了环境变量逻辑，如果是则手动删除。
 
 ## .gitattributes 配置
 

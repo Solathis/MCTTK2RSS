@@ -2,7 +2,8 @@ name: Scrape & Publish RSS
 
 on:
   schedule:
-    # 每 6 小时运行一次 (UTC: 0, 6, 12, 18 点)
+    # GitHub Actions 的 cron 触发（与 config.json 中 scheduler.cron 应保持一致）
+    # Docker 部署时由 config.json 的 scheduler.cron 控制调度
     - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
@@ -40,6 +41,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Inject Secrets into config.json
+        env:
+          MCTTK2RSS_AI_HOST: ${{ secrets.MCTTK2RSS_AI_HOST }}
+          MCTTK2RSS_AI_MODEL: ${{ secrets.MCTTK2RSS_AI_MODEL }}
+          MCTTK2RSS_OPENAI_API_KEY: ${{ secrets.MCTTK2RSS_OPENAI_API_KEY }}
+        run: |
+          python -c "
+          import json, os
+          with open('config.json', encoding='utf-8') as f:
+              cfg = json.load(f)
+          oc = cfg.setdefault('openai_compat', {})
+          host = os.environ.get('MCTTK2RSS_AI_HOST', '')
+          model = os.environ.get('MCTTK2RSS_AI_MODEL', '')
+          api_key = os.environ.get('MCTTK2RSS_OPENAI_API_KEY', '')
+          if host:  oc['host'] = host
+          if model: oc['model'] = model
+          if api_key: oc['api_key'] = api_key
+          with open('config.json', 'w', encoding='utf-8') as f:
+              json.dump(cfg, f, ensure_ascii=False, indent=2)
+          print('[CI] config.json 已注入 Secrets: host=%s model=%s key=%s' % ('set' if host else 'skip', 'set' if model else 'skip', 'set' if api_key else 'skip'))
+          "
+
       - name: Restore state from previous runs
         run: |
           # 从 gh-pages 分支恢复 .state.json（记录已处理的 URL）
@@ -54,8 +77,6 @@ jobs:
           fi
 
       - name: Run scraper
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             python main.py --dry-run

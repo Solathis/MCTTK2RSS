@@ -57,7 +57,6 @@ DEFAULT_CONFIG = {
     "openai_compat": {
         "host": "www.example.com",
         "endpoint": "/v1/chat/completions",
-        "api_key_env": "OPENAI_API_KEY",
         "api_key": "",
         "model": "your-model-name",
         "max_tokens": 10000,
@@ -127,7 +126,7 @@ def _deep_merge(a: dict, b: dict) -> dict:
 
 
 def load_config(config_path: str = None) -> dict:
-    """加载统一配置文件"""
+    """加载统一配置文件（只从 config.json 读取，不读环境变量）"""
     if config_path is None:
         config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
 
@@ -141,13 +140,6 @@ def load_config(config_path: str = None) -> dict:
             print(f"[配置] 加载失败，使用默认配置: {e}")
     else:
         print(f"[配置] 配置文件不存在: {config_path}")
-
-    # 环境变量覆盖 API Key
-    env_var = config.get("openai_compat", {}).get("api_key_env", "OPENAI_API_KEY")
-    if env_var:
-        env_key = os.getenv(env_var)
-        if env_key:
-            config["openai_compat"]["api_key"] = env_key
 
     return config
 

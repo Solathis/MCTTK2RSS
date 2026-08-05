@@ -6,6 +6,8 @@
 # 核心自定义文件：RSS 生成 + 编排流程
 main.py merge=ours
 rss_generator.py merge=ours
+scheduler.py merge=ours
+init_state.py merge=ours
 
 # 配置：RSS 配置是自定义的
 config.json merge=ours
@@ -28,3 +30,6 @@ Dockerfile.git merge=ours
 # log_setup.py
 # converter.py（若上游维护该模块）
 # modules_config.json（若上游维护该模块）
+#
+# 注意：scraper.py 中的 load_config() 已被我们修改（移除环境变量逻辑），
+# 上游可能恢复该逻辑。合并时需检查 scraper.py 的 load_config 函数。

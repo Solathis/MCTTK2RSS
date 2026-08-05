@@ -14,8 +14,7 @@ main.py — MCTTK 新闻自动爬取 + 翻译 + RSS 生成 编排器
   python main.py --rss-only         # 仅从 output 目录重新生成 RSS，不爬取
 
 配置：
-  统一使用 config.json（同目录下）
-  环境变量覆盖：OPENAI_API_KEY 等
+  统一使用 config.json（同目录下），不读取环境变量
 """
 
 import argparse
@@ -38,12 +37,9 @@ from scraper import (
     process_feedback_news,
     save_article_json,
 )
-from utils import load_dotenv
 
 # 项目根目录
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-load_dotenv(PROJECT_DIR)
 
 
 def load_main_config() -> dict:

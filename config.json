@@ -3,7 +3,6 @@
   "openai_compat": {
     "host": "api.videocaptioner.cn",
     "endpoint": "/v1/chat/completions",
-    "api_key_env": "OPENAI_API_KEY",
     "api_key": "",
     "model": "gpt-5-mini-2025-08-07",
     "max_tokens": 10000,
@@ -48,8 +47,8 @@
     "java_snapshot":    true,
     "java_prerelease":  true,
     "java_rc":          true,
-    "bedrock_release":  true,
-    "bedrock_beta":     true
+    "bedrock_release":  false,
+    "bedrock_beta":     false
   },
   "feedback_site": {
     "enabled": true,
@@ -62,7 +61,7 @@
         "name_cn": "基岩正式版更新日志",
         "url": "https://feedback.minecraft.net/hc/en-us/sections/360001186971-Release-Changelogs",
         "section_id": "360001186971",
-        "enabled": true,
+        "enabled": false,
         "articles_count": 3
       },
       {
@@ -70,15 +69,15 @@
         "name_cn": "基岩测试版更新日志",
         "url": "https://feedback.minecraft.net/hc/en-us/sections/360001185332-Beta-and-Preview-Information-and-Changelogs",
         "section_id": "360001185332",
-        "enabled": true,
+        "enabled": false,
         "articles_count": 3
       },
       {
         "name": "Snapshot Information and Changelogs",
-        "name_cn": "java快照版更新日志",
+        "name_cn": "Java快照版更新日志",
         "url": "https://feedback.minecraft.net/hc/en-us/sections/360002267532-Snapshot-Information-and-Changelogs",
         "section_id": "360002267532",
-        "enabled": false,
+        "enabled": true,
         "articles_count": 3
       },
       {
@@ -90,6 +89,11 @@
         "articles_count": 3
       }
     ]
+  },
+  "scheduler": {
+    "cron": "0 */6 * * *",
+    "interval_seconds": 21600,
+    "timeout_seconds": 600
   },
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",

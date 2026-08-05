@@ -91,23 +91,11 @@
       }
     ]
   },
-  "mcbbs": {
-    "enabled": true,
-    "base_url": "https://www.mcbbs.co",
-    "forum_fid": 45,
-    "username": "newspaper",
-    "password": "",
-    "captcha_answer": "",
-    "sortid_map": {
-        "java_snapshot": 4,
-        "java_prerelease": 4,
-        "java_rc": 4,
-        "java_release": 4,
-        "bedrock_beta": 20,
-        "bedrock_release": 20,
-        "commentary": 16,
-        "normal": 16
-    },
-    "attach_json": true
+  "rss": {
+    "feed_title": "Minecraft News (中文翻译)",
+    "feed_link": "",
+    "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
+    "output_path": "output/feed.xml",
+    "max_items": 50
   }
 }

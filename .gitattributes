@@ -1,0 +1,30 @@
+# 上游同步策略：以下文件是我们 fork 的自定义文件
+# merge=ours 在合并冲突时自动优先保留我们的版本
+# 上游对这些文件的更改不会覆盖我们的自定义实现
+# 配合手动 cherry-pick 或 merge 时可追加 --strategy-option=theirs 指定单次反选
+
+# 核心自定义文件：RSS 生成 + 编排流程
+main.py merge=ours
+rss_generator.py merge=ours
+
+# 配置：RSS 配置是自定义的
+config.json merge=ours
+
+# Docker 部署配置
+docker-compose.yml merge=ours
+Dockerfile merge=ours
+Dockerfile.git merge=ours
+
+# .env 模板
+.env.sample merge=ours
+
+# GitHub Actions workflow
+.github/workflows/rss-publish.yml merge=ours
+
+# 以下文件允许上游覆盖（上游应持续维护爬取逻辑）
+# scraper.py
+# glossary.json
+# utils.py
+# log_setup.py
+# converter.py（若上游维护该模块）
+# modules_config.json（若上游维护该模块）

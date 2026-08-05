@@ -1,26 +1,22 @@
 version: '3.8'
 
 services:
-  mcttk:
+  mcttk-rss:
     build: .
-    container_name: mcttk-scraper
+    container_name: mcttk-rss
     restart: unless-stopped
     volumes:
       - ./output:/app/output
       - ./logs:/app/logs
       - ./config.json:/app/config.json:ro
-      - ./modules_config.json:/app/modules_config.json:ro
       - ./glossary.json:/app/glossary.json:ro
-      - ./main.py:/app/main.py
-      - ./scraper.py:/app/scraper.py
-      - ./converter.py:/app/converter.py
-      - ./poster.py:/app/poster.py
-      - ./utils.py:/app/utils.py
-      - ./scheduler.py:/app/scheduler.py
-      - ./init_state.py:/app/init_state.py
+      - ./main.py:/app/main.py:ro
+      - ./scraper.py:/app/scraper.py:ro
+      - ./rss_generator.py:/app/rss_generator.py:ro
+      - ./utils.py:/app/utils.py:ro
+      - ./scheduler.py:/app/scheduler.py:ro
+      - ./init_state.py:/app/init_state.py:ro
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - MCBBS_USERNAME=${MCBBS_USERNAME}
-      - MCBBS_PASSWORD=${MCBBS_PASSWORD}
     mem_limit: 512m
     mem_reservation: 256m

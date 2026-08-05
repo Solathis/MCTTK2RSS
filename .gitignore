@@ -10,11 +10,16 @@ output/*.json
 
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪
+# 注意：feed.xml 由 GitHub Actions 部署到 gh-pages 分支，不在主分支跟踪
 
 # 日志文件
 logs/
 
+# 旧版文件
 old/
+
+# RSS feed 输出（由 CI 部署到 gh-pages，不提交主分支）
+output/feed.xml
 
 # 验证码临时文件
 captcha.png

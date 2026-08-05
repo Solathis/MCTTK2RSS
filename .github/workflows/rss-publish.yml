@@ -1,0 +1,114 @@
+name: Scrape & Publish RSS
+
+on:
+  schedule:
+    # 每 6 小时运行一次 (UTC: 0, 6, 12, 18 点)
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '仅检测新新闻，不实际处理'
+        required: false
+        default: 'false'
+        type: boolean
+      rss_only:
+        description: '仅从已有 JSON 重新生成 RSS，不爬取'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  scrape-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore state from previous runs
+        run: |
+          # 从 gh-pages 分支恢复 .state.json（记录已处理的 URL）
+          git fetch origin gh-pages --depth=1 || true
+          if git rev-parse origin/gh-pages >/dev/null 2>&1; then
+            git show origin/gh-pages:.state.json > output/.state.json 2>/dev/null || true
+          fi
+          if [ -f output/.state.json ]; then
+            echo "[CI] 已恢复 state: $(python -c "import json; print(len(json.load(open('output/.state.json')).get('posted_urls', [])))" 2>/dev/null || echo "?") 条 URL"
+          else
+            echo "[CI] 无历史 state，首次运行"
+          fi
+
+      - name: Run scraper
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python main.py --dry-run
+          elif [ "${{ inputs.rss_only }}" = "true" ]; then
+            python main.py --rss-only
+          else
+            python main.py
+          fi
+
+      - name: Prepare gh-pages content
+        run: |
+          # 创建临时目录用于 gh-pages 内容
+          mkdir -p gh-pages-output
+          # 复制 RSS feed
+          cp output/feed.xml gh-pages-output/ 2>/dev/null || true
+          # 复制 state 文件（供下次运行恢复）
+          cp output/.state.json gh-pages-output/ 2>/dev/null || true
+          # 可选：复制文章 JSON 供下载
+          mkdir -p gh-pages-output/articles
+          cp output/news_*.json gh-pages-output/articles/ 2>/dev/null || true
+          # 创建简单的 index.html
+          cat > gh-pages-output/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Minecraft News RSS - MCTTK2RSS</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; background: #f5f5f5; }
+              h1 { color: #2d5f2d; }
+              a { color: #2891f0; }
+              .card { background: white; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+              code { background: #e8e8e8; padding: 0.2em 0.4em; border-radius: 3px; }
+            </style>
+          </head>
+          <body>
+            <h1>🎮 Minecraft News RSS</h1>
+            <div class="card">
+              <p>RSS Feed 地址（添加到你的 RSS 阅读器）：</p>
+              <p><code>https://<your-username>.github.io/MCTTK2RSS/feed.xml</code></p>
+            </div>
+            <div class="card">
+              <p>此 Feed 由 GitHub Actions 自动定时爬取 Minecraft 官方新闻并翻译为中文后生成。</p>
+              <p>源项目：<a href="https://github.com/Solathis/MCTTK2RSS">MCTTK2RSS</a></p>
+            </div>
+          </body>
+          </html>
+          HTMLEOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: gh-pages-output
+          keep_files: false

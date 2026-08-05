@@ -49,7 +49,8 @@
     "java_prerelease":  true,
     "java_rc":          true,
     "bedrock_release":  false,
-    "bedrock_beta":     false
+    "bedrock_beta":     false,
+    "other":            false
   },
   "feedback_site": {
     "enabled": true,

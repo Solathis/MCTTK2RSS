@@ -58,9 +58,9 @@ def filter_news_by_types(news_list: list, config: dict) -> list:
     filtered = []
     for news in news_list:
         ntype = classify_news_type(news['title'])
-        # "other" 类型不受过滤控制（始终保留或跳过取决于配置）
+        # 未识别类型默认跳过；Java-only 配置不能放行未知来源文章
         if ntype == "other":
-            if news_types.get("other", True):
+            if news_types.get("other", False):
                 filtered.append(news)
             continue
         if news_types.get(ntype, True):
@@ -95,7 +95,7 @@ def _fetch_all_news(config: dict) -> list:
     all_news = []
 
     page_size = config.get("minecraft_api", {}).get("pageSize", 10)
-    api_news = get_latest_news_list(page_size=page_size, config=config)
+    api_news = filter_news_by_types(get_latest_news_list(page_size=page_size, config=config), config)
     for news in api_news:
         news['_source'] = 'minecraft_api'
     all_news.extend(api_news)
@@ -126,6 +126,13 @@ def _fetch_all_news(config: dict) -> list:
     return all_news
 
 
+def _filter_feedback_by_sections(feedback_items: list, config: dict) -> list:
+    """只保留 config.json 明确启用的 Feedback section。"""
+    sections = config.get("feedback_site", {}).get("sections", [])
+    enabled_names = {section.get("name") for section in sections if section.get("enabled", True)}
+    return [item for item in feedback_items if item.get("section") in enabled_names]
+
+
 def _filter_and_check_state(all_news: list, config: dict, state_file: str):
     """
     类型过滤 + 加载状态 + 首次运行检测 + 过滤已处理。
@@ -134,7 +141,9 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
         (new_news, state, posted_urls) 或 None（首次运行跳过）
     """
     api_items = [n for n in all_news if n.get('_source') == 'minecraft_api']
-    feedback_items = [n for n in all_news if n.get('_source') == 'feedback']
+    feedback_items = _filter_feedback_by_sections(
+        [n for n in all_news if n.get('_source') == 'feedback'], config
+    )
     filtered_api = filter_news_by_types(api_items, config)
     filtered = filtered_api + feedback_items
 

@@ -99,6 +99,15 @@ DEFAULT_CONFIG = {
         "category": "News",
         "site_base": "https://www.minecraft.net"
     },
+    "news_types": {
+        "java_release": True,
+        "java_snapshot": True,
+        "java_prerelease": True,
+        "java_rc": True,
+        "bedrock_release": False,
+        "bedrock_beta": False,
+        "other": False
+    },
     "feedback_site": {
         "enabled": True,
         "base_url": "https://feedback.minecraft.net",

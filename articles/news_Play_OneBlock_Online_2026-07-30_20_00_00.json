@@ -1,0 +1,106 @@
+{
+  "title": "Play OneBlock Online",
+  "translated_title": "在线游玩《OneBlock》",
+  "release_date": "2026-07-30T20:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/oneblock-online",
+  "author": "Cristina Anderca",
+  "imageAltText": "Promotional artwork for OneBlock Online showing a Minecraft character standing on and breaking a lone floating grass block.",
+  "description": "Play OneBlock Online and take on the classic Minecraft skyblock-inspired challenge with friends. Start with a single regenerating OneBlock, grow your island, unlock permanent upgrades, and automate your base with helpful minions. Head out to battle custom monsters, earn powerful gear and enchantments, compete in PvP, and decorate your island with over 1,000 furniture items. With a player-driven economy, regular events, leaderboards, and plenty more to discover, OneBlock Online is packed with reasons to keep coming back.",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/marketplace/OneblockOnline_Launch_DotNetBlog_1170x500.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "It starts with one block. I don’t know why, but no matter how many times I mine it, it doesn’t break. And yet my inventory is filling up with a variety of blocks?... It’s OneBlock, of course! This is the iconic Minecraft game mode that challenges you to expand your domain in the sky – now with friends! OneBlock Online not only introduces multiplayer, but also improved automation systems, long-term progression systems that will keep your island interesting for years to come, and more. Jump into this multiplayer adventure now via the Server tab in Bedrock Edition!",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "h2",
+      "source_text": "Your OneBlock, islands, and co-op",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "You start with a single OneBlock on your island, which progresses through 29 unique phases, each yielding increasingly valuable loot. We'll also add more phases, blocks, and items in future updates!",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "p",
+      "source_text": "Aside from mining, you can complete daily and weekly quests to gain XP and spend it on permanent island upgrades such as increased island size, faster crop growth, improved spawner rates, and more!",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "p",
+      "source_text": "Plus, not only can you own multiple islands, but each island also supports multiple OneBlocks, so you can invite friends to join you so you can work together.",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "h2",
+      "source_text": "Monster islands, bone forge, and enchantments",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "p",
+      "source_text": "Want more loot than your OneBlock has to offer? Travel to a monster island and fight your way to rare drops and other rewards. Progress through increasingly difficult islands with custom monsters that bring some serious challenge to the OneBlock experience.",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "p",
+      "source_text": "You can also collect resources to upgrade your gear via PvP (in a dedicated arena) and PvE (on the monster islands). Unlock powerful custom enchantments and armor set effects that allow you to personalize your gear to your playstyle.",
+      "translated_text": "[",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "h2",
+      "source_text": "Island automation, customization, and cosmetics",
+      "translated_text": "{",
+      "meta": {}
+    },
+    {
+      "id": "b0010",
+      "type": "p",
+      "source_text": "While you’re out adventuring, your island needs to stay productive – and that’s where the worker minions and automation come in. Minions are upgradable and customizable assistants that can help you with farming, chopping trees, harvesting crops, and killing mobs. You can also make them part of production chains in combination with items like chunk hoppers, auto-crafting chests, and auto-sell chests.",
+      "translated_text": "\"id\": \"t0007\",",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "p",
+      "source_text": "But it’s not all about productivity! After all, what’s the point of having an island if you can’t decorate it? Visit the furniture shop to peruse a catalog of over 1000 items, as well as rotating seasonal furniture items for the collectors out there. You can also customize your character with chat titles, pins, wings, hats, chat colors, and more!",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "p",
+      "source_text": "But that’s only part of what OneBlock Online has to offer. This multiplayer adventure also features a player-based economy, a rewarded leaderboard system, and server-wide events that range from fishing rewards to double XP and PvP competitions.",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "p",
+      "source_text": "Ready to become the ruler of your own island? See how far you can get in OneBlock Online!",
+      "translated_text": "",
+      "meta": {}
+    }
+  ],
+  "content": "It starts with one block. I don’t know why, but no matter how many times I mine it, it doesn’t break. And yet my inventory is filling up with a variety of blocks?... It’s OneBlock, of course! This is the iconic Minecraft game mode that challenges you to expand your domain in the sky – now with friends! OneBlock Online not only introduces multiplayer, but also improved automation systems, long-term progression systems that will keep your island interesting for years to come, and more. Jump into this multiplayer adventure now via the Server tab in Bedrock Edition!\n\nYour OneBlock, islands, and co-op\n\nYou start with a single OneBlock on your island, which progresses through 29 unique phases, each yielding increasingly valuable loot. We'll also add more phases, blocks, and items in future updates!\n\nAside from mining, you can complete daily and weekly quests to gain XP and spend it on permanent island upgrades such as increased island size, faster crop growth, improved spawner rates, and more!\n\nPlus, not only can you own multiple islands, but each island also supports multiple OneBlocks, so you can invite friends to join you so you can work together.\n\nMonster islands, bone forge, and enchantments\n\nWant more loot than your OneBlock has to offer? Travel to a monster island and fight your way to rare drops and other rewards. Progress through increasingly difficult islands with custom monsters that bring some serious challenge to the OneBlock experience.\n\nYou can also collect resources to upgrade your gear via PvP (in a dedicated arena) and PvE (on the monster islands). Unlock powerful custom enchantments and armor set effects that allow you to personalize your gear to your playstyle.\n\nIsland automation, customization, and cosmetics\n\nWhile you’re out adventuring, your island needs to stay productive – and that’s where the worker minions and automation come in. Minions are upgradable and customizable assistants that can help you with farming, chopping trees, harvesting crops, and killing mobs. You can also make them part of production chains in combination with items like chunk hoppers, auto-crafting chests, and auto-sell chests.\n\nBut it’s not all about productivity! After all, what’s the point of having an island if you can’t decorate it? Visit the furniture shop to peruse a catalog of over 1000 items, as well as rotating seasonal furniture items for the collectors out there. You can also customize your character with chat titles, pins, wings, hats, chat colors, and more!\n\nBut that’s only part of what OneBlock Online has to offer. This multiplayer adventure also features a player-based economy, a rewarded leaderboard system, and server-wide events that range from fishing rewards to double XP and PvP competitions.\n\nReady to become the ruler of your own island? See how far you can get in OneBlock Online!",
+  "translated_content": "[\n\n{\n\n\"id\": \"t0007\",",
+  "source": "minecraft_api"
+}

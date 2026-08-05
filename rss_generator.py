@@ -81,11 +81,37 @@ def _markdown_to_html(text: str) -> str:
     )
 
 
-def _render_text_block(block: dict) -> str:
-    """渲染一个文本 block；翻译缺失时回退原文。"""
+def _render_text_block(block: dict, tag: str = "p") -> str:
+    """按“原文一行、译文一行”渲染文本 block。"""
+    source = (block.get("source_text") or "").strip()
     translated = _clean_model_text(block.get("translated_text", ""))
-    source = block.get("source_text", "")
-    return _markdown_to_html(translated or source)
+    if not source and not translated:
+        return ""
+
+    rendered = []
+    if source:
+        rendered.append(
+            f'<{tag} style="display:block;color:#333;margin:0 0 0.35em">'
+            f"{_markdown_to_html(source)}</{tag}>"
+        )
+    if translated:
+        rendered.append(
+            f'<{tag} style="display:block;color:#999;margin:0 0 0.8em">'
+            f"{_markdown_to_html(translated)}</{tag}>"
+        )
+    return "".join(rendered)
+
+
+def _render_code_block(block: dict) -> str:
+    """代码块也按原文、译文分两行，避免代码内容被 Markdown 再解析。"""
+    source = (block.get("source_text") or "").strip()
+    translated = _clean_model_text(block.get("translated_text", ""))
+    rendered = []
+    if source:
+        rendered.append(f'<pre style="color:#333;margin:0 0 0.35em"><code>{escape(source)}</code></pre>')
+    if translated:
+        rendered.append(f'<pre style="color:#999;margin:0 0 0.8em"><code>{escape(translated)}</code></pre>')
+    return "".join(rendered)
 
 
 def _render_image(block: dict) -> str:
@@ -151,19 +177,18 @@ def _blocks_to_html(blocks: list[dict]) -> str:
             if list_items and current_list_tag != list_tag:
                 flush_list()
             list_tag = current_list_tag
-            list_items.append(f"<li>{_render_text_block(block)}</li>")
+            list_items.append(f"<li>{_render_text_block(block, 'span')}</li>")
             continue
 
         flush_list()
         if btype in ("h1", "h2", "h3", "h4"):
-            html_parts.append(f"<{btype}>{_render_text_block(block)}</{btype}>")
+            html_parts.append(_render_text_block(block, btype))
         elif btype in ("pre", "code"):
-            text = _clean_model_text(block.get("translated_text") or block.get("source_text", ""))
-            html_parts.append(f"<pre><code>{escape(text)}</code></pre>")
+            html_parts.append(_render_code_block(block))
         elif btype in ("blockquote", "quote"):
-            html_parts.append(f"<blockquote>{_render_text_block(block)}</blockquote>")
+            html_parts.append(f"<blockquote>{_render_text_block(block, 'div')}</blockquote>")
         else:
-            html_parts.append(f"<p>{_render_text_block(block)}</p>")
+            html_parts.append(_render_text_block(block) or "")
 
     flush_list()
     return "\n".join(html_parts)

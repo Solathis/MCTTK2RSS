@@ -44,7 +44,8 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
     assert "&lt;p&gt;" not in xml
     assert "<strong>高亮</strong>" in xml
     assert '<a href="https://example.com">链接</a>' in xml
-    assert "<ul>" in xml and "<li>列表项</li>" in xml
+    assert "<ul>" in xml and "<li>" in xml
+    assert "color:#333" in xml and "color:#999" in xml
     assert 'src="https://example.com/image.png"' in xml
     assert "😀" in xml
     assert "https://solathis.github.io/MCTTK2RSS/logo.png" in xml

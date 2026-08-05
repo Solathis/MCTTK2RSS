@@ -154,6 +154,22 @@ python rss_generator.py --dir output --out output/feed.xml
 
 也可在 Actions 页面手动触发（支持 dry_run 和 rss_only 模式）。
 
+#### 手动运行 workflow
+
+所有 workflow 均支持手动触发：
+
+1. 进入仓库的 **Actions** 页面
+2. 在左侧列表选择要运行的 workflow：
+   - **Scrape & Publish RSS** — 爬取新闻并发布 RSS 到 GitHub Pages
+   - **Docker Build & Push** — 构建并推送 Docker 镜像到 GHCR
+3. 点击右侧 **Run workflow** 按钮
+4. 选择分支（`main`），对于 **Scrape & Publish RSS** 可勾选：
+   - `dry_run` — 仅检测新新闻，不实际处理
+   - `rss_only` — 仅从已有 JSON 重新生成 RSS，不爬取
+5. 点击绿色 **Run workflow** 确认运行
+
+运行进度和日志在 Actions 页面对应运行记录中查看。
+
 **状态持久化**：`.state.json` 会被保存到 gh-pages 分支，下次运行时自动恢复，避免重复处理。
 
 ### 方式二：Docker 部署
@@ -179,6 +195,55 @@ docker-compose up -d
 ```
 
 **Docker 镜像构建**：`.github/workflows/docker-build.yml` 会在 push 到 main 时自动构建多架构镜像（linux/amd64 + linux/arm64）并推送到 GHCR。
+
+#### 访问 RSS Feed
+
+容器本身只生成 `feed.xml` 文件，不内置 Web 服务器。需要通过以下方式之一对外提供 HTTP 访问：
+
+**方法 A：配置 Nginx 反向代理（推荐）**
+
+```nginx
+server {
+    listen 80;
+    server_name rss.example.com;
+
+    location /feed.xml {
+        alias /path/to/output/feed.xml;
+        default_type application/rss+xml;
+        add_header Cache-Control "no-cache";
+    }
+}
+```
+
+将 `/path/to/output` 替换为 docker-compose.yml 中 `output` 挂载的宿主机路径。
+
+**方法 B：使用 Python 内置 HTTP 服务器**
+
+适合临时或低频访问场景，在宿主机上运行：
+
+```bash
+cd output
+python -m http.server 8080
+# RSS 地址: http://localhost:8080/feed.xml
+```
+
+**方法 C：在 docker-compose.yml 中增加 Nginx 容器**
+
+```yaml
+services:
+  rss-server:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./output:/usr/share/nginx/html:ro
+    depends_on:
+      - mcttk-rss
+```
+
+启动后访问 `http://localhost:8080/feed.xml` 即可。
+
+无论哪种方式，最终 RSS Feed 地址就是 `feed.xml` 文件的 HTTP URL，添加到 RSS 阅读器即可。
 
 ## 新闻来源
 

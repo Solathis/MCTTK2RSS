@@ -67,4 +67,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Output image digest
-        run: echo "Image digest: ${{ steps.meta.outputs.tags }}"
+        run: |
+          echo "Image tags:"
+          echo "${IMAGE_TAGS}" | tr ' ' '\n'
+        env:
+          IMAGE_TAGS: ${{ steps.meta.outputs.tags }}

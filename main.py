@@ -167,6 +167,10 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
 
         return None
 
+    if state.get("_first_run", False):
+        state.pop("_first_run", None)
+        save_state(state_file, state)
+
     new_news = [n for n in filtered if n['url'] not in posted_urls]
     return new_news, state, posted_urls
 

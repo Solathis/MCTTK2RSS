@@ -75,7 +75,7 @@ class TestConfigStructure:
         assert config["minecraft_api"]["sortType"] == "recent"
 
     def test_api_fetch_window(self, config):
-        assert config["minecraft_api"]["pageSize"] == 5
+        assert config["minecraft_api"]["pageSize"] == 10
 
     def test_output_save_dir(self, config):
         assert "save_dir" in config["output"]

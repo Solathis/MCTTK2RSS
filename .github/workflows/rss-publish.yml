@@ -107,7 +107,7 @@ jobs:
 
           with open("config.json", encoding="utf-8") as f:
               config = json.load(f)
-          max_age_days = int(config.get("rss", {}).get("max_age_days", 365))
+          max_age_days = int(config.get("rss", {}).get("max_age_days", 730))
           if max_age_days <= 0:
               print("[CI] 未启用文章过期清理")
               raise SystemExit(0)

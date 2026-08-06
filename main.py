@@ -276,7 +276,7 @@ def run_rss(config: dict):
         feed_link=rss_config.get("feed_link", ""),
         feed_description=rss_config.get("feed_description", "Minecraft 官方新闻与更新日志的中文翻译 RSS"),
         max_items=rss_config.get("max_items", 50),
-        max_age_days=rss_config.get("max_age_days", 365),
+        max_age_days=rss_config.get("max_age_days", 730),
         site_base=config.get("minecraft_api", {}).get("site_base", "https://www.minecraft.net"),
     )
 

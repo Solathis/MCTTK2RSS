@@ -2,6 +2,7 @@
   <img src="logo.png" alt="MCTTK2RSS" width="200" />
   <h1>MCTTK2RSS</h1>
   <p>Minecraft 新闻自动爬取 + 翻译 + RSS 生成</p>
+  <p><strong>我🌿你m，ojang的新闻搜索接口的 sortType=Recent 参数竟然不是根据发布日期排序的🤬</strong></p>
 </div>
 
 基于 [jiubook/MCTTK](https://github.com/jiubook/MCTTK) 的 fork，移除了 BBCode/Markdown 转换和 MCBBS 论坛自动发布功能，改为自动生成 RSS Feed，支持通过 GitHub Actions 和 Docker 部署。
@@ -10,7 +11,7 @@
 
 ## 功能特性
 
-- **自动爬取**：从 Minecraft 官方 API 获取最新新闻，同时支持从 Feedback 网站爬取更新日志
+- **自动爬取**：默认通过 Mojang Piston 版本清单获取最新 Java 更新日志，也支持从 Minecraft 搜索 API 和 Feedback 网站爬取更新日志
 - **Cloudflare 访问控制**：使用 `curl_cffi` 模拟浏览器，并通过请求间隔、challenge 冷却和会话复用减少 Feedback 网站的重复触发；如果运行环境 IP 被 Cloudflare 挑战，程序会停止重试并等待冷却
 - **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译
 - **智能词汇表**：动态检测专业术语，自动添加译名对照到提示词（`glossary.json`）
@@ -269,9 +270,40 @@ docker run -d --name mcttk-rss -p 8080:8080 \
 
 ## 新闻来源
 
-### Minecraft 官方 API
+### Mojang Piston 版本清单（默认，仅 Java 版）
 
-从 `https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search` 获取最新新闻，支持按类型过滤。
+默认启用 `version_manifest`（在 `config.json` 中配置），程序会：
+
+1. 调用 `https://piston-meta.mojang.com/mc/game/version_manifest_v2.json` 获取版本清单
+2. 取最新 N 条（默认 5）版本 ID（如 `26.3-snapshot-7`）
+3. 拼接为官网文章 URL：`https://www.minecraft.net/zh-hans/article/minecraft-{version_id}`
+4. 逐篇解析文章页面并翻译
+
+此方式直接按 Mojang 版本发布顺序获取最新 Java 更新日志，不依赖 Minecraft 搜索 API 的 `sortType` 排序（该参数按索引时间而非发布日期排序，导致旧文章混入）。
+
+```json
+{
+  "version_manifest": {
+    "enabled": true,
+    "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "max_versions": 5,
+    "article_url_template": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}"
+  }
+}
+```
+
+| 字段 | 说明 | 默认值 |
+|------|------|--------|
+| `enabled` | 启用后使用 Piston manifest 获取 Java 更新，关闭则回退到搜索 API | `true` |
+| `manifest_url` | Mojang 版本清单 API 地址 | Piston 官方 URL |
+| `max_versions` | 最多获取的版本数量 | `5` |
+| `article_url_template` | 版本 ID 拼接为文章 URL 的模板，`{version_id}` 为占位符 | zh-hans 官网模板 |
+
+### Minecraft 搜索 API（回退方式）
+
+当 `version_manifest.enabled` 设为 `false` 时，回退到从 `https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search` 获取最新新闻，支持按类型过滤。
+
+> ⚠️ **注意**：搜索 API 的 `sortType=Recent` 参数按索引时间而非文章发布日期排序，可能返回旧文章。推荐使用默认的 Piston manifest 方式。
 
 ### Feedback 网站
 
@@ -372,11 +404,11 @@ Feedback 网站默认也只启用 Java 快照 section，基岩版 section 全部
 ## 处理流程
 
 ```
-Minecraft 官方 API          Feedback 网站
-       ↓                          ↓
-  获取新闻列表              获取各 section 文章列表
-       ↓                          ↓
-  按类型过滤 (news_types)    按 section.enabled 过滤
+Piston 版本清单 (默认)     Minecraft 搜索 API (回退)   Feedback 网站
+       ↓                          ↓                          ↓
+  获取版本列表              获取新闻列表              获取各 section 文章列表
+       ↓                          ↓                          ↓
+  拼接文章 URL + 解析       按类型过滤 (news_types)    按 section.enabled 过滤
        └──────────┬───────────────┘
                   ↓
          检查已处理状态 (.state.json)
@@ -436,6 +468,13 @@ Minecraft 官方 API          Feedback 网站
     "sortType": "Recent",
     "category": "News",
     "site_base": "https://www.minecraft.net"
+  },
+  "version_manifest": {
+    "enabled": true,
+    "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "max_versions": 5,
+    "article_url_template": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+    "locale": "zh-hans"
   },
   "feedback_site": {
     "enabled": true,

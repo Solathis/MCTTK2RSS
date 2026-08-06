@@ -99,6 +99,13 @@ DEFAULT_CONFIG = {
         "category": "News",
         "site_base": "https://www.minecraft.net"
     },
+    "version_manifest": {
+        "enabled": True,
+        "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+        "max_versions": 5,
+        "article_url_template": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+        "locale": "zh-hans"
+    },
     "news_types": {
         "java_release": True,
         "java_snapshot": True,
@@ -989,6 +996,82 @@ def get_latest_news_list(page_size=None, config=None):
 
     except Exception as e:
         print(f"[API] 获取失败: {e}")
+        return []
+
+
+def _version_id_to_url(version_id: str, cfg: dict) -> str:
+    """将 Piston manifest 的 version id 拼接为官网文章 URL。
+
+    version_id 中的英文点号需要转换为连字符
+    （如 26.2 -> minecraft-26-2，26.3-snapshot-7 -> minecraft-26-3-snapshot-7）。
+    """
+    template = cfg.get("version_manifest", {}).get(
+        "article_url_template",
+        "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+    )
+    safe_id = version_id.replace(".", "-")
+    return template.format(version_id=safe_id)
+
+
+def _classify_version_type(version_id: str, version_type: str) -> str:
+    """根据 Piston manifest 版本 ID 和类型分类为 news_types。"""
+    vid = version_id.lower()
+    if version_type == "release":
+        return "java_release"
+    if "-rc-" in vid or vid.endswith("-rc"):
+        return "java_rc"
+    if "-pre" in vid:
+        return "java_prerelease"
+    return "java_snapshot"
+
+
+def get_java_news_from_manifest(config=None):
+    """通过 Piston version manifest 获取最新 Java 版本更新文章列表。
+
+    从 version_manifest_v2.json 读取最新 N 条版本，拼接为官网文章 URL。
+    仅返回文章页 URL 候选列表，实际内容由 process_article 解析。
+    """
+    cfg = config or _get_cfg()
+    vm_cfg = cfg.get("version_manifest", {})
+    manifest_url = vm_cfg.get(
+        "manifest_url", "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
+    )
+    max_versions = int(vm_cfg.get("max_versions", 5))
+    headers = _make_headers(cfg)
+    proxies = _make_proxies(cfg)
+
+    try:
+        print(f"[Manifest] 正在获取版本列表 (最多 {max_versions} 条)...")
+        response = requests.get(
+            manifest_url, headers=headers,
+            timeout=int(cfg["http"].get("timeout", 120)),
+            verify=cfg["http"]["verify_ssl"], proxies=proxies,
+        )
+        response.raise_for_status()
+        versions = response.json().get("versions", [])[:max_versions]
+
+        if not versions:
+            print("[Manifest] 未返回任何版本")
+            return []
+
+        news_list = []
+        for v in versions:
+            version_id = v.get("id", "")
+            version_type = v.get("type", "")
+            article_url = _version_id_to_url(version_id, cfg)
+            news_list.append({
+                "title": f"Minecraft {version_id}",
+                "release_date": "",
+                "url": article_url,
+                "_source": "version_manifest",
+                "_version_type": _classify_version_type(version_id, version_type),
+            })
+
+        print(f"[Manifest] 获取 {len(news_list)} 条 Java 版本候选")
+        return news_list
+
+    except Exception as e:
+        print(f"[Manifest] 获取失败: {e}")
         return []
 
 

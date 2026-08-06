@@ -31,6 +31,7 @@ from scraper import (
     FeedbackScraper,
     classify_news_type,
     download_header_image,
+    get_java_news_from_manifest,
     get_latest_news_list,
     load_config,
     process_article,
@@ -91,15 +92,25 @@ def save_state(state_file: str, state: dict):
 
 
 def _fetch_all_news(config: dict) -> list:
-    """获取所有来源的新闻（API + Feedback），合并返回"""
+    """获取所有来源的新闻（版本清单 + API 搜索 + Feedback），合并返回。"""
     all_news = []
+    vm_cfg = config.get("version_manifest", {})
+    api_cfg = config.get("minecraft_api", {})
 
-    page_size = config.get("minecraft_api", {}).get("pageSize", 10)
-    api_news = filter_news_by_types(get_latest_news_list(page_size=page_size, config=config), config)
-    for news in api_news:
-        news['_source'] = 'minecraft_api'
-    all_news.extend(api_news)
-    print(f"[主] API 新闻: {len(api_news)} 条")
+    # Java 版本发现：优先使用 Piston manifest，关闭时回退到 Search API
+    if vm_cfg.get("enabled", True):
+        java_news = get_java_news_from_manifest(config=config)
+        for news in java_news:
+            news["_source"] = "version_manifest"
+        all_news.extend(java_news)
+        print(f"[主] Manifest Java 版本: {len(java_news)} 条")
+    else:
+        page_size = api_cfg.get("pageSize", 10)
+        api_news = filter_news_by_types(get_latest_news_list(page_size=page_size, config=config), config)
+        for news in api_news:
+            news["_source"] = "minecraft_api"
+        all_news.extend(api_news)
+        print(f"[主] API 新闻: {len(api_news)} 条")
 
     feedback_config = config.get('feedback_site', {})
     if feedback_config.get('enabled', False):
@@ -140,12 +151,19 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
     Returns:
         (new_news, state, posted_urls) 或 None（首次运行跳过）
     """
+    vm_items = [n for n in all_news if n.get('_source') == 'version_manifest']
     api_items = [n for n in all_news if n.get('_source') == 'minecraft_api']
     feedback_items = _filter_feedback_by_sections(
         [n for n in all_news if n.get('_source') == 'feedback'], config
     )
+
+    # Manifest 来源已按 version_type 分类，直接按 news_types 过滤
+    filtered_vm = [
+        n for n in vm_items
+        if config.get('news_types', {}).get(n.get('_version_type', 'java_snapshot'), True)
+    ]
     filtered_api = filter_news_by_types(api_items, config)
-    filtered = filtered_api + feedback_items
+    filtered = filtered_vm + filtered_api + feedback_items
 
     state = load_state(state_file)
     posted_urls = set(state.get("posted_urls", []))
@@ -185,6 +203,9 @@ def _process_single_article(news: dict, config: dict, save_dir: str) -> tuple | 
     source = news.get('_source', 'minecraft_api')
     full_data = process_feedback_news(news, config) if source == 'feedback' else process_article(news, config=config)
     if not full_data:
+        # version_manifest 来源失败时不应标记为已处理，允许后续重试
+        if source == 'version_manifest':
+            return 'skip'
         print("[主] 文章处理失败，跳过")
         return None
 
@@ -242,7 +263,12 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
         print("\n[Dry Run] 新新闻列表：")
         for i, news in enumerate(new_news, 1):
             source = news.get('_source', 'minecraft_api')
-            ntype = classify_news_type(news['title']) if source == 'minecraft_api' else 'feedback'
+            if source == 'minecraft_api':
+                ntype = classify_news_type(news['title'])
+            elif source == 'version_manifest':
+                ntype = news.get('_version_type', 'java_snapshot')
+            else:
+                ntype = 'feedback'
             print(f"  {i}. [{source}][{ntype}] {news['title']}")
             print(f"     {news['url']}")
         return []
@@ -256,10 +282,11 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
 
         try:
             item = _process_single_article(news, config, save_dir)
-            posted_urls.add(news['url'])
+            if item != 'skip':
+                posted_urls.add(news['url'])
             state["posted_urls"] = list(posted_urls)
             save_state(state_file, state)
-            if item:
+            if item and item != 'skip':
                 processed.append(item)
         except Exception as e:
             print(f"[主] 处理异常: {e}")

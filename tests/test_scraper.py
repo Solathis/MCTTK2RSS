@@ -7,14 +7,17 @@ import pytest
 
 from scraper import (
     _chunk_items_for_translation,
+    _classify_version_type,
     _deep_merge,
     _is_recent_article,
     _normalize_whitespace,
     _parse_pattern,
+    _version_id_to_url,
     blocks_to_plaintext,
     build_glossary_prompt,
     classify_news_type,
     find_relevant_terms,
+    get_java_news_from_manifest,
     load_config,
     load_glossary,
     reindex_blocks,
@@ -456,3 +459,113 @@ def test_feedback_challenge_stops_retries_and_enters_cooldown(monkeypatch):
     assert feedback_scraper.fetch_page("/first") is None
     assert feedback_scraper.fetch_page("/second") is None
     assert session.calls == 1
+
+
+# ── _version_id_to_url ─────────────────────────────
+
+class TestVersionIdToUrl:
+    def test_has_dash_already(self):
+        cfg = {"version_manifest": {}}
+        url = _version_id_to_url("26.3-snapshot-7", cfg)
+        assert url == "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-7"
+
+    def test_dot_converted_to_dash(self):
+        cfg = {"version_manifest": {}}
+        url = _version_id_to_url("26.2", cfg)
+        assert url == "https://www.minecraft.net/zh-hans/article/minecraft-26-2"
+
+    def test_custom_template(self):
+        cfg = {"version_manifest": {
+            "article_url_template": "https://example.test/en-us/article/mc-{version_id}"
+        }}
+        url = _version_id_to_url("1.21", cfg)
+        assert url == "https://example.test/en-us/article/mc-1-21"
+
+    def test_empty_version_id(self):
+        cfg = {"version_manifest": {}}
+        url = _version_id_to_url("", cfg)
+        assert url == "https://www.minecraft.net/zh-hans/article/minecraft-"
+
+
+# ── _classify_version_type ─────────────────────────
+
+class TestClassifyVersionType:
+    @pytest.mark.parametrize("version_id,version_type,expected", [
+        ("26.3-snapshot-7", "snapshot", "java_snapshot"),
+        ("26.2", "release", "java_release"),
+        ("26.2-rc-1", "snapshot", "java_rc"),
+        ("26.2-rc-2", "snapshot", "java_rc"),
+        ("26.2-pre-5", "snapshot", "java_prerelease"),
+        ("1.21-pre-1", "snapshot", "java_prerelease"),
+    ])
+    def test_classify(self, version_id, version_type, expected):
+        assert _classify_version_type(version_id, version_type) == expected
+
+
+# ── get_java_news_from_manifest ─────────────────────
+
+def test_get_java_news_from_manifest(monkeypatch):
+    import scraper as scraper_module
+
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {
+                "versions": [
+                    {"id": "26.3-snapshot-7", "type": "snapshot"},
+                    {"id": "26.2", "type": "release"},
+                    {"id": "26.2-rc-1", "type": "snapshot"},
+                    {"id": "26.2-pre-3", "type": "snapshot"},
+                    {"id": "26.2-pre-2", "type": "snapshot"},
+                    {"id": "26.2-pre-1", "type": "snapshot"},
+                ]
+            }
+
+    monkeypatch.setattr(scraper_module.requests, "get", lambda *a, **kw: FakeResponse())
+
+    config = {
+        "version_manifest": {
+            "enabled": True,
+            "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+            "max_versions": 3,
+            "article_url_template": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+        },
+        "http": {
+            "timeout": 10, "verify_ssl": True, "proxies": {},
+            "user_agent": "test", "accept": "application/json",
+        },
+    }
+
+    result = get_java_news_from_manifest(config=config)
+
+    assert len(result) == 3
+    assert result[0]["url"] == "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-7"
+    assert result[0]["_source"] == "version_manifest"
+    assert result[0]["_version_type"] == "java_snapshot"
+    assert result[1]["_version_type"] == "java_release"
+    assert result[1]["url"] == "https://www.minecraft.net/zh-hans/article/minecraft-26-2"
+    assert result[2]["_version_type"] == "java_rc"
+
+
+def test_get_java_news_from_manifest_empty(monkeypatch):
+    import scraper as scraper_module
+
+    class FakeResponse:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"versions": []}
+
+    monkeypatch.setattr(scraper_module.requests, "get", lambda *a, **kw: FakeResponse())
+
+    config = {
+        "version_manifest": {"max_versions": 5},
+        "http": {"timeout": 10, "verify_ssl": True, "proxies": {},
+                 "user_agent": "test", "accept": "application/json"},
+    }
+
+    result = get_java_news_from_manifest(config=config)
+    assert result == []

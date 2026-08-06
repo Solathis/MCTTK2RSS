@@ -14,14 +14,15 @@
 - 新增 JSON Schema 结构化输出支持
 - 新增 server.py（容器内置 HTTP 服务器）
 - 新增 scheduler.py cron 调度
+- **新增 Piston 版本清单发现**：通过 Mojang `version_manifest_v2.json` 获取最新 Java 版本更新日志，替代不可靠的搜索 API `sortType=Recent` 排序
 
 **我们希望持续接收上游的更新**：
-- `scraper.py`（包含本项目的配置驱动、Java-only 新闻过滤、API 候选窗口、翻译和 Feedback 节流逻辑；上游更新需人工检查后合并）
+- `scraper.py`（包含本项目的配置驱动、Java-only 新闻过滤、Piston manifest 发现、API 候选窗口、翻译和 Feedback 节流逻辑；上游更新需人工检查后合并）
 - `glossary.json`（专业术语词汇表）
 - `utils.py`（公共工具，如 `classify_article_type`）
 - `log_setup.py`（日志系统）
 
-**保护原则**：`main.py`、`config.json`、`scraper.py` 和 workflow 都已标记为 `merge=ours`。普通 `git merge upstream/main` 不会覆盖这些文件；上游的 `scraper.py` 爬取更新需要通过 diff 人工挑选，避免覆盖 Java-only 过滤、pageSize 和配置驱动逻辑。
+**保护原则**：`main.py`、`config.json`、`scraper.py` 和 workflow 都已标记为 `merge=ours`。普通 `git merge upstream/main` 不会覆盖这些文件；上游的 `scraper.py` 爬取更新需要通过 diff 人工挑选，避免覆盖 Java-only 过滤、Piston manifest 发现、pageSize 和配置驱动逻辑。
 
 ```
 upstream/main (jiubook/MCTTK)      origin/main (Solathis/MCTTK2RSS)
@@ -114,6 +115,12 @@ if env_var:
 - 应兼容 `{"translations": [...]}` 和直接 `[...]` 两种返回格式
 - 应支持 `response_schema` 参数传入 `translate_text`
 
+同时检查 `get_java_news_from_manifest` 函数是否存在：
+- 应从 `version_manifest_v2.json` 获取版本列表
+- 应拼接为 `https://www.minecraft.net/zh-hans/article/minecraft-{version_id}` URL
+- 应使用 `_classify_version_type` 分类版本类型
+- `main.py` 中应优先调用此函数获取 Java 更新（`version_manifest.enabled` 为 true 时）
+
 如果上游覆盖了这些增强，需手动恢复。
 
 ### 5. 替代方案：cherry-pick 上游的 scraper.py
@@ -146,7 +153,7 @@ git push origin main
 | `.github/workflows/rss-publish.yml` | `merge=ours` | 我们的 RSS 发布 workflow |
 | `.github/workflows/docker-build.yml` | `merge=ours` | 我们的 Docker 构建 workflow |
 | `UPSTREAM_SYNC.md` | `merge=ours` | 本文档 |
-| `scraper.py` | `merge=ours` | 包含 Java-only 过滤、API 候选窗口、配置驱动、结构化翻译和 Feedback 节流逻辑；上游更新需人工移植 |
+| `scraper.py` | `merge=ours` | 包含 Java-only 过滤、Piston manifest 发现、API 候选窗口、配置驱动、结构化翻译和 Feedback 节流逻辑；上游更新需人工移植 |
 | `glossary.json` | 正常合并 | 词汇表由上游维护 |
 | `utils.py` | 正常合并 | 工具函数由上游维护 |
 | `log_setup.py` | 正常合并 | 日志系统由上游维护 |

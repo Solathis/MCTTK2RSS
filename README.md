@@ -433,7 +433,6 @@ Minecraft 官方 API          Feedback 网站
   "minecraft_api": {
     "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
     "pageSize": 10,
-    "page_count": 3,
     "sortType": "recent",
     "category": "News",
     "site_base": "https://www.minecraft.net"

@@ -368,7 +368,7 @@ class TestLoadGlossary:
         assert result["terms"]["玖布克"] == "1501743"
 
 
-def test_latest_api_reads_the_last_pages(monkeypatch):
+def test_latest_api_reads_only_the_first_page(monkeypatch):
     import scraper as scraper_module
 
     calls = []
@@ -398,7 +398,6 @@ def test_latest_api_reads_the_last_pages(monkeypatch):
         "minecraft_api": {
             "search_url": "https://example.test/search",
             "pageSize": 10,
-            "page_count": 3,
             "sortType": "recent",
             "category": "News",
             "site_base": "https://www.minecraft.net",
@@ -414,8 +413,8 @@ def test_latest_api_reads_the_last_pages(monkeypatch):
 
     result = scraper_module.get_latest_news_list(config=config)
 
-    assert calls == [1, 8, 9, 10]
-    assert [item["title"] for item in result] == ["article-8", "article-9", "article-10"]
+    assert calls == [1]
+    assert [item["title"] for item in result] == ["article-1"]
 
     config = {"rss": {"max_age_days": 365}}
 

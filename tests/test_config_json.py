@@ -73,7 +73,6 @@ class TestConfigStructure:
 
     def test_api_sort_type_uses_recent_order(self, config):
         assert config["minecraft_api"]["sortType"] == "recent"
-        assert config["minecraft_api"]["page_count"] == 3
 
     def test_api_fetch_window(self, config):
         assert config["minecraft_api"]["pageSize"] == 10

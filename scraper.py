@@ -95,7 +95,6 @@ DEFAULT_CONFIG = {
     "minecraft_api": {
         "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
         "pageSize": 10,
-        "page_count": 3,
         "sortType": "recent",
         "category": "News",
         "site_base": "https://www.minecraft.net"
@@ -943,37 +942,23 @@ def get_latest_news_list(page_size=None, config=None):
     cfg = config or _get_cfg()
     api_url = cfg["minecraft_api"]["search_url"]
     page_size = page_size or cfg["minecraft_api"]["pageSize"]
-    page_count = int(cfg["minecraft_api"].get("page_count", 3))
     params = {
         "pageSize": page_size,
         "sortType": cfg["minecraft_api"]["sortType"],
         "category": cfg["minecraft_api"]["category"],
+        "page": 1,
     }
     headers = _make_headers(cfg)
     proxies = _make_proxies(cfg)
 
     try:
-        print(f"[API] 正在获取新闻列表 (pageSize={page_size}, pages={page_count})...")
-
-        def fetch_page(page_number):
-            page_params = {**params, "page": page_number}
-            response = requests.get(
-                api_url, params=page_params, headers=headers,
-                timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
-            )
-            response.raise_for_status()
-            return response.json().get("result", {})
-
-        first_result = fetch_page(1)
-        first_items = first_result.get("results", [])
-        num_found = int(first_result.get("numFound", 0))
-        last_page = max(1, (num_found + page_size - 1) // page_size)
-        start_page = max(1, last_page - page_count + 1)
-        items = first_items if start_page == 1 else []
-        for page in range(start_page, last_page + 1):
-            if page == 1:
-                continue
-            items.extend(fetch_page(page).get("results", []))
+        print(f"[API] 正在获取新闻列表 (pageSize={page_size}, page=1)...")
+        response = requests.get(
+            api_url, params=params, headers=headers,
+            timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
+        )
+        response.raise_for_status()
+        items = response.json().get("result", {}).get("results", [])
 
         if not items:
             print("[API] 未返回任何新闻")

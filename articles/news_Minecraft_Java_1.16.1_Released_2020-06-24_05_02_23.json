@@ -1,0 +1,94 @@
+{
+  "title": "Minecraft Java 1.16.1 Released",
+  "translated_title": "Minecraft Java 1.16.1 版本已经发布",
+  "release_date": "2020-06-24T05:02:23Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-1-16-1",
+  "author": "Adrian Östergård",
+  "imageAltText": "",
+  "description": "Minecraft Java Edition 1.16.1",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/screenshots/Minecraft-1-16-1-header.png",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "We're now releasing 1.16.1 for Minecraft: Java Edition. This version fixes stability issues with Realms.",
+      "translated_text": "我们现在已经为 Minecraft: Java版发布了1.16.1版本。此版本修复了与‘Realms’相关的稳定性问题。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Looking for all the new stuff in the Nether Update release? You can check out [this post](https://www.minecraft.net/en-us/article/nether-update-java) to read about all the new things!",
+      "translated_text": "想要了解下界更新中的所有新内容吗？您可以查看[这篇文章](https://www.minecraft.net/en-us/article/nether-update-java)来了解更多详情！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "GET THE RELEASE",
+      "translated_text": "立即下载更新版本！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "p",
+      "source_text": "​To install the release, open up the [Minecraft Launcher](https://www.minecraft.net/download) and click play! Make sure your Launcher is set to the \"Latest Release\" option.",
+      "translated_text": "要安装更新版本，请打开[Minecraft启动器](https://www.minecraft.net/download)并点击‘开始游戏’（play）！确保您的启动器设置为‘最新版本’（Latest Release）选项。",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://launcher.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://launcher.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "请在此处报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker!](https://bugs.mojang.com/projects/MC/summary)",
+      "translated_text": "[Minecraft问题跟踪器！](https://bugs.mojang.com/projects/MC/summary)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Head over to our  [feedback website](https://feedback.minecraft.net/)  or come chat with us about it on the  [official Minecraft Discord](https://discord.gg/Minecraft) .",
+      "translated_text": "请访问我们的[反馈网站](https://feedback.minecraft.net/)，或者在我们[官方 Minecraft Discord 频道](https://discord.gg/Minecraft)上与我们讨论这个问题。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "We're now releasing 1.16.1 for Minecraft: Java Edition. This version fixes stability issues with Realms.\n\nLooking for all the new stuff in the Nether Update release? You can check out [this post](https://www.minecraft.net/en-us/article/nether-update-java) to read about all the new things!\n\nGET THE RELEASE\n\n​To install the release, open up the [Minecraft Launcher](https://www.minecraft.net/download) and click play! Make sure your Launcher is set to the \"Latest Release\" option.\n\nCross-platform server jar:\n\n[Minecraft server jar](https://launcher.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker!](https://bugs.mojang.com/projects/MC/summary)\n\nWant to give feedback?\n\nHead over to our  [feedback website](https://feedback.minecraft.net/)  or come chat with us about it on the  [official Minecraft Discord](https://discord.gg/Minecraft) .",
+  "translated_content": "我们现在已经为 Minecraft: Java版发布了1.16.1版本。此版本修复了与‘Realms’相关的稳定性问题。\n\n想要了解下界更新中的所有新内容吗？您可以查看[这篇文章](https://www.minecraft.net/en-us/article/nether-update-java)来了解更多详情！\n\n立即下载更新版本！\n\n要安装更新版本，请打开[Minecraft启动器](https://www.minecraft.net/download)并点击‘开始游戏’（play）！确保您的启动器设置为‘最新版本’（Latest Release）选项。\n\n跨平台服务器JAR文件：\n\n[Minecraft服务器JAR文件](https://launcher.mojang.com/v1/objects/a412fd69db1f81db3f511c1463fd304675244077/server.jar)\n\n请在此处报告错误：\n\n[Minecraft问题跟踪器！](https://bugs.mojang.com/projects/MC/summary)\n\n想要提供反馈吗？\n\n请访问我们的[反馈网站](https://feedback.minecraft.net/)，或者在我们[官方 Minecraft Discord 频道](https://discord.gg/Minecraft)上与我们讨论这个问题。",
+  "source": "minecraft_api"
+}

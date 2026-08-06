@@ -1,0 +1,532 @@
+{
+  "title": "Minecraft 26.3 Snapshot 5",
+  "translated_title": "Minecraft 26.3 快照 5",
+  "release_date": "2026-07-21T13:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-5",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-5/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Happy Snapshot day! Today we are shipping the 5th snapshot of 26.3 with a fresh batch of updates and improvements.",
+      "translated_text": "亲爱的玩家， snapshot 日快乐！今天我们发布了 26.3 版本的第五个快照，其中包含了许多新的更新和改进。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "采矿愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术变更",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "The Data Pack version is now 112.0",
+      "translated_text": "数据包（Data Pack）的版本现在已经是 112.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 93.0",
+      "translated_text": "资源包（Resource Pack）的版本现在已经是 93.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "h2",
+      "source_text": "Data Pack Version 112.0",
+      "translated_text": "数据包版本 112.0",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Codec for element lists/tags now allows mixing inline values and references",
+      "translated_text": "元素列表/标签的编码方式现在支持内联值和引用的混合使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "For example, item modifiers like [{type:set_count, ...}, \"minecraft:some_modifier\"] are now allowed",
+      "translated_text": "例如，像 [{type:set_count, ...}, \"minecraft:somemodifier\"] 这样的物品修饰符现在被允许使用了",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成（World Generation）",
+      "meta": {}
+    },
+    {
+      "id": "b0010",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "text",
+      "source_text": "minecraft:sculk_patch",
+      "translated_text": "minecraft:sculk_patch",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Removed extra_rare_growths and catalyst_chance fields",
+      "translated_text": "移除了 extra_rare_growths 和 catalyst_chance 字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "h2",
+      "source_text": "Resource Pack Version 93.0",
+      "translated_text": "资源包版本 93.0",
+      "meta": {}
+    },
+    {
+      "id": "b0015",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器和后处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0016",
+      "type": "h4",
+      "source_text": "Order-independent Transparency (OIT)-related Shader Changes",
+      "translated_text": "与 Order-Independent Transparency (OIT) 相关的着色器更改",
+      "meta": {}
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "The B3D_IS_ZERO_TO_ONE define has been renamed to RENDERPEARL_IS_ZERO_TO_ONE",
+      "translated_text": "B3D_IS_ZERO_TO_ONE 的定义已更改为 RENDERPEARL_IS_ZERO_TO_ONE",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h4",
+      "source_text": "Shader Compilation Changes",
+      "translated_text": "着色器编译更改",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Shaders are now compiled by ShaderC when using OpenGL as well, identically to when using Vulkan",
+      "translated_text": "现在在使用 OpenGL 时，着色器也会由 ShaderC 进行编译，与使用 Vulkan 时的方式相同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "Shader includes are now handled by ShaderC using #include instead of #moj_import",
+      "translated_text": "着色器的包含文件现在通过 #include 而不是 #moj_import 来处理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Shader inputs and outputs must have a location specified in shader source",
+      "translated_text": "着色器的输入和输出必须在着色器源代码中指定位置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Vertex input names must still match expected names.",
+      "translated_text": "顶点输入名称必须与预期名称保持一致",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Vertex outputs are matched to fragment inputs solely by location, name is now ignored.",
+      "translated_text": "顶点输出现在仅通过位置与片段输出进行匹配，名称被忽略",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Introduced new define RENDERPEARL_INSTANCE_INDEX_INCLUDES_BASE_INSTANCE - A boolean indicating if gl_InstanceIndex follows Vulkan or OpenGL ( gl_InstanceID ) semantics",
+      "translated_text": "新增了 define RENDERPEARL_INSTANCE_INDEX_INCLUDES_BASE_INSTANCE - 一个布尔值，用于指示 gl_InstanceIndex 是遵循 Vulkan 还是 OpenGL（gl_InstanceID）的语义",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *Vertex inputs in previous versions using OpenGL were not allowed to specify a location. Compatability can be preserved by only specifying locations when the \"VULKAN\" macro is defined.*",
+      "translated_text": "**开发者注**：*在之前的版本中，使用 OpenGL 的顶点输入不允许指定位置。如果定义了 \"VULKAN\" 宏，可以通过仅指定位置来保留兼容性。*",
+      "meta": {}
+    },
+    {
+      "id": "b0026",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *Vertex outputs and fragment inputs in previous versions were matched based on name alone. Compatability can be preserved by continuing to use identical names.*",
+      "translated_text": "**开发者注**：*在之前的版本中，顶点输出和片段输出仅通过名称进行匹配。继续使用相同的名称可以保留兼容性。*",
+      "meta": {}
+    },
+    {
+      "id": "b0027",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 5",
+      "translated_text": "修复了 26.3 快照 5 中的错误",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "[MC-5269](https://bugs.mojang.com/browse/MC-5269) - Updating a server's address in the multiplayer menu does not update its status",
+      "translated_text": "[MC-5269](https://bugs.mojang.com/browse/MC-5269) - 在多人游戏菜单中更新服务器地址后，该服务器的状态并不会随之更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "[MC-278771](https://bugs.mojang.com/browse/MC-278771) - The incorrect command context is used when providing suggestions for redirected commands",
+      "translated_text": "[MC-278771](https://bugs.mojang.com/browse/MC-278771) - 在为重定向命令提供提示时，使用了错误的命令上下文",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "[MC-293755](https://bugs.mojang.com/browse/MC-293755) - The ender dragon's neck and tail disconnect from its body when it turns",
+      "translated_text": "[MC-293755] - 埃ン더 드래곤在转身时，它的脖子和尾巴会与身体分离",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "[MC-306628](https://bugs.mojang.com/browse/MC-306628) - TNT minecarts don't delete piercing arrows",
+      "translated_text": "[MC-306628] - TNT火车无法删除穿透箭矢",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "[MC-307918](https://bugs.mojang.com/browse/MC-307918) - Sculk patches can cause errors in the log during world generation",
+      "translated_text": "[MC-307918] - Sculk补丁在世界生成过程中可能导致日志出现错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "[MC-308344](https://bugs.mojang.com/browse/MC-308344) - Validation error when compiling shaders containing in/out array or matrix variables with the Vulkan rendering backend",
+      "translated_text": "[MC-308344] - 在使用Vulkan渲染后端编译包含in/out数组或矩阵变量的着色器时，会出现验证错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "[MC-308406](https://bugs.mojang.com/browse/MC-308406) - Item models are shown incorrectly in the smithing table menu's armor stand",
+      "translated_text": "[MC-308406](https://bugs.mojang.com/browse/MC-308406) - 在锻造台菜单的装甲展示区中，物品模型显示不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "[MC-308647](https://bugs.mojang.com/browse/MC-308647) - The resource packs screen can cache font glyphs incorrectly after toggling the \"Font Settings\" option",
+      "translated_text": "[MC-308647](https://bugs.mojang.com/browse/MC-308647) - 在切换“字体设置”选项后，资源包界面可能会错误地缓存字体图标",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "[MC-309250](https://bugs.mojang.com/browse/MC-309250) - Naturally generated decorated pots don't drop bricks when broken with tools",
+      "translated_text": "[MC-309250] - 自然生成的装饰性陶罐在用工具破坏时不会掉落砖块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "[MC-309298](https://bugs.mojang.com/browse/MC-309298) - Sending chat messages while having the \"Chat Delay\" option set to a nonzero value can sometimes kick you from the game",
+      "translated_text": "[MC-309298] - 当“聊天延迟”选项设置为非零值时发送聊天信息有时会导致玩家被踢出游戏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "[MC-309500](https://bugs.mojang.com/browse/MC-309500) - Crafting decorated pots without sherds using the recipe book creates a pot that doesn't drop bricks when broken with a tool",
+      "translated_text": "[MC-309500] - 使用制作书制作装饰性陶罐时，如果不需要碎片，制作出的陶罐在用工具破坏时也不会掉落砖块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "[MC-309565](https://bugs.mojang.com/browse/MC-309565) - Block outlines are rendered behind translucent elements if the \"High Contrast Block Outlines\" option is enabled",
+      "translated_text": "[MC-309565](https://bugs.mojang.com/browse/MC-309565) - 如果启用了“高对比度区块轮廓”选项，区块轮廓会显示在半透明元素后面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "[MC-309566](https://bugs.mojang.com/browse/MC-309566) - Block outlines are rendered behind translucent elements if the \"Improved Transparency\" option is disabled",
+      "translated_text": "[MC-309566](https://bugs.mojang.com/browse/MC-309566) - 如果禁用了“改进透明度”选项，区块轮廓会显示在半透明元素后面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "[MC-309743](https://bugs.mojang.com/browse/MC-309743) - The attacking animation of drowned is incorrect",
+      "translated_text": "[MC-309743](https://bugs.mojang.com/browse/MC-309743) - 满水的怪物攻击动画不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "[MC-310041](https://bugs.mojang.com/browse/MC-310041) - Under specific conditions, chunk loading frequently fails",
+      "translated_text": "[MC-310041](https://bugs.mojang.com/browse/MC-310041) - 在特定条件下，区块加载会频繁失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "[MC-310096](https://bugs.mojang.com/browse/MC-310096) - Invalid item modifiers crash the game",
+      "translated_text": "[MC-310096](https://bugs.mojang.com/browse/MC-310096) - 无效的物品修饰符会导致游戏崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "[MC-310098](https://bugs.mojang.com/browse/MC-310098) - Trying to mix item modifier references and inline values in a list prevents the pack from loading",
+      "translated_text": "[MC-310098](https://bugs.mojang.com/browse/MC-310098) - 在列表中尝试混合使用物品修饰符引用和内联值会导致资料包无法加载",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "[MC-310125](https://bugs.mojang.com/browse/MC-310125) - Blaze powder in brewing stands uses the cooking/speed_default number provider instead of brewing/speed_default",
+      "translated_text": "[MC-310125] - 在酿造台中使用火焰药时，系统会引用烹饪技能/默认速度的数值，而非酿造技能/默认速度的数值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "[MC-310133](https://bugs.mojang.com/browse/MC-310133) - Gurgles do not aim their tridents correctly",
+      "translated_text": "[MC-310133] - 幼年溺尸（Gurgles）无法正确瞄准它们的三叉戟",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "[MC-310135](https://bugs.mojang.com/browse/MC-310135) - The server crashes when requesting command suggestions for /attribute referenced from /execute",
+      "translated_text": "[MC-310135] - 当从 `/execute` 命令中引用 `/attribute` 时，服务器会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "[MC-310149](https://bugs.mojang.com/browse/MC-310149) - Glass flickers when looking at it closely with the Vulkan rendering backend and the \"Improved Transparency\" option enabled",
+      "translated_text": "[MC-310149] - 在启用 Vulkan 渲染引擎和“强化透明度”选项的情况下，观察玻璃时玻璃会出现闪烁现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "[MC-310163](https://bugs.mojang.com/browse/MC-310163) - The game crashes when entering exclusive fullscreen on Wayland",
+      "translated_text": "[MC-310163] - 在 Wayland 显示模式下进入全屏模式时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取该快照",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/bc881a3fc6e63c490e614ab3bf9c43adc0449ab2/server.jar)",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Happy Snapshot day! Today we are shipping the 5th snapshot of 26.3 with a fresh batch of updates and improvements.\n\nHappy mining!\n\nTechnical Changes\n\nThe Data Pack version is now 112.0\n\nThe Resource Pack version is now 93.0\n\nData Pack Version 112.0\n\nCodec for element lists/tags now allows mixing inline values and references\n\nFor example, item modifiers like [{type:set_count, ...}, \"minecraft:some_modifier\"] are now allowed\n\nWorld Generation\n\nFeatures\n\nChanged\n\nminecraft:sculk_patch\n\nRemoved extra_rare_growths and catalyst_chance fields\n\nResource Pack Version 93.0\n\nShaders & Post-process Effects\n\nOrder-independent Transparency (OIT)-related Shader Changes\n\nThe B3D_IS_ZERO_TO_ONE define has been renamed to RENDERPEARL_IS_ZERO_TO_ONE\n\nShader Compilation Changes\n\nShaders are now compiled by ShaderC when using OpenGL as well, identically to when using Vulkan\n\nShader includes are now handled by ShaderC using #include instead of #moj_import\n\nShader inputs and outputs must have a location specified in shader source\n\nVertex input names must still match expected names.\n\nVertex outputs are matched to fragment inputs solely by location, name is now ignored.\n\nIntroduced new define RENDERPEARL_INSTANCE_INDEX_INCLUDES_BASE_INSTANCE - A boolean indicating if gl_InstanceIndex follows Vulkan or OpenGL ( gl_InstanceID ) semantics\n\n**Developer's Note**: *Vertex inputs in previous versions using OpenGL were not allowed to specify a location. Compatability can be preserved by only specifying locations when the \"VULKAN\" macro is defined.*\n\n**Developer's Note**: *Vertex outputs and fragment inputs in previous versions were matched based on name alone. Compatability can be preserved by continuing to use identical names.*\n\nFixed bugs in 26.3 Snapshot 5\n\n[MC-5269](https://bugs.mojang.com/browse/MC-5269) - Updating a server's address in the multiplayer menu does not update its status\n\n[MC-278771](https://bugs.mojang.com/browse/MC-278771) - The incorrect command context is used when providing suggestions for redirected commands\n\n[MC-293755](https://bugs.mojang.com/browse/MC-293755) - The ender dragon's neck and tail disconnect from its body when it turns\n\n[MC-306628](https://bugs.mojang.com/browse/MC-306628) - TNT minecarts don't delete piercing arrows\n\n[MC-307918](https://bugs.mojang.com/browse/MC-307918) - Sculk patches can cause errors in the log during world generation\n\n[MC-308344](https://bugs.mojang.com/browse/MC-308344) - Validation error when compiling shaders containing in/out array or matrix variables with the Vulkan rendering backend\n\n[MC-308406](https://bugs.mojang.com/browse/MC-308406) - Item models are shown incorrectly in the smithing table menu's armor stand\n\n[MC-308647](https://bugs.mojang.com/browse/MC-308647) - The resource packs screen can cache font glyphs incorrectly after toggling the \"Font Settings\" option\n\n[MC-309250](https://bugs.mojang.com/browse/MC-309250) - Naturally generated decorated pots don't drop bricks when broken with tools\n\n[MC-309298](https://bugs.mojang.com/browse/MC-309298) - Sending chat messages while having the \"Chat Delay\" option set to a nonzero value can sometimes kick you from the game\n\n[MC-309500](https://bugs.mojang.com/browse/MC-309500) - Crafting decorated pots without sherds using the recipe book creates a pot that doesn't drop bricks when broken with a tool\n\n[MC-309565](https://bugs.mojang.com/browse/MC-309565) - Block outlines are rendered behind translucent elements if the \"High Contrast Block Outlines\" option is enabled\n\n[MC-309566](https://bugs.mojang.com/browse/MC-309566) - Block outlines are rendered behind translucent elements if the \"Improved Transparency\" option is disabled\n\n[MC-309743](https://bugs.mojang.com/browse/MC-309743) - The attacking animation of drowned is incorrect\n\n[MC-310041](https://bugs.mojang.com/browse/MC-310041) - Under specific conditions, chunk loading frequently fails\n\n[MC-310096](https://bugs.mojang.com/browse/MC-310096) - Invalid item modifiers crash the game\n\n[MC-310098](https://bugs.mojang.com/browse/MC-310098) - Trying to mix item modifier references and inline values in a list prevents the pack from loading\n\n[MC-310125](https://bugs.mojang.com/browse/MC-310125) - Blaze powder in brewing stands uses the cooking/speed_default number provider instead of brewing/speed_default\n\n[MC-310133](https://bugs.mojang.com/browse/MC-310133) - Gurgles do not aim their tridents correctly\n\n[MC-310135](https://bugs.mojang.com/browse/MC-310135) - The server crashes when requesting command suggestions for /attribute referenced from /execute\n\n[MC-310149](https://bugs.mojang.com/browse/MC-310149) - Glass flickers when looking at it closely with the Vulkan rendering backend and the \"Improved Transparency\" option enabled\n\n[MC-310163](https://bugs.mojang.com/browse/MC-310163) - The game crashes when entering exclusive fullscreen on Wayland\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/bc881a3fc6e63c490e614ab3bf9c43adc0449ab2/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "亲爱的玩家， snapshot 日快乐！今天我们发布了 26.3 版本的第五个快照，其中包含了许多新的更新和改进。\n\n采矿愉快！\n\n技术变更\n\n数据包（Data Pack）的版本现在已经是 112.0\n\n资源包（Resource Pack）的版本现在已经是 93.0\n\n数据包版本 112.0\n\n元素列表/标签的编码方式现在支持内联值和引用的混合使用\n\n例如，像 [{type:set_count, ...}, \"minecraft:somemodifier\"] 这样的物品修饰符现在被允许使用了\n\n世界生成（World Generation）\n\n新功能\n\n已更改\n\nminecraft:sculk_patch\n\n移除了 extra_rare_growths 和 catalyst_chance 字段\n\n资源包版本 93.0\n\n着色器和后处理效果\n\n与 Order-Independent Transparency (OIT) 相关的着色器更改\n\nB3D_IS_ZERO_TO_ONE 的定义已更改为 RENDERPEARL_IS_ZERO_TO_ONE\n\n着色器编译更改\n\n现在在使用 OpenGL 时，着色器也会由 ShaderC 进行编译，与使用 Vulkan 时的方式相同\n\n着色器的包含文件现在通过 #include 而不是 #moj_import 来处理\n\n着色器的输入和输出必须在着色器源代码中指定位置\n\n顶点输入名称必须与预期名称保持一致\n\n顶点输出现在仅通过位置与片段输出进行匹配，名称被忽略\n\n新增了 define RENDERPEARL_INSTANCE_INDEX_INCLUDES_BASE_INSTANCE - 一个布尔值，用于指示 gl_InstanceIndex 是遵循 Vulkan 还是 OpenGL（gl_InstanceID）的语义\n\n**开发者注**：*在之前的版本中，使用 OpenGL 的顶点输入不允许指定位置。如果定义了 \"VULKAN\" 宏，可以通过仅指定位置来保留兼容性。*\n\n**开发者注**：*在之前的版本中，顶点输出和片段输出仅通过名称进行匹配。继续使用相同的名称可以保留兼容性。*\n\n修复了 26.3 快照 5 中的错误\n\n[MC-5269](https://bugs.mojang.com/browse/MC-5269) - 在多人游戏菜单中更新服务器地址后，该服务器的状态并不会随之更新\n\n[MC-278771](https://bugs.mojang.com/browse/MC-278771) - 在为重定向命令提供提示时，使用了错误的命令上下文\n\n[MC-293755] - 埃ン더 드래곤在转身时，它的脖子和尾巴会与身体分离\n\n[MC-306628] - TNT火车无法删除穿透箭矢\n\n[MC-307918] - Sculk补丁在世界生成过程中可能导致日志出现错误\n\n[MC-308344] - 在使用Vulkan渲染后端编译包含in/out数组或矩阵变量的着色器时，会出现验证错误\n\n[MC-308406](https://bugs.mojang.com/browse/MC-308406) - 在锻造台菜单的装甲展示区中，物品模型显示不正确\n\n[MC-308647](https://bugs.mojang.com/browse/MC-308647) - 在切换“字体设置”选项后，资源包界面可能会错误地缓存字体图标\n\n[MC-309250] - 自然生成的装饰性陶罐在用工具破坏时不会掉落砖块\n\n[MC-309298] - 当“聊天延迟”选项设置为非零值时发送聊天信息有时会导致玩家被踢出游戏\n\n[MC-309500] - 使用制作书制作装饰性陶罐时，如果不需要碎片，制作出的陶罐在用工具破坏时也不会掉落砖块\n\n[MC-309565](https://bugs.mojang.com/browse/MC-309565) - 如果启用了“高对比度区块轮廓”选项，区块轮廓会显示在半透明元素后面\n\n[MC-309566](https://bugs.mojang.com/browse/MC-309566) - 如果禁用了“改进透明度”选项，区块轮廓会显示在半透明元素后面\n\n[MC-309743](https://bugs.mojang.com/browse/MC-309743) - 满水的怪物攻击动画不正确\n\n[MC-310041](https://bugs.mojang.com/browse/MC-310041) - 在特定条件下，区块加载会频繁失败\n\n[MC-310096](https://bugs.mojang.com/browse/MC-310096) - 无效的物品修饰符会导致游戏崩溃\n\n[MC-310098](https://bugs.mojang.com/browse/MC-310098) - 在列表中尝试混合使用物品修饰符引用和内联值会导致资料包无法加载\n\n[MC-310125] - 在酿造台中使用火焰药时，系统会引用烹饪技能/默认速度的数值，而非酿造技能/默认速度的数值\n\n[MC-310133] - 幼年溺尸（Gurgles）无法正确瞄准它们的三叉戟\n\n[MC-310135] - 当从 `/execute` 命令中引用 `/attribute` 时，服务器会崩溃\n\n[MC-310149] - 在启用 Vulkan 渲染引擎和“强化透明度”选项的情况下，观察玻璃时玻璃会出现闪烁现象\n\n[MC-310163] - 在 Wayland 显示模式下进入全屏模式时，游戏会崩溃\n\n获取该快照\n\nMinecraft: Java版提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

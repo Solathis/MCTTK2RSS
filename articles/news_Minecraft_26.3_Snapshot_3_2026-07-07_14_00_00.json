@@ -1,0 +1,2757 @@
+{
+  "title": "Minecraft 26.3 Snapshot 3",
+  "translated_title": "《我的世界》26.3版本快照3",
+  "release_date": "2026-07-07T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-3",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-3/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Tuesday? Pfft. It's snapshot day! Today's snapshot introduces two brand-new features coming to 26.3: perfect for anyone that loves to camp in comfort. The cushion, coming in 16 color variants, finally brings the ability to sit down around a campfire. To go along with it, the straw bed brings the comfort of sleep (without the worry of losing your spawn point) to any adventure!",
+      "translated_text": "星期二？哼，今天是快照更新日！今天的快照为 26.3 版本带来了两个全新的功能，非常适合喜欢舒适地扎营的玩家。这个名为“垫子”的物品有 16 种颜色可选，终于可以让玩家在篝火旁坐下来休息了。同时，“稻草床”也为冒险家提供了舒适的睡眠环境（而且不用担心会丢失出生点！）",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "In addition, this snapshot brings many technical improvements: from custom brewing recipes to new ways to create and apply post-processing effects!",
+      "translated_text": "此外，这次快照还带来了许多技术上的改进：从自定义酿造配方到创建和应用后期处理效果的新方法！”",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "Happy cozy crafting!",
+      "translated_text": "愉快地制作吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added Cushion",
+      "translated_text": "新增了“垫子”物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Added Straw Bed",
+      "translated_text": "新增了“稻草床”物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Added Gothic language support to the game",
+      "translated_text": "游戏中新增了对哥特语的支持",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "h3",
+      "source_text": "Cushion",
+      "translated_text": "“垫子”是一种玩家可以放置在世界中并用来坐的物品",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "The Cushion is an item that the player can place in the world and interact with to sit on",
+      "translated_text": "“垫子”是一种玩家可以放置在世界中并用来坐的物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Can be crafted in 16 colored variants",
+      "translated_text": "可以制作16种不同颜色的垫子",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Cushions are crafted using 3 Wool Slabs of the same color",
+      "translated_text": "垫子是由3块相同颜色的羊毛方块制成的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "h4",
+      "source_text": "Cushion Placement Rules",
+      "translated_text": "垫子的放置规则",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "A Cushion can be placed on any flat surface",
+      "translated_text": "垫子可以放置在任何平整的表面上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Cushions always align horizontally to the grid, but vertically sit on top of the supporting surface",
+      "translated_text": "垫子总是水平对齐网格，但在垂直方向上会贴合在承载它的表面上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Cushions cannot move",
+      "translated_text": "垫子无法移动",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Cushions break if the supporting block is removed",
+      "translated_text": "如果承载垫子的方块被移除，垫子也会损坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Cushions do not have collision and can overlap with other objects (except other Cushions)",
+      "translated_text": "垫子没有碰撞效果，可以与其他对象重叠（除了其他垫子本身）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h3",
+      "source_text": "Straw Bed",
+      "translated_text": "草垫床",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "The Straw Bed is a new type of Bed which can be used to sleep through the night without setting your spawnpoint",
+      "translated_text": "草垫床是一种新型的床，可以在不改变出生点的情况下在上面睡觉",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "It can only be used once and will be destroyed after use",
+      "translated_text": "只能使用一次，使用后就会销毁",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "It cannot be used in the Nether or The End and will be destroyed if you try to sleep on it there",
+      "translated_text": "不能在下界或末地使用；如果尝试在这些地方睡觉，该物品也会被破坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "It is crafted using 3 Hay Bales and will give you 4 Straw Beds",
+      "translated_text": "由3个干草捆制成，可为你提供4个草床",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "There's a new statistic in the Statistics window for amount of times slept in a Straw Bed",
+      "translated_text": "统计窗口中新增了一个关于草床使用次数的统计项",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性修改",
+      "meta": {}
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "The Data Pack version is now 110.0",
+      "translated_text": "数据包版本现已更新至110.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 91.0",
+      "translated_text": "资源包版本现已更新至91.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "h2",
+      "source_text": "Data Pack Version 110.0",
+      "translated_text": "数据包版本 110.0",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令相关更新",
+      "meta": {}
+    },
+    {
+      "id": "b0029",
+      "type": "h4",
+      "source_text": "Added posteffect",
+      "translated_text": "新增了后期效果",
+      "meta": {}
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "Allows adding or removing \"post effects\" to players",
+      "translated_text": "允许向玩家添加或移除“后处理效果”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "These are postprocessing shaders that are applied to the player's screen, after the game has finished normal rendering",
+      "translated_text": "这些是后处理着色器，在游戏完成正常渲染后应用于玩家的屏幕上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Post effects exist on the client (in resource packs), not the server – the server cannot know if one will actually apply",
+      "translated_text": "后处理效果存在于客户端（资源包中），而不是服务器端——服务器无法知道这些效果是否真的会应用到玩家身上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Post effects themselves were already part of the resource pack format, but only a few hardcoded ones were available to use",
+      "translated_text": "后处理效果本身已经是资源包格式的一部分，但只能使用少数预定义好的效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *This now makes custom shaders fully available to use from resource packs, but please be aware that shaders are still subject to be changed at-will, and the features involved (the command, post effects, or shaders) may be redesigned in the future.*",
+      "translated_text": "**开发者备注**：*现在可以通过资源包完全使用自定义着色器了，但请注意，着色器可能会随时被更改，相关的功能（命令、后处理效果或着色器本身）在未来也可能被重新设计。*",
+      "meta": {}
+    },
+    {
+      "id": "b0035",
+      "type": "p",
+      "source_text": "Syntax:",
+      "translated_text": "语法：",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "/posteffect add <player> <posteffect> - adds the post effect to the player, if it doesn't already exist",
+      "translated_text": "/posteffect add <玩家> <后处理效果> - 如果该效果尚未存在，则会将其添加到玩家身上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "/posteffect clear <player> - removes all post effects from the player, if any exist",
+      "translated_text": "/posteffect clear <player> - 移除玩家的所有后置效果（如果存在的话）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "/posteffect list <target> - lists all post effects applied to the player, if any exist",
+      "translated_text": "/posteffect list <target> - 列出应用于玩家的所有后置效果（如果存在的话）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "/posteffect remove <player> <posteffect> - removes the post effect from the player, if it exists",
+      "translated_text": "/posteffect remove <player> <posteffect> - 删除玩家身上的某个后置效果（如果存在的话）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "h4",
+      "source_text": "Changes to place",
+      "translated_text": "对“place”功能的修改",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "The feature sub-command now allows in-line definition of the Feature",
+      "translated_text": "此子命令现在允许直接定义“Feature”属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "h3",
+      "source_text": "Environment Attributes",
+      "translated_text": "环境属性（Environment Attributes）",
+      "meta": {}
+    },
+    {
+      "id": "b0043",
+      "type": "h4",
+      "source_text": "Changed minecraft:gameplay/bed_rule",
+      "translated_text": "修改了 minecraft:gameplay/bed_rule",
+      "meta": {}
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "Field explodes has been renamed to destroy_on_use",
+      "translated_text": "字段“field explodes”已更名为“destroy_on_use”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Added destroy_on_leave - optional boolean, if true , the Bed will be destroyed when leaving it",
+      "translated_text": "新增了“destroy_on_leave”选项——为一个布尔值；如果设置为 true，玩家离开床时会销毁该床",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "If omitted, defaults to false",
+      "translated_text": "如果省略此选项，则默认值为 false",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "h4",
+      "source_text": "Added minecraft:gameplay/straw_bed_rule",
+      "translated_text": "添加了 minecraft:gameplay/straw_bed_rule",
+      "meta": {}
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "Same format as minecraft:gameplay/bed_rule , but used for the Straw Bed",
+      "translated_text": "格式与 minecraft:gameplay/bed_rule 相同，但用于 Straw Bed（稻草床）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "h3",
+      "source_text": "Data Components",
+      "translated_text": "数据组件（Data Components）",
+      "meta": {}
+    },
+    {
+      "id": "b0050",
+      "type": "h4",
+      "source_text": "Updated minecraft:block_transformer",
+      "translated_text": "更新了 minecraft:block_transformer",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "Added optional boolean field update_from_neighbors . This controls if the transformed block should update based on neighboring blocks",
+      "translated_text": "新增了一个可选的布尔字段 update_from_neighbors。该字段用于控制转换后的方块是否应根据相邻方块的状态进行更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "Defaults to true",
+      "translated_text": "默认值为 true",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "h4",
+      "source_text": "Added minecraft:compostable",
+      "translated_text": "新增了 minecraft:compostable（可堆肥属性）",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "Represents the ability to compost an item and how it adds layers to the composter",
+      "translated_text": "表示将物品进行堆肥的功能，以及堆肥过程中添加的层数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "Format: object with fields",
+      "translated_text": "格式：包含多个字段的对象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "layers - namespaced ID pointing to an element of the minecraft:number_provider registry",
+      "translated_text": "layers - 一个命名空间化的 ID，用于引用 minecraft:number_provider 注册表中的元素",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "h3",
+      "source_text": "Loot Tables",
+      "translated_text": "战利品表（Loot Tables）",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Multiple block loot tables now reference predicates for checking if a tool has Silk Touch and is Shears instead of inlining a copy of those checks",
+      "translated_text": "多个方块战利品表现在使用谓词来检查工具是否具有“丝触”（Silk Touch）属性或是否为“剪刀”（Shears），而不是在其中内嵌这些检查逻辑",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "h3",
+      "source_text": "Predicates",
+      "translated_text": "谓词（Predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0060",
+      "type": "h4",
+      "source_text": "Added vanilla predicates",
+      "translated_text": "添加了原版游戏中的谓词（Added vanilla predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "p",
+      "source_text": "New entries added to previously empty minecraft:predicate:",
+      "translated_text": "在之前为空的 `minecraft:predicate` 中添加了新的条目",
+      "meta": {}
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "minecraft:tool/can_silk_touch",
+      "translated_text": "minecraft:tool/can_silk_touch",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "minecraft:tool/can_shear",
+      "translated_text": "minecraft:tool/can_shear",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "h4",
+      "source_text": "Potion Predicates",
+      "translated_text": "药水谓词（Potion Predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0065",
+      "type": "p",
+      "source_text": "The minecraft:potion_contents Data Component Predicate has been changed to allow matching on specific potion effects.",
+      "translated_text": "`minecraft:potion_contents` 数据组件谓词已更改，现在可以针对特定的药水效果进行匹配",
+      "meta": {}
+    },
+    {
+      "id": "b0066",
+      "type": "p",
+      "source_text": "The previous predicate format used a list of potion types, the new format allows for more refined matching.",
+      "translated_text": "之前的谓词格式使用的是药水类型的列表，新格式允许更精确的匹配",
+      "meta": {}
+    },
+    {
+      "id": "b0067",
+      "type": "p",
+      "source_text": "The following fields can be used in any combination, all are optional:",
+      "translated_text": "以下字段可以任意组合使用，所有字段均为可选的：",
+      "meta": {}
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "potions - A list of potion types or a potion tag to match",
+      "translated_text": "药剂（Potions）- 列出药剂类型，或使用药剂标签进行匹配",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "effects - A Collection Predicate of mob_effects predicates to match",
+      "translated_text": "效果（Effects）- 用于匹配的 mob_effects 列表谓词",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "The Collection Predicate format is as follows:",
+      "translated_text": "CollectionPredicate 的格式如下：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "contains - A list of mob_effects predicates to match",
+      "translated_text": "包含（Contains）- 用于匹配的 mob_effects 列表谓词",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "count - A list of options for matching a specific number of mob effect predicates, which follow the same format as minecraft:effects entity sub-predicate`",
+      "translated_text": "计数（Count）- 用于匹配特定数量 mob_effects 谓词的选项，其格式与 `minecraft:effects` 实体子谓词相同",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "test - The mob_effects predicate to match",
+      "translated_text": "测试（Test）- 需要匹配的 mob_effects 谓词",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "count - The number of matches required, or with min and max will match a range of counts",
+      "translated_text": "所需匹配的数量；如果指定 min 和 max，即可匹配相应的数量范围",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "size - Require the mob effects list to have a specific size, or with min and max will match a range of sizes",
+      "translated_text": "大小（Size）- 要求 mob_effects 列表具有特定的大小；如果指定 min 和 max，即可匹配相应的大小范围",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "p",
+      "source_text": "The mob_effects predicate format is a mapping of effect types to properties of that effect. All fields are optional, only provided fields will be used for matching:",
+      "translated_text": "mob_effects谓词格式是将效果类型映射到该效果的属性的一种方式。所有字段都是可选的，只有提供了的字段才会被用于匹配。",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "pre",
+      "source_text": "{\n\"minecraft: <effect type>\": {\n\"duration\": <integer bounds representing a duration in ticks>,\n\"amplifier\": <integer bounds>,\n\"ambient: true/false,\n\"visible\": true/false\n}\n)",
+      "translated_text": "{\n\"minecraft: <effect type>\": {\n\"duration\": <integer bounds representing a duration in ticks>,\n\"amplifier\": <integer bounds>,\n\"ambient: true/false,\n\"visible\": true/false\n}\n)",
+      "meta": {}
+    },
+    {
+      "id": "b0078",
+      "type": "p",
+      "source_text": "Here is an example of matching on several different effects and criteria:",
+      "translated_text": "以下是一个根据多种不同效果和标准进行匹配的例子：",
+      "meta": {}
+    },
+    {
+      "id": "b0079",
+      "type": "pre",
+      "source_text": "\"effects\": {\n\"minecraft:jump_boost\": {\n\"duration\": 3600,\n\"amplifier\": 5,\n\"ambient: true,\n\"visible\": true\n},\n\"minecraft:speed\": {\n\"duration\": {\n\"min\": 360,\n\"max\": \"3600\n},\n\"amplifier: {\n\"min\": 2\n}\n},\n\"minecraft:resistance\": {}\n}",
+      "translated_text": "\"effects\": {\n\"minecraft:jump_boost\": {\n\"duration\": 3600,\n\"amplifier\": 5,\n\"ambient: true,\n\"visible\": true\n},\n\"minecraft:speed\": {\n\"duration\": {\n\"min\": 360,\n\"max\": \"3600\n},\n\"amplifier: {\n\"min\": 2\n}\n},\n\"minecraft:resistance\": {}\n}",
+      "meta": {}
+    },
+    {
+      "id": "b0080",
+      "type": "p",
+      "source_text": "All criteria are optional.",
+      "translated_text": "所有标准都是可选的。",
+      "meta": {}
+    },
+    {
+      "id": "b0081",
+      "type": "h3",
+      "source_text": "Number Providers",
+      "translated_text": "数字提供者（Number Providers）",
+      "meta": {}
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "Added a minecraft:number_provider registry",
+      "translated_text": "新增了minecraft:number_provider注册表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "h4",
+      "source_text": "Added vanilla number providers",
+      "translated_text": "新增了vanilla数字提供者",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "minecraft:compostable/low",
+      "translated_text": "minecraft:compostable/low",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "returns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 30% chance of returning 1",
+      "translated_text": "如果minecraft:block_state上下文参数是一个空的堆肥箱，那么返回1；否则有30%的概率返回1",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "minecraft:compostable/low_medium",
+      "translated_text": "minecraft:compostable/low_medium",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "returns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 50% chance of returning 1",
+      "translated_text": "如果minecraft:block_state上下文参数是一个空的堆肥箱，那么返回1；否则有50%的概率返回1",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "minecraft:compostable/medium",
+      "translated_text": "minecraft:compostable/medium",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "returns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 65% chance of returning 1",
+      "translated_text": "如果 minecraft:block_state 参数指向一个空的堆肥容器，则返回 1；否则有 65% 的几率返回 1",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "minecraft:compostable/medium_high",
+      "translated_text": "minecraft:compostable/medium_high",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "returns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 85% chance of returning 1",
+      "translated_text": "如果 minecraft:block_state 参数指向一个空的堆肥容器，则返回 1；否则有 85% 的几率返回 1",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "minecraft:compostable/always_add_one",
+      "translated_text": "minecraft:compostable/always_add_one",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "always returns 1",
+      "translated_text": "始终返回 1",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "h4",
+      "source_text": "Added minecraft:number_dispatcher type",
+      "translated_text": "新增了 minecraft:number_dispatcher 类型",
+      "meta": {}
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "Returns the first case which fulfills its condition or the default if none do",
+      "translated_text": "返回第一个满足条件的情况，如果没有满足条件的情况，则返回默认值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段（Fields）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "cases - a list of cases in the order that the dispatcher will try to execute them",
+      "translated_text": "情况列表（Cases）——调度器将按此顺序尝试执行这些情况",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "condition - a minecraft:predicate",
+      "translated_text": "condition - 一个 Minecraft:Predicate（条件）",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "number_provider - a minecraft:number_provider which is executed if the condition is fulfilled",
+      "translated_text": "number_provider - 一个 Minecraft:NumberProvider；当条件满足时会被执行",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "default - an optional minecraft:number_provider",
+      "translated_text": "default - 一个可选的 Minecraft:NumberProvider",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "Defaults to a constant 0 if omitted",
+      "translated_text": "如果省略，则默认为常量 0",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "h4",
+      "source_text": "Added minecraft:conditional_value type",
+      "translated_text": "新增了 Minecraft:ConditionalValue 类型",
+      "meta": {}
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "Returns the value from on_true if its condition or on_false if not",
+      "translated_text": "如果条件为 true，则返回 on_true 的值；否则返回 on_false 的值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "conditions - a minecraft:predicate",
+      "translated_text": "conditions - 一组 Minecraft:Predicates（多个条件）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "on_true - a minecraft:number_provider which is executed if its condition is fulfilled",
+      "translated_text": "on_true - 一个 Minecraft:NumberProvider；当其条件满足时会被执行",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "on_false - an optional minecraft:number_provider",
+      "translated_text": "on_false - 一个可选的 minecraft:number_provider",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "Defaults to a constant 0 if omitted",
+      "translated_text": "如果省略，默认为常量 0",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "h4",
+      "source_text": "Added minecraft:weighted_list",
+      "translated_text": "新增了 minecraft:weighted_list",
+      "meta": {}
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "Returns a value from a distribution of weighted number providers",
+      "translated_text": "从一系列带权重的 number_provider 中返回一个值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "distribution - a list of objects with the following fields",
+      "translated_text": "distribution - 一个包含以下字段的对象列表",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "data - a minecraft:number_provider",
+      "translated_text": "data - 一个 minecraft:number_provider",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "weight - a positive integer",
+      "translated_text": "weight - 一个正整数",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "h3",
+      "source_text": "Recipes",
+      "translated_text": "配方",
+      "meta": {}
+    },
+    {
+      "id": "b0118",
+      "type": "h4",
+      "source_text": "Potion Brewing Recipes",
+      "translated_text": "药水制作配方",
+      "meta": {}
+    },
+    {
+      "id": "b0119",
+      "type": "p",
+      "source_text": "Potion brewing recipes are now data-driven. New recipes can be added via datapacks, and vanilla recipes may be modified. Brewing recipes use the minecraft:brewing type.",
+      "translated_text": "药水制作配方现在是基于数据的。新的配方可以通过数据包添加，现有的配方也可以进行修改。制作配方使用 `minecraft:brewing` 类型。",
+      "meta": {}
+    },
+    {
+      "id": "b0120",
+      "type": "p",
+      "source_text": "The main contents are:",
+      "translated_text": "主要内容包括：",
+      "meta": {}
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "input - A potion ingredient with a required item field and an optional potion_contents field using a minecraft:potion_contents Data Component Predicate",
+      "translated_text": "输入 - 一种药水材料，具有必需的 `item` 字段以及可选的 `potion_contents` 字段（使用 `minecraft:potion_contents` 数据组件谓词）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "reagent - A potion ingredient with a required item field and an optional potion_contents field using a minecraft:potion_contents Data Component Predicate",
+      "translated_text": "试剂 - 一种药水材料，具有必需的 `item` 字段以及可选的 `potion_contents` 字段（使用 `minecraft:potion_contents` 数据组件谓词）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "output - item stack, the resulting item",
+      "translated_text": "输出 - 结果物品的堆栈",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "p",
+      "source_text": "Here is an example of a vanilla recipe:",
+      "translated_text": "这是一个经典药水配方的示例：",
+      "meta": {}
+    },
+    {
+      "id": "b0125",
+      "type": "pre",
+      "source_text": "{\n\"type\": \"minecraft:brewing\",\n\"input\": {\n\"item\": \"minecraft:potion\",\n\"potion_contents\": {\n\"potion\": \"minecraft:water\"\n}\n},\n\"output\": {\n\"components\": {\n\"minecraft:potion_contents\": {\n\"potion\": \"minecraft:awkward\"\n}\n},\n\"id\": \"minecraft:potion\"\n},\n\"reagent\": {\n\"item\": \"minecraft:nether_wart\"\n}\n}",
+      "translated_text": "{\n\"type\": \"minecraft:brewing\",\n\"input\": {\n\"item\": \"minecraft:potion\",\n\"potion_contents\": {\n\"potion\": \"minecraft:water\"\n}\n},\n\"output\": {\n\"components\": {\n\"minecraft:potion_contents\": {\n\"potion\": \"minecraft:awkward\"\n}\n},\n\"id\": \"minecraft:potion\"\n},\n\"reagent\": {\n\"item\": \"minecraft:nether_wart\"\n}\n}",
+      "meta": {}
+    },
+    {
+      "id": "b0126",
+      "type": "p",
+      "source_text": "Any items may be used in any of the 3 slots, for example:",
+      "translated_text": "任何物品都可以使用在这三个位置中的任意一个，例如：",
+      "meta": {}
+    },
+    {
+      "id": "b0127",
+      "type": "pre",
+      "source_text": "{\n\"type\": \"minecraft:brewing\",\n\"input\": { \"item\": \"minecraft:bucket\" },\n\"output\": { \"id\": \"minecraft:sulfur_cube_bucket\" },\n\"reagent\": { \"item\": \"minecraft:potent_sulfur\" }\n}",
+      "translated_text": "{\n\"type\": \"minecraft:brewing\",\n\"input\": { \"item\": \"minecraft:bucket\" },\n\"output\": { \"id\": \"minecraft:sulfur_cube_bucket\" },\n\"reagent\": { \"item\": \"minecraft:potent_sulfur\" }\n}",
+      "meta": {}
+    },
+    {
+      "id": "b0128",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0129",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "特性",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "Removed feature types:",
+      "translated_text": "移除了某些功能类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "minecraft:coral_mushroom",
+      "translated_text": "minecraft:coral_mushroom",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "minecraft:kelp",
+      "translated_text": "minecraft:kelp",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "minecraft:seagrass",
+      "translated_text": "minecraft:seagrass",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "li",
+      "source_text": "minecraft:sea_pickle",
+      "translated_text": "minecraft:seapickle",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0135",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *These feature types are no longer needed, since the features they previously hardcoded are now implemented with other, more configurable functionality.*",
+      "translated_text": "**开发者备注**：*这些功能类型已不再需要，因为它们之前硬编码的功能现在可以通过其他更灵活、可配置的方式实现。*",
+      "meta": {}
+    },
+    {
+      "id": "b0136",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0137",
+      "type": "text",
+      "source_text": "minecraft:coral_claw",
+      "translated_text": "minecraft:coral_claw",
+      "meta": {}
+    },
+    {
+      "id": "b0138",
+      "type": "text",
+      "source_text": "and",
+      "translated_text": "和",
+      "meta": {}
+    },
+    {
+      "id": "b0139",
+      "type": "text",
+      "source_text": "minecraft:coral_tree",
+      "translated_text": "minecraft:coral_tree",
+      "meta": {}
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "Added field feature , a Placed Feature that is used to place at every desired block position",
+      "translated_text": "新增了“放置特征”（Placed Feature）功能，该功能可用于在任何所需的方块位置放置方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "h4",
+      "source_text": "Placement Modifiers",
+      "translated_text": "放置修饰器（Placement Modifiers）",
+      "meta": {}
+    },
+    {
+      "id": "b0142",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加（Added）",
+      "meta": {}
+    },
+    {
+      "id": "b0143",
+      "type": "text",
+      "source_text": "minecraft:cuboid",
+      "translated_text": "minecraft:cuboid",
+      "meta": {}
+    },
+    {
+      "id": "b0144",
+      "type": "p",
+      "source_text": "Repeats a feature in a cuboid shape.",
+      "translated_text": "以长方体形状重复放置某个特征（Repeats a feature in a cuboid shape）",
+      "meta": {}
+    },
+    {
+      "id": "b0145",
+      "type": "p",
+      "source_text": "Added fields:",
+      "translated_text": "新增了以下字段：",
+      "meta": {}
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "xz_size : Int provider between 1 and 16 representing the size of the cuboid along x and z axes",
+      "translated_text": "xz_size: 整数类型（范围1-16），表示长方体在x轴和z轴上的尺寸",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "y_size : Int provider between 1 and 16 representing the size of the cuboid along the y axis",
+      "translated_text": "y_size: 整数类型（范围1-16），表示长方体在y轴上的尺寸",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "include_interior : Optional boolean (default true ) for whether to place interior blocks of the cuboid",
+      "translated_text": "include_interior: 可选布尔值（默认为true），用于决定是否放置长方体的内部方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "include_edges : Optional boolean (default true ) for whether to place edge blocks of the cuboid",
+      "translated_text": "include_edges: 可选布尔值（默认为true），用于决定是否放置长方体的边缘方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "Setting this to false generates a somewhat \"rounded\" cuboid",
+      "translated_text": "将其设置为 false 会生成一个较为“圆润”的长方体",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0152",
+      "type": "text",
+      "source_text": "minecraft:random_chance",
+      "translated_text": "minecraft:random_chance",
+      "meta": {}
+    },
+    {
+      "id": "b0153",
+      "type": "p",
+      "source_text": "Gates the feature being placed behind a random chance.",
+      "translated_text": "该功能能否被放置取决于一个随机几率",
+      "meta": {}
+    },
+    {
+      "id": "b0154",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "chance : Float value between 0 and 1 representing the chance that the feature gets placed",
+      "translated_text": "chance: 一个介于 0 和 1 之间的浮点数，表示该功能被放置的概率",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "h4",
+      "source_text": "Block State Providers",
+      "translated_text": "块状态提供者（Block State Providers）",
+      "meta": {}
+    },
+    {
+      "id": "b0157",
+      "type": "text",
+      "source_text": "Updated",
+      "translated_text": "已更新",
+      "meta": {}
+    },
+    {
+      "id": "b0158",
+      "type": "text",
+      "source_text": "minecraft:copy_properties_provider",
+      "translated_text": "minecraft:copy_properties_provider",
+      "meta": {}
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "Renamed field source_block_state_provider to source",
+      "translated_text": "将字段 source_block_stateprovider 重命名为 source",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "新增",
+      "meta": {}
+    },
+    {
+      "id": "b0161",
+      "type": "text",
+      "source_text": "minecraft:random_block_provider",
+      "translated_text": "minecraft:random_block_provider",
+      "meta": {}
+    },
+    {
+      "id": "b0162",
+      "type": "p",
+      "source_text": "Returns the default block state for a randomly chosen block.",
+      "translated_text": "返回随机选择的方块的默认状态",
+      "meta": {}
+    },
+    {
+      "id": "b0163",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0164",
+      "type": "li",
+      "source_text": "blocks : Block ID, list of Block IDs or hash-prefixed Block Tag, specifying the set of blocks to randomly pick from",
+      "translated_text": "blocks: 方块ID、方块ID列表或带有哈希前缀的方块标签，用于指定随机选择的方块集合",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0165",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "修改",
+      "meta": {}
+    },
+    {
+      "id": "b0166",
+      "type": "text",
+      "source_text": "minecraft:rotated_block_provider",
+      "translated_text": "minecraft:rotated_block_provider",
+      "meta": {}
+    },
+    {
+      "id": "b0167",
+      "type": "p",
+      "source_text": "Now works on any block with axis or facing properties.",
+      "translated_text": "现在可以对具有轴或方向属性的任何方块进行操作",
+      "meta": {}
+    },
+    {
+      "id": "b0168",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0169",
+      "type": "li",
+      "source_text": "Changed field state : Now a Block State Provider",
+      "translated_text": "修改字段状态：现在是一个方块状态提供者",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "Added field direction : Optional field describing the direction to set",
+      "translated_text": "添加了 `direction` 字段：这是一个可选字段，用于指定设置的方向",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "li",
+      "source_text": "If omitted, a random direction is chosen",
+      "translated_text": "如果省略这个字段，系统会随机选择一个方向",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0172",
+      "type": "h4",
+      "source_text": "Rule Tests",
+      "translated_text": "规则测试（Rule Tests）",
+      "meta": {}
+    },
+    {
+      "id": "b0173",
+      "type": "p",
+      "source_text": "These are the predicates used by ore Features (targets[].target), and rule Structure Processors (rules[].input_predicate and rules[].location_predicate).",
+      "translated_text": "这些是矿石特性（ore Features，`targets[]`）以及规则结构处理器（rule Structure Processors，`rules[].inputpredicate` 和 `rules[].locationpredicate`）所使用的谓词（predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0174",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0175",
+      "type": "text",
+      "source_text": "minecraft:any_of",
+      "translated_text": "`minecraft:any_of`",
+      "meta": {}
+    },
+    {
+      "id": "b0176",
+      "type": "li",
+      "source_text": "This checks a list of Rule Tests for whether any of them returns true for the same block",
+      "translated_text": "该功能会检查一组规则测试（Rule Tests），判断是否有任何一个对相同方块返回 `true`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0177",
+      "type": "li",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：一个包含多个字段的对象（Format: an object with fields）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0178",
+      "type": "li",
+      "source_text": "rules - list of Rule Tests, the rules to test the block against",
+      "translated_text": "`rules`：用于测试方块的规则列表（The list of rules to test the block against）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0179",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0180",
+      "type": "text",
+      "source_text": "minecraft:not",
+      "translated_text": "Minecraft: 不",
+      "meta": {}
+    },
+    {
+      "id": "b0181",
+      "type": "li",
+      "source_text": "This checks a Rule Test for whether it returns false for a given block",
+      "translated_text": "这用于检查规则测试，看它对于给定的方块是否返回 false",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0182",
+      "type": "li",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：带有字段的对象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0183",
+      "type": "li",
+      "source_text": "rule - Rule Test, the rule to test the block against",
+      "translated_text": "rule - 规则测试，用于测试方块是否符合规则",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0184",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0185",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0186",
+      "type": "li",
+      "source_text": "Added #sculk_growth_inhibitors for blocks which keep Sculk from spreading when more than 2 are in the 8x2x8 area around it",
+      "translated_text": "为某些方块添加了 #sculk_growth_inhibitors，当这些方块在周围 8x2x8 的区域内有超过 2 个 Sculk 方块时，可以阻止 Sculk 的扩散",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0187",
+      "type": "li",
+      "source_text": "Added #cats_can_sit_on - Blocks which Cats can randomly sit on",
+      "translated_text": "添加了 #cats_can_sit_on - 猫可以随机坐在这些方块上的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0188",
+      "type": "li",
+      "source_text": "Added #cats_can_lie_on - Blocks which Cats can randomly lie on",
+      "translated_text": "添加了 #cats_can_lie_on - 猫可以随机躺在这些方块上的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0189",
+      "type": "li",
+      "source_text": "Added #speeds_up_zombie_villager_curing - Blocks which can increase Zombie Villager curing time if placed nearby",
+      "translated_text": "添加了 #speeds_up_zombie_villager_curing - 如果将这些方块放置在附近，可以加快僵尸村民的恢复速度",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0190",
+      "type": "li",
+      "source_text": "Added #villagers_can_sleep_on_bed - Bed blocks which Villagers can sleep on",
+      "translated_text": "新增了 #villagers_can_sleep_on_bed 功能——村民可以在床块上睡觉",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0191",
+      "type": "li",
+      "source_text": "Added #villager_babies_can_jump_on_bed - Bed blocks which Villager kids can jump on",
+      "translated_text": "新增了 #villager_babies_can_jump_on_bed 功能——小村民可以在床块上跳跃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0192",
+      "type": "li",
+      "source_text": "Added #height_specific_ore_replaceables - contains all blocks which Ore Features will turn into Stone Ores if found above y-level 0 and into Deepslate Ores if found below y-level 8",
+      "translated_text": "新增了 #height_specific_ore_replaceables 功能——这类块如果位于 y 轴 0 以上，则矿石特征会转化为石矿石；如果位于 y 轴 8 以下，则会转化为深石矿石",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0193",
+      "type": "h4",
+      "source_text": "Item Tags",
+      "translated_text": "物品标签（Item Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0194",
+      "type": "li",
+      "source_text": "#dowses_campfires has been renamed to #douses_campfires",
+      "translated_text": "#dowses_campfires 的名称已更改为 #douses_campfires",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0195",
+      "type": "h4",
+      "source_text": "Structure Tags",
+      "translated_text": "结构标签（Structure Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0196",
+      "type": "li",
+      "source_text": "Added #abandoned_camp for all variants of Abandoned Camps",
+      "translated_text": "为所有废弃营地（Abandoned Camps）的变体新增了 #abandoned_camp 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0197",
+      "type": "h2",
+      "source_text": "Resource Pack Version 91.0",
+      "translated_text": "资源包版本 91.0",
+      "meta": {}
+    },
+    {
+      "id": "b0198",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "区块精灵（Block Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0199",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "新增了多种区块纹理（Added new Block textures）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0200",
+      "type": "li",
+      "source_text": "block/straw_bed.png",
+      "translated_text": "block/straw_bed.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0201",
+      "type": "li",
+      "source_text": "block/straw_bed_particle.png",
+      "translated_text": "block/straw_bed_particle.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0202",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "声音",
+      "meta": {}
+    },
+    {
+      "id": "b0203",
+      "type": "li",
+      "source_text": "Added new sound events:",
+      "translated_text": "新增了声音事件：</times",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0204",
+      "type": "li",
+      "source_text": "block.straw_bed.break",
+      "translated_text": "block.straw_bed_break",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0205",
+      "type": "li",
+      "source_text": "block.straw_bed.break_leave",
+      "translated_text": "block.straw_bed;break_leave",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0206",
+      "type": "li",
+      "source_text": "block.straw_bed.step",
+      "translated_text": "block.straw_bed.step",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0207",
+      "type": "li",
+      "source_text": "block.straw_bed.place",
+      "translated_text": "block.straw_bed.place",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0208",
+      "type": "li",
+      "source_text": "block.straw_bed.hit",
+      "translated_text": "block.straw_bed_hit",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0209",
+      "type": "li",
+      "source_text": "block.straw_bed.fall",
+      "translated_text": "block.straw_bed.fall",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0210",
+      "type": "li",
+      "source_text": "block.poplar_leaves.break",
+      "translated_text": "使杨树叶子掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0211",
+      "type": "li",
+      "source_text": "block.poplar_leaves.fall",
+      "translated_text": "杨树叶子自然掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0212",
+      "type": "li",
+      "source_text": "block.poplar_leaves.place",
+      "translated_text": "放置杨树叶子",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0213",
+      "type": "li",
+      "source_text": "block.poplar_leaves.step",
+      "translated_text": "踩在杨树叶子上",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0214",
+      "type": "li",
+      "source_text": "block.poplar_leaves.hit",
+      "translated_text": "与杨树叶子碰撞",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0215",
+      "type": "li",
+      "source_text": "block.red_shrub.break",
+      "translated_text": "使红灌木丛断裂",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0216",
+      "type": "li",
+      "source_text": "block.red_shrub.place",
+      "translated_text": "放置红灌木丛",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0217",
+      "type": "li",
+      "source_text": "entity.cushion.break",
+      "translated_text": "使软垫破裂",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0218",
+      "type": "li",
+      "source_text": "entity.cushion.place",
+      "translated_text": "放置软垫",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0219",
+      "type": "li",
+      "source_text": "entity.cushion.get_up",
+      "translated_text": "让使用中的软垫恢复原状",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0220",
+      "type": "li",
+      "source_text": "entity.cushion.sit",
+      "translated_text": "entity.cushion.sit",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0221",
+      "type": "h3",
+      "source_text": "Item Models",
+      "translated_text": "物品模型",
+      "meta": {}
+    },
+    {
+      "id": "b0222",
+      "type": "li",
+      "source_text": "Added optional shade_direction_override to block model elements",
+      "translated_text": "为方块模型元素添加了可选的shade_direction_override属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0223",
+      "type": "li",
+      "source_text": "Accepted values are cardinal directions ( down , up , north , south , west , east )",
+      "translated_text": "可接受的值为基本方向（down、up、north、south、west、east）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0224",
+      "type": "li",
+      "source_text": "When set, this overrides directional shading for the element regardless of face orientation",
+      "translated_text": "设置过后，该属性会覆盖元素的面朝方向对阴影效果的影响",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0225",
+      "type": "li",
+      "source_text": "Removed shade from block model elements",
+      "translated_text": "移除了方块模型元素中的阴影效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0226",
+      "type": "li",
+      "source_text": "Use shade_direction_override: \"up\" to get the previous shade: false behavior",
+      "translated_text": "使用shade_direction_override：“up”可恢复之前的阴影效果（即false状态）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0227",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器与后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0228",
+      "type": "h4",
+      "source_text": "Always-on Post Effect Support",
+      "translated_text": "支持始终开启的后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0229",
+      "type": "li",
+      "source_text": "A resource pack can now define a minecraft:end_of_frame post effect",
+      "translated_text": "资源包现在可以定义一个“minecraft:end_of_frame”类型的后期处理效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0230",
+      "type": "li",
+      "source_text": "It will be applied before other post effects, including the ones enabled by the new posteffect command",
+      "translated_text": "该效果将在其他后期效果之前应用，包括通过新的后期效果命令启用的效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0231",
+      "type": "li",
+      "source_text": "This post effect is always on as long as the resource pack is loaded, and cannot be controlled by the posteffect command",
+      "translated_text": "只要资源包加载完成，这个后期效果就会一直开启，且无法通过后期效果命令进行控制",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0232",
+      "type": "li",
+      "source_text": "As usual with resource pack resources, in case of multiple packs defining this effect, the one from the last resource pack in the list will apply",
+      "translated_text": "与资源包中的其他资源一样，如果多个资源包定义了相同的效果，那么将应用列表中最后一个资源包中的设置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0233",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 3",
+      "translated_text": "修复了26.3版本快照3中的错误",
+      "meta": {}
+    },
+    {
+      "id": "b0234",
+      "type": "li",
+      "source_text": "[MC-51859](https://bugs.mojang.com/browse/MC-51859) - The line spacing of text within all hover tooltips is larger between the first and second lines",
+      "translated_text": "[MC-51859](https://bugs.mojang.com/browse/MC-51859) - 所有悬停工具提示中的文本行间距在第一行和第二行之间较大",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0235",
+      "type": "li",
+      "source_text": "[MC-112580](https://bugs.mojang.com/browse/MC-112580) - Structure blocks' GUI does not pause the game in singleplayer",
+      "translated_text": "[MC-112580](https://bugs.mojang.com/browse/MC-112580) - 单人模式下，结构方块的图形用户界面不会使游戏暂停",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0236",
+      "type": "li",
+      "source_text": "[MC-112744](https://bugs.mojang.com/browse/MC-112744) - The Team NBT tag only exists for living entities",
+      "translated_text": "[MC-112744](https://bugs.mojang.com/browse/MC-112744) - Team NBT标签仅存在于活着的实体上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0237",
+      "type": "li",
+      "source_text": "[MC-174958](https://bugs.mojang.com/browse/MC-174958) - /gamerule succeeds when the value is not changed",
+      "translated_text": "[MC-174958](https://bugs.mojang.com/browse/MC-174958) - 当数值未更改时，/gamerule 名令仍会执行",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0238",
+      "type": "li",
+      "source_text": "[MC-175180](https://bugs.mojang.com/browse/MC-175180) - The Silent NBT tag still doesn't make some entities fully silent",
+      "translated_text": "[MC-175180](https://bugs.mojang.com/browse/MC-175180) - Silent NBT 标签仍然无法使某些实体完全保持静默",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0239",
+      "type": "li",
+      "source_text": "[MC-224528](https://bugs.mojang.com/browse/MC-224528) - Two splash texts use curly single quotes (’) instead of apostrophes (')",
+      "translated_text": "[MC-224528](https://bugs.mojang.com/browse/MC-224528) - 两个 splash 文本使用了单引号（'）而不是 apostrophes（'）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0240",
+      "type": "li",
+      "source_text": "[MC-229831](https://bugs.mojang.com/browse/MC-229831) - Enchanting tables' GUI has three pixels in the top-right corner that shouldn't be there",
+      "translated_text": "[MC-229831](https://bugs.mojang.com/browse/MC-229831) - 魔法阵的 GUI 在右上角有三个不应该存在的像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0241",
+      "type": "li",
+      "source_text": "[MC-239401](https://bugs.mojang.com/browse/MC-239401) - items/light.png never appears in-game; is pointlessly referenced by other game assets",
+      "translated_text": "[MC-239401](https://bugs.mojang.com/browse/MC-239401) - item/light.png 从未在游戏内显示；其他游戏资源中却无必要地引用了它",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0242",
+      "type": "li",
+      "source_text": "[MC-254353](https://bugs.mojang.com/browse/MC-254353) - A packet to remove the score is always broadcast when a score is reset",
+      "translated_text": "[MC-254353](https://bugs.mojang.com/browse/MC-254353) - 每当分数重置时，都会广播一个用于清除分数的数据包",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0243",
+      "type": "li",
+      "source_text": "[MC-254661](https://bugs.mojang.com/browse/MC-254661) - /schedule clear requires a namespace in its function argument",
+      "translated_text": "[MC-254661](https://bugs.mojang.com/browse/MC-254661) - `/schedule clear` 需要在其函数参数中指定命名空间",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0244",
+      "type": "li",
+      "source_text": "[MC-256073](https://bugs.mojang.com/browse/MC-256073) - Miscolored pixel in tab_inventory.png",
+      "translated_text": "[MC-256073](https://bugs.mojang.com/browse/MC-256073) - `tabinventory.png` 中的像素显示错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0245",
+      "type": "li",
+      "source_text": "[MC-256096](https://bugs.mojang.com/browse/MC-256096) - Some entities on a team can harm teammates that walk into them when friendly fire is disabled",
+      "translated_text": "[MC-256096] - 在禁用友好火力的情况下，队伍中的一些实体可能会伤害靠近它们的队友",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0246",
+      "type": "li",
+      "source_text": "[MC-256097](https://bugs.mojang.com/browse/MC-256097) - Some entities on a team can harm their teammates when they explode when friendly fire is disabled",
+      "translated_text": "[MC-256097] - 在禁用友好火力的情况下，队伍中的一些实体在爆炸时也会伤害到它们的队友",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0247",
+      "type": "li",
+      "source_text": "[MC-259583](https://bugs.mojang.com/browse/MC-259583) - Brewing with a single bottle of dragon's breath does not return a glass bottle afterward",
+      "translated_text": "[MC-259583] - 用一瓶龙息药剂酿酒后，不会得到一个玻璃瓶作为结果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0248",
+      "type": "li",
+      "source_text": "[MC-267902](https://bugs.mojang.com/browse/MC-267902) - The failure message of /random when the specified range is too large states an incorrect maximum for the range",
+      "translated_text": "[MC-267902] - 当指定的范围过大时，`/random` 命令的失败消息会显示错误的范围最大值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0249",
+      "type": "li",
+      "source_text": "[MC-271297](https://bugs.mojang.com/browse/MC-271297) - /fillbiome doesn't fail when no changes are made",
+      "translated_text": "[MC-271297](https://bugs.mojang.com/browse/MC-271297) - 在没有进行任何更改的情况下，/fillbiome 操作不会失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0250",
+      "type": "li",
+      "source_text": "[MC-273327](https://bugs.mojang.com/browse/MC-273327) - The #convertable_to_mud block tag misspells \"convertible\" as \"convertable\"",
+      "translated_text": "[MC-273327](https://bugs.mojang.com/browse/MC-273327) - #convertable_to_mud 块标签中的 ‘convertable’ 拼写错误，应为 ‘convertible’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0251",
+      "type": "li",
+      "source_text": "[MC-275532](https://bugs.mojang.com/browse/MC-275532) - The abbreviation \"fps\" is inconsistently capitalized across strings",
+      "translated_text": "[MC-275532](https://bugs.mojang.com/browse/MC-275532) - 缩写 ‘fps’ 在不同的字符串中大小写不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0252",
+      "type": "li",
+      "source_text": "[MC-279185](https://bugs.mojang.com/browse/MC-279185) - The \"selectWorld.load_folder_access\" string is missing an article before the word \"folder\"",
+      "translated_text": "[MC-279185](https://bugs.mojang.com/browse/MC-279185) - ‘selectWorld.load_folder_access’ 字符串在 ‘folder’ 一词前缺少一个逗号",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0253",
+      "type": "li",
+      "source_text": "[MC-279819](https://bugs.mojang.com/browse/MC-279819) - The mining speed factor of Mining Fatigue is inconsistent at level 3",
+      "translated_text": "[MC-279819](https://bugs.mojang.com/browse/MC-279819) - 在级别 3 时，Mining Fatigue 的采矿速度参数不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0254",
+      "type": "li",
+      "source_text": "[MC-293615](https://bugs.mojang.com/browse/MC-293615) - Tooltip formatting of \"Items x number\" is inconsistent across different types of items",
+      "translated_text": "[MC-293615](https://bugs.mojang.com/browse/MC-293615) - ‘Items x number’ 的工具提示格式在不同类型的物品上表现不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0255",
+      "type": "li",
+      "source_text": "[MC-301804](https://bugs.mojang.com/browse/MC-301804) - Test blocks' GUI does not pause the game in singleplayer",
+      "translated_text": "[MC-301804] - 单人游戏中，测试方块的 GUI 无法暂停游戏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0256",
+      "type": "li",
+      "source_text": "[MC-305707](https://bugs.mojang.com/browse/MC-305707) - /time reports success when no changes are made",
+      "translated_text": "[MC-305707] - 当没有进行任何更改时，/time 模块仍会正确报告时间",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0257",
+      "type": "li",
+      "source_text": "[MC-307616](https://bugs.mojang.com/browse/MC-307616) - Typo in a log message in ActiveProfiler : \"aprox\"",
+      "translated_text": "[MC-307616] - ActiveProfiler 的日志消息中存在拼写错误：‘aprox’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0258",
+      "type": "li",
+      "source_text": "[MC-307618](https://bugs.mojang.com/browse/MC-307618) - Typo in a log message in SoundEngine : \"disapeared\"",
+      "translated_text": "[MC-307618] - SoundEngine 的日志消息中存在拼写错误：‘disapeared’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0259",
+      "type": "li",
+      "source_text": "[MC-307648](https://bugs.mojang.com/browse/MC-307648) - \"non-heap\" is misspelled as \"non-head\" in the system details section of crash reports",
+      "translated_text": "[MC-307648] - 崩溃报告的系统详情部分中，“non-heap”被拼写为“non-head”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0260",
+      "type": "li",
+      "source_text": "[MC-307660](https://bugs.mojang.com/browse/MC-307660) - Typo in a log message in GameRenderer : \"coudln't\"",
+      "translated_text": "[MC-307660] - GameRenderer 的日志消息中存在拼写错误：“coudln’t”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0261",
+      "type": "li",
+      "source_text": "[MC-307709](https://bugs.mojang.com/browse/MC-307709) - The texture of upward facing sulfur spikes' merged tip has a single wrong pixel at the very top",
+      "translated_text": "[MC-307709](https://bugs.mojang.com/browse/MC-307709) - 向上生长的硫黄尖锥的合并后的顶部有一个像素错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0262",
+      "type": "li",
+      "source_text": "[MC-308460](https://bugs.mojang.com/browse/MC-308460) - Some of the stems in wildflowers and pink petals render brighter",
+      "translated_text": "[MC-308460](https://bugs.mojang.com/browse/MC-308460) - 一些野花和粉红色花簇的茎部显示得过于鲜艳",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0263",
+      "type": "li",
+      "source_text": "[MC-308851](https://bugs.mojang.com/browse/MC-308851) - The chat_restriction.disabled_by_profile.action string is improperly capitalized",
+      "translated_text": "[MC-308851] - `chat_restriction_disabled_by_profile.action` 这个字符串的大小写不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0264",
+      "type": "li",
+      "source_text": "[MC-309021](https://bugs.mojang.com/browse/MC-309021) - Poplar leaves' closed captions display as raw translation keys",
+      "translated_text": "[MC-309021] - 杨树叶片的字幕显示为原始的翻译键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0265",
+      "type": "li",
+      "source_text": "[MC-309024](https://bugs.mojang.com/browse/MC-309024) - death.attack.sulfurCubeHot.item displays as a raw translation key",
+      "translated_text": "[MC-309024] - `death.attack.sulfurCubeHot.item` 显示为原始的翻译键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0266",
+      "type": "li",
+      "source_text": "[MC-309033](https://bugs.mojang.com/browse/MC-309033) - The campsite_flower_forest_1 abandoned camp structure has stripes of orange wool under it",
+      "translated_text": "[MC-309033] - `campsite_flower_forest_1` 废弃营地结构下方有橙色羊毛条纹",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0267",
+      "type": "li",
+      "source_text": "[MC-309034](https://bugs.mojang.com/browse/MC-309034) - The tent_windswept_forest_8 abandoned camp structure contains a dropped stack of bone meal",
+      "translated_text": "[MC-309034](https://bugs.mojang.com/browse/MC-309034) - 在‘tent_windswept_forest_8’废弃营地结构中，会发现掉落的骨粉堆",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0268",
+      "type": "li",
+      "source_text": "[MC-309054](https://bugs.mojang.com/browse/MC-309054) - The item texture of poplar hanging signs is inconsistent with other hanging signs",
+      "translated_text": "[MC-309054](https://bugs.mojang.com/browse/MC-309054) - 杨树悬挂标志的物品纹理与其他悬挂标志不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0269",
+      "type": "li",
+      "source_text": "[MC-309058](https://bugs.mojang.com/browse/MC-309058) - The tent_flower_forest_4 abandoned camp structure contains a dropped birch log",
+      "translated_text": "[MC-309058](https://bugs.mojang.com/browse/MC-309058) - 在‘tent_flower_forest_4’废弃营地结构中，会发现掉落的桦木原木",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0270",
+      "type": "li",
+      "source_text": "[MC-309090](https://bugs.mojang.com/browse/MC-309090) - Certain entities on shelf mushrooms make a sound every tick",
+      "translated_text": "[MC-309090](https://bugs.mojang.com/browse/MC-309090) - 某些生长在架子上蘑菇的实体每个游戏刻（tick）都会发出声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0271",
+      "type": "li",
+      "source_text": "[MC-309122](https://bugs.mojang.com/browse/MC-309122) - Abandoned camps can generate in areas of wooded badlands with no trees nor grass",
+      "translated_text": "[MC-309122] - 废弃营地可能出现在没有树木和草的林地环境中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0272",
+      "type": "li",
+      "source_text": "[MC-309155](https://bugs.mojang.com/browse/MC-309155) - Shelf mushrooms and red shrubs do not have unique sounds, unlike in Bedrock Edition",
+      "translated_text": "[MC-309155] - 架子上的蘑菇和红色灌木没有独特的音效，这与基岩版（Bedrock Edition）的情况不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0273",
+      "type": "li",
+      "source_text": "[MC-309208](https://bugs.mojang.com/browse/MC-309208) - The poplar wood set is inconsistently placed in the Creative mode inventory",
+      "translated_text": "[MC-309208](https://bugs.mojang.com/browse/MC-309208) - 白杨木材在创造模式下的物品栏中的放置位置不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0274",
+      "type": "li",
+      "source_text": "[MC-309261](https://bugs.mojang.com/browse/MC-309261) - Incorrect calculation in the poplar trunk placer",
+      "translated_text": "[MC-309261](https://bugs.mojang.com/browse/MC-309261) - 白杨树干生成器存在计算错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0275",
+      "type": "li",
+      "source_text": "[MC-309308](https://bugs.mojang.com/browse/MC-309308) - Several abandoned camp structures contain persistent leaves",
+      "translated_text": "[MC-309308](https://bugs.mojang.com/browse/MC-309308) - 一些废弃的营地结构中持续存在树叶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0276",
+      "type": "li",
+      "source_text": "[MC-309324](https://bugs.mojang.com/browse/MC-309324) - Ores don't generate in blobs of andesite, diorite, or granite below Y=0",
+      "translated_text": "[MC-309324](https://bugs.mojang.com/browse/MC-309324) - 在 Y=0 以下的安山岩、闪长岩或花岗岩层中不会生成矿石",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0277",
+      "type": "li",
+      "source_text": "[MC-309350](https://bugs.mojang.com/browse/MC-309350) - Shelf mushrooms generated with fallen trees replace water",
+      "translated_text": "[MC-309350](https://bugs.mojang.com/browse/MC-309350) - 用倒下的树木生成的架子蘑菇会取代水体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0278",
+      "type": "li",
+      "source_text": "[MC-309392](https://bugs.mojang.com/browse/MC-309392) - The lighting on entities and block entities is not rendered correctly and appears too dark or too bright on certain sides",
+      "translated_text": "[MC-309392](https://bugs.mojang.com/browse/MC-309392) - 实体（包括方块实体）上的光照渲染不正确，在某些侧面看起来过暗或过亮",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0279",
+      "type": "li",
+      "source_text": "[MC-309395](https://bugs.mojang.com/browse/MC-309395) - The texture of the top halves of poplar doors is missing a pixel on the second hinge",
+      "translated_text": "[MC-309395](https://bugs.mojang.com/browse/MC-309395) - 杨木门上部的纹理在第二个合页处缺少一个像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0280",
+      "type": "li",
+      "source_text": "[MC-309397](https://bugs.mojang.com/browse/MC-309397) - The game renderer corrupts when toggling off fullscreen or resizing the window with the Vulkan rendering backend",
+      "translated_text": "[MC-309397](https://bugs.mojang.com/browse/MC-309397) - 在切换全屏或调整使用Vulkan渲染后端的窗口大小时，游戏渲染器会出现故障",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0281",
+      "type": "li",
+      "source_text": "[MC-309399](https://bugs.mojang.com/browse/MC-309399) - The game output console logs \"Ignoring chat session from due to missing Services public key” when loading into a world",
+      "translated_text": "[MC-309399](https://bugs.mojang.com/browse/MC-309399) - 游戏在加载到一个世界时，控制台会输出‘由于缺少Services公钥而忽略聊天会话’的错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0282",
+      "type": "li",
+      "source_text": "[MC-309400](https://bugs.mojang.com/browse/MC-309400) - The glowing effect on entities stays in place when cleared",
+      "translated_text": "[MC-309400](https://bugs.mojang.com/browse/MC-309400) - 实体上的发光效果在被清除后仍然存在",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0283",
+      "type": "li",
+      "source_text": "[MC-309403](https://bugs.mojang.com/browse/MC-309403) - Having an item with the block_transformer component with a rule_based_state_provider locks the player out of that world",
+      "translated_text": "[MC-309403] - 如果一个物品使用了带有`block_transformer`组件和`rule_based_state_provider`的物品，玩家将无法进入该世界",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0284",
+      "type": "li",
+      "source_text": "[MC-309408](https://bugs.mojang.com/browse/MC-309408) - The item tag that controls which items can douse campfires is misspelled as #dowses_campfires",
+      "translated_text": "[MC-309408](https://bugs.mojang.com/browse/MC-309408) - 控制哪些物品可以浇灭火堆的物品标签拼写错误，应该是#dowses_campfires",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0285",
+      "type": "li",
+      "source_text": "[MC-309412](https://bugs.mojang.com/browse/MC-309412) - Block items ignore the block_transformer component",
+      "translated_text": "[MC-309412](https://bugs.mojang.com/browse/MC-309412) - 块状物品忽略了block_transformer组件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0286",
+      "type": "li",
+      "source_text": "[MC-309420](https://bugs.mojang.com/browse/MC-309420) - The random_neighbor_spread feature has a field misspelled as \"xy_offset\"",
+      "translated_text": "[MC-309420](https://bugs.mojang.com/browse/MC-309420) - random_neighbor_spread功能的某个字段拼写错误，应为\"xy_offset\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0287",
+      "type": "li",
+      "source_text": "[MC-309432](https://bugs.mojang.com/browse/MC-309432) - Worlds render entirely magenta on macOS with the Vulkan rendering backend",
+      "translated_text": "[MC-309432](https://bugs.mojang.com/browse/MC-309432) - 在使用Vulkan渲染后端时，macOS系统上整个世界显示为洋红色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0288",
+      "type": "li",
+      "source_text": "[MC-309433](https://bugs.mojang.com/browse/MC-309433) - Drowned can consume or use certain items",
+      "translated_text": "[MC-309433](https://bugs.mojang.com/browse/MC-309433) - 淹没状态的玩家可以消耗或使用某些物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0289",
+      "type": "li",
+      "source_text": "[MC-309435](https://bugs.mojang.com/browse/MC-309435) - Drowned no longer chase after players correctly",
+      "translated_text": "[MC-309435](https://bugs.mojang.com/browse/MC-309435) - 淹没状态的玩家不再正确地追逐玩家",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0290",
+      "type": "li",
+      "source_text": "[MC-309441](https://bugs.mojang.com/browse/MC-309441) - Projectiles lose their can_break ability after reloading the world",
+      "translated_text": "[MC-309441](https://bugs.mojang.com/browse/MC-309441) - 重新加载世界后，投射物会失去“可破坏物体”的功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0291",
+      "type": "li",
+      "source_text": "[MC-309445](https://bugs.mojang.com/browse/MC-309445) - The game renderer can corrupt when toggling fullscreen or opening an inventory with the OpenGL rendering backend",
+      "translated_text": "[MC-309445](https://bugs.mojang.com/browse/MC-309445) - 在切换全屏或打开使用 OpenGL 渲染后端的背包时，游戏渲染器可能会出现故障",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0292",
+      "type": "li",
+      "source_text": "[MC-309467](https://bugs.mojang.com/browse/MC-309467) - Player reporting is unavailable",
+      "translated_text": "[MC-309467] - 玩家报告功能无法使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0293",
+      "type": "li",
+      "source_text": "[MC-309471](https://bugs.mojang.com/browse/MC-309471) - Cannot see other players' skins",
+      "translated_text": "[MC-309471] - 无法看到其他玩家的皮肤",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0294",
+      "type": "li",
+      "source_text": "[MC-309518](https://bugs.mojang.com/browse/MC-309518) - Can't scrape oxidation or wax off of copper doors",
+      "translated_text": "[MC-309518] - 无法刮掉铜门上的氧化层或蜡层",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0295",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0296",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在\"安装\"选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0297",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0298",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0299",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/6cd1e711f62dc45497df6f390a9e83ba6191be41/server.jar)",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0300",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0301",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0302",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0303",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如果有任何反馈或建议，请访问[反馈页面](https://feedback.minecraft.net/)。如果你喜欢聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)啊。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Tuesday? Pfft. It's snapshot day! Today's snapshot introduces two brand-new features coming to 26.3: perfect for anyone that loves to camp in comfort. The cushion, coming in 16 color variants, finally brings the ability to sit down around a campfire. To go along with it, the straw bed brings the comfort of sleep (without the worry of losing your spawn point) to any adventure!\n\nIn addition, this snapshot brings many technical improvements: from custom brewing recipes to new ways to create and apply post-processing effects!\n\nHappy cozy crafting!\n\nNew Features\n\nAdded Cushion\n\nAdded Straw Bed\n\nAdded Gothic language support to the game\n\nCushion\n\nThe Cushion is an item that the player can place in the world and interact with to sit on\n\nCan be crafted in 16 colored variants\n\nCushions are crafted using 3 Wool Slabs of the same color\n\nCushion Placement Rules\n\nA Cushion can be placed on any flat surface\n\nCushions always align horizontally to the grid, but vertically sit on top of the supporting surface\n\nCushions cannot move\n\nCushions break if the supporting block is removed\n\nCushions do not have collision and can overlap with other objects (except other Cushions)\n\nStraw Bed\n\nThe Straw Bed is a new type of Bed which can be used to sleep through the night without setting your spawnpoint\n\nIt can only be used once and will be destroyed after use\n\nIt cannot be used in the Nether or The End and will be destroyed if you try to sleep on it there\n\nIt is crafted using 3 Hay Bales and will give you 4 Straw Beds\n\nThere's a new statistic in the Statistics window for amount of times slept in a Straw Bed\n\nTechnical Changes\n\nThe Data Pack version is now 110.0\n\nThe Resource Pack version is now 91.0\n\nData Pack Version 110.0\n\nCommands\n\nAdded posteffect\n\nAllows adding or removing \"post effects\" to players\n\nThese are postprocessing shaders that are applied to the player's screen, after the game has finished normal rendering\n\nPost effects exist on the client (in resource packs), not the server – the server cannot know if one will actually apply\n\nPost effects themselves were already part of the resource pack format, but only a few hardcoded ones were available to use\n\n**Developer's Note**: *This now makes custom shaders fully available to use from resource packs, but please be aware that shaders are still subject to be changed at-will, and the features involved (the command, post effects, or shaders) may be redesigned in the future.*\n\nSyntax:\n\n/posteffect add <player> <posteffect> - adds the post effect to the player, if it doesn't already exist\n\n/posteffect clear <player> - removes all post effects from the player, if any exist\n\n/posteffect list <target> - lists all post effects applied to the player, if any exist\n\n/posteffect remove <player> <posteffect> - removes the post effect from the player, if it exists\n\nChanges to place\n\nThe feature sub-command now allows in-line definition of the Feature\n\nEnvironment Attributes\n\nChanged minecraft:gameplay/bed_rule\n\nField explodes has been renamed to destroy_on_use\n\nAdded destroy_on_leave - optional boolean, if true , the Bed will be destroyed when leaving it\n\nIf omitted, defaults to false\n\nAdded minecraft:gameplay/straw_bed_rule\n\nSame format as minecraft:gameplay/bed_rule , but used for the Straw Bed\n\nData Components\n\nUpdated minecraft:block_transformer\n\nAdded optional boolean field update_from_neighbors . This controls if the transformed block should update based on neighboring blocks\n\nDefaults to true\n\nAdded minecraft:compostable\n\nRepresents the ability to compost an item and how it adds layers to the composter\n\nFormat: object with fields\n\nlayers - namespaced ID pointing to an element of the minecraft:number_provider registry\n\nLoot Tables\n\nMultiple block loot tables now reference predicates for checking if a tool has Silk Touch and is Shears instead of inlining a copy of those checks\n\nPredicates\n\nAdded vanilla predicates\n\nNew entries added to previously empty minecraft:predicate:\n\nminecraft:tool/can_silk_touch\n\nminecraft:tool/can_shear\n\nPotion Predicates\n\nThe minecraft:potion_contents Data Component Predicate has been changed to allow matching on specific potion effects.\n\nThe previous predicate format used a list of potion types, the new format allows for more refined matching.\n\nThe following fields can be used in any combination, all are optional:\n\npotions - A list of potion types or a potion tag to match\n\neffects - A Collection Predicate of mob_effects predicates to match\n\nThe Collection Predicate format is as follows:\n\ncontains - A list of mob_effects predicates to match\n\ncount - A list of options for matching a specific number of mob effect predicates, which follow the same format as minecraft:effects entity sub-predicate`\n\ntest - The mob_effects predicate to match\n\ncount - The number of matches required, or with min and max will match a range of counts\n\nsize - Require the mob effects list to have a specific size, or with min and max will match a range of sizes\n\nThe mob_effects predicate format is a mapping of effect types to properties of that effect. All fields are optional, only provided fields will be used for matching:\n\n{\n\"minecraft: <effect type>\": {\n\"duration\": <integer bounds representing a duration in ticks>,\n\"amplifier\": <integer bounds>,\n\"ambient: true/false,\n\"visible\": true/false\n}\n)\n\nHere is an example of matching on several different effects and criteria:\n\n\"effects\": {\n\"minecraft:jump_boost\": {\n\"duration\": 3600,\n\"amplifier\": 5,\n\"ambient: true,\n\"visible\": true\n},\n\"minecraft:speed\": {\n\"duration\": {\n\"min\": 360,\n\"max\": \"3600\n},\n\"amplifier: {\n\"min\": 2\n}\n},\n\"minecraft:resistance\": {}\n}\n\nAll criteria are optional.\n\nNumber Providers\n\nAdded a minecraft:number_provider registry\n\nAdded vanilla number providers\n\nminecraft:compostable/low\n\nreturns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 30% chance of returning 1\n\nminecraft:compostable/low_medium\n\nreturns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 50% chance of returning 1\n\nminecraft:compostable/medium\n\nreturns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 65% chance of returning 1\n\nminecraft:compostable/medium_high\n\nreturns 1 if the minecraft:block_state context parameter is an empty composter, otherwise has a 85% chance of returning 1\n\nminecraft:compostable/always_add_one\n\nalways returns 1\n\nAdded minecraft:number_dispatcher type\n\nReturns the first case which fulfills its condition or the default if none do\n\nFields:\n\ncases - a list of cases in the order that the dispatcher will try to execute them\n\nFields:\n\ncondition - a minecraft:predicate\n\nnumber_provider - a minecraft:number_provider which is executed if the condition is fulfilled\n\ndefault - an optional minecraft:number_provider\n\nDefaults to a constant 0 if omitted\n\nAdded minecraft:conditional_value type\n\nReturns the value from on_true if its condition or on_false if not\n\nFields:\n\nconditions - a minecraft:predicate\n\non_true - a minecraft:number_provider which is executed if its condition is fulfilled\n\non_false - an optional minecraft:number_provider\n\nDefaults to a constant 0 if omitted\n\nAdded minecraft:weighted_list\n\nReturns a value from a distribution of weighted number providers\n\nFields:\n\ndistribution - a list of objects with the following fields\n\nFields:\n\ndata - a minecraft:number_provider\n\nweight - a positive integer\n\nRecipes\n\nPotion Brewing Recipes\n\nPotion brewing recipes are now data-driven. New recipes can be added via datapacks, and vanilla recipes may be modified. Brewing recipes use the minecraft:brewing type.\n\nThe main contents are:\n\ninput - A potion ingredient with a required item field and an optional potion_contents field using a minecraft:potion_contents Data Component Predicate\n\nreagent - A potion ingredient with a required item field and an optional potion_contents field using a minecraft:potion_contents Data Component Predicate\n\noutput - item stack, the resulting item\n\nHere is an example of a vanilla recipe:\n\n{\n\"type\": \"minecraft:brewing\",\n\"input\": {\n\"item\": \"minecraft:potion\",\n\"potion_contents\": {\n\"potion\": \"minecraft:water\"\n}\n},\n\"output\": {\n\"components\": {\n\"minecraft:potion_contents\": {\n\"potion\": \"minecraft:awkward\"\n}\n},\n\"id\": \"minecraft:potion\"\n},\n\"reagent\": {\n\"item\": \"minecraft:nether_wart\"\n}\n}\n\nAny items may be used in any of the 3 slots, for example:\n\n{\n\"type\": \"minecraft:brewing\",\n\"input\": { \"item\": \"minecraft:bucket\" },\n\"output\": { \"id\": \"minecraft:sulfur_cube_bucket\" },\n\"reagent\": { \"item\": \"minecraft:potent_sulfur\" }\n}\n\nWorld Generation\n\nFeatures\n\nRemoved feature types:\n\nminecraft:coral_mushroom\n\nminecraft:kelp\n\nminecraft:seagrass\n\nminecraft:sea_pickle\n\n**Developer's Note**: *These feature types are no longer needed, since the features they previously hardcoded are now implemented with other, more configurable functionality.*\n\nChanged\n\nminecraft:coral_claw\n\nand\n\nminecraft:coral_tree\n\nAdded field feature , a Placed Feature that is used to place at every desired block position\n\nPlacement Modifiers\n\nAdded\n\nminecraft:cuboid\n\nRepeats a feature in a cuboid shape.\n\nAdded fields:\n\nxz_size : Int provider between 1 and 16 representing the size of the cuboid along x and z axes\n\ny_size : Int provider between 1 and 16 representing the size of the cuboid along the y axis\n\ninclude_interior : Optional boolean (default true ) for whether to place interior blocks of the cuboid\n\ninclude_edges : Optional boolean (default true ) for whether to place edge blocks of the cuboid\n\nSetting this to false generates a somewhat \"rounded\" cuboid\n\nAdded\n\nminecraft:random_chance\n\nGates the feature being placed behind a random chance.\n\nFormat:\n\nchance : Float value between 0 and 1 representing the chance that the feature gets placed\n\nBlock State Providers\n\nUpdated\n\nminecraft:copy_properties_provider\n\nRenamed field source_block_state_provider to source\n\nAdded\n\nminecraft:random_block_provider\n\nReturns the default block state for a randomly chosen block.\n\nFormat:\n\nblocks : Block ID, list of Block IDs or hash-prefixed Block Tag, specifying the set of blocks to randomly pick from\n\nChanged\n\nminecraft:rotated_block_provider\n\nNow works on any block with axis or facing properties.\n\nFormat:\n\nChanged field state : Now a Block State Provider\n\nAdded field direction : Optional field describing the direction to set\n\nIf omitted, a random direction is chosen\n\nRule Tests\n\nThese are the predicates used by ore Features (targets[].target), and rule Structure Processors (rules[].input_predicate and rules[].location_predicate).\n\nAdded\n\nminecraft:any_of\n\nThis checks a list of Rule Tests for whether any of them returns true for the same block\n\nFormat: object with fields:\n\nrules - list of Rule Tests, the rules to test the block against\n\nAdded\n\nminecraft:not\n\nThis checks a Rule Test for whether it returns false for a given block\n\nFormat: object with fields:\n\nrule - Rule Test, the rule to test the block against\n\nTags\n\nBlock Tags\n\nAdded #sculk_growth_inhibitors for blocks which keep Sculk from spreading when more than 2 are in the 8x2x8 area around it\n\nAdded #cats_can_sit_on - Blocks which Cats can randomly sit on\n\nAdded #cats_can_lie_on - Blocks which Cats can randomly lie on\n\nAdded #speeds_up_zombie_villager_curing - Blocks which can increase Zombie Villager curing time if placed nearby\n\nAdded #villagers_can_sleep_on_bed - Bed blocks which Villagers can sleep on\n\nAdded #villager_babies_can_jump_on_bed - Bed blocks which Villager kids can jump on\n\nAdded #height_specific_ore_replaceables - contains all blocks which Ore Features will turn into Stone Ores if found above y-level 0 and into Deepslate Ores if found below y-level 8\n\nItem Tags\n\n#dowses_campfires has been renamed to #douses_campfires\n\nStructure Tags\n\nAdded #abandoned_camp for all variants of Abandoned Camps\n\nResource Pack Version 91.0\n\nBlock Sprites\n\nAdded new Block textures:\n\nblock/straw_bed.png\n\nblock/straw_bed_particle.png\n\nSounds\n\nAdded new sound events:\n\nblock.straw_bed.break\n\nblock.straw_bed.break_leave\n\nblock.straw_bed.step\n\nblock.straw_bed.place\n\nblock.straw_bed.hit\n\nblock.straw_bed.fall\n\nblock.poplar_leaves.break\n\nblock.poplar_leaves.fall\n\nblock.poplar_leaves.place\n\nblock.poplar_leaves.step\n\nblock.poplar_leaves.hit\n\nblock.red_shrub.break\n\nblock.red_shrub.place\n\nentity.cushion.break\n\nentity.cushion.place\n\nentity.cushion.get_up\n\nentity.cushion.sit\n\nItem Models\n\nAdded optional shade_direction_override to block model elements\n\nAccepted values are cardinal directions ( down , up , north , south , west , east )\n\nWhen set, this overrides directional shading for the element regardless of face orientation\n\nRemoved shade from block model elements\n\nUse shade_direction_override: \"up\" to get the previous shade: false behavior\n\nShaders & Post-process Effects\n\nAlways-on Post Effect Support\n\nA resource pack can now define a minecraft:end_of_frame post effect\n\nIt will be applied before other post effects, including the ones enabled by the new posteffect command\n\nThis post effect is always on as long as the resource pack is loaded, and cannot be controlled by the posteffect command\n\nAs usual with resource pack resources, in case of multiple packs defining this effect, the one from the last resource pack in the list will apply\n\nFixed bugs in 26.3 Snapshot 3\n\n[MC-51859](https://bugs.mojang.com/browse/MC-51859) - The line spacing of text within all hover tooltips is larger between the first and second lines\n\n[MC-112580](https://bugs.mojang.com/browse/MC-112580) - Structure blocks' GUI does not pause the game in singleplayer\n\n[MC-112744](https://bugs.mojang.com/browse/MC-112744) - The Team NBT tag only exists for living entities\n\n[MC-174958](https://bugs.mojang.com/browse/MC-174958) - /gamerule succeeds when the value is not changed\n\n[MC-175180](https://bugs.mojang.com/browse/MC-175180) - The Silent NBT tag still doesn't make some entities fully silent\n\n[MC-224528](https://bugs.mojang.com/browse/MC-224528) - Two splash texts use curly single quotes (’) instead of apostrophes (')\n\n[MC-229831](https://bugs.mojang.com/browse/MC-229831) - Enchanting tables' GUI has three pixels in the top-right corner that shouldn't be there\n\n[MC-239401](https://bugs.mojang.com/browse/MC-239401) - items/light.png never appears in-game; is pointlessly referenced by other game assets\n\n[MC-254353](https://bugs.mojang.com/browse/MC-254353) - A packet to remove the score is always broadcast when a score is reset\n\n[MC-254661](https://bugs.mojang.com/browse/MC-254661) - /schedule clear requires a namespace in its function argument\n\n[MC-256073](https://bugs.mojang.com/browse/MC-256073) - Miscolored pixel in tab_inventory.png\n\n[MC-256096](https://bugs.mojang.com/browse/MC-256096) - Some entities on a team can harm teammates that walk into them when friendly fire is disabled\n\n[MC-256097](https://bugs.mojang.com/browse/MC-256097) - Some entities on a team can harm their teammates when they explode when friendly fire is disabled\n\n[MC-259583](https://bugs.mojang.com/browse/MC-259583) - Brewing with a single bottle of dragon's breath does not return a glass bottle afterward\n\n[MC-267902](https://bugs.mojang.com/browse/MC-267902) - The failure message of /random when the specified range is too large states an incorrect maximum for the range\n\n[MC-271297](https://bugs.mojang.com/browse/MC-271297) - /fillbiome doesn't fail when no changes are made\n\n[MC-273327](https://bugs.mojang.com/browse/MC-273327) - The #convertable_to_mud block tag misspells \"convertible\" as \"convertable\"\n\n[MC-275532](https://bugs.mojang.com/browse/MC-275532) - The abbreviation \"fps\" is inconsistently capitalized across strings\n\n[MC-279185](https://bugs.mojang.com/browse/MC-279185) - The \"selectWorld.load_folder_access\" string is missing an article before the word \"folder\"\n\n[MC-279819](https://bugs.mojang.com/browse/MC-279819) - The mining speed factor of Mining Fatigue is inconsistent at level 3\n\n[MC-293615](https://bugs.mojang.com/browse/MC-293615) - Tooltip formatting of \"Items x number\" is inconsistent across different types of items\n\n[MC-301804](https://bugs.mojang.com/browse/MC-301804) - Test blocks' GUI does not pause the game in singleplayer\n\n[MC-305707](https://bugs.mojang.com/browse/MC-305707) - /time reports success when no changes are made\n\n[MC-307616](https://bugs.mojang.com/browse/MC-307616) - Typo in a log message in ActiveProfiler : \"aprox\"\n\n[MC-307618](https://bugs.mojang.com/browse/MC-307618) - Typo in a log message in SoundEngine : \"disapeared\"\n\n[MC-307648](https://bugs.mojang.com/browse/MC-307648) - \"non-heap\" is misspelled as \"non-head\" in the system details section of crash reports\n\n[MC-307660](https://bugs.mojang.com/browse/MC-307660) - Typo in a log message in GameRenderer : \"coudln't\"\n\n[MC-307709](https://bugs.mojang.com/browse/MC-307709) - The texture of upward facing sulfur spikes' merged tip has a single wrong pixel at the very top\n\n[MC-308460](https://bugs.mojang.com/browse/MC-308460) - Some of the stems in wildflowers and pink petals render brighter\n\n[MC-308851](https://bugs.mojang.com/browse/MC-308851) - The chat_restriction.disabled_by_profile.action string is improperly capitalized\n\n[MC-309021](https://bugs.mojang.com/browse/MC-309021) - Poplar leaves' closed captions display as raw translation keys\n\n[MC-309024](https://bugs.mojang.com/browse/MC-309024) - death.attack.sulfurCubeHot.item displays as a raw translation key\n\n[MC-309033](https://bugs.mojang.com/browse/MC-309033) - The campsite_flower_forest_1 abandoned camp structure has stripes of orange wool under it\n\n[MC-309034](https://bugs.mojang.com/browse/MC-309034) - The tent_windswept_forest_8 abandoned camp structure contains a dropped stack of bone meal\n\n[MC-309054](https://bugs.mojang.com/browse/MC-309054) - The item texture of poplar hanging signs is inconsistent with other hanging signs\n\n[MC-309058](https://bugs.mojang.com/browse/MC-309058) - The tent_flower_forest_4 abandoned camp structure contains a dropped birch log\n\n[MC-309090](https://bugs.mojang.com/browse/MC-309090) - Certain entities on shelf mushrooms make a sound every tick\n\n[MC-309122](https://bugs.mojang.com/browse/MC-309122) - Abandoned camps can generate in areas of wooded badlands with no trees nor grass\n\n[MC-309155](https://bugs.mojang.com/browse/MC-309155) - Shelf mushrooms and red shrubs do not have unique sounds, unlike in Bedrock Edition\n\n[MC-309208](https://bugs.mojang.com/browse/MC-309208) - The poplar wood set is inconsistently placed in the Creative mode inventory\n\n[MC-309261](https://bugs.mojang.com/browse/MC-309261) - Incorrect calculation in the poplar trunk placer\n\n[MC-309308](https://bugs.mojang.com/browse/MC-309308) - Several abandoned camp structures contain persistent leaves\n\n[MC-309324](https://bugs.mojang.com/browse/MC-309324) - Ores don't generate in blobs of andesite, diorite, or granite below Y=0\n\n[MC-309350](https://bugs.mojang.com/browse/MC-309350) - Shelf mushrooms generated with fallen trees replace water\n\n[MC-309392](https://bugs.mojang.com/browse/MC-309392) - The lighting on entities and block entities is not rendered correctly and appears too dark or too bright on certain sides\n\n[MC-309395](https://bugs.mojang.com/browse/MC-309395) - The texture of the top halves of poplar doors is missing a pixel on the second hinge\n\n[MC-309397](https://bugs.mojang.com/browse/MC-309397) - The game renderer corrupts when toggling off fullscreen or resizing the window with the Vulkan rendering backend\n\n[MC-309399](https://bugs.mojang.com/browse/MC-309399) - The game output console logs \"Ignoring chat session from due to missing Services public key” when loading into a world\n\n[MC-309400](https://bugs.mojang.com/browse/MC-309400) - The glowing effect on entities stays in place when cleared\n\n[MC-309403](https://bugs.mojang.com/browse/MC-309403) - Having an item with the block_transformer component with a rule_based_state_provider locks the player out of that world\n\n[MC-309408](https://bugs.mojang.com/browse/MC-309408) - The item tag that controls which items can douse campfires is misspelled as #dowses_campfires\n\n[MC-309412](https://bugs.mojang.com/browse/MC-309412) - Block items ignore the block_transformer component\n\n[MC-309420](https://bugs.mojang.com/browse/MC-309420) - The random_neighbor_spread feature has a field misspelled as \"xy_offset\"\n\n[MC-309432](https://bugs.mojang.com/browse/MC-309432) - Worlds render entirely magenta on macOS with the Vulkan rendering backend\n\n[MC-309433](https://bugs.mojang.com/browse/MC-309433) - Drowned can consume or use certain items\n\n[MC-309435](https://bugs.mojang.com/browse/MC-309435) - Drowned no longer chase after players correctly\n\n[MC-309441](https://bugs.mojang.com/browse/MC-309441) - Projectiles lose their can_break ability after reloading the world\n\n[MC-309445](https://bugs.mojang.com/browse/MC-309445) - The game renderer can corrupt when toggling fullscreen or opening an inventory with the OpenGL rendering backend\n\n[MC-309467](https://bugs.mojang.com/browse/MC-309467) - Player reporting is unavailable\n\n[MC-309471](https://bugs.mojang.com/browse/MC-309471) - Cannot see other players' skins\n\n[MC-309518](https://bugs.mojang.com/browse/MC-309518) - Can't scrape oxidation or wax off of copper doors\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/6cd1e711f62dc45497df6f390a9e83ba6191be41/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "星期二？哼，今天是快照更新日！今天的快照为 26.3 版本带来了两个全新的功能，非常适合喜欢舒适地扎营的玩家。这个名为“垫子”的物品有 16 种颜色可选，终于可以让玩家在篝火旁坐下来休息了。同时，“稻草床”也为冒险家提供了舒适的睡眠环境（而且不用担心会丢失出生点！）\n\n此外，这次快照还带来了许多技术上的改进：从自定义酿造配方到创建和应用后期处理效果的新方法！”\n\n愉快地制作吧！\n\n新功能\n\n新增了“垫子”物品\n\n新增了“稻草床”物品\n\n游戏中新增了对哥特语的支持\n\n“垫子”是一种玩家可以放置在世界中并用来坐的物品\n\n“垫子”是一种玩家可以放置在世界中并用来坐的物品\n\n可以制作16种不同颜色的垫子\n\n垫子是由3块相同颜色的羊毛方块制成的\n\n垫子的放置规则\n\n垫子可以放置在任何平整的表面上\n\n垫子总是水平对齐网格，但在垂直方向上会贴合在承载它的表面上\n\n垫子无法移动\n\n如果承载垫子的方块被移除，垫子也会损坏\n\n垫子没有碰撞效果，可以与其他对象重叠（除了其他垫子本身）\n\n草垫床\n\n草垫床是一种新型的床，可以在不改变出生点的情况下在上面睡觉\n\n只能使用一次，使用后就会销毁\n\n不能在下界或末地使用；如果尝试在这些地方睡觉，该物品也会被破坏\n\n由3个干草捆制成，可为你提供4个草床\n\n统计窗口中新增了一个关于草床使用次数的统计项\n\n技术性修改\n\n数据包版本现已更新至110.0\n\n资源包版本现已更新至91.0\n\n数据包版本 110.0\n\n命令相关更新\n\n新增了后期效果\n\n允许向玩家添加或移除“后处理效果”\n\n这些是后处理着色器，在游戏完成正常渲染后应用于玩家的屏幕上\n\n后处理效果存在于客户端（资源包中），而不是服务器端——服务器无法知道这些效果是否真的会应用到玩家身上\n\n后处理效果本身已经是资源包格式的一部分，但只能使用少数预定义好的效果\n\n**开发者备注**：*现在可以通过资源包完全使用自定义着色器了，但请注意，着色器可能会随时被更改，相关的功能（命令、后处理效果或着色器本身）在未来也可能被重新设计。*\n\n语法：\n\n/posteffect add <玩家> <后处理效果> - 如果该效果尚未存在，则会将其添加到玩家身上\n\n/posteffect clear <player> - 移除玩家的所有后置效果（如果存在的话）\n\n/posteffect list <target> - 列出应用于玩家的所有后置效果（如果存在的话）\n\n/posteffect remove <player> <posteffect> - 删除玩家身上的某个后置效果（如果存在的话）\n\n对“place”功能的修改\n\n此子命令现在允许直接定义“Feature”属性\n\n环境属性（Environment Attributes）\n\n修改了 minecraft:gameplay/bed_rule\n\n字段“field explodes”已更名为“destroy_on_use”\n\n新增了“destroy_on_leave”选项——为一个布尔值；如果设置为 true，玩家离开床时会销毁该床\n\n如果省略此选项，则默认值为 false\n\n添加了 minecraft:gameplay/straw_bed_rule\n\n格式与 minecraft:gameplay/bed_rule 相同，但用于 Straw Bed（稻草床）\n\n数据组件（Data Components）\n\n更新了 minecraft:block_transformer\n\n新增了一个可选的布尔字段 update_from_neighbors。该字段用于控制转换后的方块是否应根据相邻方块的状态进行更新\n\n默认值为 true\n\n新增了 minecraft:compostable（可堆肥属性）\n\n表示将物品进行堆肥的功能，以及堆肥过程中添加的层数\n\n格式：包含多个字段的对象\n\nlayers - 一个命名空间化的 ID，用于引用 minecraft:number_provider 注册表中的元素\n\n战利品表（Loot Tables）\n\n多个方块战利品表现在使用谓词来检查工具是否具有“丝触”（Silk Touch）属性或是否为“剪刀”（Shears），而不是在其中内嵌这些检查逻辑\n\n谓词（Predicates）\n\n添加了原版游戏中的谓词（Added vanilla predicates）\n\n在之前为空的 `minecraft:predicate` 中添加了新的条目\n\nminecraft:tool/can_silk_touch\n\nminecraft:tool/can_shear\n\n药水谓词（Potion Predicates）\n\n`minecraft:potion_contents` 数据组件谓词已更改，现在可以针对特定的药水效果进行匹配\n\n之前的谓词格式使用的是药水类型的列表，新格式允许更精确的匹配\n\n以下字段可以任意组合使用，所有字段均为可选的：\n\n药剂（Potions）- 列出药剂类型，或使用药剂标签进行匹配\n\n效果（Effects）- 用于匹配的 mob_effects 列表谓词\n\nCollectionPredicate 的格式如下：\n\n包含（Contains）- 用于匹配的 mob_effects 列表谓词\n\n计数（Count）- 用于匹配特定数量 mob_effects 谓词的选项，其格式与 `minecraft:effects` 实体子谓词相同\n\n测试（Test）- 需要匹配的 mob_effects 谓词\n\n所需匹配的数量；如果指定 min 和 max，即可匹配相应的数量范围\n\n大小（Size）- 要求 mob_effects 列表具有特定的大小；如果指定 min 和 max，即可匹配相应的大小范围\n\nmob_effects谓词格式是将效果类型映射到该效果的属性的一种方式。所有字段都是可选的，只有提供了的字段才会被用于匹配。\n\n{\n\"minecraft: <effect type>\": {\n\"duration\": <integer bounds representing a duration in ticks>,\n\"amplifier\": <integer bounds>,\n\"ambient: true/false,\n\"visible\": true/false\n}\n)\n\n以下是一个根据多种不同效果和标准进行匹配的例子：\n\n\"effects\": {\n\"minecraft:jump_boost\": {\n\"duration\": 3600,\n\"amplifier\": 5,\n\"ambient: true,\n\"visible\": true\n},\n\"minecraft:speed\": {\n\"duration\": {\n\"min\": 360,\n\"max\": \"3600\n},\n\"amplifier: {\n\"min\": 2\n}\n},\n\"minecraft:resistance\": {}\n}\n\n所有标准都是可选的。\n\n数字提供者（Number Providers）\n\n新增了minecraft:number_provider注册表\n\n新增了vanilla数字提供者\n\nminecraft:compostable/low\n\n如果minecraft:block_state上下文参数是一个空的堆肥箱，那么返回1；否则有30%的概率返回1\n\nminecraft:compostable/low_medium\n\n如果minecraft:block_state上下文参数是一个空的堆肥箱，那么返回1；否则有50%的概率返回1\n\nminecraft:compostable/medium\n\n如果 minecraft:block_state 参数指向一个空的堆肥容器，则返回 1；否则有 65% 的几率返回 1\n\nminecraft:compostable/medium_high\n\n如果 minecraft:block_state 参数指向一个空的堆肥容器，则返回 1；否则有 85% 的几率返回 1\n\nminecraft:compostable/always_add_one\n\n始终返回 1\n\n新增了 minecraft:number_dispatcher 类型\n\n返回第一个满足条件的情况，如果没有满足条件的情况，则返回默认值\n\n字段（Fields）\n\n情况列表（Cases）——调度器将按此顺序尝试执行这些情况\n\n字段：\n\ncondition - 一个 Minecraft:Predicate（条件）\n\nnumber_provider - 一个 Minecraft:NumberProvider；当条件满足时会被执行\n\ndefault - 一个可选的 Minecraft:NumberProvider\n\n如果省略，则默认为常量 0\n\n新增了 Minecraft:ConditionalValue 类型\n\n如果条件为 true，则返回 on_true 的值；否则返回 on_false 的值\n\n字段：\n\nconditions - 一组 Minecraft:Predicates（多个条件）\n\non_true - 一个 Minecraft:NumberProvider；当其条件满足时会被执行\n\non_false - 一个可选的 minecraft:number_provider\n\n如果省略，默认为常量 0\n\n新增了 minecraft:weighted_list\n\n从一系列带权重的 number_provider 中返回一个值\n\n字段：\n\ndistribution - 一个包含以下字段的对象列表\n\n字段：\n\ndata - 一个 minecraft:number_provider\n\nweight - 一个正整数\n\n配方\n\n药水制作配方\n\n药水制作配方现在是基于数据的。新的配方可以通过数据包添加，现有的配方也可以进行修改。制作配方使用 `minecraft:brewing` 类型。\n\n主要内容包括：\n\n输入 - 一种药水材料，具有必需的 `item` 字段以及可选的 `potion_contents` 字段（使用 `minecraft:potion_contents` 数据组件谓词）\n\n试剂 - 一种药水材料，具有必需的 `item` 字段以及可选的 `potion_contents` 字段（使用 `minecraft:potion_contents` 数据组件谓词）\n\n输出 - 结果物品的堆栈\n\n这是一个经典药水配方的示例：\n\n{\n\"type\": \"minecraft:brewing\",\n\"input\": {\n\"item\": \"minecraft:potion\",\n\"potion_contents\": {\n\"potion\": \"minecraft:water\"\n}\n},\n\"output\": {\n\"components\": {\n\"minecraft:potion_contents\": {\n\"potion\": \"minecraft:awkward\"\n}\n},\n\"id\": \"minecraft:potion\"\n},\n\"reagent\": {\n\"item\": \"minecraft:nether_wart\"\n}\n}\n\n任何物品都可以使用在这三个位置中的任意一个，例如：\n\n{\n\"type\": \"minecraft:brewing\",\n\"input\": { \"item\": \"minecraft:bucket\" },\n\"output\": { \"id\": \"minecraft:sulfur_cube_bucket\" },\n\"reagent\": { \"item\": \"minecraft:potent_sulfur\" }\n}\n\n世界生成\n\n特性\n\n移除了某些功能类型\n\nminecraft:coral_mushroom\n\nminecraft:kelp\n\nminecraft:seagrass\n\nminecraft:seapickle\n\n**开发者备注**：*这些功能类型已不再需要，因为它们之前硬编码的功能现在可以通过其他更灵活、可配置的方式实现。*\n\n已更改\n\nminecraft:coral_claw\n\n和\n\nminecraft:coral_tree\n\n新增了“放置特征”（Placed Feature）功能，该功能可用于在任何所需的方块位置放置方块\n\n放置修饰器（Placement Modifiers）\n\n已添加（Added）\n\nminecraft:cuboid\n\n以长方体形状重复放置某个特征（Repeats a feature in a cuboid shape）\n\n新增了以下字段：\n\nxz_size: 整数类型（范围1-16），表示长方体在x轴和z轴上的尺寸\n\ny_size: 整数类型（范围1-16），表示长方体在y轴上的尺寸\n\ninclude_interior: 可选布尔值（默认为true），用于决定是否放置长方体的内部方块\n\ninclude_edges: 可选布尔值（默认为true），用于决定是否放置长方体的边缘方块\n\n将其设置为 false 会生成一个较为“圆润”的长方体\n\n已添加\n\nminecraft:random_chance\n\n该功能能否被放置取决于一个随机几率\n\n格式：\n\nchance: 一个介于 0 和 1 之间的浮点数，表示该功能被放置的概率\n\n块状态提供者（Block State Providers）\n\n已更新\n\nminecraft:copy_properties_provider\n\n将字段 source_block_stateprovider 重命名为 source\n\n新增\n\nminecraft:random_block_provider\n\n返回随机选择的方块的默认状态\n\n格式：\n\nblocks: 方块ID、方块ID列表或带有哈希前缀的方块标签，用于指定随机选择的方块集合\n\n修改\n\nminecraft:rotated_block_provider\n\n现在可以对具有轴或方向属性的任何方块进行操作\n\n格式：\n\n修改字段状态：现在是一个方块状态提供者\n\n添加了 `direction` 字段：这是一个可选字段，用于指定设置的方向\n\n如果省略这个字段，系统会随机选择一个方向\n\n规则测试（Rule Tests）\n\n这些是矿石特性（ore Features，`targets[]`）以及规则结构处理器（rule Structure Processors，`rules[].inputpredicate` 和 `rules[].locationpredicate`）所使用的谓词（predicates）\n\n已添加\n\n`minecraft:any_of`\n\n该功能会检查一组规则测试（Rule Tests），判断是否有任何一个对相同方块返回 `true`\n\n格式：一个包含多个字段的对象（Format: an object with fields）\n\n`rules`：用于测试方块的规则列表（The list of rules to test the block against）\n\n已添加\n\nMinecraft: 不\n\n这用于检查规则测试，看它对于给定的方块是否返回 false\n\n格式：带有字段的对象\n\nrule - 规则测试，用于测试方块是否符合规则\n\n标签\n\n方块标签\n\n为某些方块添加了 #sculk_growth_inhibitors，当这些方块在周围 8x2x8 的区域内有超过 2 个 Sculk 方块时，可以阻止 Sculk 的扩散\n\n添加了 #cats_can_sit_on - 猫可以随机坐在这些方块上的方块\n\n添加了 #cats_can_lie_on - 猫可以随机躺在这些方块上的方块\n\n添加了 #speeds_up_zombie_villager_curing - 如果将这些方块放置在附近，可以加快僵尸村民的恢复速度\n\n新增了 #villagers_can_sleep_on_bed 功能——村民可以在床块上睡觉\n\n新增了 #villager_babies_can_jump_on_bed 功能——小村民可以在床块上跳跃\n\n新增了 #height_specific_ore_replaceables 功能——这类块如果位于 y 轴 0 以上，则矿石特征会转化为石矿石；如果位于 y 轴 8 以下，则会转化为深石矿石\n\n物品标签（Item Tags）\n\n#dowses_campfires 的名称已更改为 #douses_campfires\n\n结构标签（Structure Tags）\n\n为所有废弃营地（Abandoned Camps）的变体新增了 #abandoned_camp 标签\n\n资源包版本 91.0\n\n区块精灵（Block Sprites）\n\n新增了多种区块纹理（Added new Block textures）\n\nblock/straw_bed.png\n\nblock/straw_bed_particle.png\n\n声音\n\n新增了声音事件：</times\n\nblock.straw_bed_break\n\nblock.straw_bed;break_leave\n\nblock.straw_bed.step\n\nblock.straw_bed.place\n\nblock.straw_bed_hit\n\nblock.straw_bed.fall\n\n使杨树叶子掉落\n\n杨树叶子自然掉落\n\n放置杨树叶子\n\n踩在杨树叶子上\n\n与杨树叶子碰撞\n\n使红灌木丛断裂\n\n放置红灌木丛\n\n使软垫破裂\n\n放置软垫\n\n让使用中的软垫恢复原状\n\nentity.cushion.sit\n\n物品模型\n\n为方块模型元素添加了可选的shade_direction_override属性\n\n可接受的值为基本方向（down、up、north、south、west、east）\n\n设置过后，该属性会覆盖元素的面朝方向对阴影效果的影响\n\n移除了方块模型元素中的阴影效果\n\n使用shade_direction_override：“up”可恢复之前的阴影效果（即false状态）\n\n着色器与后期处理效果\n\n支持始终开启的后期处理效果\n\n资源包现在可以定义一个“minecraft:end_of_frame”类型的后期处理效果\n\n该效果将在其他后期效果之前应用，包括通过新的后期效果命令启用的效果\n\n只要资源包加载完成，这个后期效果就会一直开启，且无法通过后期效果命令进行控制\n\n与资源包中的其他资源一样，如果多个资源包定义了相同的效果，那么将应用列表中最后一个资源包中的设置\n\n修复了26.3版本快照3中的错误\n\n[MC-51859](https://bugs.mojang.com/browse/MC-51859) - 所有悬停工具提示中的文本行间距在第一行和第二行之间较大\n\n[MC-112580](https://bugs.mojang.com/browse/MC-112580) - 单人模式下，结构方块的图形用户界面不会使游戏暂停\n\n[MC-112744](https://bugs.mojang.com/browse/MC-112744) - Team NBT标签仅存在于活着的实体上\n\n[MC-174958](https://bugs.mojang.com/browse/MC-174958) - 当数值未更改时，/gamerule 名令仍会执行\n\n[MC-175180](https://bugs.mojang.com/browse/MC-175180) - Silent NBT 标签仍然无法使某些实体完全保持静默\n\n[MC-224528](https://bugs.mojang.com/browse/MC-224528) - 两个 splash 文本使用了单引号（'）而不是 apostrophes（'）\n\n[MC-229831](https://bugs.mojang.com/browse/MC-229831) - 魔法阵的 GUI 在右上角有三个不应该存在的像素\n\n[MC-239401](https://bugs.mojang.com/browse/MC-239401) - item/light.png 从未在游戏内显示；其他游戏资源中却无必要地引用了它\n\n[MC-254353](https://bugs.mojang.com/browse/MC-254353) - 每当分数重置时，都会广播一个用于清除分数的数据包\n\n[MC-254661](https://bugs.mojang.com/browse/MC-254661) - `/schedule clear` 需要在其函数参数中指定命名空间\n\n[MC-256073](https://bugs.mojang.com/browse/MC-256073) - `tabinventory.png` 中的像素显示错误\n\n[MC-256096] - 在禁用友好火力的情况下，队伍中的一些实体可能会伤害靠近它们的队友\n\n[MC-256097] - 在禁用友好火力的情况下，队伍中的一些实体在爆炸时也会伤害到它们的队友\n\n[MC-259583] - 用一瓶龙息药剂酿酒后，不会得到一个玻璃瓶作为结果\n\n[MC-267902] - 当指定的范围过大时，`/random` 命令的失败消息会显示错误的范围最大值\n\n[MC-271297](https://bugs.mojang.com/browse/MC-271297) - 在没有进行任何更改的情况下，/fillbiome 操作不会失败\n\n[MC-273327](https://bugs.mojang.com/browse/MC-273327) - #convertable_to_mud 块标签中的 ‘convertable’ 拼写错误，应为 ‘convertible’\n\n[MC-275532](https://bugs.mojang.com/browse/MC-275532) - 缩写 ‘fps’ 在不同的字符串中大小写不一致\n\n[MC-279185](https://bugs.mojang.com/browse/MC-279185) - ‘selectWorld.load_folder_access’ 字符串在 ‘folder’ 一词前缺少一个逗号\n\n[MC-279819](https://bugs.mojang.com/browse/MC-279819) - 在级别 3 时，Mining Fatigue 的采矿速度参数不一致\n\n[MC-293615](https://bugs.mojang.com/browse/MC-293615) - ‘Items x number’ 的工具提示格式在不同类型的物品上表现不一致\n\n[MC-301804] - 单人游戏中，测试方块的 GUI 无法暂停游戏\n\n[MC-305707] - 当没有进行任何更改时，/time 模块仍会正确报告时间\n\n[MC-307616] - ActiveProfiler 的日志消息中存在拼写错误：‘aprox’\n\n[MC-307618] - SoundEngine 的日志消息中存在拼写错误：‘disapeared’\n\n[MC-307648] - 崩溃报告的系统详情部分中，“non-heap”被拼写为“non-head”\n\n[MC-307660] - GameRenderer 的日志消息中存在拼写错误：“coudln’t”\n\n[MC-307709](https://bugs.mojang.com/browse/MC-307709) - 向上生长的硫黄尖锥的合并后的顶部有一个像素错误\n\n[MC-308460](https://bugs.mojang.com/browse/MC-308460) - 一些野花和粉红色花簇的茎部显示得过于鲜艳\n\n[MC-308851] - `chat_restriction_disabled_by_profile.action` 这个字符串的大小写不正确\n\n[MC-309021] - 杨树叶片的字幕显示为原始的翻译键\n\n[MC-309024] - `death.attack.sulfurCubeHot.item` 显示为原始的翻译键\n\n[MC-309033] - `campsite_flower_forest_1` 废弃营地结构下方有橙色羊毛条纹\n\n[MC-309034](https://bugs.mojang.com/browse/MC-309034) - 在‘tent_windswept_forest_8’废弃营地结构中，会发现掉落的骨粉堆\n\n[MC-309054](https://bugs.mojang.com/browse/MC-309054) - 杨树悬挂标志的物品纹理与其他悬挂标志不一致\n\n[MC-309058](https://bugs.mojang.com/browse/MC-309058) - 在‘tent_flower_forest_4’废弃营地结构中，会发现掉落的桦木原木\n\n[MC-309090](https://bugs.mojang.com/browse/MC-309090) - 某些生长在架子上蘑菇的实体每个游戏刻（tick）都会发出声音\n\n[MC-309122] - 废弃营地可能出现在没有树木和草的林地环境中\n\n[MC-309155] - 架子上的蘑菇和红色灌木没有独特的音效，这与基岩版（Bedrock Edition）的情况不同\n\n[MC-309208](https://bugs.mojang.com/browse/MC-309208) - 白杨木材在创造模式下的物品栏中的放置位置不一致\n\n[MC-309261](https://bugs.mojang.com/browse/MC-309261) - 白杨树干生成器存在计算错误\n\n[MC-309308](https://bugs.mojang.com/browse/MC-309308) - 一些废弃的营地结构中持续存在树叶\n\n[MC-309324](https://bugs.mojang.com/browse/MC-309324) - 在 Y=0 以下的安山岩、闪长岩或花岗岩层中不会生成矿石\n\n[MC-309350](https://bugs.mojang.com/browse/MC-309350) - 用倒下的树木生成的架子蘑菇会取代水体\n\n[MC-309392](https://bugs.mojang.com/browse/MC-309392) - 实体（包括方块实体）上的光照渲染不正确，在某些侧面看起来过暗或过亮\n\n[MC-309395](https://bugs.mojang.com/browse/MC-309395) - 杨木门上部的纹理在第二个合页处缺少一个像素\n\n[MC-309397](https://bugs.mojang.com/browse/MC-309397) - 在切换全屏或调整使用Vulkan渲染后端的窗口大小时，游戏渲染器会出现故障\n\n[MC-309399](https://bugs.mojang.com/browse/MC-309399) - 游戏在加载到一个世界时，控制台会输出‘由于缺少Services公钥而忽略聊天会话’的错误\n\n[MC-309400](https://bugs.mojang.com/browse/MC-309400) - 实体上的发光效果在被清除后仍然存在\n\n[MC-309403] - 如果一个物品使用了带有`block_transformer`组件和`rule_based_state_provider`的物品，玩家将无法进入该世界\n\n[MC-309408](https://bugs.mojang.com/browse/MC-309408) - 控制哪些物品可以浇灭火堆的物品标签拼写错误，应该是#dowses_campfires\n\n[MC-309412](https://bugs.mojang.com/browse/MC-309412) - 块状物品忽略了block_transformer组件\n\n[MC-309420](https://bugs.mojang.com/browse/MC-309420) - random_neighbor_spread功能的某个字段拼写错误，应为\"xy_offset\"\n\n[MC-309432](https://bugs.mojang.com/browse/MC-309432) - 在使用Vulkan渲染后端时，macOS系统上整个世界显示为洋红色\n\n[MC-309433](https://bugs.mojang.com/browse/MC-309433) - 淹没状态的玩家可以消耗或使用某些物品\n\n[MC-309435](https://bugs.mojang.com/browse/MC-309435) - 淹没状态的玩家不再正确地追逐玩家\n\n[MC-309441](https://bugs.mojang.com/browse/MC-309441) - 重新加载世界后，投射物会失去“可破坏物体”的功能\n\n[MC-309445](https://bugs.mojang.com/browse/MC-309445) - 在切换全屏或打开使用 OpenGL 渲染后端的背包时，游戏渲染器可能会出现故障\n\n[MC-309467] - 玩家报告功能无法使用\n\n[MC-309471] - 无法看到其他玩家的皮肤\n\n[MC-309518] - 无法刮掉铜门上的氧化层或蜡层\n\n获取快照\n\nMinecraft: Java版提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在\"安装\"选项卡中启用快照功能。\n\n如果有任何反馈或建议，请访问[反馈页面](https://feedback.minecraft.net/)。如果你喜欢聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)啊。",
+  "source": "minecraft_api"
+}

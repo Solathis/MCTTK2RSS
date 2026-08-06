@@ -1,0 +1,1737 @@
+{
+  "title": "Minecraft 26.3 Snapshot 7",
+  "translated_title": "《Minecraft》26.3版本第7次快照更新",
+  "release_date": "2026-08-04T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-7",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-7/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Step up your building and exploring with the final features entering testing! You can now find different maps in some abandoned camps and craft Concrete Stairs & Slabs in 16 colors. Out now in 26.3 Snapshot 7!",
+      "translated_text": "随着最后一批功能进入测试阶段，你可以更加尽情地进行建造和探索了！现在在一些废弃的营地中可以找到不同的地图，并且可以制作16种颜色的混凝土楼梯和混凝土板。这是在26.3版本快照7中新增的内容！",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy exploring!",
+      "translated_text": "祝你探索愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Concrete Stairs and Concrete Slabs for all Concrete blocks",
+      "translated_text": "为所有混凝土方块添加了混凝土楼梯和混凝土板",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "New Explorer Maps have been added to the Abandoned Camps",
+      "translated_text": "新的探索者地图已添加到废弃营地中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "h3",
+      "source_text": "Abandoned Camp Explorer Maps",
+      "translated_text": "废弃营地探索者地图",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Added maps showing the location of other Abandoned Camps in the following biomes:",
+      "translated_text": "新增了显示以下生物群系中其他废弃营地位置的地图：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Bamboo Jungle",
+      "translated_text": "竹林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Cherry Grove",
+      "translated_text": "樱桃树林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Birch Forest",
+      "translated_text": "桦树林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Dappled Forest",
+      "translated_text": "斑驳的森林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "Flower Forest",
+      "translated_text": "花木丛生的森林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Pale Garden",
+      "translated_text": "苍白的花园",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Swamp",
+      "translated_text": "沼泽",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Windswept Forest",
+      "translated_text": "被风吹拂的森林",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Added maps for the following structures:",
+      "translated_text": "为以下结构添加了地图：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Ancient City",
+      "translated_text": "古城",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "Trial Chambers",
+      "translated_text": "试炼 chamber",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Mineshaft",
+      "translated_text": "矿井",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "Desert Pyramid",
+      "translated_text": "沙漠金字塔",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Jungle Pyramid",
+      "translated_text": "丛林金字塔",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Warm Ocean Ruins",
+      "translated_text": "温暖海洋遗迹",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Woodland Mansion",
+      "translated_text": "森林豪宅",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "更改",
+      "meta": {}
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "Cushions no longer prevent vibrations when placed, broken or interacted with",
+      "translated_text": "放置、损坏或被触碰时，坐垫不再能防止震动",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "Updated loot table for the Abandoned Camp Barrel",
+      "translated_text": "更新了废弃营地桶的掉落表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Replaced Firework Rocket with Gunpowder in Abandoned Camp Chest loot table",
+      "translated_text": "在废弃营地箱的掉落表中，将爆竹火箭替换为火药",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "The player icon on maps have been updated to always show the direction the player is facing",
+      "translated_text": "地图上的玩家图标现已更新，始终显示玩家所面对的方向",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Added support for Realms to use additional server regions in Canada, Mexico, South Africa, and Arizona, USA if they become available in the future",
+      "translated_text": "如果将来加拿大、墨西哥、南非和美国亚利桑那州有新的服务器区域可用，Realms 将支持使用这些区域",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "h3",
+      "source_text": "Explorer Maps",
+      "translated_text": "探索者地图",
+      "meta": {}
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "Explorer Maps are now their own items instead of renamed Filled Maps, and each has its own icon:",
+      "translated_text": "探索者地图现在成为了独立的物品，不再是“填充地图”的改名版本，每种地图都有自己的图标。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Ocean Explorer Map",
+      "translated_text": "海洋探索者地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Woodland Explorer Map",
+      "translated_text": "森林探索者地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "Trial Explorer Map",
+      "translated_text": "试炼探索者地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Jungle Explorer Map",
+      "translated_text": "丛林探索者地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "Swamp Explorer Map",
+      "translated_text": "沼泽探索者地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Desert Village Map",
+      "translated_text": "沙漠村庄地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "Plains Village Map",
+      "translated_text": "平原村庄地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "Savanna Village Map",
+      "translated_text": "草原村庄地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "Snowy Village Map",
+      "translated_text": "雪地村庄地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "Taiga Village Map",
+      "translated_text": "泰加村地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "Buried Treasure Map",
+      "translated_text": "埋藏宝藏地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "Ancient City Map",
+      "translated_text": "古城地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "Mineshaft Map",
+      "translated_text": "矿井地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Desert Pyramid Map",
+      "translated_text": "沙漠金字塔地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "Abandoned Campsite Map",
+      "translated_text": "废弃营地地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Warm Ocean Ruins Map",
+      "translated_text": "温暖海洋遗迹地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "Map and Empty Map have new icons",
+      "translated_text": "地图和空白地图的图标更新了",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "These items cannot be obtained from the Creative inventory",
+      "translated_text": "这些物品无法从创意模式的背包中获得",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "Existing Explorer Maps in old worlds are converted to the matching new item on load",
+      "translated_text": "旧世界中现有的探险家地图将在加载时转换为相应的新物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "Explorer Maps can still be cloned in a Crafting Table, and the copies keep their own item type",
+      "translated_text": "探索者地图仍可以在制作台中进行复制，且复制的地图会保留其原有的物品类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "Explorer Maps and Buried Treasure Maps can no longer be zoomed out, neither in a Crafting Table nor at a Cartography Table",
+      "translated_text": "探索者地图和埋藏宝藏地图现在都无法在制作台或制图桌上进行缩放",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "Buried Treasure Maps could previously be zoomed out at both",
+      "translated_text": "之前可以在制作台和制图桌上对埋藏宝藏地图进行缩放",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "Explorer Maps could previously be zoomed out at a Cartography Table",
+      "translated_text": "之前可以在制图桌上对探索者地图进行缩放",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "Only maps in the #minecraft:extendable_maps tag can be zoomed out",
+      "translated_text": "只有带有 #minecraft:extendable_maps 标签的地图才能进行缩放",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术变更",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "The Data Pack version is now 115.0",
+      "translated_text": "数据包版本现在为 115.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 95.0",
+      "translated_text": "资源包版本现在为 95.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "level.dat now contains a version_history list with prior data versions of the file",
+      "translated_text": "level.dat 现在包含一个版本历史列表，记录了文件之前的所有版本",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h2",
+      "source_text": "Data Pack Version 115.0",
+      "translated_text": "数据包版本 115.0",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "The following Block State fields has been renamed",
+      "translated_text": "以下方块状态字段已被重命名",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Name is now id",
+      "translated_text": "名称现在称为‘id’",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "Properties is now properties",
+      "translated_text": "‘Properties’现在称为‘properties’",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "The default Block State of a Block can now be referred to in a compact form directly by the Block id",
+      "translated_text": "现在可以直接通过方块ID以简洁的方式获取方块的默认状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "minecraft:exploration_map no longer changes the type of the item it is applied to",
+      "translated_text": "‘minecraft:exploration_map’不再改变其所应用的物品类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令",
+      "meta": {}
+    },
+    {
+      "id": "b0067",
+      "type": "h4",
+      "source_text": "Changes to swing",
+      "translated_text": "对‘swing’功能进行了修改",
+      "meta": {}
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "When used on a player, the player's attack strength will no longer be reset",
+      "translated_text": "当应用于玩家时，玩家的攻击力将不会被重置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "Added a new optional argument to set the swing animation to play",
+      "translated_text": "添加了一个新的可选参数来设置‘swing’动画的播放方式",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "Allowed values: whack , stab",
+      "translated_text": "允许的值：‘whack’、‘stab’",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "If omitted, defaults to whack",
+      "translated_text": "如果忽略，则默认为“whack”",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "Added a new argument to set the duration of the swing animation, if provided",
+      "translated_text": "添加了一个新参数，用于设置挥动动画的持续时间（如果提供了该参数的话）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "Format: positive time value (by default in ticks)",
+      "translated_text": "格式：正数时间值（默认单位为刻（tick）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "If omitted, defaults to 6t",
+      "translated_text": "如果忽略，则默认为6t",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "h3",
+      "source_text": "Data Components",
+      "translated_text": "数据组件（Data Components）",
+      "meta": {}
+    },
+    {
+      "id": "b0076",
+      "type": "h4",
+      "source_text": "Added minecraft:attack_animation",
+      "translated_text": "新增了 `minecraft:attack_animation` 枚举类型",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "The animation to play when the item is being used to attack something",
+      "translated_text": "当物品被用来攻击时播放的动画",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：包含多个字段的对象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "type - swing animation type, one of whack or stab",
+      "translated_text": "type - 挥动动画类型（whack 或 stab）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "duration - positive integer, the length of the animation in ticks",
+      "translated_text": "duration - 正整数，表示动画的持续时间（单位为刻）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "h4",
+      "source_text": "Added minecraft:interact_animation",
+      "translated_text": "新增了 `minecraft:interact.animation`",
+      "meta": {}
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "The animation to play when the item is being used to interact with something",
+      "translated_text": "使用物品与某个对象交互时播放的动画",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "Format: Same as minecraft:attack_animation",
+      "translated_text": "格式：与 `minecraft:attack Animation` 相同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "h4",
+      "source_text": "Removed minecraft:swing_animation",
+      "translated_text": "移除了 `minecraft:swingAnimation`",
+      "meta": {}
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "This has been replaced by minecraft:attack_animation and minecraft:interact_animation",
+      "translated_text": "该动画已被 `minecraft:attack_animation` 和 `minecraft:interact_animation` 取代",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "The none swing animation type has been removed",
+      "translated_text": "“无摆动动画”类型已被移除",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Existing items in the world will be migrated to using the default whack",
+      "translated_text": "游戏中现有的物品将默认使用“敲击”动作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "Setting both of these new components to the same value will be functionally identical to the old component, except for:",
+      "translated_text": "将这两个新组件的值设置相同，在功能上与旧组件相同，只是...",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "The /swing command - animation type now specified by the command",
+      "translated_text": "现在 `/swing` 命令会指定动画类型",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "Items being dropped by entities",
+      "translated_text": "实体掉落物品时的动画",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "h4",
+      "source_text": "Removed minecraft:map_color",
+      "translated_text": "移除了 `minecraft:map_color` },</td>,    {",
+      "meta": {}
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "Maps are no longer drawn as a tinted overlay, so there is nothing left for the color to apply to",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "Existing maps have the component stripped on load",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "See the Resource Pack section for the matching removal of the minecraft:map_color tint source",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "h3",
+      "source_text": "Loot Functions",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0096",
+      "type": "h4",
+      "source_text": "Changed minecraft:exploration_map",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "The map_color field has now been removed",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "The function no longer changes the type of the item it is applied to - it now only adds map data to the existing item",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "Previously it required a minecraft:map and produced a minecraft:filled_map",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "The item to produce is now chosen by the loot entry or villager trade itself, so a data pack that produced exploration maps has to change its item from minecraft:map to minecraft:filled_map (or one of the explorer map items)",
+      "translated_text": "现在需要生产的物品由掉落内容或村民交易自行决定；因此，生成探险地图的数据包必须将其物品类型从 `minecraft:map` 更改为 `minecraft:filled_map`（或其他探险地图相关的物品类型）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "If no matching structure is found, the item is left without a minecraft:map_id - use minecraft:filtered with minecraft:discard_item to drop those, as the vanilla loot tables and villager trades now do",
+      "translated_text": "如果找不到匹配的结构，该物品将不再带有 `minecraft:map_id`——可以使用 `minecraft:filtered` 和 `minecraft:discard_item` 来处理这些物品，因为 vanilla 版本的掉落表和村民交易机制现在就是这样处理的",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "h3",
+      "source_text": "Density Functions",
+      "translated_text": "密度函数",
+      "meta": {}
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "Density Functions and noises are no longer evaluated with double-precision floating point values, but instead with single-precision",
+      "translated_text": "密度函数和音效的计算不再使用双精度浮点数，而是使用单精度浮点数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "This affects all intermediate steps, not just the final result",
+      "translated_text": "这会影响所有中间步骤，而不仅仅是最终结果",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: _We are aware that the details of floating point rounding have been used in some Data Packs, and this change may affect specific configurations. We have introduced alternatives for the use-cases that we are aware of, but please do share with us on [feedback.minecraft.net](https://feedback.minecraft.net) or in the [feedback Discord](https://discord.com/invite/minecraftfeedback) if you encounter use-cases that are no longer possible to support.",
+      "translated_text": "**开发者说明**：我们注意到某些数据包中使用了浮点数舍入的细节，这一更改可能会影响特定的配置。对于我们已知的用例，我们提供了替代方案。但如果您遇到无法继续支持的用例，请通过 [feedback.minecraft.net](https://feedback篾inecraft.net) 或 [feedback Discord](https://discord.com/invite/minecraftfeedback) 与我们联系。",
+      "meta": {}
+    },
+    {
+      "id": "b0106",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0107",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "Added #concrete_stairs - All Concrete Stairs blocks",
+      "translated_text": "新增了 #concrete_stairs – 所有混凝土楼梯方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "Added #concrete_slabs - All Concrete Slabs blocks",
+      "translated_text": "新增了 #concrete_slabs – 所有混凝土板方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "h4",
+      "source_text": "Item Tags",
+      "translated_text": "物品标签",
+      "meta": {}
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "Added #concrete_stairs - All Concrete Stairs items",
+      "translated_text": "新增了 #concrete_stairs – 所有混凝土楼梯物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "Added #concrete_slabs - All Concrete Slabs items",
+      "translated_text": "新增了 #concrete_slabs – 所有混凝土板物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "Added #cloneable_maps - Filled Map plus all Explorer Map items and Buried Treasure Maps, used as the input to the map_cloning recipe",
+      "translated_text": "新增了 #cloneable_maps 功能——这种地图包含了所有的 Explorer Map 物品和埋藏的宝藏地图，可以用作 map_cloning 食物的原料",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "Added #extendable_maps - maps that can be zoomed out with paper, either in a Crafting Table or at a Cartography Table",
+      "translated_text": "新增了 #extendable_maps 功能——这种地图可以通过制作台或制图桌进行缩放",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "h2",
+      "source_text": "Resource Pack Version 95.0",
+      "translated_text": "资源包版本 95.0 已发布",
+      "meta": {}
+    },
+    {
+      "id": "b0116",
+      "type": "h3",
+      "source_text": "Item Sprites",
+      "translated_text": "物品精灵（Item Sprites）功能已更新",
+      "meta": {}
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "Removed item/filled_map_markings.png",
+      "translated_text": "移除了 item/filled_map_markings.png 文件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "h3",
+      "source_text": "Map Sprites",
+      "translated_text": "地图精灵（Map Sprites）功能已更新",
+      "meta": {}
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "Added new Map textures:",
+      "translated_text": "新增了多种地图纹理（Added new Map textures）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "abandoned_camp.png",
+      "translated_text": "新增了 abandoned_camp.png 地图纹理",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "ancient_city.png",
+      "translated_text": "新增了 ancient_city.png 地图纹理",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "desert_pyramid.png",
+      "translated_text": "新增了 desert_pyramid.png 地图纹理",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "mineshaft.png",
+      "translated_text": "（注：原文中的 't0122' 似乎是输入错误，实际内容应为上述描述）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "warm_ocean_ruins.png",
+      "translated_text": "warm_ocean_ruins.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "The following Icons have been updated in order to show player rotation on the map:",
+      "translated_text": "以下图标已更新，用于显示玩家在地图上的位置变更情况：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "/player.png",
+      "translated_text": "/player.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "/player_off_limits.png",
+      "translated_text": "/player_off_limits.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "/player_off_map.png",
+      "translated_text": "/player_off_map.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "h3",
+      "source_text": "Item Models",
+      "translated_text": "物品模型",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "h4",
+      "source_text": "Tint Sources",
+      "translated_text": "染色源",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "Removed minecraft:map_color",
+      "translated_text": "移除了 minecraft:map_color",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "The minecraft:map_color component it read no longer exists",
+      "translated_text": "读取 minecraft:map_color 组件的功能已失效",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "h4",
+      "source_text": "Order-independent Transparency (OIT)-related Shader Changes",
+      "translated_text": "与 Order-Independent Transparency (OIT) 相关的着色器 변경",
+      "meta": {}
+    },
+    {
+      "id": "b0134",
+      "type": "p",
+      "source_text": "Renamed defines:",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "OIT_WAVELET_RANK - was previously WAVELET_RANK",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "li",
+      "source_text": "OIT_COEFF_COUNT - was previously COEFF_COUNT",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "OIT_COEFF_ATTACHMENT_COUNT - was previously COEFF_ATTACHMENT_COUNT",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 7",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0139",
+      "type": "li",
+      "source_text": "[MC-121375](https://bugs.mojang.com/browse/MC-121375) - The Command (⌘) key on macOS is displayed as \"Win\" in the key binds screen",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "[MC-189953](https://bugs.mojang.com/browse/MC-189953) - The Super key on macOS is displayed as \"Win\" in the key binds screen",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "[MC-218156](https://bugs.mojang.com/browse/MC-218156) - Shipwrecks and ocean ruins can generate with empty buried treasure maps",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "li",
+      "source_text": "[MC-276079](https://bugs.mojang.com/browse/MC-276079) - Sending a swing packet to the client causes it to send one back to the server",
+      "translated_text": "[MC-276079](https://bugs.mojang.com/browse/MC-276079) - 向客户端发送摇摆数据包会导致客户端向服务器再次发送该数据包",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "[MC-302271](https://bugs.mojang.com/browse/MC-302271) - Sniffers stop sniffing after relog",
+      "translated_text": "[MC-302271](https://bugs.mojang.com/browse/MC-302271) - 重新登录后，嗅探器停止嗅探行为",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "[MC-302661](https://bugs.mojang.com/browse/MC-302661) - Interacting with something while holding spears plays the spear jab animation",
+      "translated_text": "[MC-302661] - 持有长矛时与物体交互会触发长矛刺击动画",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "li",
+      "source_text": "[MC-302687](https://bugs.mojang.com/browse/MC-302687) - Throwing items out of your inventory while holding spears plays the spear jab animation",
+      "translated_text": "[MC-302687] - 持有长矛时将物品从背包中投掷也会触发长矛刺击动画",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "[MC-302705](https://bugs.mojang.com/browse/MC-302705) - Having a spear in the main hand affects the hand animation speed for items held in the off hand",
+      "translated_text": "[MC-302705] - 如果主手持有长矛，会影响副手持有的物品的手部动画速度",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "[MC-304213](https://bugs.mojang.com/browse/MC-304213) - Zombies, husks and drowned hold out the incorrect arm when holding spears",
+      "translated_text": "[MC-304213] - 僵尸、尸壳和溺水者持有长矛时，会错误地展示错误的手部动作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "[MC-304920](https://bugs.mojang.com/browse/MC-304920) - Spears in third person look wrong when the left hand is the main hand",
+      "translated_text": "[MC-304920](https://bugs.mojang.com/browse/MC-304920) - 在第三人称视角下，当左手为主操作手时，长矛的显示效果不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "[MC-309644](https://bugs.mojang.com/browse/MC-309644) - Some textures of geyser plume particles still use inconsistent colors",
+      "translated_text": "[MC-309644](https://bugs.mojang.com/browse/MC-309644) - 一些间歇泉喷发颗粒的纹理仍然使用不一致的颜色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "[MC-309671](https://bugs.mojang.com/browse/MC-309671) - Shelf mushrooms still use the wrong sounds",
+      "translated_text": "[MC-309671](https://bugs.mojang.com/browse/MC-309671) - 架子上的蘑菇仍然使用错误的音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "[MC-309679](https://bugs.mojang.com/browse/MC-309679) - Cushions can be used to see through blocks",
+      "translated_text": "[MC-309679](https://bugs.mojang.com/browse/MC-309679) - 垫子可以透过方块看到另一侧",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "li",
+      "source_text": "[MC-309732](https://bugs.mojang.com/browse/MC-309732) - The straw_bed_head block model is stored in two directories",
+      "translated_text": "[MC-309732](https://bugs.mojang.com/browse/MC-309732) - 草床的头部模型被存储在两个不同的目录中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "[MC-309797](https://bugs.mojang.com/browse/MC-309797) - Cushions can be placed inside full blocks when the player's head intersects them",
+      "translated_text": "[MC-309797](https://bugs.mojang.com/browse/MC-309797) - 当玩家头部与垫子重合时，垫子可以放置在全封闭的方块内部",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "[MC-309875](https://bugs.mojang.com/browse/MC-309875) - New translations for the tooltip of the \"Improved Transparency\" option are wrongly backported",
+      "translated_text": "[MC-309875](https://bugs.mojang.com/browse/MC-309875) - 为“改进透明度”选项提供的新翻译被错误地回滚到了旧版本」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "[MC-309931](https://bugs.mojang.com/browse/MC-309931) - Placed cushions face inconsistent directions",
+      "translated_text": "[MC-309931](https://bugs.mojang.com/browse/MC-309931) - 放置的垫子朝向不一致」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "[MC-310057](https://bugs.mojang.com/browse/MC-310057) - Pressing the \"Advancements\" key bind while its menu was opened from the pause menu closes both menus",
+      "translated_text": "[MC-310057] - 当通过暂停菜单打开“ advancement”（进度）设置菜单时，如果此时按下“ advancement”键，两个菜单都会关闭」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "li",
+      "source_text": "[MC-310062](https://bugs.mojang.com/browse/MC-310062) - Armadillos do not follow players holding spider eyes",
+      "translated_text": "[MC-310062] - 装有蜘蛛眼的犰狳不会跟随持有它们的玩家」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "[MC-310094](https://bugs.mojang.com/browse/MC-310094) - The decimal point keypad key is displayed as \"key.keyboard.99\" in the key binds menu",
+      "translated_text": "[MC-310094] - 小数点键盘键在按键绑定菜单中显示为“key_keyboard.99”」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "[MC-310105](https://bugs.mojang.com/browse/MC-310105) - The Menu key is displayed as \"key.keyboard.101\" in the key binds menu",
+      "translated_text": "[MC-310105] - “菜单”键在按键绑定菜单中显示为“keyKeyboard.101”」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "li",
+      "source_text": "[MC-310109](https://bugs.mojang.com/browse/MC-310109) - The keypad plus-or-minus key is still not prefixed with \"Keypad\"",
+      "translated_text": "[MC-310109] - 键盘上的加号/减号键仍然没有\"Keypad\"前缀",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0161",
+      "type": "li",
+      "source_text": "[MC-310110](https://bugs.mojang.com/browse/MC-310110) - The keypad left and right parentheses keys are still not prefixed with \"Keypad\"",
+      "translated_text": "[MC-310110] - 键盘上的左括号/右括号键仍然没有\"Keypad\"前缀",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0162",
+      "type": "li",
+      "source_text": "[MC-310112](https://bugs.mojang.com/browse/MC-310112) - Using a Nether portal in Spectator mode while spectating an entity teleports the player to the incorrect location",
+      "translated_text": "[MC-310112] - 在观察模式下使用下界传送门会使得玩家传送到错误的位置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "[MC-310118](https://bugs.mojang.com/browse/MC-310118) - Pressing Windows+D to minimize all windows makes the game no longer visually update with the Vulkan rendering backend",
+      "translated_text": "[MC-310118] - 按下 Windows+D 最小化所有窗口后，游戏不再使用 Vulkan 渲染后台进行视觉更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "li",
+      "source_text": "[MC-310337](https://bugs.mojang.com/browse/MC-310337) - The game log outputs the incorrect minimum format version requiring the pack_format field in pack.mcmeta",
+      "translated_text": "[MC-310337] - 游戏日志输出了错误的最低版本格式，需要 pack.mcmeta 文件中的 pack_format 字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0165",
+      "type": "li",
+      "source_text": "[MC-310358](https://bugs.mojang.com/browse/MC-310358) - The conditions for depthBiasEnable differ between OpenGL and Vulkan",
+      "translated_text": "[MC-310358](https://bugs.mojang.com/browse/MC-310358) - OpenGL 和 Vulkan 中关于 depthBiasEnable 的启用条件不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0166",
+      "type": "li",
+      "source_text": "[MC-310529](https://bugs.mojang.com/browse/MC-310529) - The World Options menu UI breaks when resizing the game window",
+      "translated_text": "[MC-310529](https://bugs.mojang.com/browse/MC-310529) - 调整游戏窗口大小时，世界选项菜单的用户界面会失效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0167",
+      "type": "li",
+      "source_text": "[MC-310532](https://bugs.mojang.com/browse/MC-310532) - Trying to lock the difficulty of the world resets the difficulty",
+      "translated_text": "[MC-310532](https://bugs.mojang.com/browse/MC-310532) - 尝试锁定世界难度会导致难度自动重置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0168",
+      "type": "li",
+      "source_text": "[MC-310536](https://bugs.mojang.com/browse/MC-310536) - The category headers in the World Options screen are formatted inconsistently with other settings screens",
+      "translated_text": "[MC-310536](https://bugs.mojang.com/browse/MC-310536) - 世界选项屏幕中的类别标题与其他设置屏幕的格式不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0169",
+      "type": "li",
+      "source_text": "[MC-310550](https://bugs.mojang.com/browse/MC-310550) - Command+W on macOS now closes the window",
+      "translated_text": "[MC-310550] - 在 macOS 上，使用 Command+W 键现在会关闭游戏窗口",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "[MC-310553](https://bugs.mojang.com/browse/MC-310553) - The campsite_wooded_badlands_4 and campsite_swamp_2 abandoned camp structures contain overlapping cushions",
+      "translated_text": "[MC-310553](https://bugs.mojang.com/browse/MC-310553) - campsite_wooded_badlands_4 和 campsite_swamp_2 中的废弃营地结构中存在重叠的垫子",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "li",
+      "source_text": "[MC-310556](https://bugs.mojang.com/browse/MC-310556) - Pressing Alt+F4 closes the game window on kwin_wayland even when the \"Quit Shortcuts\" option is disabled",
+      "translated_text": "[MC-310556] - 即使禁用了‘退出快捷键’选项，在 kwin_wayland 系统中按 Alt+F4 也会关闭游戏窗口",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0172",
+      "type": "li",
+      "source_text": "[MC-310590](https://bugs.mojang.com/browse/MC-310590) - Adding the entity_outline post effect to the player, restarting the game, and entering the same world causes the game to crash",
+      "translated_text": "[MC-310590] - 为玩家添加实体轮廓（entity_outline）后效果；重新启动游戏并进入同一个世界时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0173",
+      "type": "li",
+      "source_text": "[MC-310595](https://bugs.mojang.com/browse/MC-310595) - The Option key on macOS is displayed as \"Alt\" in the key binds screen",
+      "translated_text": "[MC-310595] - 在 macOS 上，Option 键在键盘绑定界面中显示为 ‘Alt’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0174",
+      "type": "li",
+      "source_text": "[MC-310610](https://bugs.mojang.com/browse/MC-310610) - Several abandoned camp structures contain underwater oxidized copper chests that are not waterlogged",
+      "translated_text": "[MC-310610] - 一些被遗弃的营地结构中存在着未被水浸透的氧化铜箱子",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0175",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0176",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版现在提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0177",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的游戏世界，请务必备份数据，或者将测试版本运行在与主游戏世界不同的文件夹中。**",
+      "meta": {}
+    },
+    {
+      "id": "b0178",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0179",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/06157fedd67ff4dd6e0e6fa4a9dd0af296f0dd61/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/06157fedd67ff4dd6e0e6fa4a9dd0af296f0dd61/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0180",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告漏洞：",
+      "meta": {}
+    },
+    {
+      "id": "b0181",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0182",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0183",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Step up your building and exploring with the final features entering testing! You can now find different maps in some abandoned camps and craft Concrete Stairs & Slabs in 16 colors. Out now in 26.3 Snapshot 7!\n\nHappy exploring!\n\nNew Features\n\nAdded Concrete Stairs and Concrete Slabs for all Concrete blocks\n\nNew Explorer Maps have been added to the Abandoned Camps\n\nAbandoned Camp Explorer Maps\n\nAdded maps showing the location of other Abandoned Camps in the following biomes:\n\nBamboo Jungle\n\nCherry Grove\n\nBirch Forest\n\nDappled Forest\n\nFlower Forest\n\nPale Garden\n\nSwamp\n\nWindswept Forest\n\nAdded maps for the following structures:\n\nAncient City\n\nTrial Chambers\n\nMineshaft\n\nDesert Pyramid\n\nJungle Pyramid\n\nWarm Ocean Ruins\n\nWoodland Mansion\n\nChanges\n\nCushions no longer prevent vibrations when placed, broken or interacted with\n\nUpdated loot table for the Abandoned Camp Barrel\n\nReplaced Firework Rocket with Gunpowder in Abandoned Camp Chest loot table\n\nThe player icon on maps have been updated to always show the direction the player is facing\n\nAdded support for Realms to use additional server regions in Canada, Mexico, South Africa, and Arizona, USA if they become available in the future\n\nExplorer Maps\n\nExplorer Maps are now their own items instead of renamed Filled Maps, and each has its own icon:\n\nOcean Explorer Map\n\nWoodland Explorer Map\n\nTrial Explorer Map\n\nJungle Explorer Map\n\nSwamp Explorer Map\n\nDesert Village Map\n\nPlains Village Map\n\nSavanna Village Map\n\nSnowy Village Map\n\nTaiga Village Map\n\nBuried Treasure Map\n\nAncient City Map\n\nMineshaft Map\n\nDesert Pyramid Map\n\nAbandoned Campsite Map\n\nWarm Ocean Ruins Map\n\nMap and Empty Map have new icons\n\nThese items cannot be obtained from the Creative inventory\n\nExisting Explorer Maps in old worlds are converted to the matching new item on load\n\nExplorer Maps can still be cloned in a Crafting Table, and the copies keep their own item type\n\nExplorer Maps and Buried Treasure Maps can no longer be zoomed out, neither in a Crafting Table nor at a Cartography Table\n\nBuried Treasure Maps could previously be zoomed out at both\n\nExplorer Maps could previously be zoomed out at a Cartography Table\n\nOnly maps in the #minecraft:extendable_maps tag can be zoomed out\n\nTechnical Changes\n\nThe Data Pack version is now 115.0\n\nThe Resource Pack version is now 95.0\n\nlevel.dat now contains a version_history list with prior data versions of the file\n\nData Pack Version 115.0\n\nThe following Block State fields has been renamed\n\nName is now id\n\nProperties is now properties\n\nThe default Block State of a Block can now be referred to in a compact form directly by the Block id\n\nminecraft:exploration_map no longer changes the type of the item it is applied to\n\nCommands\n\nChanges to swing\n\nWhen used on a player, the player's attack strength will no longer be reset\n\nAdded a new optional argument to set the swing animation to play\n\nAllowed values: whack , stab\n\nIf omitted, defaults to whack\n\nAdded a new argument to set the duration of the swing animation, if provided\n\nFormat: positive time value (by default in ticks)\n\nIf omitted, defaults to 6t\n\nData Components\n\nAdded minecraft:attack_animation\n\nThe animation to play when the item is being used to attack something\n\nFormat: object with fields:\n\ntype - swing animation type, one of whack or stab\n\nduration - positive integer, the length of the animation in ticks\n\nAdded minecraft:interact_animation\n\nThe animation to play when the item is being used to interact with something\n\nFormat: Same as minecraft:attack_animation\n\nRemoved minecraft:swing_animation\n\nThis has been replaced by minecraft:attack_animation and minecraft:interact_animation\n\nThe none swing animation type has been removed\n\nExisting items in the world will be migrated to using the default whack\n\nSetting both of these new components to the same value will be functionally identical to the old component, except for:\n\nThe /swing command - animation type now specified by the command\n\nItems being dropped by entities\n\nRemoved minecraft:map_color\n\nMaps are no longer drawn as a tinted overlay, so there is nothing left for the color to apply to\n\nExisting maps have the component stripped on load\n\nSee the Resource Pack section for the matching removal of the minecraft:map_color tint source\n\nLoot Functions\n\nChanged minecraft:exploration_map\n\nThe map_color field has now been removed\n\nThe function no longer changes the type of the item it is applied to - it now only adds map data to the existing item\n\nPreviously it required a minecraft:map and produced a minecraft:filled_map\n\nThe item to produce is now chosen by the loot entry or villager trade itself, so a data pack that produced exploration maps has to change its item from minecraft:map to minecraft:filled_map (or one of the explorer map items)\n\nIf no matching structure is found, the item is left without a minecraft:map_id - use minecraft:filtered with minecraft:discard_item to drop those, as the vanilla loot tables and villager trades now do\n\nDensity Functions\n\nDensity Functions and noises are no longer evaluated with double-precision floating point values, but instead with single-precision\n\nThis affects all intermediate steps, not just the final result\n\n**Developer's Note**: _We are aware that the details of floating point rounding have been used in some Data Packs, and this change may affect specific configurations. We have introduced alternatives for the use-cases that we are aware of, but please do share with us on [feedback.minecraft.net](https://feedback.minecraft.net) or in the [feedback Discord](https://discord.com/invite/minecraftfeedback) if you encounter use-cases that are no longer possible to support.\n\nTags\n\nBlock Tags\n\nAdded #concrete_stairs - All Concrete Stairs blocks\n\nAdded #concrete_slabs - All Concrete Slabs blocks\n\nItem Tags\n\nAdded #concrete_stairs - All Concrete Stairs items\n\nAdded #concrete_slabs - All Concrete Slabs items\n\nAdded #cloneable_maps - Filled Map plus all Explorer Map items and Buried Treasure Maps, used as the input to the map_cloning recipe\n\nAdded #extendable_maps - maps that can be zoomed out with paper, either in a Crafting Table or at a Cartography Table\n\nResource Pack Version 95.0\n\nItem Sprites\n\nRemoved item/filled_map_markings.png\n\nMap Sprites\n\nAdded new Map textures:\n\nabandoned_camp.png\n\nancient_city.png\n\ndesert_pyramid.png\n\nmineshaft.png\n\nwarm_ocean_ruins.png\n\nThe following Icons have been updated in order to show player rotation on the map:\n\n/player.png\n\n/player_off_limits.png\n\n/player_off_map.png\n\nItem Models\n\nTint Sources\n\nRemoved minecraft:map_color\n\nThe minecraft:map_color component it read no longer exists\n\nOrder-independent Transparency (OIT)-related Shader Changes\n\nRenamed defines:\n\nOIT_WAVELET_RANK - was previously WAVELET_RANK\n\nOIT_COEFF_COUNT - was previously COEFF_COUNT\n\nOIT_COEFF_ATTACHMENT_COUNT - was previously COEFF_ATTACHMENT_COUNT\n\nFixed bugs in 26.3 Snapshot 7\n\n[MC-121375](https://bugs.mojang.com/browse/MC-121375) - The Command (⌘) key on macOS is displayed as \"Win\" in the key binds screen\n\n[MC-189953](https://bugs.mojang.com/browse/MC-189953) - The Super key on macOS is displayed as \"Win\" in the key binds screen\n\n[MC-218156](https://bugs.mojang.com/browse/MC-218156) - Shipwrecks and ocean ruins can generate with empty buried treasure maps\n\n[MC-276079](https://bugs.mojang.com/browse/MC-276079) - Sending a swing packet to the client causes it to send one back to the server\n\n[MC-302271](https://bugs.mojang.com/browse/MC-302271) - Sniffers stop sniffing after relog\n\n[MC-302661](https://bugs.mojang.com/browse/MC-302661) - Interacting with something while holding spears plays the spear jab animation\n\n[MC-302687](https://bugs.mojang.com/browse/MC-302687) - Throwing items out of your inventory while holding spears plays the spear jab animation\n\n[MC-302705](https://bugs.mojang.com/browse/MC-302705) - Having a spear in the main hand affects the hand animation speed for items held in the off hand\n\n[MC-304213](https://bugs.mojang.com/browse/MC-304213) - Zombies, husks and drowned hold out the incorrect arm when holding spears\n\n[MC-304920](https://bugs.mojang.com/browse/MC-304920) - Spears in third person look wrong when the left hand is the main hand\n\n[MC-309644](https://bugs.mojang.com/browse/MC-309644) - Some textures of geyser plume particles still use inconsistent colors\n\n[MC-309671](https://bugs.mojang.com/browse/MC-309671) - Shelf mushrooms still use the wrong sounds\n\n[MC-309679](https://bugs.mojang.com/browse/MC-309679) - Cushions can be used to see through blocks\n\n[MC-309732](https://bugs.mojang.com/browse/MC-309732) - The straw_bed_head block model is stored in two directories\n\n[MC-309797](https://bugs.mojang.com/browse/MC-309797) - Cushions can be placed inside full blocks when the player's head intersects them\n\n[MC-309875](https://bugs.mojang.com/browse/MC-309875) - New translations for the tooltip of the \"Improved Transparency\" option are wrongly backported\n\n[MC-309931](https://bugs.mojang.com/browse/MC-309931) - Placed cushions face inconsistent directions\n\n[MC-310057](https://bugs.mojang.com/browse/MC-310057) - Pressing the \"Advancements\" key bind while its menu was opened from the pause menu closes both menus\n\n[MC-310062](https://bugs.mojang.com/browse/MC-310062) - Armadillos do not follow players holding spider eyes\n\n[MC-310094](https://bugs.mojang.com/browse/MC-310094) - The decimal point keypad key is displayed as \"key.keyboard.99\" in the key binds menu\n\n[MC-310105](https://bugs.mojang.com/browse/MC-310105) - The Menu key is displayed as \"key.keyboard.101\" in the key binds menu\n\n[MC-310109](https://bugs.mojang.com/browse/MC-310109) - The keypad plus-or-minus key is still not prefixed with \"Keypad\"\n\n[MC-310110](https://bugs.mojang.com/browse/MC-310110) - The keypad left and right parentheses keys are still not prefixed with \"Keypad\"\n\n[MC-310112](https://bugs.mojang.com/browse/MC-310112) - Using a Nether portal in Spectator mode while spectating an entity teleports the player to the incorrect location\n\n[MC-310118](https://bugs.mojang.com/browse/MC-310118) - Pressing Windows+D to minimize all windows makes the game no longer visually update with the Vulkan rendering backend\n\n[MC-310337](https://bugs.mojang.com/browse/MC-310337) - The game log outputs the incorrect minimum format version requiring the pack_format field in pack.mcmeta\n\n[MC-310358](https://bugs.mojang.com/browse/MC-310358) - The conditions for depthBiasEnable differ between OpenGL and Vulkan\n\n[MC-310529](https://bugs.mojang.com/browse/MC-310529) - The World Options menu UI breaks when resizing the game window\n\n[MC-310532](https://bugs.mojang.com/browse/MC-310532) - Trying to lock the difficulty of the world resets the difficulty\n\n[MC-310536](https://bugs.mojang.com/browse/MC-310536) - The category headers in the World Options screen are formatted inconsistently with other settings screens\n\n[MC-310550](https://bugs.mojang.com/browse/MC-310550) - Command+W on macOS now closes the window\n\n[MC-310553](https://bugs.mojang.com/browse/MC-310553) - The campsite_wooded_badlands_4 and campsite_swamp_2 abandoned camp structures contain overlapping cushions\n\n[MC-310556](https://bugs.mojang.com/browse/MC-310556) - Pressing Alt+F4 closes the game window on kwin_wayland even when the \"Quit Shortcuts\" option is disabled\n\n[MC-310590](https://bugs.mojang.com/browse/MC-310590) - Adding the entity_outline post effect to the player, restarting the game, and entering the same world causes the game to crash\n\n[MC-310595](https://bugs.mojang.com/browse/MC-310595) - The Option key on macOS is displayed as \"Alt\" in the key binds screen\n\n[MC-310610](https://bugs.mojang.com/browse/MC-310610) - Several abandoned camp structures contain underwater oxidized copper chests that are not waterlogged\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/06157fedd67ff4dd6e0e6fa4a9dd0af296f0dd61/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "随着最后一批功能进入测试阶段，你可以更加尽情地进行建造和探索了！现在在一些废弃的营地中可以找到不同的地图，并且可以制作16种颜色的混凝土楼梯和混凝土板。这是在26.3版本快照7中新增的内容！\n\n祝你探索愉快！\n\n新功能\n\n为所有混凝土方块添加了混凝土楼梯和混凝土板\n\n新的探索者地图已添加到废弃营地中\n\n废弃营地探索者地图\n\n新增了显示以下生物群系中其他废弃营地位置的地图：\n\n竹林\n\n樱桃树林\n\n桦树林\n\n斑驳的森林\n\n花木丛生的森林\n\n苍白的花园\n\n沼泽\n\n被风吹拂的森林\n\n为以下结构添加了地图：\n\n古城\n\n试炼 chamber\n\n矿井\n\n沙漠金字塔\n\n丛林金字塔\n\n温暖海洋遗迹\n\n森林豪宅\n\n更改\n\n放置、损坏或被触碰时，坐垫不再能防止震动\n\n更新了废弃营地桶的掉落表\n\n在废弃营地箱的掉落表中，将爆竹火箭替换为火药\n\n地图上的玩家图标现已更新，始终显示玩家所面对的方向\n\n如果将来加拿大、墨西哥、南非和美国亚利桑那州有新的服务器区域可用，Realms 将支持使用这些区域\n\n探索者地图\n\n探索者地图现在成为了独立的物品，不再是“填充地图”的改名版本，每种地图都有自己的图标。\n\n海洋探索者地图\n\n森林探索者地图\n\n试炼探索者地图\n\n丛林探索者地图\n\n沼泽探索者地图\n\n沙漠村庄地图\n\n平原村庄地图\n\n草原村庄地图\n\n雪地村庄地图\n\n泰加村地图\n\n埋藏宝藏地图\n\n古城地图\n\n矿井地图\n\n沙漠金字塔地图\n\n废弃营地地图\n\n温暖海洋遗迹地图\n\n地图和空白地图的图标更新了\n\n这些物品无法从创意模式的背包中获得\n\n旧世界中现有的探险家地图将在加载时转换为相应的新物品\n\n探索者地图仍可以在制作台中进行复制，且复制的地图会保留其原有的物品类型\n\n探索者地图和埋藏宝藏地图现在都无法在制作台或制图桌上进行缩放\n\n之前可以在制作台和制图桌上对埋藏宝藏地图进行缩放\n\n之前可以在制图桌上对探索者地图进行缩放\n\n只有带有 #minecraft:extendable_maps 标签的地图才能进行缩放\n\n技术变更\n\n数据包版本现在为 115.0\n\n资源包版本现在为 95.0\n\nlevel.dat 现在包含一个版本历史列表，记录了文件之前的所有版本\n\n数据包版本 115.0\n\n以下方块状态字段已被重命名\n\n名称现在称为‘id’\n\n‘Properties’现在称为‘properties’\n\n现在可以直接通过方块ID以简洁的方式获取方块的默认状态\n\n‘minecraft:exploration_map’不再改变其所应用的物品类型\n\n命令\n\n对‘swing’功能进行了修改\n\n当应用于玩家时，玩家的攻击力将不会被重置\n\n添加了一个新的可选参数来设置‘swing’动画的播放方式\n\n允许的值：‘whack’、‘stab’\n\n如果忽略，则默认为“whack”\n\n添加了一个新参数，用于设置挥动动画的持续时间（如果提供了该参数的话）\n\n格式：正数时间值（默认单位为刻（tick）\n\n如果忽略，则默认为6t\n\n数据组件（Data Components）\n\n新增了 `minecraft:attack_animation` 枚举类型\n\n当物品被用来攻击时播放的动画\n\n格式：包含多个字段的对象\n\ntype - 挥动动画类型（whack 或 stab）\n\nduration - 正整数，表示动画的持续时间（单位为刻）\n\n新增了 `minecraft:interact.animation`\n\n使用物品与某个对象交互时播放的动画\n\n格式：与 `minecraft:attack Animation` 相同\n\n移除了 `minecraft:swingAnimation`\n\n该动画已被 `minecraft:attack_animation` 和 `minecraft:interact_animation` 取代\n\n“无摆动动画”类型已被移除\n\n游戏中现有的物品将默认使用“敲击”动作\n\n将这两个新组件的值设置相同，在功能上与旧组件相同，只是...\n\n现在 `/swing` 命令会指定动画类型\n\n实体掉落物品时的动画\n\n移除了 `minecraft:map_color` },</td>,    {\n\n现在需要生产的物品由掉落内容或村民交易自行决定；因此，生成探险地图的数据包必须将其物品类型从 `minecraft:map` 更改为 `minecraft:filled_map`（或其他探险地图相关的物品类型）\n\n如果找不到匹配的结构，该物品将不再带有 `minecraft:map_id`——可以使用 `minecraft:filtered` 和 `minecraft:discard_item` 来处理这些物品，因为 vanilla 版本的掉落表和村民交易机制现在就是这样处理的\n\n密度函数\n\n密度函数和音效的计算不再使用双精度浮点数，而是使用单精度浮点数\n\n这会影响所有中间步骤，而不仅仅是最终结果\n\n**开发者说明**：我们注意到某些数据包中使用了浮点数舍入的细节，这一更改可能会影响特定的配置。对于我们已知的用例，我们提供了替代方案。但如果您遇到无法继续支持的用例，请通过 [feedback.minecraft.net](https://feedback篾inecraft.net) 或 [feedback Discord](https://discord.com/invite/minecraftfeedback) 与我们联系。\n\n标签\n\n方块标签\n\n新增了 #concrete_stairs – 所有混凝土楼梯方块\n\n新增了 #concrete_slabs – 所有混凝土板方块\n\n物品标签\n\n新增了 #concrete_stairs – 所有混凝土楼梯物品\n\n新增了 #concrete_slabs – 所有混凝土板物品\n\n新增了 #cloneable_maps 功能——这种地图包含了所有的 Explorer Map 物品和埋藏的宝藏地图，可以用作 map_cloning 食物的原料\n\n新增了 #extendable_maps 功能——这种地图可以通过制作台或制图桌进行缩放\n\n资源包版本 95.0 已发布\n\n物品精灵（Item Sprites）功能已更新\n\n移除了 item/filled_map_markings.png 文件\n\n地图精灵（Map Sprites）功能已更新\n\n新增了多种地图纹理（Added new Map textures）\n\n新增了 abandoned_camp.png 地图纹理\n\n新增了 ancient_city.png 地图纹理\n\n新增了 desert_pyramid.png 地图纹理\n\n（注：原文中的 't0122' 似乎是输入错误，实际内容应为上述描述）\n\nwarm_ocean_ruins.png\n\n以下图标已更新，用于显示玩家在地图上的位置变更情况：\n\n/player.png\n\n/player_off_limits.png\n\n/player_off_map.png\n\n物品模型\n\n染色源\n\n移除了 minecraft:map_color\n\n读取 minecraft:map_color 组件的功能已失效\n\n与 Order-Independent Transparency (OIT) 相关的着色器 변경\n\n[MC-276079](https://bugs.mojang.com/browse/MC-276079) - 向客户端发送摇摆数据包会导致客户端向服务器再次发送该数据包\n\n[MC-302271](https://bugs.mojang.com/browse/MC-302271) - 重新登录后，嗅探器停止嗅探行为\n\n[MC-302661] - 持有长矛时与物体交互会触发长矛刺击动画\n\n[MC-302687] - 持有长矛时将物品从背包中投掷也会触发长矛刺击动画\n\n[MC-302705] - 如果主手持有长矛，会影响副手持有的物品的手部动画速度\n\n[MC-304213] - 僵尸、尸壳和溺水者持有长矛时，会错误地展示错误的手部动作\n\n[MC-304920](https://bugs.mojang.com/browse/MC-304920) - 在第三人称视角下，当左手为主操作手时，长矛的显示效果不正确\n\n[MC-309644](https://bugs.mojang.com/browse/MC-309644) - 一些间歇泉喷发颗粒的纹理仍然使用不一致的颜色\n\n[MC-309671](https://bugs.mojang.com/browse/MC-309671) - 架子上的蘑菇仍然使用错误的音效\n\n[MC-309679](https://bugs.mojang.com/browse/MC-309679) - 垫子可以透过方块看到另一侧\n\n[MC-309732](https://bugs.mojang.com/browse/MC-309732) - 草床的头部模型被存储在两个不同的目录中\n\n[MC-309797](https://bugs.mojang.com/browse/MC-309797) - 当玩家头部与垫子重合时，垫子可以放置在全封闭的方块内部\n\n[MC-309875](https://bugs.mojang.com/browse/MC-309875) - 为“改进透明度”选项提供的新翻译被错误地回滚到了旧版本」\n\n[MC-309931](https://bugs.mojang.com/browse/MC-309931) - 放置的垫子朝向不一致」\n\n[MC-310057] - 当通过暂停菜单打开“ advancement”（进度）设置菜单时，如果此时按下“ advancement”键，两个菜单都会关闭」\n\n[MC-310062] - 装有蜘蛛眼的犰狳不会跟随持有它们的玩家」\n\n[MC-310094] - 小数点键盘键在按键绑定菜单中显示为“key_keyboard.99”」\n\n[MC-310105] - “菜单”键在按键绑定菜单中显示为“keyKeyboard.101”」\n\n[MC-310109] - 键盘上的加号/减号键仍然没有\"Keypad\"前缀\n\n[MC-310110] - 键盘上的左括号/右括号键仍然没有\"Keypad\"前缀\n\n[MC-310112] - 在观察模式下使用下界传送门会使得玩家传送到错误的位置\n\n[MC-310118] - 按下 Windows+D 最小化所有窗口后，游戏不再使用 Vulkan 渲染后台进行视觉更新\n\n[MC-310337] - 游戏日志输出了错误的最低版本格式，需要 pack.mcmeta 文件中的 pack_format 字段\n\n[MC-310358](https://bugs.mojang.com/browse/MC-310358) - OpenGL 和 Vulkan 中关于 depthBiasEnable 的启用条件不同\n\n[MC-310529](https://bugs.mojang.com/browse/MC-310529) - 调整游戏窗口大小时，世界选项菜单的用户界面会失效\n\n[MC-310532](https://bugs.mojang.com/browse/MC-310532) - 尝试锁定世界难度会导致难度自动重置\n\n[MC-310536](https://bugs.mojang.com/browse/MC-310536) - 世界选项屏幕中的类别标题与其他设置屏幕的格式不一致\n\n[MC-310550] - 在 macOS 上，使用 Command+W 键现在会关闭游戏窗口\n\n[MC-310553](https://bugs.mojang.com/browse/MC-310553) - campsite_wooded_badlands_4 和 campsite_swamp_2 中的废弃营地结构中存在重叠的垫子\n\n[MC-310556] - 即使禁用了‘退出快捷键’选项，在 kwin_wayland 系统中按 Alt+F4 也会关闭游戏窗口\n\n[MC-310590] - 为玩家添加实体轮廓（entity_outline）后效果；重新启动游戏并进入同一个世界时，游戏会崩溃\n\n[MC-310595] - 在 macOS 上，Option 键在键盘绑定界面中显示为 ‘Alt’\n\n[MC-310610] - 一些被遗弃的营地结构中存在着未被水浸透的氧化铜箱子\n\n获取快照\n\nMinecraft: Java版现在提供了快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n**测试版本可能会损坏你的游戏世界，请务必备份数据，或者将测试版本运行在与主游戏世界不同的文件夹中。**\n\n跨平台服务器JAR文件：\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/06157fedd67ff4dd6e0e6fa4a9dd0af296f0dd61/server.jar)\n\n在这里报告漏洞：\n\n[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

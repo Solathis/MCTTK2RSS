@@ -239,7 +239,7 @@ def _blocks_to_html(blocks: list[dict]) -> str:
     return "\n".join(html_parts)
 
 
-def _load_articles(save_dir: str, max_items: int = 50, max_age_days: int = 730) -> list[dict]:
+def _load_articles(save_dir: str, max_items: int = 50, max_age_days: int = 90) -> list[dict]:
     """从目录加载近期 news_*.json，按发布日期降序排列。"""
     json_files = glob.glob(os.path.join(save_dir, "news_*.json"))
     cutoff = datetime.now(UTC) - timedelta(days=max(max_age_days, 0))
@@ -328,7 +328,7 @@ def generate_rss(
     feed_link: str = "",
     feed_description: str = "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     max_items: int = 50,
-    max_age_days: int = 730,
+    max_age_days: int = 90,
     site_base: str = "https://www.minecraft.net",
 ) -> str:
     """
@@ -444,7 +444,7 @@ def main():
         feed_link=args.link or rss_config.get("feed_link", ""),
         feed_description=args.description or rss_config.get("feed_description", ""),
         max_items=args.max_items or rss_config.get("max_items", 50),
-        max_age_days=rss_config.get("max_age_days", 730),
+        max_age_days=rss_config.get("max_age_days", 90),
         site_base=site_base,
     )
 

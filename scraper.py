@@ -744,7 +744,7 @@ def convert_feedback_html_to_blocks(html_content, base_url=""):
 
 def _is_recent_article(release_date: str, config: dict) -> bool:
     """按配置的文章保留期限过滤真实发布日期；未知日期暂不拦截。"""
-    max_age_days = int(config.get("rss", {}).get("max_age_days", 730))
+    max_age_days = int(config.get("rss", {}).get("max_age_days", 90))
     if max_age_days <= 0 or not release_date:
         return True
     try:
@@ -1472,7 +1472,7 @@ def process_article(news_item: dict, config=None) -> dict:
         return None
 
     if not _is_recent_article(article_data.get("release_date", ""), cfg):
-        print(f"[过滤] 跳过超过 {cfg.get('rss', {}).get('max_age_days', 730)} 天的文章: {article_data['title']}")
+        print(f"[过滤] 跳过超过 {cfg.get('rss', {}).get('max_age_days', 90)} 天的文章: {article_data['title']}")
         return None
 
     # 翻译标题

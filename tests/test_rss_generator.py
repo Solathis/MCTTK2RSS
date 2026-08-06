@@ -37,6 +37,7 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
         save_dir=str(tmp_path),
         output_path=str(feed_path),
         feed_link="https://solathis.github.io/MCTTK2RSS",
+        max_age_days=365,
     )
     assert xml.startswith("<?xml")
     assert xml.rstrip().endswith("</rss>")

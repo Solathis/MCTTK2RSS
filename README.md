@@ -114,7 +114,7 @@ pip install -r requirements.txt
     "feed_title": "Minecraft News (中文翻译)",
     "output_path": "output/feed.xml",
     "max_items": 50,
-    "max_age_days": 730
+    "max_age_days": 90
   }
 }
 ```
@@ -474,7 +474,7 @@ Minecraft 官方 API          Feedback 网站
     "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     "output_path": "output/feed.xml",
     "max_items": 50,
-    "max_age_days": 730
+    "max_age_days": 90
   },
   "output": {
     "save_dir": "output"

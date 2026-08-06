@@ -15,30 +15,6 @@
       <height>144</height>
     </image>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 06 Aug 2026 02:32:31 +0000</lastBuildDate>
-    <item>
-      <title>《Minecraft 26.2 预发布版 6》</title>
-      <link>https://www.minecraft.net/zh-hans/article/minecraft-26-2-pre-release-6</link>
-      <description>今天我们发布了26.2预发布版6。此版本修复了一个问题，使得在 hardcore 世界中死亡后可以正常观看其他玩家的游戏过程。 愉快的采矿时光！ 更新内容 在 hardcore 世界中以观众身份重生时，不会再禁用 spectators.generate_chunks 这一游戏规则 快来下载预发布版吧！ 预发布版适用于 Minecraft: Java 版。要安装预发布版，请打开Minecraft 启动器，并在“安装”选项卡中启用快照功能。 测试版本可能会损坏你的游戏世界，请备份数据，并/或将它们放在与主世界不同的文件夹中运行。 跨平台服务器 jar 文件。 Minecraft 服务器 JAR 文…</description>
-      <content:encoded><![CDATA[<p><strong>原标题：</strong>Minecraft 26.2 Pre-Release 6 <span style="color:#999">（《Minecraft 26.2 预发布版 6》）</span></p>
-<p><strong>作者：</strong>Java Team</p>
-<p><strong>原文：</strong><a href="https://www.minecraft.net/zh-hans/article/minecraft-26-2-pre-release-6">https://www.minecraft.net/zh-hans/article/minecraft-26-2-pre-release-6</a></p>
-<figure><img src="https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-2-pre-release-6/new-article-hero-image.jpg" alt="Steve is spectating over the aftermath of a creeper explosion by a Pillager outpost with items scattered all around" loading="lazy" /></figure>
-<p style="display:block;color:#333;margin:0 0 0.35em">Today we're shipping the 26.2 Pre-Release 6. This version includes a fix that allows proper spectating after dying in a hardcore world.</p><p style="display:block;color:#999;margin:0 0 0.8em">今天我们发布了26.2预发布版6。此版本修复了一个问题，使得在 hardcore 世界中死亡后可以正常观看其他玩家的游戏过程。</p>
-<p style="display:block;color:#333;margin:0 0 0.8em">Happy mining! <span style="color:#999">（愉快的采矿时光！）</span></p>
-<h2 style="display:block;color:#333;margin:0 0 0.8em">Changes <span style="color:#999">（更新内容）</span></h2>
-<ul><li><span style="display:block;color:#333;margin:0 0 0.35em">Respawning (as a spectator) in a hardcore world no longer turns off the spectators_generate_chunks game rule</span><span style="display:block;color:#999;margin:0 0 0.8em">在 hardcore 世界中以观众身份重生时，不会再禁用 <code>spectators.generate_chunks</code> 这一游戏规则</span></li></ul>
-<h2 style="display:block;color:#333;margin:0 0 0.8em">Get the Pre-Release <span style="color:#999">（快来下载预发布版吧！）</span></h2>
-<p style="display:block;color:#333;margin:0 0 0.35em">Pre-Releases are available for Minecraft: Java Edition. To install the Pre-Release, open up the <a href="https://www.minecraft.net/content/minecraft-net/language-masters/download">Minecraft Launcher</a> and enable snapshots in the &quot;Installations&quot; tab.</p><p style="display:block;color:#999;margin:0 0 0.8em">预发布版适用于 Minecraft: Java 版。要安装预发布版，请打开<a href="https://www.minecraft.net/content/minecraft-net/language-masters/download">Minecraft 启动器</a>，并在“安装”选项卡中启用快照功能。</p>
-<p style="display:block;color:#333;margin:0 0 0.35em"><strong>Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.</strong></p><p style="display:block;color:#999;margin:0 0 0.8em"><strong>测试版本可能会损坏你的游戏世界，请备份数据，并/或将它们放在与主世界不同的文件夹中运行。</strong></p>
-<p style="display:block;color:#333;margin:0 0 0.8em">Cross-platform server jar: <span style="color:#999">（跨平台服务器 jar 文件。）</span></p>
-<ul><li><span style="display:block;color:#333;margin:0 0 0.8em"><a href="https://piston-data.mojang.com/v1/objects/a319e7c59c1dfebbf494857f5604a798f115edb9/server.jar">Minecraft server jar</a> <span style="color:#999">（<a href="https://piston-data.mojang.com/v1/objects/a319e7c59c1dfebbf494857f5604a798f115edb9/server.jar">Minecraft 服务器 JAR 文件</a>》 lastName&lt;/text）</span></span></li></ul>
-<p style="display:block;color:#333;margin:0 0 0.8em">Report bugs here: <span style="color:#999">（在这里报告漏洞：}）</span></p>
-<ul><li><span style="display:block;color:#333;margin:0 0 0.8em"><a href="https://bugs.mojang.com/projects/MC/summary">Minecraft issue tracker</a> ! <span style="color:#999">（<a href="https://bugs.mojang.com/projects/MC/summary">Minecraft 问题跟踪器</a> !）</span></span></li></ul>
-<p style="display:block;color:#333;margin:0 0 0.8em">Want to give feedback? <span style="color:#999">（想要提供反馈吗？）</span></p>
-<ul><li><span style="display:block;color:#333;margin:0 0 0.35em">For any feedback and suggestions, head over to the <a href="https://feedback.minecraft.net/">Feedback site</a> . If you're feeling chatty, join us over at the <a href="https://discordapp.com/invite/minecraft">official Minecraft Discord</a> .</span><span style="display:block;color:#999;margin:0 0 0.8em">如有任何反馈或建议，请访问<a href="https://feedback.minecraft.net/">反馈网站</a>。如果您想交流，欢迎加入我们的<a href="https://discordapp.com/invite/minecraft">Minecraft 官方 Discord 社区</a>。</span></li></ul>]]></content:encoded>
-      <guid isPermaLink="false">https://www.minecraft.net/zh-hans/article/minecraft-26-2-pre-release-6</guid>
-      <pubDate>Wed, 10 Jun 2026 16:00:00 +0000</pubDate>
-    </item>
+    <lastBuildDate>Thu, 06 Aug 2026 02:50:44 +0000</lastBuildDate>
   </channel>
 </rss>

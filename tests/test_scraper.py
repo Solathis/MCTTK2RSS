@@ -368,7 +368,55 @@ class TestLoadGlossary:
         assert result["terms"]["玖布克"] == "1501743"
 
 
-def test_article_age_filter_rejects_old_release_date():
+def test_latest_api_reads_the_last_pages(monkeypatch):
+    import scraper as scraper_module
+
+    calls = []
+
+    class FakeResponse:
+        def __init__(self, page):
+            self.page = page
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {
+                "result": {
+                    "numFound": 97,
+                    "page": self.page,
+                    "results": [{"title": f"article-{self.page}", "url": f"/article-{self.page}"}],
+                }
+            }
+
+    def fake_get(_url, **kwargs):
+        calls.append(kwargs["params"]["page"])
+        return FakeResponse(kwargs["params"]["page"])
+
+    monkeypatch.setattr(scraper_module.requests, "get", fake_get)
+    config = {
+        "minecraft_api": {
+            "search_url": "https://example.test/search",
+            "pageSize": 10,
+            "page_count": 3,
+            "sortType": "recent",
+            "category": "News",
+            "site_base": "https://www.minecraft.net",
+        },
+        "http": {
+            "timeout": 10,
+            "verify_ssl": True,
+            "proxies": {},
+            "user_agent": "test",
+            "accept": "application/json",
+        },
+    }
+
+    result = scraper_module.get_latest_news_list(config=config)
+
+    assert calls == [1, 8, 9, 10]
+    assert [item["title"] for item in result] == ["article-8", "article-9", "article-10"]
+
     config = {"rss": {"max_age_days": 365}}
 
     assert not _is_recent_article("2021-01-14T00:00:00Z", config)

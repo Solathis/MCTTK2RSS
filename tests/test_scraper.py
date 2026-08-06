@@ -8,6 +8,7 @@ import pytest
 from scraper import (
     _chunk_items_for_translation,
     _deep_merge,
+    _is_recent_article,
     _normalize_whitespace,
     _parse_pattern,
     blocks_to_plaintext,
@@ -365,6 +366,13 @@ class TestLoadGlossary:
         result = load_glossary(str(f))
         assert result["terms"]["玖书"] == "jiubook"
         assert result["terms"]["玖布克"] == "1501743"
+
+
+def test_article_age_filter_rejects_old_release_date():
+    config = {"rss": {"max_age_days": 365}}
+
+    assert not _is_recent_article("2021-01-14T00:00:00Z", config)
+    assert _is_recent_article("", config)
 
 
 def test_feedback_challenge_stops_retries_and_enters_cooldown(monkeypatch):

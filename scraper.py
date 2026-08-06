@@ -19,7 +19,7 @@ import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
+from datetime import UTC, datetime
 from threading import Lock
 from urllib.parse import urljoin
 
@@ -742,12 +742,31 @@ def convert_feedback_html_to_blocks(html_content, base_url=""):
     return blocks
 
 
+def _is_recent_article(release_date: str, config: dict) -> bool:
+    """按配置的文章保留期限过滤真实发布日期；未知日期暂不拦截。"""
+    max_age_days = int(config.get("rss", {}).get("max_age_days", 365))
+    if max_age_days <= 0 or not release_date:
+        return True
+    try:
+        article_date = datetime.fromisoformat(release_date.strip().replace("Z", "+00:00"))
+    except ValueError:
+        log_warning(f"[过滤] 无法解析文章日期，保留文章: {release_date}")
+        return True
+    if article_date.tzinfo is None:
+        article_date = article_date.replace(tzinfo=UTC)
+    cutoff = datetime.now(UTC).timestamp() - max_age_days * 86400
+    return article_date.timestamp() >= cutoff
+
+
 def process_feedback_news(news_item: dict, config: dict) -> dict:
     """完整处理单篇 Feedback 文章"""
     scraper = FeedbackScraper(config)
     article_content = scraper.fetch_article_content(news_item['url'])
     if not article_content:
         log_error("[Feedback] 无法获取文章内容")
+        return None
+    if not _is_recent_article(article_content.get("posted_date", ""), config):
+        log_info(f"[过滤] 跳过过期 Feedback 文章: {article_content.get('title', news_item['title'])}")
         return None
 
     title_to_translate = article_content['title']
@@ -1450,6 +1469,10 @@ def process_article(news_item: dict, config=None) -> dict:
     article_data = parse_article_page(news_item['url'], config=cfg)
     if not article_data:
         print("[处理] 解析失败")
+        return None
+
+    if not _is_recent_article(article_data.get("release_date", ""), cfg):
+        print(f"[过滤] 跳过超过 {cfg.get('rss', {}).get('max_age_days', 365)} 天的文章: {article_data['title']}")
         return None
 
     # 翻译标题

@@ -239,9 +239,10 @@ def _blocks_to_html(blocks: list[dict]) -> str:
     return "\n".join(html_parts)
 
 
-def _load_articles(save_dir: str, max_items: int = 50) -> list[dict]:
-    """从目录加载 news_*.json，按发布日期降序排列"""
+def _load_articles(save_dir: str, max_items: int = 50, max_age_days: int = 365) -> list[dict]:
+    """从目录加载近期 news_*.json，按发布日期降序排列。"""
     json_files = glob.glob(os.path.join(save_dir, "news_*.json"))
+    cutoff = datetime.now(UTC) - timedelta(days=max(max_age_days, 0))
     articles = []
     for jf in json_files:
         if os.path.basename(jf).startswith("."):
@@ -250,6 +251,9 @@ def _load_articles(save_dir: str, max_items: int = 50) -> list[dict]:
             with open(jf, encoding="utf-8") as f:
                 data = json.load(f)
             if not data.get("title"):
+                continue
+            release_date = _parse_date(data.get("release_date", ""))
+            if max_age_days > 0 and release_date and release_date < cutoff:
                 continue
             articles.append(data)
         except (json.JSONDecodeError, OSError):
@@ -324,6 +328,7 @@ def generate_rss(
     feed_link: str = "",
     feed_description: str = "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     max_items: int = 50,
+    max_age_days: int = 365,
     site_base: str = "https://www.minecraft.net",
 ) -> str:
     """
@@ -332,7 +337,7 @@ def generate_rss(
     Returns:
         生成的 XML 字符串
     """
-    articles = _load_articles(save_dir, max_items)
+    articles = _load_articles(save_dir, max_items, max_age_days)
     base_link = feed_link or site_base
 
     fg = FeedGenerator()
@@ -439,6 +444,7 @@ def main():
         feed_link=args.link or rss_config.get("feed_link", ""),
         feed_description=args.description or rss_config.get("feed_description", ""),
         max_items=args.max_items or rss_config.get("max_items", 50),
+        max_age_days=rss_config.get("max_age_days", 365),
         site_base=site_base,
     )
 

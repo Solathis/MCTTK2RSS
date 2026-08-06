@@ -55,7 +55,27 @@ def test_generate_rss_renders_html_images_highlights_and_unicode(tmp_path):
     assert "https://solathis.github.io/MCTTK2RSS/logo.png" in xml
 
 
-def test_short_translation_stays_on_source_line():
+def test_expired_articles_are_excluded(tmp_path):
+    article = {
+        "title": "Old article",
+        "translated_title": "旧文章",
+        "release_date": "2020-01-01T00:00:00Z",
+        "url": "https://example.com/old",
+        "blocks": [],
+    }
+    (tmp_path / "news_old.json").write_text(json.dumps(article), encoding="utf-8")
+
+    xml = generate_rss(
+        save_dir=str(tmp_path),
+        output_path=str(tmp_path / "feed.xml"),
+        max_age_days=365,
+    )
+
+    assert "Old article" not in xml
+    assert "旧文章" not in xml
+
+
+
     html = _blocks_to_html([
         {"type": "h2", "source_text": "Snapshot", "translated_text": "快照"},
     ])

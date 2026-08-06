@@ -95,6 +95,44 @@ jobs:
             echo "[CI] 无历史 state，首次运行"
           fi
 
+      - name: Remove expired articles
+        run: |
+          python - <<'PY'
+          import glob
+          import json
+          import os
+          from datetime import UTC, datetime, timedelta
+
+          from rss_generator import _parse_date
+
+          with open("config.json", encoding="utf-8") as f:
+              config = json.load(f)
+          max_age_days = int(config.get("rss", {}).get("max_age_days", 365))
+          if max_age_days <= 0:
+              print("[CI] 未启用文章过期清理")
+              raise SystemExit(0)
+
+          cutoff = datetime.now(UTC) - timedelta(days=max_age_days)
+          removed = 0
+          for path in glob.glob("output/news_*.json"):
+              try:
+                  with open(path, encoding="utf-8") as f:
+                      article = json.load(f)
+              except (OSError, json.JSONDecodeError):
+                  continue
+              release_date = _parse_date(article.get("release_date", ""))
+              if not release_date or release_date >= cutoff:
+                  continue
+              os.remove(path)
+              removed += 1
+              stem = os.path.splitext(path)[0]
+              for extension in (".jpg", ".jpeg", ".png", ".gif", ".webp"):
+                  image_path = stem + extension
+                  if os.path.exists(image_path):
+                      os.remove(image_path)
+          print(f"[CI] 已清理 {removed} 篇超过 {max_age_days} 天的文章")
+          PY
+
       - name: Run scraper
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then

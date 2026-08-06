@@ -113,7 +113,8 @@ pip install -r requirements.txt
   "rss": {
     "feed_title": "Minecraft News (中文翻译)",
     "output_path": "output/feed.xml",
-    "max_items": 50
+    "max_items": 50,
+    "max_age_days": 365
   }
 }
 ```
@@ -472,7 +473,8 @@ Minecraft 官方 API          Feedback 网站
     "feed_link": "https://solathis.github.io/MCTTK2RSS",
     "feed_description": "Minecraft 官方新闻与更新日志的中文翻译 RSS",
     "output_path": "output/feed.xml",
-    "max_items": 50
+    "max_items": 50,
+    "max_age_days": 365
   },
   "output": {
     "save_dir": "output"

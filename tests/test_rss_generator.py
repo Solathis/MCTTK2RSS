@@ -102,3 +102,29 @@ def test_identical_translation_is_not_rendered():
     assert "（same text）" not in html
     assert html.count("color:#999") == 0
     assert html.count("<pre") == 1
+
+
+def test_articles_ordered_newest_first(tmp_path):
+    """RSS 中最新文章应排在最上方。"""
+    articles = [
+        {"title": "Old", "translated_title": "旧", "release_date": "2026-06-01T00:00:00Z",
+         "url": "https://example.com/old", "blocks": []},
+        {"title": "Newest", "translated_title": "最新", "release_date": "2026-08-06T12:00:00Z",
+         "url": "https://example.com/new", "blocks": []},
+        {"title": "Mid", "translated_title": "中间", "release_date": "2026-07-15T00:00:00Z",
+         "url": "https://example.com/mid", "blocks": []},
+    ]
+    for i, a in enumerate(articles):
+        (tmp_path / f"news_{i}.json").write_text(json.dumps(a, ensure_ascii=False), encoding="utf-8")
+
+    xml = generate_rss(
+        save_dir=str(tmp_path),
+        output_path=str(tmp_path / "feed.xml"),
+        max_age_days=365,
+    )
+
+    # XML 中第一个 <item> 应是最新的，最后一个是最旧的
+    pos_new = xml.find("https://example.com/new")
+    pos_mid = xml.find("https://example.com/mid")
+    pos_old = xml.find("https://example.com/old")
+    assert 0 < pos_new < pos_mid < pos_old, "文章应按发布日期降序排列（最新在上）"

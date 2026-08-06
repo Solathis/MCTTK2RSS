@@ -366,7 +366,7 @@ def generate_rss(
         title = title_cn or title_en
         link = article.get("url", "")
 
-        fe = fg.add_entry()
+        fe = fg.add_entry(order="append")
         fe.id(link or f"mcttk2rss-{re.sub(r'[^a-zA-Z0-9]', '', title_en)[:50]}")
         fe.title(title)
         fe.link(href=link or base_link)

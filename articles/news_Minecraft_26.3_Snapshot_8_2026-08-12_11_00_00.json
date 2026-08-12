@@ -1,0 +1,1057 @@
+{
+  "title": "Minecraft 26.3 Snapshot 8",
+  "translated_title": "Minecraft 26.3 更新补丁 8",
+  "release_date": "2026-08-12T11:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-8",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-8/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "This Wednesday, a hot new Snapshot enters the Realm! That's right, in 26.3 Snapshot 8, Realm owners can now create and manage Invite Codes, making it easier than ever to join the fun.",
+      "translated_text": "本周三，一个全新的快照版本即将上线！没错，在26.3版本（Snapshot 8）中，服务器所有者现在可以创建和管理邀请码，这会让大家更轻松地加入游戏的乐趣中！”",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Alongside these additions, we've made further improvements to the World Options screen and included several gameplay fixes and technical updates.",
+      "translated_text": "除了这些新功能外，我们还对“世界设置”界面进行了进一步优化，并修复了一些游戏中的问题以及进行了技术性更新。",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "愉快地采矿吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "h3",
+      "source_text": "Explorer Maps",
+      "translated_text": "探险地图",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Renamed the following maps:",
+      "translated_text": "以下地图的名字已更改：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Buried Ancient City Map",
+      "translated_text": "埋藏的古城地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Buried Mineshaft Map",
+      "translated_text": "埋藏的矿井地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Abandoned Camp Map",
+      "translated_text": "废弃的营地地图",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "h3",
+      "source_text": "Realms",
+      "translated_text": "服务器（Realms）",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Realm owners can now create and manage Invite Codes",
+      "translated_text": "领域所有者现在可以创建和管理邀请码",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "Each Realm can have up to five Invite Codes",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Invite Codes can be configured to be active / inactive and deleted",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "The expiration of an Invite Code can also be configured",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Players can now easily join a Realm by entering an Invite Code in a new \"Join Realm\" screen",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Cushions are now only destroyed when fully covered by blocks that cause suffocation",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "New Villager trades, unlocked from a Villager leveling up their profession, will now update even if the player is in the process of trading with them",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0020",
+      "type": "h4",
+      "source_text": "World Options",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Some further improvements have been made to the World Options screen, which is now accessible from the pause menu",
+      "translated_text": "对“世界选项”屏幕进行了一些改进，现在可以通过暂停菜单访问它",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "The \"Game Mode\" button has been renamed to \"Default Game Mode\"",
+      "translated_text": "“游戏模式”按钮现已更名为“默认游戏模式”",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "The \"General\" section has a new addition:",
+      "translated_text": "“常规”部分新增了内容",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Personal Game Mode: your active game mode in the current world (equivalent to the /gamemode command, or F3+F4)",
+      "translated_text": "个人游戏模式：当前世界中你使用的活动游戏模式（相当于/gamemode命令或F3+F4键）",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "The \"Multiplayer\" section has a new addition:",
+      "translated_text": "“多人游戏”部分新增了内容",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "Force Game Mode: controls whether other players game mode is forced to match the default game mode of the world or not",
+      "translated_text": "强制游戏模式：控制其他玩家的游戏模式是否必须与世界的默认游戏模式保持一致",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术更改",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "The Data Pack version is now 116.0",
+      "translated_text": "数据包版本现已升至116.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 96.0",
+      "translated_text": "资源包版本现已升至96.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "h2",
+      "source_text": "Data Pack Version 116.0",
+      "translated_text": "数据包版本116.0",
+      "meta": {}
+    },
+    {
+      "id": "b0031",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0032",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "特性",
+      "meta": {}
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Removed feature types:",
+      "translated_text": "移除了某些特性类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "minecraft:desert_well",
+      "translated_text": "minecraft:desert_well",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "text",
+      "source_text": "minecraft:template",
+      "translated_text": "minecraft:template",
+      "meta": {}
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Added field processors : Namespaced ID or inline definition of a structure processor list to apply to the template",
+      "translated_text": "添加了字段处理器：为模板应用结构处理器列表提供了命名空间ID或内联定义",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "h4",
+      "source_text": "Placement Modifiers",
+      "translated_text": "放置修饰符",
+      "meta": {}
+    },
+    {
+      "id": "b0039",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0040",
+      "type": "text",
+      "source_text": "minecraft:randomly_selected",
+      "translated_text": "minecraft:randomly_selected",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "p",
+      "source_text": "Randoly selects a Placement Modifier from a list and delegates placement to it.",
+      "translated_text": "Randoly 从列表中选择一个放置修改器（Placement Modifier），并将放置任务委托给该修改器。",
+      "meta": {}
+    },
+    {
+      "id": "b0042",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "placements : Non-empty list of Placement Modifiers to pick from",
+      "translated_text": "placements：可供选择的放置修改器（Placement Modifiers）的非空列表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "h4",
+      "source_text": "Block Predicates",
+      "translated_text": "块谓词（Block Predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0045",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加（Added）",
+      "meta": {}
+    },
+    {
+      "id": "b0046",
+      "type": "text",
+      "source_text": "minecraft:volume_match",
+      "translated_text": "minecraft:volume_match",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "p",
+      "source_text": "Checks that every block in a volume matches a given Block Predicate.",
+      "translated_text": "检查体积（volume）中的每个块是否满足给定的块谓词（Block Predicate）",
+      "meta": {}
+    },
+    {
+      "id": "b0048",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "min : List of 3 integers in range -16 to 16 specifying the lower corner of the volume as an offset from the test position",
+      "translated_text": "min：一个包含3个整数的列表，范围为-16到16，用于指定体积的下角相对于测试位置的偏移量",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "max : List of 3 integers in range -16 to 16 specifying the upper corner of the volume as an offset from the test position",
+      "translated_text": "max：一个包含3个整数的列表，范围为-16到16，用于指定体积的上角相对于测试位置的偏移量",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "match : Block Predicate to test on each position",
+      "translated_text": "用于测试每个位置的 Block Predicate",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "h2",
+      "source_text": "Resource Pack Version 96",
+      "translated_text": "资源包版本 96",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器与后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "h4",
+      "source_text": "Removed Core Shaders",
+      "translated_text": "移除了核心着色器",
+      "meta": {}
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "core/text_background.fsh and core/text_background.vsh were removed and text background in Text Display Entities is now rendered using the text shaders",
+      "translated_text": "core/text_background.fsh 和 core/text_background.vsh 被移除，现在文本显示实体中的背景使用文本着色器进行渲染",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "h4",
+      "source_text": "Order-independent Transparency (OIT)-related Shader Changes",
+      "translated_text": "与 Order-independent Transparency (OIT) 相关的着色器更改",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "OIT_FORCE_ZERO_DEPTH shader define was removed since the see-through text it was used for is now rendered in a separate pass outside OIT",
+      "translated_text": "OITFORCE_ZERO_DEPTH 着色器定义被移除，因为它所用于的透明文本现在在 OIT 之外的单独渲染过程中进行处理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 8",
+      "translated_text": "修复了 26.3 快照 8 中的错误",
+      "meta": {}
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "[MC-44654](https://bugs.mojang.com/browse/MC-44654) - Some entities' positions are not updated on the client when teleported",
+      "translated_text": "[MC-44654](https://bugs.mojang.com/browse/MC-44654) - 当玩家使用传送门移动时，某些实体的位置在客户端未更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "li",
+      "source_text": "[MC-122731](https://bugs.mojang.com/browse/MC-122731) - Camera movement stutters when turning in a boat",
+      "translated_text": "[MC-122731](https://bugs.mojang.com/browse/MC-122731) - 在船内转动时，相机移动会出现卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "[MC-206540](https://bugs.mojang.com/browse/MC-206540) - Increased input delay when riding an entity",
+      "translated_text": "[MC-206540](https://bugs.mojang.com/browse/MC-206540) - 骑乘实体时输入延迟增加",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "[MC-236497](https://bugs.mojang.com/browse/MC-236497) - The head rotations of passengers in boats are not correctly displayed for other players",
+      "translated_text": "[MC-236497](https://bugs.mojang.com/browse/MC-236497) - 船上乘客的头部旋转在其他玩家眼中显示不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "[MC-237679](https://bugs.mojang.com/browse/MC-237679) - The head rotations of passengers in boats are constantly forced to turn in certain directions if the rider were to dismount the boat while moving left or right",
+      "translated_text": "[MC-237679](https://bugs.mojang.com/browse/MC-237679) - 如果骑手在船移动时左右方向脱离船体，乘客的头部旋转会不断被迫朝某个方向转动",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "[MC-249200](https://bugs.mojang.com/browse/MC-249200) - Several entities constantly deviate visually from their actual positions on the client when teleported",
+      "translated_text": "[MC-249200](https://bugs.mojang.com/browse/MC-249200) - 一些实体在传送后，在客户端上会与实际位置出现视觉上的偏差",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "[MC-253023](https://bugs.mojang.com/browse/MC-253023) - Breaking paintings, item frames, glow item frames cannot trigger sculk shriekers",
+      "translated_text": "[MC-253023] - 破坏画作、物品框架或发光物品框架时，无法触发“スクルク・シュリーカー”（Sculk Screamer）的音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "[MC-258579](https://bugs.mojang.com/browse/MC-258579) - The player's head does not rotate smoothly (with delay) in third person view while riding a vehicle",
+      "translated_text": "[MC-258579] - 在第三人称视角下，玩家乘坐载具时头部旋转不流畅（存在延迟）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "[MC-259512](https://bugs.mojang.com/browse/MC-259512) - Horizontal camera rotation lags when riding",
+      "translated_text": "[MC-259512] - 乘坐载具时，水平视角的旋转存在延迟",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "[MC-260780](https://bugs.mojang.com/browse/MC-260780) - Shulker bullets always push fireballs south",
+      "translated_text": "[MC-260780] - 舒尔克器发射的子弹总是朝南方弹去",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "[MC-280250](https://bugs.mojang.com/browse/MC-280250) - Projectiles sometimes desync when thrown/shot while moving",
+      "translated_text": "[MC-280250] - 投掷或射击物体时，其运动轨迹有时会不同步",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "[MC-300000](https://bugs.mojang.com/browse/MC-300000) - Players desync when teleporting all users riding a happy ghast",
+      "translated_text": "[MC-300000] - 当玩家使用“快乐恶魂”载具传送其他玩家时，其他玩家的运动会出现不同步现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "[MC-305214](https://bugs.mojang.com/browse/MC-305214) - Arrows deflecting off of entities get offset",
+      "translated_text": "[MC-305214] - 箭从其他实体上弹开后，其运动轨迹会发生偏移",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "[MC-308961](https://bugs.mojang.com/browse/MC-308961) - When changing the game mode using debug hotkeys while in the World Options screen, the \"Game Mode\" button does not update",
+      "translated_text": "[MC-308961](https://bugs.mojang.com/browse/MC-308961) - 在世界选项界面使用调试热键切换游戏模式时，\"游戏模式\"按钮不会更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "[MC-309284](https://bugs.mojang.com/browse/MC-309284) - Poplar leaves don't use the dark_cutout mipmap strategy",
+      "translated_text": "[MC-309284](https://bugs.mojang.com/browse/MC-309284) - 杨树的叶子没有采用深色剪裁（dark_cutout）的 mipmap 策略",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "[MC-309668](https://bugs.mojang.com/browse/MC-309668) - Straw beds are not broken faster when using hoes",
+      "translated_text": "[MC-309668](https://bugs.mojang.com/browse/MC-309668) - 使用锄头时，稻草床不会更快损坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "[MC-309670](https://bugs.mojang.com/browse/MC-309670) - Cushions z-fight with the tops of dragon heads",
+      "translated_text": "[MC-309670](https://bugs.mojang.com/browse/MC-309670) - 垫子能与龙头的顶部发生碰撞",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "[MC-309716](https://bugs.mojang.com/browse/MC-309716) - Cushions can be broken in Adventure mode",
+      "translated_text": "[MC-309716](https://bugs.mojang.com/browse/MC-309716) - 垫子在冒险模式下也会损坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "[MC-310066](https://bugs.mojang.com/browse/MC-310066) - Tridents thrown by drowned still visually bounce off entities",
+      "translated_text": "[MC-310066](https://bugs.mojang.com/browse/MC-310066) - 被淹死的玩家投掷的三叉戟仍然会从其他实体身上弹开",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "[MC-310097](https://bugs.mojang.com/browse/MC-310097) - Experience orbs desync and appear to phase through blocks",
+      "translated_text": "[MC-310097](https://bugs.mojang.com/browse/MC-310097) - 经验球体在不同区块间的同步出现问题，且似乎能够穿透区块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "[MC-310103](https://bugs.mojang.com/browse/MC-310103) - The \"Text Background Opacity\" setting makes the text darker when the \"Text Background\" setting is set to Everywhere",
+      "translated_text": "[MC-310103](https://bugs.mojang.com/browse/MC-310103) - 当“文本背景”设置设为“随处可见”时，“文本背景透明度”设置会使文本变得更暗",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "[MC-310166](https://bugs.mojang.com/browse/MC-310166) - The straw bed is not placed immediately after regular beds in the Creative mode inventory",
+      "translated_text": "[MC-310166] - 在创造模式下的背包中，草床不会自动放置在普通床的后面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "[MC-310175](https://bugs.mojang.com/browse/MC-310175) - Missing resource warning when loading up the game",
+      "translated_text": "[MC-310175] - 加载游戏时会出现资源丢失的警告",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "[MC-310200](https://bugs.mojang.com/browse/MC-310200) - The player's model flickers while falling into the void when viewed from certain angles",
+      "translated_text": "[MC-310200] - 从某些角度观察玩家在坠入虚空时，玩家的模型会出现闪烁现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "[MC-310393](https://bugs.mojang.com/browse/MC-310393) - Certain projectiles thrown at the world border rubberband repeatedly",
+      "translated_text": "[MC-310393] - 某些投射物在接近世界边界时会出现反复弹回的现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "[MC-310476](https://bugs.mojang.com/browse/MC-310476) - Projectiles only collide outright with the world border when underwater",
+      "translated_text": "[MC-310476](https://bugs.mojang.com/browse/MC-310476) - 在水下时，投射物仅会与世界边界发生直接碰撞",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "[MC-310530](https://bugs.mojang.com/browse/MC-310530) - Changing the game mode in the World Options screen no longer changes the player's game mode",
+      "translated_text": "[MC-310530](https://bugs.mojang.com/browse/MC-310530) - 在“世界选项”界面更改游戏模式后，玩家的游戏模式不再发生改变",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "[MC-310540](https://bugs.mojang.com/browse/MC-310540) - A noise definition with base_amplitude set to 0.0 crashes the game during world load",
+      "translated_text": "[MC-310540] - 当将 base_amplitude 设置为 0.0 的噪音定义应用于世界加载时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "[MC-310543](https://bugs.mojang.com/browse/MC-310543) - The JVM crashes with EXCEPTION_ACCESS_VIOLATION in atio6axx.dll on Boot Camp (AMD Radeon Pro 555X)",
+      "translated_text": "[MC-310543] - 在使用 Boot Camp （AMD Radeon Pro 555X）系统时，JVM 由于 atio6axx.dll 文件中的 EXCEPTION_ACCESS_VIOLATION 错误而崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "[MC-310549](https://bugs.mojang.com/browse/MC-310549) - invulnerable_time never decreases for some entities",
+      "translated_text": "[MC-310549] - 某些实体的“无敌时间”永远不会减少",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "[MC-310632](https://bugs.mojang.com/browse/MC-310632) - Farmer villagers no longer throw excess wheat to other villagers",
+      "translated_text": "[MC-310632] - 农民村民不再向其他村民抛出多余的小麦",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "[MC-310642](https://bugs.mojang.com/browse/MC-310642) - Landing on farmland deals no fall damage when the block is prevented from being trampled",
+      "translated_text": "[MC-310642] - 在农田上着陆时，如果阻止方块被践踏，玩家不会受到坠落伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "[MC-310687](https://bugs.mojang.com/browse/MC-310687) - Languages other than \"English (US)\" fail to load",
+      "translated_text": "[MC-310687] - 除了“English (US)”之外的语言无法加载",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "[MC-310691](https://bugs.mojang.com/browse/MC-310691) - Stonecutter recipes for concrete stairs and slabs are missing",
+      "translated_text": "[MC-310691] - 钢筋楼梯和混凝土板的制作配方缺失",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "[MC-310692](https://bugs.mojang.com/browse/MC-310692) - The error message when the game is unable to load translations can extend outside the screen",
+      "translated_text": "[MC-310692] - 当游戏无法加载翻译内容时，错误信息可能会超出屏幕显示范围",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "[MC-310705](https://bugs.mojang.com/browse/MC-310705) - The difficulty lock warning screen shows the wrong difficulty after changing the difficulty",
+      "translated_text": "[MC-310705] - 更改难度后，难度锁定警告界面显示的难度信息不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "[MC-310718](https://bugs.mojang.com/browse/MC-310718) - Unused color attachments are unusable with the OpenGL rendering backend",
+      "translated_text": "[MC-310718] - 未使用的颜色附件在使用 OpenGL 渲染后端时无法使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "[MC-310726](https://bugs.mojang.com/browse/MC-310726) - The mansion icon in the texture of woodland explorer maps doesn't match the respective icon on the map",
+      "translated_text": "[MC-310726] -  woodland explorer 地图中的大厦图标与地图上的实际图标不匹配",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-310728](https://bugs.mojang.com/browse/MC-310728) - Cushions can still be used to see through blocks in third person mode",
+      "translated_text": "[MC-310728] - 在第三人称模式下，仍然可以使用软垫来观察方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-310729](https://bugs.mojang.com/browse/MC-310729) - Explorer maps from previous versions prevent saved hotbars from loading",
+      "translated_text": "[MC-310729] - 旧版本的 explorer 地图会导致保存的热键栏无法加载",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-310743](https://bugs.mojang.com/browse/MC-310743) - The category headers in the Debug Options screen are still different than the other options screens",
+      "translated_text": "[MC-310743] - 调试选项屏幕中的类别标题与其他选项屏幕仍然不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-310757](https://bugs.mojang.com/browse/MC-310757) - In OIT shaders, coefficients[0] is accumulated using depth but subtracted using originalDepth",
+      "translated_text": "[MC-310757] - 在 OIT 着色器中，系数[0] 是根据深度值累加的，但在计算过程中却使用了原始深度值（originalDepth）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-310771](https://bugs.mojang.com/browse/MC-310771) - The common abandoned camp map is named \"Abandoned Campsite Map\" instead of \"Abandoned Camp Map\"",
+      "translated_text": "[MC-310771](https://bugs.mojang.com/browse/MC-310771) - 常见的废弃营地地图的名称应为“Abandoned Campsite Map”，而不是“Abandoned Camp Map”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-310783](https://bugs.mojang.com/browse/MC-310783) - Resource packs with custom namespaces cause the \"English (US)\" language to fail to load",
+      "translated_text": "[MC-310783](https://bugs.mojang.com/browse/MC-310783) - 使用自定义命名空间的资源包会导致“English (US)”语言无法正常加载",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-310787](https://bugs.mojang.com/browse/MC-310787) - Villagers do not level up until the trading window is closed for several seconds",
+      "translated_text": "[MC-310787] - 村民在交易窗口关闭后数秒内不会升级",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-310789](https://bugs.mojang.com/browse/MC-310789) - Chunks sometimes don't fade in correctly",
+      "translated_text": "[MC-310789] - 有时区块的显示效果（如淡入效果）不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-310812](https://bugs.mojang.com/browse/MC-310812) - Placing and breaking cushions does not trigger sculk shriekers",
+      "translated_text": "[MC-310812] - 放置或破坏坐垫时不会触发 ск ulк 的尖叫声",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-310917](https://bugs.mojang.com/browse/MC-310917) - Chunk generation can corrupt on worlds upgraded from previous versions",
+      "translated_text": "[MC-310917] - 从旧版本升级的世界中，区块生成可能会出现问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "请获取该快照",
+      "meta": {}
+    },
+    {
+      "id": "b0108",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版的快照现已可用。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0109",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "测试版本可能会损坏你的游戏世界，请提前备份数据，或者将测试版本运行在不同于你主要游戏世界的文件夹中。",
+      "meta": {}
+    },
+    {
+      "id": "b0110",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件",
+      "meta": {}
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/f56c190d1deda0a8e63592ae07b1cd7f26cccd3e/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/f56c190d1deda0a8e63592ae07b1cd7f26cccd3e/server.jar_reduceutar",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "请在这里报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "This Wednesday, a hot new Snapshot enters the Realm! That's right, in 26.3 Snapshot 8, Realm owners can now create and manage Invite Codes, making it easier than ever to join the fun.\n\nAlongside these additions, we've made further improvements to the World Options screen and included several gameplay fixes and technical updates.\n\nHappy mining!\n\nNew Features\n\nExplorer Maps\n\nRenamed the following maps:\n\nBuried Ancient City Map\n\nBuried Mineshaft Map\n\nAbandoned Camp Map\n\nRealms\n\nRealm owners can now create and manage Invite Codes\n\nEach Realm can have up to five Invite Codes\n\nInvite Codes can be configured to be active / inactive and deleted\n\nThe expiration of an Invite Code can also be configured\n\nPlayers can now easily join a Realm by entering an Invite Code in a new \"Join Realm\" screen\n\nChanges\n\nCushions are now only destroyed when fully covered by blocks that cause suffocation\n\nNew Villager trades, unlocked from a Villager leveling up their profession, will now update even if the player is in the process of trading with them\n\nUI\n\nWorld Options\n\nSome further improvements have been made to the World Options screen, which is now accessible from the pause menu\n\nThe \"Game Mode\" button has been renamed to \"Default Game Mode\"\n\nThe \"General\" section has a new addition:\n\nPersonal Game Mode: your active game mode in the current world (equivalent to the /gamemode command, or F3+F4)\n\nThe \"Multiplayer\" section has a new addition:\n\nForce Game Mode: controls whether other players game mode is forced to match the default game mode of the world or not\n\nTechnical Changes\n\nThe Data Pack version is now 116.0\n\nThe Resource Pack version is now 96.0\n\nData Pack Version 116.0\n\nWorld Generation\n\nFeatures\n\nRemoved feature types:\n\nminecraft:desert_well\n\nChanged\n\nminecraft:template\n\nAdded field processors : Namespaced ID or inline definition of a structure processor list to apply to the template\n\nPlacement Modifiers\n\nAdded\n\nminecraft:randomly_selected\n\nRandoly selects a Placement Modifier from a list and delegates placement to it.\n\nFormat:\n\nplacements : Non-empty list of Placement Modifiers to pick from\n\nBlock Predicates\n\nAdded\n\nminecraft:volume_match\n\nChecks that every block in a volume matches a given Block Predicate.\n\nFormat:\n\nmin : List of 3 integers in range -16 to 16 specifying the lower corner of the volume as an offset from the test position\n\nmax : List of 3 integers in range -16 to 16 specifying the upper corner of the volume as an offset from the test position\n\nmatch : Block Predicate to test on each position\n\nResource Pack Version 96\n\nShaders & Post-process Effects\n\nRemoved Core Shaders\n\ncore/text_background.fsh and core/text_background.vsh were removed and text background in Text Display Entities is now rendered using the text shaders\n\nOrder-independent Transparency (OIT)-related Shader Changes\n\nOIT_FORCE_ZERO_DEPTH shader define was removed since the see-through text it was used for is now rendered in a separate pass outside OIT\n\nFixed bugs in 26.3 Snapshot 8\n\n[MC-44654](https://bugs.mojang.com/browse/MC-44654) - Some entities' positions are not updated on the client when teleported\n\n[MC-122731](https://bugs.mojang.com/browse/MC-122731) - Camera movement stutters when turning in a boat\n\n[MC-206540](https://bugs.mojang.com/browse/MC-206540) - Increased input delay when riding an entity\n\n[MC-236497](https://bugs.mojang.com/browse/MC-236497) - The head rotations of passengers in boats are not correctly displayed for other players\n\n[MC-237679](https://bugs.mojang.com/browse/MC-237679) - The head rotations of passengers in boats are constantly forced to turn in certain directions if the rider were to dismount the boat while moving left or right\n\n[MC-249200](https://bugs.mojang.com/browse/MC-249200) - Several entities constantly deviate visually from their actual positions on the client when teleported\n\n[MC-253023](https://bugs.mojang.com/browse/MC-253023) - Breaking paintings, item frames, glow item frames cannot trigger sculk shriekers\n\n[MC-258579](https://bugs.mojang.com/browse/MC-258579) - The player's head does not rotate smoothly (with delay) in third person view while riding a vehicle\n\n[MC-259512](https://bugs.mojang.com/browse/MC-259512) - Horizontal camera rotation lags when riding\n\n[MC-260780](https://bugs.mojang.com/browse/MC-260780) - Shulker bullets always push fireballs south\n\n[MC-280250](https://bugs.mojang.com/browse/MC-280250) - Projectiles sometimes desync when thrown/shot while moving\n\n[MC-300000](https://bugs.mojang.com/browse/MC-300000) - Players desync when teleporting all users riding a happy ghast\n\n[MC-305214](https://bugs.mojang.com/browse/MC-305214) - Arrows deflecting off of entities get offset\n\n[MC-308961](https://bugs.mojang.com/browse/MC-308961) - When changing the game mode using debug hotkeys while in the World Options screen, the \"Game Mode\" button does not update\n\n[MC-309284](https://bugs.mojang.com/browse/MC-309284) - Poplar leaves don't use the dark_cutout mipmap strategy\n\n[MC-309668](https://bugs.mojang.com/browse/MC-309668) - Straw beds are not broken faster when using hoes\n\n[MC-309670](https://bugs.mojang.com/browse/MC-309670) - Cushions z-fight with the tops of dragon heads\n\n[MC-309716](https://bugs.mojang.com/browse/MC-309716) - Cushions can be broken in Adventure mode\n\n[MC-310066](https://bugs.mojang.com/browse/MC-310066) - Tridents thrown by drowned still visually bounce off entities\n\n[MC-310097](https://bugs.mojang.com/browse/MC-310097) - Experience orbs desync and appear to phase through blocks\n\n[MC-310103](https://bugs.mojang.com/browse/MC-310103) - The \"Text Background Opacity\" setting makes the text darker when the \"Text Background\" setting is set to Everywhere\n\n[MC-310166](https://bugs.mojang.com/browse/MC-310166) - The straw bed is not placed immediately after regular beds in the Creative mode inventory\n\n[MC-310175](https://bugs.mojang.com/browse/MC-310175) - Missing resource warning when loading up the game\n\n[MC-310200](https://bugs.mojang.com/browse/MC-310200) - The player's model flickers while falling into the void when viewed from certain angles\n\n[MC-310393](https://bugs.mojang.com/browse/MC-310393) - Certain projectiles thrown at the world border rubberband repeatedly\n\n[MC-310476](https://bugs.mojang.com/browse/MC-310476) - Projectiles only collide outright with the world border when underwater\n\n[MC-310530](https://bugs.mojang.com/browse/MC-310530) - Changing the game mode in the World Options screen no longer changes the player's game mode\n\n[MC-310540](https://bugs.mojang.com/browse/MC-310540) - A noise definition with base_amplitude set to 0.0 crashes the game during world load\n\n[MC-310543](https://bugs.mojang.com/browse/MC-310543) - The JVM crashes with EXCEPTION_ACCESS_VIOLATION in atio6axx.dll on Boot Camp (AMD Radeon Pro 555X)\n\n[MC-310549](https://bugs.mojang.com/browse/MC-310549) - invulnerable_time never decreases for some entities\n\n[MC-310632](https://bugs.mojang.com/browse/MC-310632) - Farmer villagers no longer throw excess wheat to other villagers\n\n[MC-310642](https://bugs.mojang.com/browse/MC-310642) - Landing on farmland deals no fall damage when the block is prevented from being trampled\n\n[MC-310687](https://bugs.mojang.com/browse/MC-310687) - Languages other than \"English (US)\" fail to load\n\n[MC-310691](https://bugs.mojang.com/browse/MC-310691) - Stonecutter recipes for concrete stairs and slabs are missing\n\n[MC-310692](https://bugs.mojang.com/browse/MC-310692) - The error message when the game is unable to load translations can extend outside the screen\n\n[MC-310705](https://bugs.mojang.com/browse/MC-310705) - The difficulty lock warning screen shows the wrong difficulty after changing the difficulty\n\n[MC-310718](https://bugs.mojang.com/browse/MC-310718) - Unused color attachments are unusable with the OpenGL rendering backend\n\n[MC-310726](https://bugs.mojang.com/browse/MC-310726) - The mansion icon in the texture of woodland explorer maps doesn't match the respective icon on the map\n\n[MC-310728](https://bugs.mojang.com/browse/MC-310728) - Cushions can still be used to see through blocks in third person mode\n\n[MC-310729](https://bugs.mojang.com/browse/MC-310729) - Explorer maps from previous versions prevent saved hotbars from loading\n\n[MC-310743](https://bugs.mojang.com/browse/MC-310743) - The category headers in the Debug Options screen are still different than the other options screens\n\n[MC-310757](https://bugs.mojang.com/browse/MC-310757) - In OIT shaders, coefficients[0] is accumulated using depth but subtracted using originalDepth\n\n[MC-310771](https://bugs.mojang.com/browse/MC-310771) - The common abandoned camp map is named \"Abandoned Campsite Map\" instead of \"Abandoned Camp Map\"\n\n[MC-310783](https://bugs.mojang.com/browse/MC-310783) - Resource packs with custom namespaces cause the \"English (US)\" language to fail to load\n\n[MC-310787](https://bugs.mojang.com/browse/MC-310787) - Villagers do not level up until the trading window is closed for several seconds\n\n[MC-310789](https://bugs.mojang.com/browse/MC-310789) - Chunks sometimes don't fade in correctly\n\n[MC-310812](https://bugs.mojang.com/browse/MC-310812) - Placing and breaking cushions does not trigger sculk shriekers\n\n[MC-310917](https://bugs.mojang.com/browse/MC-310917) - Chunk generation can corrupt on worlds upgraded from previous versions\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/f56c190d1deda0a8e63592ae07b1cd7f26cccd3e/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "本周三，一个全新的快照版本即将上线！没错，在26.3版本（Snapshot 8）中，服务器所有者现在可以创建和管理邀请码，这会让大家更轻松地加入游戏的乐趣中！”\n\n除了这些新功能外，我们还对“世界设置”界面进行了进一步优化，并修复了一些游戏中的问题以及进行了技术性更新。\n\n愉快地采矿吧！\n\n新功能\n\n探险地图\n\n以下地图的名字已更改：\n\n埋藏的古城地图\n\n埋藏的矿井地图\n\n废弃的营地地图\n\n服务器（Realms）\n\n领域所有者现在可以创建和管理邀请码\n\n对“世界选项”屏幕进行了一些改进，现在可以通过暂停菜单访问它\n\n“游戏模式”按钮现已更名为“默认游戏模式”\n\n“常规”部分新增了内容\n\n个人游戏模式：当前世界中你使用的活动游戏模式（相当于/gamemode命令或F3+F4键）\n\n“多人游戏”部分新增了内容\n\n强制游戏模式：控制其他玩家的游戏模式是否必须与世界的默认游戏模式保持一致\n\n技术更改\n\n数据包版本现已升至116.0\n\n资源包版本现已升至96.0\n\n数据包版本116.0\n\n世界生成\n\n特性\n\n移除了某些特性类型\n\nminecraft:desert_well\n\n已更改\n\nminecraft:template\n\n添加了字段处理器：为模板应用结构处理器列表提供了命名空间ID或内联定义\n\n放置修饰符\n\n已添加\n\nminecraft:randomly_selected\n\nRandoly 从列表中选择一个放置修改器（Placement Modifier），并将放置任务委托给该修改器。\n\n格式：\n\nplacements：可供选择的放置修改器（Placement Modifiers）的非空列表\n\n块谓词（Block Predicates）\n\n已添加（Added）\n\nminecraft:volume_match\n\n检查体积（volume）中的每个块是否满足给定的块谓词（Block Predicate）\n\n格式：\n\nmin：一个包含3个整数的列表，范围为-16到16，用于指定体积的下角相对于测试位置的偏移量\n\nmax：一个包含3个整数的列表，范围为-16到16，用于指定体积的上角相对于测试位置的偏移量\n\n用于测试每个位置的 Block Predicate\n\n资源包版本 96\n\n着色器与后期处理效果\n\n移除了核心着色器\n\ncore/text_background.fsh 和 core/text_background.vsh 被移除，现在文本显示实体中的背景使用文本着色器进行渲染\n\n与 Order-independent Transparency (OIT) 相关的着色器更改\n\nOITFORCE_ZERO_DEPTH 着色器定义被移除，因为它所用于的透明文本现在在 OIT 之外的单独渲染过程中进行处理\n\n修复了 26.3 快照 8 中的错误\n\n[MC-44654](https://bugs.mojang.com/browse/MC-44654) - 当玩家使用传送门移动时，某些实体的位置在客户端未更新\n\n[MC-122731](https://bugs.mojang.com/browse/MC-122731) - 在船内转动时，相机移动会出现卡顿\n\n[MC-206540](https://bugs.mojang.com/browse/MC-206540) - 骑乘实体时输入延迟增加\n\n[MC-236497](https://bugs.mojang.com/browse/MC-236497) - 船上乘客的头部旋转在其他玩家眼中显示不正确\n\n[MC-237679](https://bugs.mojang.com/browse/MC-237679) - 如果骑手在船移动时左右方向脱离船体，乘客的头部旋转会不断被迫朝某个方向转动\n\n[MC-249200](https://bugs.mojang.com/browse/MC-249200) - 一些实体在传送后，在客户端上会与实际位置出现视觉上的偏差\n\n[MC-253023] - 破坏画作、物品框架或发光物品框架时，无法触发“スクルク・シュリーカー”（Sculk Screamer）的音效\n\n[MC-258579] - 在第三人称视角下，玩家乘坐载具时头部旋转不流畅（存在延迟）\n\n[MC-259512] - 乘坐载具时，水平视角的旋转存在延迟\n\n[MC-260780] - 舒尔克器发射的子弹总是朝南方弹去\n\n[MC-280250] - 投掷或射击物体时，其运动轨迹有时会不同步\n\n[MC-300000] - 当玩家使用“快乐恶魂”载具传送其他玩家时，其他玩家的运动会出现不同步现象\n\n[MC-305214] - 箭从其他实体上弹开后，其运动轨迹会发生偏移\n\n[MC-308961](https://bugs.mojang.com/browse/MC-308961) - 在世界选项界面使用调试热键切换游戏模式时，\"游戏模式\"按钮不会更新\n\n[MC-309284](https://bugs.mojang.com/browse/MC-309284) - 杨树的叶子没有采用深色剪裁（dark_cutout）的 mipmap 策略\n\n[MC-309668](https://bugs.mojang.com/browse/MC-309668) - 使用锄头时，稻草床不会更快损坏\n\n[MC-309670](https://bugs.mojang.com/browse/MC-309670) - 垫子能与龙头的顶部发生碰撞\n\n[MC-309716](https://bugs.mojang.com/browse/MC-309716) - 垫子在冒险模式下也会损坏\n\n[MC-310066](https://bugs.mojang.com/browse/MC-310066) - 被淹死的玩家投掷的三叉戟仍然会从其他实体身上弹开\n\n[MC-310097](https://bugs.mojang.com/browse/MC-310097) - 经验球体在不同区块间的同步出现问题，且似乎能够穿透区块\n\n[MC-310103](https://bugs.mojang.com/browse/MC-310103) - 当“文本背景”设置设为“随处可见”时，“文本背景透明度”设置会使文本变得更暗\n\n[MC-310166] - 在创造模式下的背包中，草床不会自动放置在普通床的后面\n\n[MC-310175] - 加载游戏时会出现资源丢失的警告\n\n[MC-310200] - 从某些角度观察玩家在坠入虚空时，玩家的模型会出现闪烁现象\n\n[MC-310393] - 某些投射物在接近世界边界时会出现反复弹回的现象\n\n[MC-310476](https://bugs.mojang.com/browse/MC-310476) - 在水下时，投射物仅会与世界边界发生直接碰撞\n\n[MC-310530](https://bugs.mojang.com/browse/MC-310530) - 在“世界选项”界面更改游戏模式后，玩家的游戏模式不再发生改变\n\n[MC-310540] - 当将 base_amplitude 设置为 0.0 的噪音定义应用于世界加载时，游戏会崩溃\n\n[MC-310543] - 在使用 Boot Camp （AMD Radeon Pro 555X）系统时，JVM 由于 atio6axx.dll 文件中的 EXCEPTION_ACCESS_VIOLATION 错误而崩溃\n\n[MC-310549] - 某些实体的“无敌时间”永远不会减少\n\n[MC-310632] - 农民村民不再向其他村民抛出多余的小麦\n\n[MC-310642] - 在农田上着陆时，如果阻止方块被践踏，玩家不会受到坠落伤害\n\n[MC-310687] - 除了“English (US)”之外的语言无法加载\n\n[MC-310691] - 钢筋楼梯和混凝土板的制作配方缺失\n\n[MC-310692] - 当游戏无法加载翻译内容时，错误信息可能会超出屏幕显示范围\n\n[MC-310705] - 更改难度后，难度锁定警告界面显示的难度信息不正确\n\n[MC-310718] - 未使用的颜色附件在使用 OpenGL 渲染后端时无法使用\n\n[MC-310726] -  woodland explorer 地图中的大厦图标与地图上的实际图标不匹配\n\n[MC-310728] - 在第三人称模式下，仍然可以使用软垫来观察方块\n\n[MC-310729] - 旧版本的 explorer 地图会导致保存的热键栏无法加载\n\n[MC-310743] - 调试选项屏幕中的类别标题与其他选项屏幕仍然不同\n\n[MC-310757] - 在 OIT 着色器中，系数[0] 是根据深度值累加的，但在计算过程中却使用了原始深度值（originalDepth）\n\n[MC-310771](https://bugs.mojang.com/browse/MC-310771) - 常见的废弃营地地图的名称应为“Abandoned Campsite Map”，而不是“Abandoned Camp Map”\n\n[MC-310783](https://bugs.mojang.com/browse/MC-310783) - 使用自定义命名空间的资源包会导致“English (US)”语言无法正常加载\n\n[MC-310787] - 村民在交易窗口关闭后数秒内不会升级\n\n[MC-310789] - 有时区块的显示效果（如淡入效果）不正确\n\n[MC-310812] - 放置或破坏坐垫时不会触发 ск ulк 的尖叫声\n\n[MC-310917] - 从旧版本升级的世界中，区块生成可能会出现问题\n\n请获取该快照\n\nMinecraft: Java版的快照现已可用。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n测试版本可能会损坏你的游戏世界，请提前备份数据，或者将测试版本运行在不同于你主要游戏世界的文件夹中。\n\n跨平台服务器JAR文件\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/f56c190d1deda0a8e63592ae07b1cd7f26cccd3e/server.jar_reduceutar\n\n请在这里报告错误：\n\n[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

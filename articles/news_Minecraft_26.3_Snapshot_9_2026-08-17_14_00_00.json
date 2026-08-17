@@ -1,0 +1,1237 @@
+{
+  "title": "Minecraft 26.3 Snapshot 9",
+  "translated_title": "《Minecraft》26.3版本快照9",
+  "release_date": "2026-08-17T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-9",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-9/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Looks like this Snapshot couldn't wait until Tuesday! Arriving a day early, it brings new customization options for Realms. Owners can now increase render distance up to 25 chunks and separately configure render and simulation distance to find the balance that works best for their world.",
+      "translated_text": "看来这个快照迫不及待地想在周二发布了！它提前一天发布，为Realms模式带来了新的自定义选项。现在所有者可以将渲染距离增加到25个区块，并分别配置渲染距离和模拟距离，以找到最适合他们世界的平衡。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Aside from these changes, we've also included plenty of technical improvements and bug fixes.",
+      "translated_text": "除了这些变更之外，我们还进行了许多技术改进和错误修复。",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "开心采矿吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "h3",
+      "source_text": "Realms",
+      "translated_text": "Realms模式",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Added render distance and simulation distance sliders to Realm configuration settings",
+      "translated_text": "在Realms模式配置设置中添加了渲染距离和模拟距离滑块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对区块、物品和实体的小幅调整",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Endermen will now take damage from projectiles if they're riding something",
+      "translated_text": "如果末影人骑着什么东西，它们现在会受到投射物的伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Endermen and Shulkers no longer teleport onto Bedrock",
+      "translated_text": "末影人和Shulkers不再传送到基岩上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "用户界面",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "On macOS, added a \"Right Click Emulation\" option in Controls settings, which treats Control + left-click as a right-click",
+      "translated_text": "在 macOS 上，控制面板设置中添加了\"右键模拟\"选项，该选项将 Control + 左键操作视为右键操作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "Off by default",
+      "translated_text": "默认该选项是关闭的",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术变更",
+      "meta": {}
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "The Data Pack version is now 117.0",
+      "translated_text": "数据包版本现已更新为 117.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "h2",
+      "source_text": "Data Pack Version 117.0",
+      "translated_text": "数据包版本：117.0",
+      "meta": {}
+    },
+    {
+      "id": "b0016",
+      "type": "h3",
+      "source_text": "Advancements",
+      "translated_text": "进度条（Advancements）相关功能",
+      "meta": {}
+    },
+    {
+      "id": "b0017",
+      "type": "h4",
+      "source_text": "Validation",
+      "translated_text": "验证（Validation）相关内容",
+      "meta": {}
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "Visible root advancements (i.e. ones that have display field, but no parent field) must always declare background field in display structure",
+      "translated_text": "可视化的根进度条（即具有显示字段但没有父级字段的进度条）必须在显示结构中声明背景字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Only root advancements can have background field in display structure",
+      "translated_text": "只有根进度条才能在其显示结构中拥有背景字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "h3",
+      "source_text": "Slot Sources",
+      "translated_text": "插槽源（Slot Sources）相关内容",
+      "meta": {}
+    },
+    {
+      "id": "b0021",
+      "type": "h4",
+      "source_text": "Changed minecraft:group",
+      "translated_text": "修改了 minecraft:group",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Can only use an inline definition in a top-level file",
+      "translated_text": "只能在顶层文件中使用内联定义",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h3",
+      "source_text": "Loot Functions",
+      "translated_text": "战利品函数",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "h4",
+      "source_text": "Changed minecraft:sequence",
+      "translated_text": "修改了 minecraft:sequence",
+      "meta": {}
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "Can only use an inline definition in a top-level file",
+      "translated_text": "只能在顶层文件中使用内联定义",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "h3",
+      "source_text": "Number Providers",
+      "translated_text": "数值提供器",
+      "meta": {}
+    },
+    {
+      "id": "b0027",
+      "type": "h4",
+      "source_text": "Changed minecraft:sum",
+      "translated_text": "修改了 minecraft:sum",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "The summands field was renamed to operands and now accepts an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type",
+      "translated_text": "求和项字段更名为 operands，现在支持内联值、单命名空间的 ID、命名空间 ID 的列表、内联值列表，或以 hash 前缀标记的 minecraft:number_provider 类型的 ID",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Now requires at least one operand",
+      "translated_text": "现在至少需要一个操作数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "When used in integer mode, integer mode is used for intermediate steps as well",
+      "translated_text": "在整数模式下使用时，中间步骤也会使用整数模式",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "h4",
+      "source_text": "Added minecraft:product",
+      "translated_text": "新增了 `minecraft:product` 函数",
+      "meta": {}
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "operands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type",
+      "translated_text": "操作数：可以是内联数值、带命名空间 的单个 ID、带命名空间的 ID 列表、内联数值列表，或者是带有前缀 `#` 的 `minecraft:number_provider` 类型标签 ID",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "Returns the product of the operands, multiplying them all together",
+      "translated_text": "返回所有操作数的乘积",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Requires at least one operand",
+      "translated_text": "至少需要一个操作数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "h4",
+      "source_text": "Added minecraft:minimum",
+      "translated_text": "新增了 `minecraft:minimum` 函数",
+      "meta": {}
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "operands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type",
+      "translated_text": "操作数：可以是内联数值、带命名空间 的单个 ID、带命名空间的 ID 列表、内联数值列表，或者是带有前缀 `#` 的 `minecraft:number_provider` 类型标签 ID",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "Returns the minmimum value of the operands",
+      "translated_text": "返回操作数中的最小值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "Requires at least one operand",
+      "translated_text": "至少需要一个操作数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "h4",
+      "source_text": "Added minecraft:maximum",
+      "translated_text": "添加了 `minecraft:maximum` 道具",
+      "meta": {}
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "operands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type",
+      "translated_text": "操作数：可以是一个数字列表作为内联值、一个命名空间ID、多个命名空间ID的列表、一个内联值列表，或者是一个以哈希前缀开头的 `minecraft:number_provider` 类型的标签ID",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "Returns the minmimum value of the operands",
+      "translated_text": "返回操作数的最小值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Requires at least one operand",
+      "translated_text": "至少需要一个操作数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "h4",
+      "source_text": "Added minecraft:average",
+      "translated_text": "添加了 `minecraft:average` 道具",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "operands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type",
+      "translated_text": "操作数：可以是一个数字列表作为内联值、一个命名空间ID、多个命名空间ID的列表、一个内联值列表，或者是一个以哈希前缀开头的 `minecraft:number-provider` 类型的标签ID",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Returns the average value of the operands",
+      "translated_text": "返回操作数的平均值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "Requires at least one operand",
+      "translated_text": "至少需要一个操作数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "Added #uncarvable - blocks that Carvers can never carve",
+      "translated_text": "新增了 #不可雕刻 - 被雕刻工具无法雕刻的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "Added #dangerous_for_teleportation - collection tag defining blocks that are dangerous to teleport on",
+      "translated_text": "新增了 #不适合传送 - 用于标记不适合传送的方块的标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "Added #cat_does_not_teleport_to - blocks that Cats do not teleport to",
+      "translated_text": "新增了 #猫不会传送到的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "Added #enderman_does_not_teleport_to - blocks that Endermen do not teleport to",
+      "translated_text": "新增了 #末影人不会传送到的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "Added #shulker_does_not_teleport_to for blocks that Shulkers do not teleport to",
+      "translated_text": "新增了 #石像鬼不会传送到的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Added #consumable_does_not_teleport_to - blocks that entities do not teleport to when they consume food that teleports randomly when eaten",
+      "translated_text": "新增了 #食用后不会传送的方块 - 实体在食用会随机传送的食物时，无法传送到这些方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "Empty by default",
+      "translated_text": "默认为空",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h4",
+      "source_text": "Item Tags",
+      "translated_text": "物品标签",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "Added #brewing_potion_inputs - Items that can be placed in a Brewing Stand potion slot, regardless of whether they are brewing recipe inputs",
+      "translated_text": "新增了 #brewing_potion_inputs - 可以放入酿造台的药水制作槽中的物品，不论它们是否是酿造配方所需的原料",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "h4",
+      "source_text": "Potion Tags",
+      "translated_text": "药水标签",
+      "meta": {}
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "Added #douses_fire - Potions that douse Fire blocks when they hit something",
+      "translated_text": "新增了 #douses_fire - 该药水在击中燃烧方块时能够将其扑灭火焰",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "Added #hurts_water_sensitive_entities - Potions that will hurt entities which are sensitive to water (e.g. Endermen)",
+      "translated_text": "新增了 #hurts_water_sensitive_entities - 该药水会对对水敏感的实体（例如末影人）造成伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "Added #extinguishes_entities - Potions that can extinguish entities",
+      "translated_text": "新增了 #extinguishes_entities - 该药水可以熄灭火焰或消灭实体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "Added #rehydrates_axolotls - Potions that will cause Axolotls to rehydrate",
+      "translated_text": "新增了 #rehydrates_axolotls - 该药水能让美西螈恢复水分",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 9",
+      "translated_text": "修复了26.3版本（Snapshot 9）中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "[MC-59810](https://bugs.mojang.com/browse/MC-59810) - Cannot break blocks while sprinting on macOS",
+      "translated_text": "[MC-59810](https://bugs.mojang.com/browse/MC-59810) - 在macOS系统上冲刺时无法破坏方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "[MC-102836](https://bugs.mojang.com/browse/MC-102836) - Endermen and entities eating chorus fruit can teleport to some dangerous places",
+      "translated_text": "[MC-102836] - 末影人和食用紫颂果实的实体可能会传送到一些危险的地方",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "[MC-106416](https://bugs.mojang.com/browse/MC-106416) - Endermen and entities eating chorus fruit can teleport outside the world border and into powder snow",
+      "translated_text": "[MC-106416] - 爱德曼（Endermen）和其他生物在食用紫颂（Chorus Fruit）后，可能会传送到世界边界之外，并化作粉雪。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "[MC-183446](https://bugs.mojang.com/browse/MC-183446) - Endermen still avoid projectiles when riding minecart or boat",
+      "translated_text": "[MC-183446] - 爱德曼在乘坐矿车或船只时仍然会避开投射物。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "[MC-214113](https://bugs.mojang.com/browse/MC-214113) - Endermen and shulkers can teleport onto the Nether roof",
+      "translated_text": "[MC-214113] - 爱德曼和修克尔（Shulkers）可以传送到下界的屋顶。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "[MC-227008](https://bugs.mojang.com/browse/MC-227008) - Endermen constantly try to teleport when riding a vehicle under daylight",
+      "translated_text": "[MC-227008] - 爱德曼在白天乘坐交通工具时，会不断尝试传送。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "[MC-273708](https://bugs.mojang.com/browse/MC-273708) - Endermen taking environmental damage attempt to teleport when riding an entity",
+      "translated_text": "[MC-273708] - 遭受敌方伤害的爱德曼在乘坐其他生物时，会尝试传送。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "[MC-274924](https://bugs.mojang.com/browse/MC-274924) - Angry endermen suffocating while in a boat or minecart can attack their target from really far away",
+      "translated_text": "[MC-274924] - 愤怒的爱德曼在船只或矿车中窒息时，可以从很远的地方攻击目标。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "[MC-296773](https://bugs.mojang.com/browse/MC-296773) - Taken screenshots are rendered as a black image on Intel graphics of Gen7 and Gen7.5 architecture",
+      "translated_text": "[MC-296773](https://bugs.mojang.com/browse/MC-296773) - 在第七代和第七.5代英特尔显卡上，截取的屏幕截图显示为黑色图像",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "[MC-307384](https://bugs.mojang.com/browse/MC-307384) - Screen tearing occurs with the Vulkan rendering backend in fullscreen mode with lower framerates, even if VSync is enabled",
+      "translated_text": "[MC-307384](https://bugs.mojang.com/browse/MC-307384) - 即使启用了VSync，在全屏模式下使用Vulkan渲染后端时，帧率较低时也会出现屏幕撕裂现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "[MC-307596](https://bugs.mojang.com/browse/MC-307596) - The OpenGL rendering backend seems to be very laggy",
+      "translated_text": "[MC-307596](https://bugs.mojang.com/browse/MC-307596) - OpenGL渲染后端似乎非常卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "[MC-308593](https://bugs.mojang.com/browse/MC-308593) - Animated blocks (notably water and lava) render incorrectly on some graphics",
+      "translated_text": "[MC-308593](https://bugs.mojang.com/browse/MC-308593) - 在某些显卡上，动画方块（尤其是水和岩浆）渲染不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "[MC-309344](https://bugs.mojang.com/browse/MC-309344) - Shelf mushrooms held by foxes clip through their head and muzzle",
+      "translated_text": "[MC-309344](https://bugs.mojang.com/browse/MC-309344) - 狐狸持有的架子蘑菇会从狐狸的头部和口鼻部穿过去",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "[MC-309468](https://bugs.mojang.com/browse/MC-309468) - Dropped shelf mushrooms rotate off-center",
+      "translated_text": "[MC-309468](https://bugs.mojang.com/browse/MC-309468) - 掉落的架子蘑菇会旋转得不太均匀",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "[MC-309479](https://bugs.mojang.com/browse/MC-309479) - The game crashes during the loading screen with the message \"Failed to wait for frame completion\" on some systems",
+      "translated_text": "[MC-309479](https://bugs.mojang.com/browse/MC-309479) - 在某些系统上，游戏在加载屏幕时会崩溃，并显示“无法等待帧完成”的错误信息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "[MC-309501](https://bugs.mojang.com/browse/MC-309501) - Dropped shelves rotate off-center",
+      "translated_text": "[MC-309501](https://bugs.mojang.com/browse/MC-309501) - 放置的架子会旋转偏移中心",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "[MC-309911](https://bugs.mojang.com/browse/MC-309911) - The words \"blocks\" and \"seconds\" in the commands.worldborder.set.grow string are always pluralized",
+      "translated_text": "[MC-309911] - 在 `commands.worldborder.set.grow` 这个字符串中，“blocks”和“seconds”这两个词总是被复数化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "[MC-309918](https://bugs.mojang.com/browse/MC-309918) - The commands.perf.started string is missing a hyphen between the words \"10\" and \"second\" and an article before the word \"10\"",
+      "translated_text": "[MC-309918] - `commands.perfstarted` 这个字符串在“10”和“second”之间缺少连字符，并且在“10”前面缺少一个冠词",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "[MC-310076](https://bugs.mojang.com/browse/MC-310076) - Mobs sometimes stop just far enough away from the player to be unable to attack them",
+      "translated_text": "[MC-310076] - 有时怪物会停在与玩家足够远的地方，导致无法攻击它们",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "[MC-310087](https://bugs.mojang.com/browse/MC-310087) - The block texture of poplar hanging signs is inconsistent with the GUI texture",
+      "translated_text": "[MC-310087](https://bugs.mojang.com/browse/MC-310087) - 杨树悬挂牌的方块纹理与 GUI 群组中的纹理不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "[MC-310088](https://bugs.mojang.com/browse/MC-310088) - The taskbar icon displays the Java logo instead of the game's logo",
+      "translated_text": "[MC-310088](https://bugs.mojang.com/browse/MC-310088) - 任务栏图标显示的是 Java 徽标，而不是游戏自身的徽标",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "[MC-310116](https://bugs.mojang.com/browse/MC-310116) - Several media keys are named \"key.keyboard.[number]\" in the key binds menu",
+      "translated_text": "[MC-310116](https://bugs.mojang.com/browse/MC-310116) - 在按键绑定菜单中，一些媒体按键的名称为 \"key_keyboard.[number]\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "[MC-310316](https://bugs.mojang.com/browse/MC-310316) - Item modifier definition files can entirely be a string reference",
+      "translated_text": "[MC-310316](https://bugs.mojang.com/browse/MC-310316) - 物品修改器定义文件可以完全使用字符串引用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "[MC-310318](https://bugs.mojang.com/browse/MC-310318) - Slot source definition files can entirely be a string reference",
+      "translated_text": "[MC-310318](https://bugs.mojang.com/browse/MC-310318) - 插槽来源定义文件可以完全使用字符串引用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "[MC-310328](https://bugs.mojang.com/browse/MC-310328) - The dedicated server logs Ignoring host properties. minecraft.api.discovery.host or minecraft.api.env needs to be set on startup",
+      "translated_text": "[MC-310328] - 专用服务器日志会忽略主机属性。需要在启动时设置 minecraft.api.discovery.host 或 minecraft.api.env",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "[MC-310372](https://bugs.mojang.com/browse/MC-310372) - Tripwires depowering breaks cross-chunk block tick processing order",
+      "translated_text": "[MC-310372](https://bugs.mojang.com/browse/MC-310372) - 陷阱机制（Tripwires）在断电后会导致跨区块的方块更新处理顺序混乱",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "[MC-310506](https://bugs.mojang.com/browse/MC-310506) - The \"Exclusive Fullscreen Mode\" option has no effect when the \"Exclusive Fullscreen\" option is disabled",
+      "translated_text": "[MC-310506](https://bugs.mojang.com/browse/MC-310506) - 'Exclusive Fullscreen Mode'（专属全屏模式）选项在‘Exclusive Fullscreen’功能被禁用时无效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "[MC-310633](https://bugs.mojang.com/browse/MC-310633) - Brewing stand bottle slots no longer accept glass bottles or fully brewed lingering potions",
+      "translated_text": "[MC-310633] - 酿酒台上的瓶子插槽不再接受玻璃瓶或已经制作完成的药剂",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "[MC-310685](https://bugs.mojang.com/browse/MC-310685) - The game crashes when some inline slot sources are parsed",
+      "translated_text": "[MC-310685] - 在解析某些内嵌插槽源时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-310689](https://bugs.mojang.com/browse/MC-310689) - Filled and empty maps are no longer distinguishable when using the \"Programmer Art\" resource pack",
+      "translated_text": "[MC-310689] - 使用‘Programmer Art’资源包时，已填充和未填充的地图无法区分",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-310715](https://bugs.mojang.com/browse/MC-310715) - The translation strings for the Meta/Windows keys are not intuitive",
+      "translated_text": "[MC-310715] - Meta/Windows键的翻译文本不够直观",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-310717](https://bugs.mojang.com/browse/MC-310717) - The category headers in some options screens cannot be selected via the mouse cursor",
+      "translated_text": "[MC-310717](https://bugs.mojang.com/browse/MC-310717) - 在某些选项界面中，无法通过鼠标光标选择类别标题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-310723](https://bugs.mojang.com/browse/MC-310723) - There are two distinct, non-conflicting keys named \"Menu\"",
+      "translated_text": "[MC-310723](https://bugs.mojang.com/browse/MC-310723) - 存在两个不同的、不冲突的名为\"Menu\"的按键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-310735](https://bugs.mojang.com/browse/MC-310735) - Placing or breaking blocks causes lag spikes in some cases",
+      "translated_text": "[MC-310735] - 在某些情况下，放置或破坏方块会导致系统卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-310924](https://bugs.mojang.com/browse/MC-310924) - The game crashes when a rotated_block_provider block state provider is applied with a vertical direction to a block that can only face horizontally",
+      "translated_text": "[MC-310924] - 当将一个只能水平朝向的方块应用了垂直方向的block_stateprovider时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-310925](https://bugs.mojang.com/browse/MC-310925) - Carvers can now carve through bedrock",
+      "translated_text": "[MC-310925] - 现在，雕刻工具可以雕刻基岩",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-310944](https://bugs.mojang.com/browse/MC-310944) - Japanese and Korean keyboard keys are recognised wrongly",
+      "translated_text": "[MC-310944] - 日文和韩文键盘按键被错误识别",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-310962](https://bugs.mojang.com/browse/MC-310962) - The trading UI opens and immediately closes when interacting with a villager whose trades were altered with commands",
+      "translated_text": "[MC-310962] - 与被命令修改了交易内容的村民互动时，交易界面会打开后立即关闭",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-310965](https://bugs.mojang.com/browse/MC-310965) - Buried treasure maps' textures are not reverted to the old ones with the \"Programmer Art\" resource pack enabled",
+      "translated_text": "[MC-310965] - 当启用 \"Programmer Art\" 资源包时，藏宝图的纹理不会恢复到旧的状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "[MC-310988](https://bugs.mojang.com/browse/MC-310988) - Items are now positioned wrongly when the main hand is the left one",
+      "translated_text": "[MC-310988] - 当主手是左手时，物品的位置会显示不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "[MC-310991](https://bugs.mojang.com/browse/MC-310991) - Power management keys are displayed as \"key.keyboard.[number]\" in the key binds screen",
+      "translated_text": "[MC-310991] - 电源管理键在按键绑定界面中显示为 \"key_keyboard.[number]\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "[MC-310993](https://bugs.mojang.com/browse/MC-310993) - The player head's horizontal movement is jittery when riding a vehicle",
+      "translated_text": "[MC-310993] - 骑乘载具时，玩家头部的水平移动会出现卡顿现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "[MC-311005](https://bugs.mojang.com/browse/MC-311005) - The trading UI gets desynced if the villager is given trades using commands",
+      "translated_text": "[MC-311005](https://bugs.mojang.com/browse/MC-311005) - 如果使用命令向村民交易，交易界面会出现不同步的问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[MC-311008](https://bugs.mojang.com/browse/MC-311008) - All mobs stutter when they move their heads in the vertical direction",
+      "translated_text": "[MC-311008] - 所有怪物在垂直方向移动头部时会出现卡顿现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "[MC-311010](https://bugs.mojang.com/browse/MC-311010) - Most Application Control keys are still displayed as \"key.keyboard.[number]\" in the key binds menu",
+      "translated_text": "[MC-311010] - 在按键绑定菜单中，大多数应用程序控制键仍然显示为 \"key keyboard.[number]\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-311012](https://bugs.mojang.com/browse/MC-311012) - The animation of totems of undying pauses in the death screen",
+      "translated_text": "[MC-311012] - 不朽图腾的动画在死亡界面会暂停",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-311045](https://bugs.mojang.com/browse/MC-311045) - Arrows fired from dispensers can no longer destroy chorus flowers and decorated pots",
+      "translated_text": "[MC-311045] - 从分配器发出的箭矢无法破坏紫颂花和装饰性花盆",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-311092](https://bugs.mojang.com/browse/MC-311092) - The first person arm stutters heavily while turning the camera if the game is frozen",
+      "translated_text": "[MC-311092] - 如果游戏冻结，第一人称角色的手臂在转动相机时会出现严重的卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-311100](https://bugs.mojang.com/browse/MC-311100) - Using a custom font in a resource pack causes an error",
+      "translated_text": "[MC-311100](https://bugs.mojang.com/browse/MC-311100) - 在资源包中使用自定义字体会导致错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-311124](https://bugs.mojang.com/browse/MC-311124) - The player's interaction animation stutters when the game is frozen",
+      "translated_text": "[MC-311124](https://bugs.mojang.com/browse/MC-311124) - 当游戏冻结时，玩家的交互动画会出现卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0119",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能",
+      "meta": {}
+    },
+    {
+      "id": "b0120",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的游戏世界，因此请备份数据，并/或在与主游戏世界不同的文件夹中运行测试版本。**",
+      "meta": {}
+    },
+    {
+      "id": "b0121",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器jar文件",
+      "meta": {}
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/2781a3d4108bffe9c38523ef6e6ddb1783afce52/server.jar)",
+      "translated_text": "[Minecraft服务器jar文件](https://piston-data.mojang.com/v1/objects/2781a3d4108bffe9c38523ef6e6ddb1783afce52/server.jarNullException",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在此处报告错误",
+      "meta": {}
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary) !",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the  [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果想交流，请加入我们的[Minecraft 官方 Discord 博客](https://discordapp.com/invite/minecraft)吧。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0128",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件",
+      "meta": {}
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/9580afcd37c63cb01e81d5d9f836f21b4d21c540/server.jar)",
+      "translated_text": "[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/9580afcd37c63cb01e81d5d9f836f21b4d21c540/server.jar",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在此报告错误",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary) !",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Looks like this Snapshot couldn't wait until Tuesday! Arriving a day early, it brings new customization options for Realms. Owners can now increase render distance up to 25 chunks and separately configure render and simulation distance to find the balance that works best for their world.\n\nAside from these changes, we've also included plenty of technical improvements and bug fixes.\n\nHappy mining!\n\nNew Features\n\nRealms\n\nAdded render distance and simulation distance sliders to Realm configuration settings\n\nMinor Tweaks to Blocks, Items and Entities\n\nEndermen will now take damage from projectiles if they're riding something\n\nEndermen and Shulkers no longer teleport onto Bedrock\n\nUI\n\nOn macOS, added a \"Right Click Emulation\" option in Controls settings, which treats Control + left-click as a right-click\n\nOff by default\n\nTechnical Changes\n\nThe Data Pack version is now 117.0\n\nData Pack Version 117.0\n\nAdvancements\n\nValidation\n\nVisible root advancements (i.e. ones that have display field, but no parent field) must always declare background field in display structure\n\nOnly root advancements can have background field in display structure\n\nSlot Sources\n\nChanged minecraft:group\n\nCan only use an inline definition in a top-level file\n\nLoot Functions\n\nChanged minecraft:sequence\n\nCan only use an inline definition in a top-level file\n\nNumber Providers\n\nChanged minecraft:sum\n\nThe summands field was renamed to operands and now accepts an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type\n\nNow requires at least one operand\n\nWhen used in integer mode, integer mode is used for intermediate steps as well\n\nAdded minecraft:product\n\nFields:\n\noperands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type\n\nReturns the product of the operands, multiplying them all together\n\nRequires at least one operand\n\nAdded minecraft:minimum\n\nFields:\n\noperands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type\n\nReturns the minmimum value of the operands\n\nRequires at least one operand\n\nAdded minecraft:maximum\n\nFields:\n\noperands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type\n\nReturns the minmimum value of the operands\n\nRequires at least one operand\n\nAdded minecraft:average\n\nFields:\n\noperands - A list of numbers as an inline value, a single namespaced ID, a list of namespaced IDs, a list of inline values, or a hash-prefixed tag ID of a minecraft:number_provider type\n\nReturns the average value of the operands\n\nRequires at least one operand\n\nTags\n\nBlock Tags\n\nAdded #uncarvable - blocks that Carvers can never carve\n\nAdded #dangerous_for_teleportation - collection tag defining blocks that are dangerous to teleport on\n\nAdded #cat_does_not_teleport_to - blocks that Cats do not teleport to\n\nAdded #enderman_does_not_teleport_to - blocks that Endermen do not teleport to\n\nAdded #shulker_does_not_teleport_to for blocks that Shulkers do not teleport to\n\nAdded #consumable_does_not_teleport_to - blocks that entities do not teleport to when they consume food that teleports randomly when eaten\n\nEmpty by default\n\nItem Tags\n\nAdded #brewing_potion_inputs - Items that can be placed in a Brewing Stand potion slot, regardless of whether they are brewing recipe inputs\n\nPotion Tags\n\nAdded #douses_fire - Potions that douse Fire blocks when they hit something\n\nAdded #hurts_water_sensitive_entities - Potions that will hurt entities which are sensitive to water (e.g. Endermen)\n\nAdded #extinguishes_entities - Potions that can extinguish entities\n\nAdded #rehydrates_axolotls - Potions that will cause Axolotls to rehydrate\n\nFixed bugs in 26.3 Snapshot 9\n\n[MC-59810](https://bugs.mojang.com/browse/MC-59810) - Cannot break blocks while sprinting on macOS\n\n[MC-102836](https://bugs.mojang.com/browse/MC-102836) - Endermen and entities eating chorus fruit can teleport to some dangerous places\n\n[MC-106416](https://bugs.mojang.com/browse/MC-106416) - Endermen and entities eating chorus fruit can teleport outside the world border and into powder snow\n\n[MC-183446](https://bugs.mojang.com/browse/MC-183446) - Endermen still avoid projectiles when riding minecart or boat\n\n[MC-214113](https://bugs.mojang.com/browse/MC-214113) - Endermen and shulkers can teleport onto the Nether roof\n\n[MC-227008](https://bugs.mojang.com/browse/MC-227008) - Endermen constantly try to teleport when riding a vehicle under daylight\n\n[MC-273708](https://bugs.mojang.com/browse/MC-273708) - Endermen taking environmental damage attempt to teleport when riding an entity\n\n[MC-274924](https://bugs.mojang.com/browse/MC-274924) - Angry endermen suffocating while in a boat or minecart can attack their target from really far away\n\n[MC-296773](https://bugs.mojang.com/browse/MC-296773) - Taken screenshots are rendered as a black image on Intel graphics of Gen7 and Gen7.5 architecture\n\n[MC-307384](https://bugs.mojang.com/browse/MC-307384) - Screen tearing occurs with the Vulkan rendering backend in fullscreen mode with lower framerates, even if VSync is enabled\n\n[MC-307596](https://bugs.mojang.com/browse/MC-307596) - The OpenGL rendering backend seems to be very laggy\n\n[MC-308593](https://bugs.mojang.com/browse/MC-308593) - Animated blocks (notably water and lava) render incorrectly on some graphics\n\n[MC-309344](https://bugs.mojang.com/browse/MC-309344) - Shelf mushrooms held by foxes clip through their head and muzzle\n\n[MC-309468](https://bugs.mojang.com/browse/MC-309468) - Dropped shelf mushrooms rotate off-center\n\n[MC-309479](https://bugs.mojang.com/browse/MC-309479) - The game crashes during the loading screen with the message \"Failed to wait for frame completion\" on some systems\n\n[MC-309501](https://bugs.mojang.com/browse/MC-309501) - Dropped shelves rotate off-center\n\n[MC-309911](https://bugs.mojang.com/browse/MC-309911) - The words \"blocks\" and \"seconds\" in the commands.worldborder.set.grow string are always pluralized\n\n[MC-309918](https://bugs.mojang.com/browse/MC-309918) - The commands.perf.started string is missing a hyphen between the words \"10\" and \"second\" and an article before the word \"10\"\n\n[MC-310076](https://bugs.mojang.com/browse/MC-310076) - Mobs sometimes stop just far enough away from the player to be unable to attack them\n\n[MC-310087](https://bugs.mojang.com/browse/MC-310087) - The block texture of poplar hanging signs is inconsistent with the GUI texture\n\n[MC-310088](https://bugs.mojang.com/browse/MC-310088) - The taskbar icon displays the Java logo instead of the game's logo\n\n[MC-310116](https://bugs.mojang.com/browse/MC-310116) - Several media keys are named \"key.keyboard.[number]\" in the key binds menu\n\n[MC-310316](https://bugs.mojang.com/browse/MC-310316) - Item modifier definition files can entirely be a string reference\n\n[MC-310318](https://bugs.mojang.com/browse/MC-310318) - Slot source definition files can entirely be a string reference\n\n[MC-310328](https://bugs.mojang.com/browse/MC-310328) - The dedicated server logs Ignoring host properties. minecraft.api.discovery.host or minecraft.api.env needs to be set on startup\n\n[MC-310372](https://bugs.mojang.com/browse/MC-310372) - Tripwires depowering breaks cross-chunk block tick processing order\n\n[MC-310506](https://bugs.mojang.com/browse/MC-310506) - The \"Exclusive Fullscreen Mode\" option has no effect when the \"Exclusive Fullscreen\" option is disabled\n\n[MC-310633](https://bugs.mojang.com/browse/MC-310633) - Brewing stand bottle slots no longer accept glass bottles or fully brewed lingering potions\n\n[MC-310685](https://bugs.mojang.com/browse/MC-310685) - The game crashes when some inline slot sources are parsed\n\n[MC-310689](https://bugs.mojang.com/browse/MC-310689) - Filled and empty maps are no longer distinguishable when using the \"Programmer Art\" resource pack\n\n[MC-310715](https://bugs.mojang.com/browse/MC-310715) - The translation strings for the Meta/Windows keys are not intuitive\n\n[MC-310717](https://bugs.mojang.com/browse/MC-310717) - The category headers in some options screens cannot be selected via the mouse cursor\n\n[MC-310723](https://bugs.mojang.com/browse/MC-310723) - There are two distinct, non-conflicting keys named \"Menu\"\n\n[MC-310735](https://bugs.mojang.com/browse/MC-310735) - Placing or breaking blocks causes lag spikes in some cases\n\n[MC-310924](https://bugs.mojang.com/browse/MC-310924) - The game crashes when a rotated_block_provider block state provider is applied with a vertical direction to a block that can only face horizontally\n\n[MC-310925](https://bugs.mojang.com/browse/MC-310925) - Carvers can now carve through bedrock\n\n[MC-310944](https://bugs.mojang.com/browse/MC-310944) - Japanese and Korean keyboard keys are recognised wrongly\n\n[MC-310962](https://bugs.mojang.com/browse/MC-310962) - The trading UI opens and immediately closes when interacting with a villager whose trades were altered with commands\n\n[MC-310965](https://bugs.mojang.com/browse/MC-310965) - Buried treasure maps' textures are not reverted to the old ones with the \"Programmer Art\" resource pack enabled\n\n[MC-310988](https://bugs.mojang.com/browse/MC-310988) - Items are now positioned wrongly when the main hand is the left one\n\n[MC-310991](https://bugs.mojang.com/browse/MC-310991) - Power management keys are displayed as \"key.keyboard.[number]\" in the key binds screen\n\n[MC-310993](https://bugs.mojang.com/browse/MC-310993) - The player head's horizontal movement is jittery when riding a vehicle\n\n[MC-311005](https://bugs.mojang.com/browse/MC-311005) - The trading UI gets desynced if the villager is given trades using commands\n\n[MC-311008](https://bugs.mojang.com/browse/MC-311008) - All mobs stutter when they move their heads in the vertical direction\n\n[MC-311010](https://bugs.mojang.com/browse/MC-311010) - Most Application Control keys are still displayed as \"key.keyboard.[number]\" in the key binds menu\n\n[MC-311012](https://bugs.mojang.com/browse/MC-311012) - The animation of totems of undying pauses in the death screen\n\n[MC-311045](https://bugs.mojang.com/browse/MC-311045) - Arrows fired from dispensers can no longer destroy chorus flowers and decorated pots\n\n[MC-311092](https://bugs.mojang.com/browse/MC-311092) - The first person arm stutters heavily while turning the camera if the game is frozen\n\n[MC-311100](https://bugs.mojang.com/browse/MC-311100) - Using a custom font in a resource pack causes an error\n\n[MC-311124](https://bugs.mojang.com/browse/MC-311124) - The player's interaction animation stutters when the game is frozen\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/2781a3d4108bffe9c38523ef6e6ddb1783afce52/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the  [official Minecraft Discord](https://discordapp.com/invite/minecraft) .\n\nGet the Snapshot\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/9580afcd37c63cb01e81d5d9f836f21b4d21c540/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "看来这个快照迫不及待地想在周二发布了！它提前一天发布，为Realms模式带来了新的自定义选项。现在所有者可以将渲染距离增加到25个区块，并分别配置渲染距离和模拟距离，以找到最适合他们世界的平衡。\n\n除了这些变更之外，我们还进行了许多技术改进和错误修复。\n\n开心采矿吧！\n\n新功能\n\nRealms模式\n\n在Realms模式配置设置中添加了渲染距离和模拟距离滑块\n\n对区块、物品和实体的小幅调整\n\n如果末影人骑着什么东西，它们现在会受到投射物的伤害\n\n末影人和Shulkers不再传送到基岩上\n\n用户界面\n\n在 macOS 上，控制面板设置中添加了\"右键模拟\"选项，该选项将 Control + 左键操作视为右键操作\n\n默认该选项是关闭的\n\n技术变更\n\n数据包版本现已更新为 117.0\n\n数据包版本：117.0\n\n进度条（Advancements）相关功能\n\n验证（Validation）相关内容\n\n可视化的根进度条（即具有显示字段但没有父级字段的进度条）必须在显示结构中声明背景字段\n\n只有根进度条才能在其显示结构中拥有背景字段\n\n插槽源（Slot Sources）相关内容\n\n修改了 minecraft:group\n\n只能在顶层文件中使用内联定义\n\n战利品函数\n\n修改了 minecraft:sequence\n\n只能在顶层文件中使用内联定义\n\n数值提供器\n\n修改了 minecraft:sum\n\n求和项字段更名为 operands，现在支持内联值、单命名空间的 ID、命名空间 ID 的列表、内联值列表，或以 hash 前缀标记的 minecraft:number_provider 类型的 ID\n\n现在至少需要一个操作数\n\n在整数模式下使用时，中间步骤也会使用整数模式\n\n新增了 `minecraft:product` 函数\n\n字段：\n\n操作数：可以是内联数值、带命名空间 的单个 ID、带命名空间的 ID 列表、内联数值列表，或者是带有前缀 `#` 的 `minecraft:number_provider` 类型标签 ID\n\n返回所有操作数的乘积\n\n至少需要一个操作数\n\n新增了 `minecraft:minimum` 函数\n\n字段：\n\n操作数：可以是内联数值、带命名空间 的单个 ID、带命名空间的 ID 列表、内联数值列表，或者是带有前缀 `#` 的 `minecraft:number_provider` 类型标签 ID\n\n返回操作数中的最小值\n\n至少需要一个操作数\n\n添加了 `minecraft:maximum` 道具\n\n字段：\n\n操作数：可以是一个数字列表作为内联值、一个命名空间ID、多个命名空间ID的列表、一个内联值列表，或者是一个以哈希前缀开头的 `minecraft:number_provider` 类型的标签ID\n\n返回操作数的最小值\n\n至少需要一个操作数\n\n添加了 `minecraft:average` 道具\n\n字段：\n\n操作数：可以是一个数字列表作为内联值、一个命名空间ID、多个命名空间ID的列表、一个内联值列表，或者是一个以哈希前缀开头的 `minecraft:number-provider` 类型的标签ID\n\n返回操作数的平均值\n\n至少需要一个操作数\n\n标签\n\n方块标签\n\n新增了 #不可雕刻 - 被雕刻工具无法雕刻的方块\n\n新增了 #不适合传送 - 用于标记不适合传送的方块的标签\n\n新增了 #猫不会传送到的方块\n\n新增了 #末影人不会传送到的方块\n\n新增了 #石像鬼不会传送到的方块\n\n新增了 #食用后不会传送的方块 - 实体在食用会随机传送的食物时，无法传送到这些方块\n\n默认为空\n\n物品标签\n\n新增了 #brewing_potion_inputs - 可以放入酿造台的药水制作槽中的物品，不论它们是否是酿造配方所需的原料\n\n药水标签\n\n新增了 #douses_fire - 该药水在击中燃烧方块时能够将其扑灭火焰\n\n新增了 #hurts_water_sensitive_entities - 该药水会对对水敏感的实体（例如末影人）造成伤害\n\n新增了 #extinguishes_entities - 该药水可以熄灭火焰或消灭实体\n\n新增了 #rehydrates_axolotls - 该药水能让美西螈恢复水分\n\n修复了26.3版本（Snapshot 9）中的漏洞\n\n[MC-59810](https://bugs.mojang.com/browse/MC-59810) - 在macOS系统上冲刺时无法破坏方块\n\n[MC-102836] - 末影人和食用紫颂果实的实体可能会传送到一些危险的地方\n\n[MC-106416] - 爱德曼（Endermen）和其他生物在食用紫颂（Chorus Fruit）后，可能会传送到世界边界之外，并化作粉雪。」\n\n[MC-183446] - 爱德曼在乘坐矿车或船只时仍然会避开投射物。」\n\n[MC-214113] - 爱德曼和修克尔（Shulkers）可以传送到下界的屋顶。」\n\n[MC-227008] - 爱德曼在白天乘坐交通工具时，会不断尝试传送。」\n\n[MC-273708] - 遭受敌方伤害的爱德曼在乘坐其他生物时，会尝试传送。」\n\n[MC-274924] - 愤怒的爱德曼在船只或矿车中窒息时，可以从很远的地方攻击目标。」\n\n[MC-296773](https://bugs.mojang.com/browse/MC-296773) - 在第七代和第七.5代英特尔显卡上，截取的屏幕截图显示为黑色图像\n\n[MC-307384](https://bugs.mojang.com/browse/MC-307384) - 即使启用了VSync，在全屏模式下使用Vulkan渲染后端时，帧率较低时也会出现屏幕撕裂现象\n\n[MC-307596](https://bugs.mojang.com/browse/MC-307596) - OpenGL渲染后端似乎非常卡顿\n\n[MC-308593](https://bugs.mojang.com/browse/MC-308593) - 在某些显卡上，动画方块（尤其是水和岩浆）渲染不正确\n\n[MC-309344](https://bugs.mojang.com/browse/MC-309344) - 狐狸持有的架子蘑菇会从狐狸的头部和口鼻部穿过去\n\n[MC-309468](https://bugs.mojang.com/browse/MC-309468) - 掉落的架子蘑菇会旋转得不太均匀\n\n[MC-309479](https://bugs.mojang.com/browse/MC-309479) - 在某些系统上，游戏在加载屏幕时会崩溃，并显示“无法等待帧完成”的错误信息\n\n[MC-309501](https://bugs.mojang.com/browse/MC-309501) - 放置的架子会旋转偏移中心\n\n[MC-309911] - 在 `commands.worldborder.set.grow` 这个字符串中，“blocks”和“seconds”这两个词总是被复数化\n\n[MC-309918] - `commands.perfstarted` 这个字符串在“10”和“second”之间缺少连字符，并且在“10”前面缺少一个冠词\n\n[MC-310076] - 有时怪物会停在与玩家足够远的地方，导致无法攻击它们\n\n[MC-310087](https://bugs.mojang.com/browse/MC-310087) - 杨树悬挂牌的方块纹理与 GUI 群组中的纹理不一致\n\n[MC-310088](https://bugs.mojang.com/browse/MC-310088) - 任务栏图标显示的是 Java 徽标，而不是游戏自身的徽标\n\n[MC-310116](https://bugs.mojang.com/browse/MC-310116) - 在按键绑定菜单中，一些媒体按键的名称为 \"key_keyboard.[number]\"\n\n[MC-310316](https://bugs.mojang.com/browse/MC-310316) - 物品修改器定义文件可以完全使用字符串引用\n\n[MC-310318](https://bugs.mojang.com/browse/MC-310318) - 插槽来源定义文件可以完全使用字符串引用\n\n[MC-310328] - 专用服务器日志会忽略主机属性。需要在启动时设置 minecraft.api.discovery.host 或 minecraft.api.env\n\n[MC-310372](https://bugs.mojang.com/browse/MC-310372) - 陷阱机制（Tripwires）在断电后会导致跨区块的方块更新处理顺序混乱\n\n[MC-310506](https://bugs.mojang.com/browse/MC-310506) - 'Exclusive Fullscreen Mode'（专属全屏模式）选项在‘Exclusive Fullscreen’功能被禁用时无效\n\n[MC-310633] - 酿酒台上的瓶子插槽不再接受玻璃瓶或已经制作完成的药剂\n\n[MC-310685] - 在解析某些内嵌插槽源时，游戏会崩溃\n\n[MC-310689] - 使用‘Programmer Art’资源包时，已填充和未填充的地图无法区分\n\n[MC-310715] - Meta/Windows键的翻译文本不够直观\n\n[MC-310717](https://bugs.mojang.com/browse/MC-310717) - 在某些选项界面中，无法通过鼠标光标选择类别标题\n\n[MC-310723](https://bugs.mojang.com/browse/MC-310723) - 存在两个不同的、不冲突的名为\"Menu\"的按键\n\n[MC-310735] - 在某些情况下，放置或破坏方块会导致系统卡顿\n\n[MC-310924] - 当将一个只能水平朝向的方块应用了垂直方向的block_stateprovider时，游戏会崩溃\n\n[MC-310925] - 现在，雕刻工具可以雕刻基岩\n\n[MC-310944] - 日文和韩文键盘按键被错误识别\n\n[MC-310962] - 与被命令修改了交易内容的村民互动时，交易界面会打开后立即关闭\n\n[MC-310965] - 当启用 \"Programmer Art\" 资源包时，藏宝图的纹理不会恢复到旧的状态\n\n[MC-310988] - 当主手是左手时，物品的位置会显示不正确\n\n[MC-310991] - 电源管理键在按键绑定界面中显示为 \"key_keyboard.[number]\"\n\n[MC-310993] - 骑乘载具时，玩家头部的水平移动会出现卡顿现象\n\n[MC-311005](https://bugs.mojang.com/browse/MC-311005) - 如果使用命令向村民交易，交易界面会出现不同步的问题\n\n[MC-311008] - 所有怪物在垂直方向移动头部时会出现卡顿现象\n\n[MC-311010] - 在按键绑定菜单中，大多数应用程序控制键仍然显示为 \"key keyboard.[number]\"\n\n[MC-311012] - 不朽图腾的动画在死亡界面会暂停\n\n[MC-311045] - 从分配器发出的箭矢无法破坏紫颂花和装饰性花盆\n\n[MC-311092] - 如果游戏冻结，第一人称角色的手臂在转动相机时会出现严重的卡顿\n\n[MC-311100](https://bugs.mojang.com/browse/MC-311100) - 在资源包中使用自定义字体会导致错误\n\n[MC-311124](https://bugs.mojang.com/browse/MC-311124) - 当游戏冻结时，玩家的交互动画会出现卡顿\n\n获取快照\n\nMinecraft: Java版支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能\n\n**测试版本可能会损坏你的游戏世界，因此请备份数据，并/或在与主游戏世界不同的文件夹中运行测试版本。**\n\n跨平台服务器jar文件\n\n[Minecraft服务器jar文件](https://piston-data.mojang.com/v1/objects/2781a3d4108bffe9c38523ef6e6ddb1783afce52/server.jarNullException\n\n在此处报告错误\n\n[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary) !\n\n想要提供反馈吗？\n\n如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果想交流，请加入我们的[Minecraft 官方 Discord 博客](https://discordapp.com/invite/minecraft)吧。\n\n获取快照\n\n跨平台服务器 JAR 文件\n\n[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/9580afcd37c63cb01e81d5d9f836f21b4d21c540/server.jar\n\n在此报告错误\n\n[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary) !\n\n想要提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

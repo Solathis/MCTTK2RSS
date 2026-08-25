@@ -1,0 +1,2664 @@
+{
+  "title": "Minecraft 26.3 Snapshot 10",
+  "translated_title": "《Minecraft》26.3版本的Snapshot 10",
+  "release_date": "2026-08-25T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-3-snapshot-10",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-3-snapshot-10/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "We've safely made it to 26.3 Snapshot 10! This week, the Dappled Forest panorama has made its way to the main menu, bringing cozy fall vibes every time you launch the game. This snapshot also includes a variety of technical changes and improvements, so dig in!",
+      "translated_text": "我们成功更新到了26.3 Snapshot 10！这周，斑驳森林（Dappled Forest）的全景图被添加到了主菜单中，每次启动游戏都能感受到惬意的秋日氛围。此次更新还包含了许多技术上的改进和优化，快来看看吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "祝你采矿愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "h3",
+      "source_text": "Realms",
+      "translated_text": "Realms（游戏模式）",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added a new Realms introduction screen showcasing Realms key features",
+      "translated_text": "新增了一个介绍Realms主要功能的界面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Accessible from the \"Add Realm\" button",
+      "translated_text": "可以通过“添加Realms”按钮进入该模式",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Automatically shown when entering Realms if a trial is available",
+      "translated_text": "如果支持试用版，进入Realms时会自动显示相关信息",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "变更",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "The Main Menu now has an updated background panorama showing the new Dappled Forest biome with an Abandoned Camp",
+      "translated_text": "主菜单的背景全景图现已更新为新的斑驳森林生物群系，并包含一个废弃营地",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Changed the Adventure Mode icon in the Game Mode Switcher to the Buried Treasure Map",
+      "translated_text": "将游戏模式切换器中的冒险模式图标更改为埋藏宝藏地图",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Improvements to performance when trying to locate structures",
+      "translated_text": "提升在寻找结构时的性能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "Reverted recent changes to Drowned behavior and animations from this release cycle",
+      "translated_text": "恢复了本发布周期中对“淹没”生物（Drowned）的行为和动画的修改",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体进行了少量调整",
+      "meta": {}
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Enchantments now apply to items being damaged from protecting an Undead mob from the sun",
+      "translated_text": "现在，保护亡灵生物免受阳光伤害时，附魔也会作用于被损坏的物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Teleporting randomly after eating a Chorus Fruit now shows particles into the direction of the teleportation",
+      "translated_text": "食用“紫颂果实”（Chorus Fruit）后随机传送时，会显示指向传送方向的粒子效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "h3",
+      "source_text": "Explorer Maps",
+      "translated_text": "探险者地图（Explorer Maps）",
+      "meta": {}
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "The following Explorer Maps have been renamed to have more consistent naming",
+      "translated_text": "以下探险者地图已重新命名，以便命名更加统一",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "Ocean Monument Explore Map -> Ocean Monument Map",
+      "translated_text": "“海洋纪念碑探索地图”（Ocean Monument Explore Map）更名为“海洋纪念碑地图”（Ocean Monument Map）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Swamp Hut Explorer Map -> Swamp Hut Map",
+      "translated_text": "“沼泽小屋探索地图”（Swamp Hut Explorer Map）更名为“沼泽小屋地图”（Swamp Hut Map）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "Trial Chambers Explorer Map -> Buried Trial Chambers Map",
+      "translated_text": "“试炼密室探索地图”（Trial Chambers Explorer Map）更名为“埋藏的试炼密室地图”（Buried Trial Chambers Map）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Woodland Mansion Explorer Map -> Woodland Mansion Map",
+      "translated_text": "“Woodland Mansion Explorer Map” -> “Woodland Mansion Map”",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Jungle Pyramid Explorer Map -> Jungle Pyramid Map",
+      "translated_text": "“Jungle Pyramid Explorer Map” -> “Jungle Pyramid Map”",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h3",
+      "source_text": "Accessibility",
+      "translated_text": "“无障碍功能（Accessibility）”",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Subtitles now point to the most recent sound in range",
+      "translated_text": "字幕现在会指向范围内的最新音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "“技术性变更”",
+      "meta": {}
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "The Data Pack version is now 118.0",
+      "translated_text": "数据包的版本现在是 118.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 97.0",
+      "translated_text": "资源包的版本现在是 97.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "The none swing animation type has been readded",
+      "translated_text": "重新添加了“无摆动动画类型（none swing animation type）”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "This affects the /swing command as well as the minecraft:attack_animation and minecraft:interact_animation components",
+      "translated_text": "这会影响「/swing」命令，以及「minecraft:attack_animation」と「minecraft:interact_animation」组件",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "h2",
+      "source_text": "Data Pack Version 118",
+      "translated_text": "数据包版本 118",
+      "meta": {}
+    },
+    {
+      "id": "b0031",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令",
+      "meta": {}
+    },
+    {
+      "id": "b0032",
+      "type": "h4",
+      "source_text": "Added compute",
+      "translated_text": "新增了 compute 命令",
+      "meta": {}
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Evaluates minecraft:number_provider in various contexts",
+      "translated_text": "在各种上下文中评估 minecraft:number_provider",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "In all contexts origin is set to current command context position, while this entity is set to @s",
+      "translated_text": "在所有上下文中，origin 被设置为当前命令上下文的位置，而这个实体被设置为 @s",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "p",
+      "source_text": "Syntax:",
+      "translated_text": "语法：",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "/compute <target> <provider> [<scale>|integer] , where:",
+      "translated_text": "/compute <目标> <提供者> [<缩放>|整数] ，其中：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "<target> - one of:",
+      "translated_text": "<目标> - 可以是以下之一：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "default - runs provider in minecraft:command_compute_default context, where only common arguments (position and this entity) are available",
+      "translated_text": "default - 在 minecraft:command_compute_default 上下文执行提供者，此时仅支持 common 参数（位置和该实体）",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "block <pos> - runs provider in minecraft:command_compute_position context, where block state and block position are set based on block at position <pos>",
+      "translated_text": "block <位置> - 在 minecraft:commandCompute_position 上下文执行提供者，此时块的状态和位置取决于位置 <位置> 的块",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "entity <entity selector> - runs provider in minecraft:command_compute_entity context, where target_entity is set to selector result",
+      "translated_text": "entity <实体选择器> - 在 minecraft:command_compute_entity 上下文执行提供者，此时 target_entity 被设置为选择器的结果",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "<provider> - either an element of minecraft:number_provider registry or inline value",
+      "translated_text": "<provider> - 可以是 minecraft:number_provider 注册表中的元素，也可以是内联值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "<scale> - optional scale value, defaults to 1.0",
+      "translated_text": "<scale> - 可选的比例值，默认为 1.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "Final result will be multiplied by <scale> and rounded towards negative infinity",
+      "translated_text": "最终结果将乘以 <scale> 并四舍五入到负无穷大",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "integer - optional marker to use integer mode",
+      "translated_text": "integer - 用于启用整数模式的可选标志",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Due to truncation between intermediate steps this mode is not equivalent to float mode even if scale is 1.0",
+      "translated_text": "由于中间步骤的截断，即使 scale 为 1.0，这种模式也不等同于浮点数模式",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "h4",
+      "source_text": "Changes to data",
+      "translated_text": "对数据的修改",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Added new source to /data modify ... append|insert|merge|prepend|set called compute",
+      "translated_text": "新增了 /data 修改命令：append|insert|merge|prepend|set，称为 compute",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "New source will evaluate a minecraft:number_provider and then provide the result either as an integer or a float tag",
+      "translated_text": "新的计算来源会评估 minecraft:number_provider 并以整数或浮点数的形式返回结果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Syntax: compute <target> <provider> [integer] , where the syntax of target , provider and integer is the same as in /compute function",
+      "translated_text": "语法：compute <target> <provider> [integer]，其中 target、provider 和 integer 的语法与 /compute 函数相同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "Example: /data modify storage foo bar set compute entity @n[type=minecraft:armor_stand] {type:score,target:{type:context,target:target_entity},score:baz}",
+      "translated_text": "示例：/data modify storage foo bar set compute entity @n[type=minecraft:armor_stand] {type:score,target:{type:context,target:target_entity},score:baz}",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "h3",
+      "source_text": "Data Components",
+      "translated_text": "数据组件",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "h4",
+      "source_text": "Changed minecraft:consumable",
+      "translated_text": "修改了 minecraft:consumable",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "Added a new optional field to the teleport_randomly consume effect:",
+      "translated_text": "为 teleport_randomly consume 效果添加了一个新的可选字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "directional_particles - boolean, whether to show a particle trail into the direction of the teleportation",
+      "translated_text": "directional_particles - 布尔值，用于决定是否在传送方向显示粒子轨迹",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "If not present, defaults to true",
+      "translated_text": "如果该字段不存在，默认值为 true",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "h4",
+      "source_text": "Updated minecraft:block_transformer",
+      "translated_text": "更新了 minecraft:block_transformer",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "Contents have been moved to a separate registry",
+      "translated_text": "内容已被移至单独的注册表中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Component must now always refer to minecraft:block_transformer registry - existing inline components are removed",
+      "translated_text": "组件现在必须始终引用 minecraft:block_transformer 注册表 - 现有的内联组件已被移除",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "h4",
+      "source_text": "Changed minecraft:attack_animation and minecraft:interact_animation",
+      "translated_text": "修改了 minecraft:attackAnimation 和 minecraft:interactAnimation",
+      "meta": {}
+    },
+    {
+      "id": "b0060",
+      "type": "li",
+      "source_text": "The duration field is now a non-negative integer",
+      "translated_text": "`duration` 字段现在是一个非负整数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0061",
+      "type": "h3",
+      "source_text": "Loot Tables",
+      "translated_text": "战利品表（Loot Tables）",
+      "meta": {}
+    },
+    {
+      "id": "b0062",
+      "type": "h4",
+      "source_text": "Loot Table Types",
+      "translated_text": "战利品表类型（Loot Table Types）",
+      "meta": {}
+    },
+    {
+      "id": "b0063",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加（Added）",
+      "meta": {}
+    },
+    {
+      "id": "b0064",
+      "type": "text",
+      "source_text": "minecraft:command_compute_default",
+      "translated_text": "`minecraft:command_compute_default`",
+      "meta": {}
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "Currently used for /compute default command",
+      "translated_text": "目前用于 `/compute default` 命令",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "It takes the following parameters:",
+      "translated_text": "该命令接受以下参数：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "origin , the position at which the command was executed",
+      "translated_text": "`origin`：命令执行的位置",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "this entity, the @s entity of the command being executed (optional)",
+      "translated_text": "`this entity`：正在执行的命令的 @s 实体（可选）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加（Added）",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "text",
+      "source_text": "minecraft:command_compute_position",
+      "translated_text": "minecraft:commandComputePosition",
+      "meta": {}
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "Currently used for /compute block command",
+      "translated_text": "当前用于 /compute block 命令",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "It takes the following parameters:",
+      "translated_text": "它接受以下参数：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "Everything included in minecraft:command_compute_default",
+      "translated_text": "包含在 minecraft:commandComputeDefault 中的所有内容",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "block_entity , the block entity of the block at the position given in a command",
+      "translated_text": "block_entity",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "block_state , the current state of the block at the position given in a command",
+      "translated_text": "block_state",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "text",
+      "source_text": "minecraft:command_compute_entity",
+      "translated_text": "minecraft:commandComputeEntity",
+      "meta": {}
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "Currently used for /compute entity command",
+      "translated_text": "当前用于 /compute entity 命令",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "It takes the following parameters:",
+      "translated_text": "它接受以下参数：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "Everything included in minecraft:command_compute_default",
+      "translated_text": "Minecraft:commandcompute_default 中包含的所有内容",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "target_entity , entity selected by the selector given in a command",
+      "translated_text": "target_entity",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "h3",
+      "source_text": "Loot Functions",
+      "translated_text": "战利品功能",
+      "meta": {}
+    },
+    {
+      "id": "b0083",
+      "type": "h4",
+      "source_text": "Changed minecraft:set_loot_table",
+      "translated_text": "修改了 minecraft:set_loot_table",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "Removed unused field type",
+      "translated_text": "移除了未使用的字段类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "The tag field, previously known as name , has been renamed to loot_table_id",
+      "translated_text": "标签字段（以前称为 name）已被重命名为 loot_table_id",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "h3",
+      "source_text": "Block Transformers",
+      "translated_text": "方块转换器",
+      "meta": {}
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Added minecraft:block_transformer registry containing rules for transforming a block into another block",
+      "translated_text": "添加了 minecraft:block_transformer registry，其中包含将一个方块转换为另一个方块的规则",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "Format: list of objects with fields:",
+      "translated_text": "格式：包含字段的对象列表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "block_state_provider - Block State Provider, used to provide the state for the transformed block",
+      "translated_text": "block_state_provider - 用于为转换后的方块提供状态的方块状态提供者",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "If the Block State Provider returns no result (as by rule_based_state_provider , for example), the next rule in the list will be attempted",
+      "translated_text": "如果 Block State Provider 没有返回结果（例如使用 rule_based_state_provider 时），则会尝试列表中的下一个规则",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "The set of Block State Providers are the same as the Block State Providers used in World Generation",
+      "translated_text": "Block State Providers 的集合与用于世界生成的 Block State Providers 是相同的",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "sound - optional field, Sound Event to play on interaction, e.g. minecraft:item.axe.strip",
+      "translated_text": "sound - 可选字段，表示交互时播放的声音事件，例如 minecraft:item.axe.strip",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "If not present, defaults to play no Sound Event",
+      "translated_text": "如果该字段不存在，则默认不播放任何声音事件",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "particle - optional field, particles to play on interaction",
+      "translated_text": "particle - 可选字段，表示交互时显示的粒子效果",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "If not present, defaults to none",
+      "translated_text": "如果该字段不存在，则默认不显示任何粒子效果",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "none",
+      "translated_text": "none",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "scrape",
+      "translated_text": "scrape",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "wax_on",
+      "translated_text": "wax_on",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "wax_off",
+      "translated_text": "wax_off",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "disallowed_faces - optional field, list of Directions specifying which faces on the clicked Block that cannot be interacted with",
+      "translated_text": "disallowed_faces - 可选字段，用于指定被点击方块上哪些面不能被交互",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "If a disallowed face is interacted with, the next rule in the list will be attempted",
+      "translated_text": "如果尝试与被禁止的面进行交互，系统将尝试执行列表中的下一个规则",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "If not present, defaults to an empty list",
+      "translated_text": "如果该字段不存在，系统将使用空列表作为默认值",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "Values:",
+      "translated_text": "可设置的值包括：",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "up",
+      "translated_text": "上",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "down",
+      "translated_text": "下",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "north",
+      "translated_text": "北",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "south",
+      "translated_text": "南",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "east",
+      "translated_text": "东",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "west",
+      "translated_text": "西",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "loot - optional Loot Table, the Loot Table to use for dropping items on a successful transformation, e.g. minecraft:till/rooted_dirt",
+      "translated_text": "战利品 - 可选：战利品表（Loot Table）。该表用于在成功变换后决定掉落哪些物品，例如：`minecraft:till/rooted_dirt`",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "If not present, defaults to using no Loot Table",
+      "translated_text": "如果没有指定战利品表，则默认不使用战利品表",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "drop_strategy - optional field, configures from where in the Block any loot should drop",
+      "translated_text": "掉落策略（drop_strategy）- 可选字段，用于配置战利品应从块（Block）的哪个位置掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "If not present, defaults to from_middle",
+      "translated_text": "如果没有指定掉落策略，则默认从块的中心（from_middle）掉落",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "Values:",
+      "translated_text": "配置选项（Values）",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "from_middle - from the middle of the Block",
+      "translated_text": "from_middle - 从块的中心位置掉落",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "clicked_face - from the face interacted with",
+      "translated_text": "点击面（clicked_face）- 指定与哪些面进行交互",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "update_from_neighbors - optional Boolean, if the transformed block should update based on neighboring blocks. This allows e.g. fences to connect",
+      "translated_text": "update_from_neighbors - 可选布尔值。如果设置为true，变换后的块将根据相邻块的状态进行更新；例如，这可以使得围栏（fences）能够正确连接",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "If not present, defaults to true",
+      "translated_text": "如果没有指定该值，则默认为true",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "transform_type - optional field, configures how nearby blocks should be affected by the transformation",
+      "translated_text": "变换类型（transform_type）- 可选字段，用于配置附近块如何受到变换的影响",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "If not present, defaults to single_block",
+      "translated_text": "如果未指定，默认为 single_block",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "Values:",
+      "translated_text": "值：",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "single_block - only affects the Block interacted with",
+      "translated_text": "single_block - 仅影响被交互的方块",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "copper_chest - if input and output blocks are both copper chests of any weathering state, waxed or unwaxed, this transformation will affect both sides of a double chest",
+      "translated_text": "copper_chest - 如果输入和输出方块都是任何风化状态的铜箱子（无论是打蜡的还是未打蜡的），这种变化将同时影响双层的铜箱子两侧",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "consume_on_use - optional Boolean, determines if the item should be consumed or not",
+      "translated_text": "consume_on_use - 可选布尔值，决定该物品是否会被消耗",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "Only applies to stackable items",
+      "translated_text": "仅适用于可堆叠物品",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "If not present, defaults to true",
+      "translated_text": "如果未指定，默认为 true",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "item_damage_per_use - optional Integer, determines how much damage the item takes with each use",
+      "translated_text": "item_damage_per_use - 可选整数值，决定每次使用物品时受到的伤害量",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "Only applies to non-stackable items",
+      "translated_text": "仅适用于不可堆叠物品",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "If not present, defaults to 0",
+      "translated_text": "如果未指定，默认为 0",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "Default values in vanilla:",
+      "translated_text": "原版游戏中的默认值：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "minecraft:shovel - default value for shovels",
+      "translated_text": "minecraft:shovel - 铲子的默认值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "minecraft:axe - default value for axes",
+      "translated_text": "minecraft:axe - 斧头的默认值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "minecraft:hoe - default value for hoes",
+      "translated_text": "minecraft:hoe - 锄头的默认值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "h4",
+      "source_text": "Noise Settings",
+      "translated_text": "噪音设置",
+      "meta": {}
+    },
+    {
+      "id": "b0136",
+      "type": "li",
+      "source_text": "Renamed preliminary_surface_level to chunk_surface_level",
+      "translated_text": "将 preliminary_surface_level 重命名为 chunk_surface_level",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "This Density Function is no longer implicitly interpolated across the entire chunk",
+      "translated_text": "此密度函数不再在整个区块中隐式插值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "li",
+      "source_text": "The ore_veins_enabled field has been removed, and replaced by the minecraft:ore_vein Material Rule",
+      "translated_text": "ore_veins_enabled 字段已被移除，替换为 minecraft:ore_vein Material Rule",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0139",
+      "type": "li",
+      "source_text": "Removed noise.size_horizontal and noise.size_vertical fields, these are now specified in the interpolated density function",
+      "translated_text": "已移除 noise.size_horizontal 和 noise.size_vertical 字段，这些参数现在在插值密度函数中指定",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "Added optional debug_functions field - list of objects with fields, Density Function values to show in the chunk_generation_stats debug entry",
+      "translated_text": "新增了可选的 debug_functions 字段——用于在 chunk_generation_stats 调试信息中显示的对象列表及其对应的 Density Function 值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "Fields:",
+      "translated_text": "字段（Fields）：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "li",
+      "source_text": "label - string, label to identify this Density Function",
+      "translated_text": "label：用于标识该 Density Function 的字符串标签",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "function - Density Function, the Density Function to compute and show at the player position",
+      "translated_text": "function：用于计算并在玩家位置显示的 Density Function",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "If not specified, no density function values will be shown",
+      "translated_text": "如果未指定，则不会显示任何 Density Function 值",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "h4",
+      "source_text": "Material Rules",
+      "translated_text": "材质规则（Material Rules）",
+      "meta": {}
+    },
+    {
+      "id": "b0146",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加（Added）",
+      "meta": {}
+    },
+    {
+      "id": "b0147",
+      "type": "text",
+      "source_text": "minecraft:ore_vein",
+      "translated_text": "minecraft:ore_vein",
+      "meta": {}
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：包含各个字段的对象（Format: object with fields）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "ore_block - Block State, the ore block to place",
+      "translated_text": "ore_block：要放置的矿块状态（Block State）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "raw_ore_block - Block State, the raw ore block to place",
+      "translated_text": "原始矿石块 - 方块状态，用于放置的原始矿石块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "filler_block - Block State, the filler block to place",
+      "translated_text": "填充块 - 方块状态，用于放置的填充块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "li",
+      "source_text": "raw_ore_chance - float between 0 and 1, the probability for a raw_ore_block to be placed instead of an ore_block",
+      "translated_text": "原始矿石概率 - 介于0到1之间的浮点数，表示放置原始矿石块而非矿石块的概率",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "density - Density Function, the probability between 0 and 1 for the ore vein to replace a block",
+      "translated_text": "密度函数 - 介于0到1之间的概率值，表示矿脉替换现有方块的概率",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "If 0 or lower, no block will be replaced",
+      "translated_text": "如果密度值为0或更低，则不会替换任何方块",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "richness - Density Function, the probability between 0 and 1 for ore_block or raw_ore_block to be placed (as opposed to filler_block )",
+      "translated_text": "丰富度 - 密度函数，表示放置矿石块或原始矿石块（而非填充块）的概率",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "If 0 or lower, all blocks will be filler_block",
+      "translated_text": "如果丰富度值为0或更低，则所有方块都将被替换为填充块",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "li",
+      "source_text": "If 1 or greater, no blocks will be filler_block",
+      "translated_text": "如果丰富度值为1或更高，则不会有任何方块被替换为填充块",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "filler_gap - Density Function, acts as an override to richness : if positive, filler_block will always be placed",
+      "translated_text": "填充间隙 - 密度函数的作用是覆盖丰富度的设置：如果该值为正数，填充块将始终被放置",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已修改",
+      "meta": {}
+    },
+    {
+      "id": "b0160",
+      "type": "text",
+      "source_text": "minecraft:noise",
+      "translated_text": "minecraft:noise",
+      "meta": {}
+    },
+    {
+      "id": "b0161",
+      "type": "p",
+      "source_text": "The following fields have been introduced:",
+      "translated_text": "引入了以下字段：",
+      "meta": {}
+    },
+    {
+      "id": "b0162",
+      "type": "li",
+      "source_text": "shift_x - optional Density Function, a domain warp to apply on x",
+      "translated_text": "shift_x - 可选：密度函数，用于对 x 轴进行域变换",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "If not specified, no warping will be applied (equivalent to 0 )",
+      "translated_text": "如果未指定，则不进行任何变换（相当于 0）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "li",
+      "source_text": "shift_y - optional Density Function, a domain warp to apply on y",
+      "translated_text": "shift_y - 可选：密度函数，用于对 y 轴进行域变换",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0165",
+      "type": "li",
+      "source_text": "If not specified, no warping will be applied (equivalent to 0 )",
+      "translated_text": "如果未指定，则不进行任何变换（相当于 0）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0166",
+      "type": "li",
+      "source_text": "shift_z - optional Density Function, a domain warp to apply on z",
+      "translated_text": "shift_z - 可选：密度函数，用于对 z 轴进行域变换",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0167",
+      "type": "li",
+      "source_text": "If not specified, no warping will be applied (equivalent to 0 )",
+      "translated_text": "如果未指定，则不进行任何变换（相当于 0）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0168",
+      "type": "text",
+      "source_text": "Removed",
+      "translated_text": "已移除",
+      "meta": {}
+    },
+    {
+      "id": "b0169",
+      "type": "text",
+      "source_text": "minecraft:shifted_noise",
+      "translated_text": "minecraft:shifted_noise",
+      "meta": {}
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "Replaced by minecraft:noise",
+      "translated_text": "替换为 minecraft:noise",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "text",
+      "source_text": "Updated",
+      "translated_text": "更新",
+      "meta": {}
+    },
+    {
+      "id": "b0172",
+      "type": "text",
+      "source_text": "minecraft:interpolated",
+      "translated_text": "minecraft:interpolated",
+      "meta": {}
+    },
+    {
+      "id": "b0173",
+      "type": "p",
+      "source_text": "Added fields:",
+      "translated_text": "添加了字段：",
+      "meta": {}
+    },
+    {
+      "id": "b0174",
+      "type": "li",
+      "source_text": "cell_size_xz - positive int, size in blocks of the interpolation grid cells on the XZ axes",
+      "translated_text": "cell_size_xz - 正整数，表示 XZ 轴上的插值网格单元的大小（以方块为单位）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0175",
+      "type": "li",
+      "source_text": "cell_size_y - positive int, size in blocks of the interpolation grid cells on the Y axis",
+      "translated_text": "cell_size_y - 正整数，表示 Y 轴上的插值网格单元的大小（以方块为单位）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0176",
+      "type": "text",
+      "source_text": "Updated",
+      "translated_text": "更新",
+      "meta": {}
+    },
+    {
+      "id": "b0177",
+      "type": "text",
+      "source_text": "minecraft:cache",
+      "translated_text": "minecraft:cache",
+      "meta": {}
+    },
+    {
+      "id": "b0178",
+      "type": "text",
+      "source_text": "(renamed from",
+      "translated_text": "(从原名称重命名为)",
+      "meta": {}
+    },
+    {
+      "id": "b0179",
+      "type": "text",
+      "source_text": "minecraft:cache_once",
+      "translated_text": "minecraft:cache_once",
+      "meta": {}
+    },
+    {
+      "id": "b0180",
+      "type": "text",
+      "source_text": ")",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0181",
+      "type": "li",
+      "source_text": "No format change",
+      "translated_text": "无格式更改",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0182",
+      "type": "text",
+      "source_text": "Removed",
+      "translated_text": "已移除",
+      "meta": {}
+    },
+    {
+      "id": "b0183",
+      "type": "text",
+      "source_text": "minecraft:cache_2d",
+      "translated_text": "minecraft:cache_2d",
+      "meta": {}
+    },
+    {
+      "id": "b0184",
+      "type": "text",
+      "source_text": ",",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0185",
+      "type": "text",
+      "source_text": "minecraft:cache_all_in_cell",
+      "translated_text": "minecraft:cache_all_in_cell",
+      "meta": {}
+    },
+    {
+      "id": "b0186",
+      "type": "text",
+      "source_text": ", and",
+      "translated_text": "，以及",
+      "meta": {}
+    },
+    {
+      "id": "b0187",
+      "type": "text",
+      "source_text": "minecraft:flat_cache",
+      "translated_text": "minecraft:flat_cache",
+      "meta": {}
+    },
+    {
+      "id": "b0188",
+      "type": "li",
+      "source_text": "May be replaced with minecraft:cache",
+      "translated_text": "可能会被 minecraft:cache 取代",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0189",
+      "type": "li",
+      "source_text": "minecraft:slice may be used to always pick Y=0, as formerly handled by minecraft:flat_cache",
+      "translated_text": "现在可以使用 minecraft:slice 来始终选择 Y=0 的位置，这之前是由 minecraft:flat_cache 处理的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0190",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0191",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0192",
+      "type": "li",
+      "source_text": "Added #nether_portal_frame - blocks that can be used to create a Nether Portal",
+      "translated_text": "新增了 #nether_portal_frame 方块——可用于创建下界传送门",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0193",
+      "type": "li",
+      "source_text": "Added #conduit_effect_block - blocks that can be used to build a Conduit",
+      "translated_text": "新增了 #conduit_effect_block 方块——可用于建造导管系统",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0194",
+      "type": "h4",
+      "source_text": "Structure Tags",
+      "translated_text": "结构标签",
+      "meta": {}
+    },
+    {
+      "id": "b0195",
+      "type": "li",
+      "source_text": "Renamed #on_woodland_explorer_maps to #on_woodland_mansion_maps",
+      "translated_text": "#on_woodland_explorer_maps",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0196",
+      "type": "li",
+      "source_text": "Renamed #on_ocean_explorer_maps to #on_ocean_monument_maps",
+      "translated_text": "#on_ocean_explorer_maps",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0197",
+      "type": "li",
+      "source_text": "Renamed #on_jungle_explorer_maps to #on_jungle_pyramid_maps",
+      "translated_text": "#on_jungle_explorer_maps",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0198",
+      "type": "li",
+      "source_text": "Renamed #on_swamp_explorer_maps to #on_swamp_hut_maps",
+      "translated_text": "#on_swamp_explorer_maps",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0199",
+      "type": "li",
+      "source_text": "Renamed #on_trial_explorer_map to #on_buried_trial_chambers_map",
+      "translated_text": "#on_trial_explorer_map",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0200",
+      "type": "h4",
+      "source_text": "Fluid Tags",
+      "translated_text": "流体标签",
+      "meta": {}
+    },
+    {
+      "id": "b0201",
+      "type": "li",
+      "source_text": "Added #axolotl_try_find_liquid for all liquids Axolotls are trying to find",
+      "translated_text": "为所有液体添加了 #axolotl_try_find_liquid；美西螈正在尝试寻找这些液体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0202",
+      "type": "li",
+      "source_text": "Added #dolphin_try_find_liquid for all liquids Dolphins are trying to find",
+      "translated_text": "为所有液体添加了 #dolphin_try_find_liquid；海豚也在尝试寻找这些液体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0203",
+      "type": "li",
+      "source_text": "Added #frog_try_find_land_near_liquid for all liquids Frogs are trying to find land near to",
+      "translated_text": "为所有液体添加了 #frog_try_find.land_near_liquid；青蛙正在尝试在液体附近寻找陆地",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0204",
+      "type": "li",
+      "source_text": "Added #entity_floatable for all fluids that make entities float",
+      "translated_text": "为所有能让实体漂浮的液体添加了 #entity_floatable",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0205",
+      "type": "h2",
+      "source_text": "Resource Pack Version 97",
+      "translated_text": "资源包版本 97",
+      "meta": {}
+    },
+    {
+      "id": "b0206",
+      "type": "h3",
+      "source_text": "Item Sprites",
+      "translated_text": "物品精灵",
+      "meta": {}
+    },
+    {
+      "id": "b0207",
+      "type": "li",
+      "source_text": "Renamed item/trial_chamber_map.png to item/buried_trial_chambers_map.png",
+      "translated_text": "将 item/trial_chamber_map.png 重命名为 item/buried_trial_chambers_map.png",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0208",
+      "type": "li",
+      "source_text": "Renamed item/jungle_temple_map.png to item/jungle_pyramid_map.png",
+      "translated_text": "将 item/jungle_temple_map.png 重命名为 item/jungle_pyramid_map.png",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0209",
+      "type": "h3",
+      "source_text": "UI Sprites",
+      "translated_text": "用户界面精灵",
+      "meta": {}
+    },
+    {
+      "id": "b0210",
+      "type": "li",
+      "source_text": "Added new UI textures:",
+      "translated_text": "添加了新的用户界面纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0211",
+      "type": "li",
+      "source_text": "gui/realms/friends.png",
+      "translated_text": "gui/realms/friends.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0212",
+      "type": "li",
+      "source_text": "gui/realms/minigames.png",
+      "translated_text": "gui/realms/minigames.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0213",
+      "type": "li",
+      "source_text": "gui/realms/private_server.png",
+      "translated_text": "gui/realms/private_server.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0214",
+      "type": "li",
+      "source_text": "gui/sprites/widget/realms_button.png",
+      "translated_text": "gui/sprites/widget/realms_button.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0215",
+      "type": "li",
+      "source_text": "gui/sprites/widget/realms_button_disabled.png",
+      "translated_text": "gui/sprite/widget/realms_button_disabled.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0216",
+      "type": "li",
+      "source_text": "gui/sprites/widget/realms_button_highlighted.png",
+      "translated_text": "gui/sprite/widget/realms_button.highlighted.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0217",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.3 Snapshot 10",
+      "translated_text": "修复了 26.3 快照 10 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0218",
+      "type": "li",
+      "source_text": "[MC-102881](https://bugs.mojang.com/browse/MC-102881) - Shulkers do not emit any particles when teleporting",
+      "translated_text": "[MC-102881](https://bugs.mojang.com/browse/MC-102881) - 大嘴蛇在传送时不会释放任何粒子效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0219",
+      "type": "li",
+      "source_text": "[MC-245030](https://bugs.mojang.com/browse/MC-245030) - The \"Bee buzzes\" closed caption only appears when a bee buzzes for the first time",
+      "translated_text": "[MC-245030](https://bugs.mojang.com/browse/MC-245030) - ‘蜜蜂嗡嗡声’的字幕仅在大蜜蜂第一次发出声音时才会显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0220",
+      "type": "li",
+      "source_text": "[MC-254547](https://bugs.mojang.com/browse/MC-254547) - Villagers do not level up when exiting the world immediately after filling their experience bar",
+      "translated_text": "[MC-254547](https://bugs.mojang.com/browse/MC-254547) - 村民在经验条满后立即退出游戏世界时不会升级",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0221",
+      "type": "li",
+      "source_text": "[MC-258347](https://bugs.mojang.com/browse/MC-258347) - Endermen no longer create an extra trail of particles when teleporting",
+      "translated_text": "[MC-258347](https://bugs.mojang.com/browse/MC-258347) - 炎魔在传送时不会再产生额外的颗粒效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0222",
+      "type": "li",
+      "source_text": "[MC-265423](https://bugs.mojang.com/browse/MC-265423) - When villagers acquire enough experience to level up more than once, they only gain a single level",
+      "translated_text": "[MC-265423] - 当村民获得的经验足以让他们升级多次时，他们只会升一级",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0223",
+      "type": "li",
+      "source_text": "[MC-268145](https://bugs.mojang.com/browse/MC-268145) - cache_once density functions don't work",
+      "translated_text": "[MC-268145] - `cache_once` 相关的密度函数无法正常工作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0224",
+      "type": "li",
+      "source_text": "[MC-279586](https://bugs.mojang.com/browse/MC-279586) - Closed captions continue to fade when their sound plays again from farther away, causing visual delays in the overlay",
+      "translated_text": "[MC-279586] - 当字幕中的声音从远处重新播放时，字幕仍然会继续淡出，导致覆盖层出现视觉延迟",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0225",
+      "type": "li",
+      "source_text": "[MC-296368](https://bugs.mojang.com/browse/MC-296368) - The entity.happy_ghast.riding sound event displays no closed caption",
+      "translated_text": "[MC-296368] `entity.happy_ghast.riding` 的音效事件没有显示字幕",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0226",
+      "type": "li",
+      "source_text": "[MC-303360](https://bugs.mojang.com/browse/MC-303360) - Flat-cached shifted noise density functions are recalculated for every Y level",
+      "translated_text": "[MC-303360](https://bugs.mojang.com/browse/MC-303360) - 对于每个 Y 层，扁平缓存的噪声密度函数会被重新计算",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0227",
+      "type": "li",
+      "source_text": "[MC-306012](https://bugs.mojang.com/browse/MC-306012) - Armadillos can escape fenced areas when at the edge of the simulation distance",
+      "translated_text": "[MC-306012](https://bugs.mojang.com/browse/MC-306012) - 狐狸在模拟距离的边缘时可以逃离围栏区域",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0228",
+      "type": "li",
+      "source_text": "[MC-306778](https://bugs.mojang.com/browse/MC-306778) - The fog color no longer transitions smoothly when the weather changes at night while under the Night Vision effect",
+      "translated_text": "[MC-306778] - 在夜间天气变化时，如果启用夜视效果，雾的颜色不再平滑过渡",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0229",
+      "type": "li",
+      "source_text": "[MC-309872](https://bugs.mojang.com/browse/MC-309872) - The system freezes when pressing the Windows key with the \"Exclusive Fullscreen\" option enabled",
+      "translated_text": "[MC-309872] - 当启用“独占全屏”选项并按下 Windows 键时，系统会冻结",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0230",
+      "type": "li",
+      "source_text": "[MC-310139](https://bugs.mojang.com/browse/MC-310139) - Mob spawning checks for biomes incorrectly at biome borders",
+      "translated_text": "[MC-310139] - 怪物在生物群系边界处错误地检测生物群系",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0231",
+      "type": "li",
+      "source_text": "[MC-310181](https://bugs.mojang.com/browse/MC-310181) - The commands.setworldspawn.failure.not_overworld string lowercases the dimension name \"Overworld\"",
+      "translated_text": "[MC-310181](https://bugs.mojang.com/browse/MC-310181) - `commands.setworldspawn.failure.not_overworld` 命令会将维度名称 \"Overworld\" 转换为小写",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0232",
+      "type": "li",
+      "source_text": "[MC-310182](https://bugs.mojang.com/browse/MC-310182) - Some descriptive tooltip strings lack a period, unlike similar strings",
+      "translated_text": "[MC-310182](https://bugs.mojang.com/browse/MC-310182) - 一些描述性工具提示字符串缺少句点，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0233",
+      "type": "li",
+      "source_text": "[MC-310184](https://bugs.mojang.com/browse/MC-310184) - The commands.bossbar.set.max.unchanged string abbreviates \"maximum\" to \"max\", unlike similar strings",
+      "translated_text": "[MC-310184](https://bugs.mojang.com/browse/MC-310184) - `commands.bossbar.set.max.unchanged` 命令会将 \"maximum\" 简写为 \"max\"，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0234",
+      "type": "li",
+      "source_text": "[MC-310186](https://bugs.mojang.com/browse/MC-310186) - The options.languageWarning string lacks a period, unlike similar strings",
+      "translated_text": "[MC-310186](https://bugs.mojang.com/browse/MC-310186) - `options.languageWarning` 字符串缺少句点，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0235",
+      "type": "li",
+      "source_text": "[MC-310187](https://bugs.mojang.com/browse/MC-310187) - The commands.bossbar.get.visible.visible string uses \"shown\" instead of \"visible\", unlike similar strings",
+      "translated_text": "[MC-310187](https://bugs.mojang.com/browse/MC-310187) - `commands.bossbar.get-visible.visible` 命令使用 \"shown\" 而不是 \"visible\"，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0236",
+      "type": "li",
+      "source_text": "[MC-310188](https://bugs.mojang.com/browse/MC-310188) - Some /tag list success strings always pluralize the word \"tags\"",
+      "translated_text": "[MC-310188](https://bugs.mojang.com/browse/MC-310188) - 某些包含标签列表的字符串总是将“tags”这个词复数化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0237",
+      "type": "li",
+      "source_text": "[MC-310233](https://bugs.mojang.com/browse/MC-310233) - Some strings that contain percentages have spaces before the percentage sign, unlike similar strings",
+      "translated_text": "[MC-310233](https://bugs.mojang.com/browse/MC-310233) - 包含百分比的某些字符串在百分号前有空格，这与其他类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0238",
+      "type": "li",
+      "source_text": "[MC-310236](https://bugs.mojang.com/browse/MC-310236) - Some strings use an ampersand instead of the word \"and\", unlike similar strings",
+      "translated_text": "[MC-310236](https://bugs.mojang.com/browse/MC-310236) - 某些字符串使用“&”符号代替“and”这个词，这与其他类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0239",
+      "type": "li",
+      "source_text": "[MC-310544](https://bugs.mojang.com/browse/MC-310544) - Changing the difficulty in singleplayer now requires commands to be enabled",
+      "translated_text": "[MC-310544](https://bugs.mojang.com/browse/MC-310544) - 现在要在单人游戏中改变难度，需要先启用相关命令",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0240",
+      "type": "li",
+      "source_text": "[MC-310568](https://bugs.mojang.com/browse/MC-310568) - Significant performance regression on Intel dGPUs with the OpenGL rendering backend",
+      "translated_text": "[MC-310568](https://bugs.mojang.com/browse/MC-310568) - 使用 OpenGL 渲染后端的英特尔显卡性能出现显著下降",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0241",
+      "type": "li",
+      "source_text": "[MC-310634](https://bugs.mojang.com/browse/MC-310634) - The birch tree in the campsite_old_growth_birch_forest_4 abandoned camp structure never generates",
+      "translated_text": "[MC-310634](https://bugs.mojang.com/browse/MC-310634) - 在废弃营地结构（campsite_old_growth_birch_forest_4）中，桦树永远不会生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0242",
+      "type": "li",
+      "source_text": "[MC-310635](https://bugs.mojang.com/browse/MC-310635) - /item override and /item fill with a contents slot source targeting the charged_projectiles component freezes the server for several seconds",
+      "translated_text": "[MC-310635](https://bugs.mojang.com/browse/MC-310635) - 使用物品覆盖功能或通过内容槽填充带有‘charged_projectiles’组件的物品时，会导致服务器卡顿数秒",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0243",
+      "type": "li",
+      "source_text": "[MC-310665](https://bugs.mojang.com/browse/MC-310665) - The llama decoration texture of black carpets contains a stray transparent pixel",
+      "translated_text": "[MC-310665] - 黑色地毯的羊驼装饰纹理中存在一个多余的半透明像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0244",
+      "type": "li",
+      "source_text": "[MC-310676](https://bugs.mojang.com/browse/MC-310676) - The savanna_lamp_post_01 village structure contains a trailing closing square bracket in the jigsaw block's NBT",
+      "translated_text": "[MC-310676] - 在savanna_lamp_post_01村庄结构中，拼图方块的NBT数据中包含一个多余的闭合方括号",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0245",
+      "type": "li",
+      "source_text": "[MC-310693](https://bugs.mojang.com/browse/MC-310693) - The game sometimes freezes when attempting to open chests in abandoned camps that contain maps",
+      "translated_text": "[MC-310693] - 在尝试打开废弃营地中的装有地图的箱子时，游戏有时会卡顿",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0246",
+      "type": "li",
+      "source_text": "[MC-310719](https://bugs.mojang.com/browse/MC-310719) - copyTextureToBuffer binds depth textures as a color attachment with the OpenGL rendering backend",
+      "translated_text": "[MC-310719] - 函数copyTextureToBuffer在OpenGL渲染后台将深度纹理作为颜色附件进行绑定",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0247",
+      "type": "li",
+      "source_text": "[MC-310738](https://bugs.mojang.com/browse/MC-310738) - The names of exploration maps are inconsistent",
+      "translated_text": "[MC-310738](https://bugs.mojang.com/browse/MC-310738) - 探索地图的名称不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0248",
+      "type": "li",
+      "source_text": "[MC-310776](https://bugs.mojang.com/browse/MC-310776) - The filled_map.jungle_temple string refers to jungle pyramids as \"jungle temples\"",
+      "translated_text": "[MC-310776](https://bugs.mojang.com/browse/MC-310776) - 在代码中，filled_map.jungle_temple 将丛林金字塔错误地称为 \"jungle temples\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0249",
+      "type": "li",
+      "source_text": "[MC-310784](https://bugs.mojang.com/browse/MC-310784) - Water flickers a lot when viewed from above on some systems",
+      "translated_text": "[MC-310784](https://bugs.mojang.com/browse/MC-310784) - 在某些系统上，从上方看水面时水面会有很多闪烁现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0250",
+      "type": "li",
+      "source_text": "[MC-310832](https://bugs.mojang.com/browse/MC-310832) - The clear region uses mip 0 dimensions while attaching a different mip level",
+      "translated_text": "[MC-310832] - 在标记为 \"clear region\" 的区域中，使用的 mip 级别与实际设置不符",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0251",
+      "type": "li",
+      "source_text": "[MC-310886](https://bugs.mojang.com/browse/MC-310886) - test_instance.description.dimension displays as a raw translation key",
+      "translated_text": "[MC-310886] - test_instance.descriptionDimension 的显示格式是原始的翻译键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0252",
+      "type": "li",
+      "source_text": "[MC-310941](https://bugs.mojang.com/browse/MC-310941) - No closed caption is produced by the sound played when riding a nautilus",
+      "translated_text": "[MC-310941] - 骑着鹦鹉螺号时，播放的声音没有生成字幕",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0253",
+      "type": "li",
+      "source_text": "[MC-310971](https://bugs.mojang.com/browse/MC-310971) - Shelf mushrooms block saplings from growing",
+      "translated_text": "[MC-310971](https://bugs.mojang.com/browse/MC-310971) - 阻止生长架子蘑菇的幼苗",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0254",
+      "type": "li",
+      "source_text": "[MC-310994](https://bugs.mojang.com/browse/MC-310994) - The tooltip for the \"Allow Commands\" button in the World Options screen doesn't appear after pressing it",
+      "translated_text": "[MC-310994](https://bugs.mojang.com/browse/MC-310994) - 点击“World Options”屏幕中的“允许命令”按钮后，相关提示信息未显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0255",
+      "type": "li",
+      "source_text": "[MC-310995](https://bugs.mojang.com/browse/MC-310995) - Changing the difficulty using commands does not update its corresponding button in the World Options screen",
+      "translated_text": "[MC-310995] - 使用命令更改难度时，相应的“World Options”屏幕按钮未更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0256",
+      "type": "li",
+      "source_text": "[MC-310996](https://bugs.mojang.com/browse/MC-310996) - Changing the default game mode does not update its corresponding button in the World Options screen",
+      "translated_text": "[MC-310996] - 更改默认游戏模式时，相应的“World Options”屏幕按钮未更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0257",
+      "type": "li",
+      "source_text": "[MC-311000](https://bugs.mojang.com/browse/MC-311000) - Toggling the \"Allow Commands\" option in the World Options menu no longer enables/disables other buttons right away",
+      "translated_text": "[MC-311000] - 在“World Options”菜单中切换“允许命令”选项后，其他按钮不会立即生效/失效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0258",
+      "type": "li",
+      "source_text": "[MC-311017](https://bugs.mojang.com/browse/MC-311017) - The glowing outline is inconsistent when wearing enchanted armor compared to unenchanted armor",
+      "translated_text": "[MC-311017](https://bugs.mojang.com/browse/MC-311017) - 穿着附魔盔甲时，发光轮廓的显示效果与穿着未附魔盔甲时不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0259",
+      "type": "li",
+      "source_text": "[MC-311022](https://bugs.mojang.com/browse/MC-311022) - Equipping boots with Soul Speed as they are broken allows the player to keep their attributes indefinitely",
+      "translated_text": "[MC-311022](https://bugs.mojang.com/browse/MC-311022) - 当给鞋子装备“灵魂速度”效果（尽管该效果已损坏）时，玩家可以永久保持其属性不变",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0260",
+      "type": "li",
+      "source_text": "[MC-311038](https://bugs.mojang.com/browse/MC-311038) - Local coordinates produce inaccurate results compared to previous versions",
+      "translated_text": "[MC-311038](https://bugs.mojang.com/browse/MC-311038) - 与之前的版本相比，当前版本中的本地坐标计算结果不准确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0261",
+      "type": "li",
+      "source_text": "[MC-311044](https://bugs.mojang.com/browse/MC-311044) - Straw beds Z-fight when placed in invisible item frames",
+      "translated_text": "[MC-311044] - 当稻草床放置在隐形物品框中时，会出现 Z 轴方向的异常行为",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0262",
+      "type": "li",
+      "source_text": "[MC-311064](https://bugs.mojang.com/browse/MC-311064) - Cows and Horses only Spawn in a unexplored chunk once",
+      "translated_text": "[MC-311064] - 奶牛和马只会在未被探索过的区块中生成一次",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0263",
+      "type": "li",
+      "source_text": "[MC-311077](https://bugs.mojang.com/browse/MC-311077) - Players can forcibly change their game mode to Survival from the World Options menu after dying in hardcore worlds",
+      "translated_text": "[MC-311077] - 玩家在 hardcore 模式下死亡后，可以通过世界选项菜单强制将游戏模式切换回生存模式",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0264",
+      "type": "li",
+      "source_text": "[MC-311093](https://bugs.mojang.com/browse/MC-311093) - Villagers still don't immediately level up when their experience bar is filled",
+      "translated_text": "[MC-311093] - 村民在经验条满时仍未立即升级",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0265",
+      "type": "li",
+      "source_text": "[MC-311094](https://bugs.mojang.com/browse/MC-311094) - Villager discounts do not apply until the trading window is closed and reopened",
+      "translated_text": "[MC-311094] - 村民的折扣仅在交易窗口关闭并重新打开后才会生效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0266",
+      "type": "li",
+      "source_text": "[MC-311115](https://bugs.mojang.com/browse/MC-311115) - invulnerable_time is not retained when a mob converts to another mob, even though Invulnerable is",
+      "translated_text": "[MC-311115] - 当怪物变种时，无敌状态不会被保留",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0267",
+      "type": "li",
+      "source_text": "[MC-311116](https://bugs.mojang.com/browse/MC-311116) - The name of trial explorer maps does not start with \"buried\", unlike ancient city & mineshaft maps",
+      "translated_text": "[MC-311116] - 试炼探索者地图的名称不以‘buried’开头，与古代城市和矿井地图不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0268",
+      "type": "li",
+      "source_text": "[MC-311148](https://bugs.mojang.com/browse/MC-311148) - Shooting arrows at endermen riding vehicles does not play the arrow hitting sound",
+      "translated_text": "[MC-311148] - 向乘坐载具的末影人射击时，不会播放箭矢击中的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0269",
+      "type": "li",
+      "source_text": "[MC-311151](https://bugs.mojang.com/browse/MC-311151) - The block texture of poplar hanging signs is still inconsistent with the GUI texture",
+      "translated_text": "[MC-311151](https://bugs.mojang.com/browse/MC-311151) - 杨树制作的手写牌的纹理仍然与游戏界面的纹理不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0270",
+      "type": "li",
+      "source_text": "[MC-311153](https://bugs.mojang.com/browse/MC-311153) - Endermen riding boats/minecarts aren't set on fire by flaming arrows",
+      "translated_text": "[MC-311153](https://bugs.mojang.com/browse/MC-311153) - 乘坐小船或矿车的末影人不受到燃烧箭的攻击",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0271",
+      "type": "li",
+      "source_text": "[MC-311154](https://bugs.mojang.com/browse/MC-311154) - Arrows pass through endermen riding vehicles",
+      "translated_text": "[MC-311154](https://bugs.mojang.com/browse/MC-311154) - 箭可以穿过乘坐载具的末影人",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0272",
+      "type": "li",
+      "source_text": "[MC-311162](https://bugs.mojang.com/browse/MC-311162) - Spectral arrows don't apply Glowing to endermen riding vehicles",
+      "translated_text": "[MC-311162](https://bugs.mojang.com/browse/MC-311162) - 幽灵箭不会对乘坐载具的末影人施加“发光”效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0273",
+      "type": "li",
+      "source_text": "[MC-311164](https://bugs.mojang.com/browse/MC-311164) - Tipped arrows don't apply effects to endermen riding vehicles",
+      "translated_text": "[MC-311164](https://bugs.mojang.com/browse/MC-311164) - 带有特效的箭也不会对乘坐载具的末影人产生效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0274",
+      "type": "li",
+      "source_text": "[MC-311188](https://bugs.mojang.com/browse/MC-311188) - Tridents pass through endermen riding vehicles",
+      "translated_text": "[MC-311188](https://bugs.mojang.com/browse/MC-311188) - 长矛可以穿过乘坐载具的末影人",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0275",
+      "type": "li",
+      "source_text": "[MC-311235](https://bugs.mojang.com/browse/MC-311235) - Upgrading a world from the 1.21.11 world format can cause data from other worlds to get saved inside it",
+      "translated_text": "[MC-311235](https://bugs.mojang.com/browse/MC-311235) - 将世界从 1.21.11 版本格式升级时，可能会导致其他世界的数据被保存到当前世界中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0276",
+      "type": "li",
+      "source_text": "[MC-311273](https://bugs.mojang.com/browse/MC-311273) - The type field in the set_loot_table item modifier type conflicts with the type field that specifies the item modifier type",
+      "translated_text": "[MC-311273](https://bugs.mojang.com/browse/MC-311273) - `set_loot_table` 物品修饰符中的 `type` 字段与指定物品修饰符类型的 `type` 字段存在冲突",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0277",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0278",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "快照功能适用于 Minecraft: Java 版。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“Installations”选项卡中启用快照功能",
+      "meta": {}
+    },
+    {
+      "id": "b0279",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试新版本可能会导致你的世界损坏，因此请进行备份，或者在其他文件夹中运行它们**",
+      "meta": {}
+    },
+    {
+      "id": "b0280",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件",
+      "meta": {}
+    },
+    {
+      "id": "b0281",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/82cf54c229336e243fbf50d9f2a6a49734731d0d/server.jar)",
+      "translated_text": "[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/82cf54c229336e243fbf50d9f2a6a49734731d0d/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0282",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告漏洞：",
+      "meta": {}
+    },
+    {
+      "id": "b0283",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0284",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0285",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，欢迎加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "We've safely made it to 26.3 Snapshot 10! This week, the Dappled Forest panorama has made its way to the main menu, bringing cozy fall vibes every time you launch the game. This snapshot also includes a variety of technical changes and improvements, so dig in!\n\nHappy mining!\n\nNew Features\n\nRealms\n\nAdded a new Realms introduction screen showcasing Realms key features\n\nAccessible from the \"Add Realm\" button\n\nAutomatically shown when entering Realms if a trial is available\n\nChanges\n\nThe Main Menu now has an updated background panorama showing the new Dappled Forest biome with an Abandoned Camp\n\nChanged the Adventure Mode icon in the Game Mode Switcher to the Buried Treasure Map\n\nImprovements to performance when trying to locate structures\n\nReverted recent changes to Drowned behavior and animations from this release cycle\n\nMinor Tweaks to Blocks, Items and Entities\n\nEnchantments now apply to items being damaged from protecting an Undead mob from the sun\n\nTeleporting randomly after eating a Chorus Fruit now shows particles into the direction of the teleportation\n\nExplorer Maps\n\nThe following Explorer Maps have been renamed to have more consistent naming\n\nOcean Monument Explore Map -> Ocean Monument Map\n\nSwamp Hut Explorer Map -> Swamp Hut Map\n\nTrial Chambers Explorer Map -> Buried Trial Chambers Map\n\nWoodland Mansion Explorer Map -> Woodland Mansion Map\n\nJungle Pyramid Explorer Map -> Jungle Pyramid Map\n\nAccessibility\n\nSubtitles now point to the most recent sound in range\n\nTechnical Changes\n\nThe Data Pack version is now 118.0\n\nThe Resource Pack version is now 97.0\n\nThe none swing animation type has been readded\n\nThis affects the /swing command as well as the minecraft:attack_animation and minecraft:interact_animation components\n\nData Pack Version 118\n\nCommands\n\nAdded compute\n\nEvaluates minecraft:number_provider in various contexts\n\nIn all contexts origin is set to current command context position, while this entity is set to @s\n\nSyntax:\n\n/compute <target> <provider> [<scale>|integer] , where:\n\n<target> - one of:\n\ndefault - runs provider in minecraft:command_compute_default context, where only common arguments (position and this entity) are available\n\nblock <pos> - runs provider in minecraft:command_compute_position context, where block state and block position are set based on block at position <pos>\n\nentity <entity selector> - runs provider in minecraft:command_compute_entity context, where target_entity is set to selector result\n\n<provider> - either an element of minecraft:number_provider registry or inline value\n\n<scale> - optional scale value, defaults to 1.0\n\nFinal result will be multiplied by <scale> and rounded towards negative infinity\n\ninteger - optional marker to use integer mode\n\nDue to truncation between intermediate steps this mode is not equivalent to float mode even if scale is 1.0\n\nChanges to data\n\nAdded new source to /data modify ... append|insert|merge|prepend|set called compute\n\nNew source will evaluate a minecraft:number_provider and then provide the result either as an integer or a float tag\n\nSyntax: compute <target> <provider> [integer] , where the syntax of target , provider and integer is the same as in /compute function\n\nExample: /data modify storage foo bar set compute entity @n[type=minecraft:armor_stand] {type:score,target:{type:context,target:target_entity},score:baz}\n\nData Components\n\nChanged minecraft:consumable\n\nAdded a new optional field to the teleport_randomly consume effect:\n\ndirectional_particles - boolean, whether to show a particle trail into the direction of the teleportation\n\nIf not present, defaults to true\n\nUpdated minecraft:block_transformer\n\nContents have been moved to a separate registry\n\nComponent must now always refer to minecraft:block_transformer registry - existing inline components are removed\n\nChanged minecraft:attack_animation and minecraft:interact_animation\n\nThe duration field is now a non-negative integer\n\nLoot Tables\n\nLoot Table Types\n\nAdded\n\nminecraft:command_compute_default\n\nCurrently used for /compute default command\n\nIt takes the following parameters:\n\norigin , the position at which the command was executed\n\nthis entity, the @s entity of the command being executed (optional)\n\nAdded\n\nminecraft:command_compute_position\n\nCurrently used for /compute block command\n\nIt takes the following parameters:\n\nEverything included in minecraft:command_compute_default\n\nblock_entity , the block entity of the block at the position given in a command\n\nblock_state , the current state of the block at the position given in a command\n\nAdded\n\nminecraft:command_compute_entity\n\nCurrently used for /compute entity command\n\nIt takes the following parameters:\n\nEverything included in minecraft:command_compute_default\n\ntarget_entity , entity selected by the selector given in a command\n\nLoot Functions\n\nChanged minecraft:set_loot_table\n\nRemoved unused field type\n\nThe tag field, previously known as name , has been renamed to loot_table_id\n\nBlock Transformers\n\nAdded minecraft:block_transformer registry containing rules for transforming a block into another block\n\nFormat: list of objects with fields:\n\nblock_state_provider - Block State Provider, used to provide the state for the transformed block\n\nIf the Block State Provider returns no result (as by rule_based_state_provider , for example), the next rule in the list will be attempted\n\nThe set of Block State Providers are the same as the Block State Providers used in World Generation\n\nsound - optional field, Sound Event to play on interaction, e.g. minecraft:item.axe.strip\n\nIf not present, defaults to play no Sound Event\n\nparticle - optional field, particles to play on interaction\n\nIf not present, defaults to none\n\nnone\n\nscrape\n\nwax_on\n\nwax_off\n\ndisallowed_faces - optional field, list of Directions specifying which faces on the clicked Block that cannot be interacted with\n\nIf a disallowed face is interacted with, the next rule in the list will be attempted\n\nIf not present, defaults to an empty list\n\nValues:\n\nup\n\ndown\n\nnorth\n\nsouth\n\neast\n\nwest\n\nloot - optional Loot Table, the Loot Table to use for dropping items on a successful transformation, e.g. minecraft:till/rooted_dirt\n\nIf not present, defaults to using no Loot Table\n\ndrop_strategy - optional field, configures from where in the Block any loot should drop\n\nIf not present, defaults to from_middle\n\nValues:\n\nfrom_middle - from the middle of the Block\n\nclicked_face - from the face interacted with\n\nupdate_from_neighbors - optional Boolean, if the transformed block should update based on neighboring blocks. This allows e.g. fences to connect\n\nIf not present, defaults to true\n\ntransform_type - optional field, configures how nearby blocks should be affected by the transformation\n\nIf not present, defaults to single_block\n\nValues:\n\nsingle_block - only affects the Block interacted with\n\ncopper_chest - if input and output blocks are both copper chests of any weathering state, waxed or unwaxed, this transformation will affect both sides of a double chest\n\nconsume_on_use - optional Boolean, determines if the item should be consumed or not\n\nOnly applies to stackable items\n\nIf not present, defaults to true\n\nitem_damage_per_use - optional Integer, determines how much damage the item takes with each use\n\nOnly applies to non-stackable items\n\nIf not present, defaults to 0\n\nDefault values in vanilla:\n\nminecraft:shovel - default value for shovels\n\nminecraft:axe - default value for axes\n\nminecraft:hoe - default value for hoes\n\nWorld Generation\n\nNoise Settings\n\nRenamed preliminary_surface_level to chunk_surface_level\n\nThis Density Function is no longer implicitly interpolated across the entire chunk\n\nThe ore_veins_enabled field has been removed, and replaced by the minecraft:ore_vein Material Rule\n\nRemoved noise.size_horizontal and noise.size_vertical fields, these are now specified in the interpolated density function\n\nAdded optional debug_functions field - list of objects with fields, Density Function values to show in the chunk_generation_stats debug entry\n\nFields:\n\nlabel - string, label to identify this Density Function\n\nfunction - Density Function, the Density Function to compute and show at the player position\n\nIf not specified, no density function values will be shown\n\nMaterial Rules\n\nAdded\n\nminecraft:ore_vein\n\nFormat: object with fields:\n\nore_block - Block State, the ore block to place\n\nraw_ore_block - Block State, the raw ore block to place\n\nfiller_block - Block State, the filler block to place\n\nraw_ore_chance - float between 0 and 1, the probability for a raw_ore_block to be placed instead of an ore_block\n\ndensity - Density Function, the probability between 0 and 1 for the ore vein to replace a block\n\nIf 0 or lower, no block will be replaced\n\nrichness - Density Function, the probability between 0 and 1 for ore_block or raw_ore_block to be placed (as opposed to filler_block )\n\nIf 0 or lower, all blocks will be filler_block\n\nIf 1 or greater, no blocks will be filler_block\n\nfiller_gap - Density Function, acts as an override to richness : if positive, filler_block will always be placed\n\nChanged\n\nminecraft:noise\n\nThe following fields have been introduced:\n\nshift_x - optional Density Function, a domain warp to apply on x\n\nIf not specified, no warping will be applied (equivalent to 0 )\n\nshift_y - optional Density Function, a domain warp to apply on y\n\nIf not specified, no warping will be applied (equivalent to 0 )\n\nshift_z - optional Density Function, a domain warp to apply on z\n\nIf not specified, no warping will be applied (equivalent to 0 )\n\nRemoved\n\nminecraft:shifted_noise\n\nReplaced by minecraft:noise\n\nUpdated\n\nminecraft:interpolated\n\nAdded fields:\n\ncell_size_xz - positive int, size in blocks of the interpolation grid cells on the XZ axes\n\ncell_size_y - positive int, size in blocks of the interpolation grid cells on the Y axis\n\nUpdated\n\nminecraft:cache\n\n(renamed from\n\nminecraft:cache_once\n\n)\n\nNo format change\n\nRemoved\n\nminecraft:cache_2d\n\n,\n\nminecraft:cache_all_in_cell\n\n, and\n\nminecraft:flat_cache\n\nMay be replaced with minecraft:cache\n\nminecraft:slice may be used to always pick Y=0, as formerly handled by minecraft:flat_cache\n\nTags\n\nBlock Tags\n\nAdded #nether_portal_frame - blocks that can be used to create a Nether Portal\n\nAdded #conduit_effect_block - blocks that can be used to build a Conduit\n\nStructure Tags\n\nRenamed #on_woodland_explorer_maps to #on_woodland_mansion_maps\n\nRenamed #on_ocean_explorer_maps to #on_ocean_monument_maps\n\nRenamed #on_jungle_explorer_maps to #on_jungle_pyramid_maps\n\nRenamed #on_swamp_explorer_maps to #on_swamp_hut_maps\n\nRenamed #on_trial_explorer_map to #on_buried_trial_chambers_map\n\nFluid Tags\n\nAdded #axolotl_try_find_liquid for all liquids Axolotls are trying to find\n\nAdded #dolphin_try_find_liquid for all liquids Dolphins are trying to find\n\nAdded #frog_try_find_land_near_liquid for all liquids Frogs are trying to find land near to\n\nAdded #entity_floatable for all fluids that make entities float\n\nResource Pack Version 97\n\nItem Sprites\n\nRenamed item/trial_chamber_map.png to item/buried_trial_chambers_map.png\n\nRenamed item/jungle_temple_map.png to item/jungle_pyramid_map.png\n\nUI Sprites\n\nAdded new UI textures:\n\ngui/realms/friends.png\n\ngui/realms/minigames.png\n\ngui/realms/private_server.png\n\ngui/sprites/widget/realms_button.png\n\ngui/sprites/widget/realms_button_disabled.png\n\ngui/sprites/widget/realms_button_highlighted.png\n\nFixed bugs in 26.3 Snapshot 10\n\n[MC-102881](https://bugs.mojang.com/browse/MC-102881) - Shulkers do not emit any particles when teleporting\n\n[MC-245030](https://bugs.mojang.com/browse/MC-245030) - The \"Bee buzzes\" closed caption only appears when a bee buzzes for the first time\n\n[MC-254547](https://bugs.mojang.com/browse/MC-254547) - Villagers do not level up when exiting the world immediately after filling their experience bar\n\n[MC-258347](https://bugs.mojang.com/browse/MC-258347) - Endermen no longer create an extra trail of particles when teleporting\n\n[MC-265423](https://bugs.mojang.com/browse/MC-265423) - When villagers acquire enough experience to level up more than once, they only gain a single level\n\n[MC-268145](https://bugs.mojang.com/browse/MC-268145) - cache_once density functions don't work\n\n[MC-279586](https://bugs.mojang.com/browse/MC-279586) - Closed captions continue to fade when their sound plays again from farther away, causing visual delays in the overlay\n\n[MC-296368](https://bugs.mojang.com/browse/MC-296368) - The entity.happy_ghast.riding sound event displays no closed caption\n\n[MC-303360](https://bugs.mojang.com/browse/MC-303360) - Flat-cached shifted noise density functions are recalculated for every Y level\n\n[MC-306012](https://bugs.mojang.com/browse/MC-306012) - Armadillos can escape fenced areas when at the edge of the simulation distance\n\n[MC-306778](https://bugs.mojang.com/browse/MC-306778) - The fog color no longer transitions smoothly when the weather changes at night while under the Night Vision effect\n\n[MC-309872](https://bugs.mojang.com/browse/MC-309872) - The system freezes when pressing the Windows key with the \"Exclusive Fullscreen\" option enabled\n\n[MC-310139](https://bugs.mojang.com/browse/MC-310139) - Mob spawning checks for biomes incorrectly at biome borders\n\n[MC-310181](https://bugs.mojang.com/browse/MC-310181) - The commands.setworldspawn.failure.not_overworld string lowercases the dimension name \"Overworld\"\n\n[MC-310182](https://bugs.mojang.com/browse/MC-310182) - Some descriptive tooltip strings lack a period, unlike similar strings\n\n[MC-310184](https://bugs.mojang.com/browse/MC-310184) - The commands.bossbar.set.max.unchanged string abbreviates \"maximum\" to \"max\", unlike similar strings\n\n[MC-310186](https://bugs.mojang.com/browse/MC-310186) - The options.languageWarning string lacks a period, unlike similar strings\n\n[MC-310187](https://bugs.mojang.com/browse/MC-310187) - The commands.bossbar.get.visible.visible string uses \"shown\" instead of \"visible\", unlike similar strings\n\n[MC-310188](https://bugs.mojang.com/browse/MC-310188) - Some /tag list success strings always pluralize the word \"tags\"\n\n[MC-310233](https://bugs.mojang.com/browse/MC-310233) - Some strings that contain percentages have spaces before the percentage sign, unlike similar strings\n\n[MC-310236](https://bugs.mojang.com/browse/MC-310236) - Some strings use an ampersand instead of the word \"and\", unlike similar strings\n\n[MC-310544](https://bugs.mojang.com/browse/MC-310544) - Changing the difficulty in singleplayer now requires commands to be enabled\n\n[MC-310568](https://bugs.mojang.com/browse/MC-310568) - Significant performance regression on Intel dGPUs with the OpenGL rendering backend\n\n[MC-310634](https://bugs.mojang.com/browse/MC-310634) - The birch tree in the campsite_old_growth_birch_forest_4 abandoned camp structure never generates\n\n[MC-310635](https://bugs.mojang.com/browse/MC-310635) - /item override and /item fill with a contents slot source targeting the charged_projectiles component freezes the server for several seconds\n\n[MC-310665](https://bugs.mojang.com/browse/MC-310665) - The llama decoration texture of black carpets contains a stray transparent pixel\n\n[MC-310676](https://bugs.mojang.com/browse/MC-310676) - The savanna_lamp_post_01 village structure contains a trailing closing square bracket in the jigsaw block's NBT\n\n[MC-310693](https://bugs.mojang.com/browse/MC-310693) - The game sometimes freezes when attempting to open chests in abandoned camps that contain maps\n\n[MC-310719](https://bugs.mojang.com/browse/MC-310719) - copyTextureToBuffer binds depth textures as a color attachment with the OpenGL rendering backend\n\n[MC-310738](https://bugs.mojang.com/browse/MC-310738) - The names of exploration maps are inconsistent\n\n[MC-310776](https://bugs.mojang.com/browse/MC-310776) - The filled_map.jungle_temple string refers to jungle pyramids as \"jungle temples\"\n\n[MC-310784](https://bugs.mojang.com/browse/MC-310784) - Water flickers a lot when viewed from above on some systems\n\n[MC-310832](https://bugs.mojang.com/browse/MC-310832) - The clear region uses mip 0 dimensions while attaching a different mip level\n\n[MC-310886](https://bugs.mojang.com/browse/MC-310886) - test_instance.description.dimension displays as a raw translation key\n\n[MC-310941](https://bugs.mojang.com/browse/MC-310941) - No closed caption is produced by the sound played when riding a nautilus\n\n[MC-310971](https://bugs.mojang.com/browse/MC-310971) - Shelf mushrooms block saplings from growing\n\n[MC-310994](https://bugs.mojang.com/browse/MC-310994) - The tooltip for the \"Allow Commands\" button in the World Options screen doesn't appear after pressing it\n\n[MC-310995](https://bugs.mojang.com/browse/MC-310995) - Changing the difficulty using commands does not update its corresponding button in the World Options screen\n\n[MC-310996](https://bugs.mojang.com/browse/MC-310996) - Changing the default game mode does not update its corresponding button in the World Options screen\n\n[MC-311000](https://bugs.mojang.com/browse/MC-311000) - Toggling the \"Allow Commands\" option in the World Options menu no longer enables/disables other buttons right away\n\n[MC-311017](https://bugs.mojang.com/browse/MC-311017) - The glowing outline is inconsistent when wearing enchanted armor compared to unenchanted armor\n\n[MC-311022](https://bugs.mojang.com/browse/MC-311022) - Equipping boots with Soul Speed as they are broken allows the player to keep their attributes indefinitely\n\n[MC-311038](https://bugs.mojang.com/browse/MC-311038) - Local coordinates produce inaccurate results compared to previous versions\n\n[MC-311044](https://bugs.mojang.com/browse/MC-311044) - Straw beds Z-fight when placed in invisible item frames\n\n[MC-311064](https://bugs.mojang.com/browse/MC-311064) - Cows and Horses only Spawn in a unexplored chunk once\n\n[MC-311077](https://bugs.mojang.com/browse/MC-311077) - Players can forcibly change their game mode to Survival from the World Options menu after dying in hardcore worlds\n\n[MC-311093](https://bugs.mojang.com/browse/MC-311093) - Villagers still don't immediately level up when their experience bar is filled\n\n[MC-311094](https://bugs.mojang.com/browse/MC-311094) - Villager discounts do not apply until the trading window is closed and reopened\n\n[MC-311115](https://bugs.mojang.com/browse/MC-311115) - invulnerable_time is not retained when a mob converts to another mob, even though Invulnerable is\n\n[MC-311116](https://bugs.mojang.com/browse/MC-311116) - The name of trial explorer maps does not start with \"buried\", unlike ancient city & mineshaft maps\n\n[MC-311148](https://bugs.mojang.com/browse/MC-311148) - Shooting arrows at endermen riding vehicles does not play the arrow hitting sound\n\n[MC-311151](https://bugs.mojang.com/browse/MC-311151) - The block texture of poplar hanging signs is still inconsistent with the GUI texture\n\n[MC-311153](https://bugs.mojang.com/browse/MC-311153) - Endermen riding boats/minecarts aren't set on fire by flaming arrows\n\n[MC-311154](https://bugs.mojang.com/browse/MC-311154) - Arrows pass through endermen riding vehicles\n\n[MC-311162](https://bugs.mojang.com/browse/MC-311162) - Spectral arrows don't apply Glowing to endermen riding vehicles\n\n[MC-311164](https://bugs.mojang.com/browse/MC-311164) - Tipped arrows don't apply effects to endermen riding vehicles\n\n[MC-311188](https://bugs.mojang.com/browse/MC-311188) - Tridents pass through endermen riding vehicles\n\n[MC-311235](https://bugs.mojang.com/browse/MC-311235) - Upgrading a world from the 1.21.11 world format can cause data from other worlds to get saved inside it\n\n[MC-311273](https://bugs.mojang.com/browse/MC-311273) - The type field in the set_loot_table item modifier type conflicts with the type field that specifies the item modifier type\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/82cf54c229336e243fbf50d9f2a6a49734731d0d/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "我们成功更新到了26.3 Snapshot 10！这周，斑驳森林（Dappled Forest）的全景图被添加到了主菜单中，每次启动游戏都能感受到惬意的秋日氛围。此次更新还包含了许多技术上的改进和优化，快来看看吧！\n\n祝你采矿愉快！\n\n新功能\n\nRealms（游戏模式）\n\n新增了一个介绍Realms主要功能的界面\n\n可以通过“添加Realms”按钮进入该模式\n\n如果支持试用版，进入Realms时会自动显示相关信息\n\n变更\n\n主菜单的背景全景图现已更新为新的斑驳森林生物群系，并包含一个废弃营地\n\n将游戏模式切换器中的冒险模式图标更改为埋藏宝藏地图\n\n提升在寻找结构时的性能\n\n恢复了本发布周期中对“淹没”生物（Drowned）的行为和动画的修改\n\n对方块、物品和实体进行了少量调整\n\n现在，保护亡灵生物免受阳光伤害时，附魔也会作用于被损坏的物品\n\n食用“紫颂果实”（Chorus Fruit）后随机传送时，会显示指向传送方向的粒子效果\n\n探险者地图（Explorer Maps）\n\n以下探险者地图已重新命名，以便命名更加统一\n\n“海洋纪念碑探索地图”（Ocean Monument Explore Map）更名为“海洋纪念碑地图”（Ocean Monument Map）\n\n“沼泽小屋探索地图”（Swamp Hut Explorer Map）更名为“沼泽小屋地图”（Swamp Hut Map）\n\n“试炼密室探索地图”（Trial Chambers Explorer Map）更名为“埋藏的试炼密室地图”（Buried Trial Chambers Map）\n\n“Woodland Mansion Explorer Map” -> “Woodland Mansion Map”\n\n“Jungle Pyramid Explorer Map” -> “Jungle Pyramid Map”\n\n“无障碍功能（Accessibility）”\n\n字幕现在会指向范围内的最新音效\n\n“技术性变更”\n\n数据包的版本现在是 118.0\n\n资源包的版本现在是 97.0\n\n重新添加了“无摆动动画类型（none swing animation type）”\n\n这会影响「/swing」命令，以及「minecraft:attack_animation」と「minecraft:interact_animation」组件\n\n数据包版本 118\n\n命令\n\n新增了 compute 命令\n\n在各种上下文中评估 minecraft:number_provider\n\n在所有上下文中，origin 被设置为当前命令上下文的位置，而这个实体被设置为 @s\n\n语法：\n\n/compute <目标> <提供者> [<缩放>|整数] ，其中：\n\n<目标> - 可以是以下之一：\n\ndefault - 在 minecraft:command_compute_default 上下文执行提供者，此时仅支持 common 参数（位置和该实体）\n\nblock <位置> - 在 minecraft:commandCompute_position 上下文执行提供者，此时块的状态和位置取决于位置 <位置> 的块\n\nentity <实体选择器> - 在 minecraft:command_compute_entity 上下文执行提供者，此时 target_entity 被设置为选择器的结果\n\n<provider> - 可以是 minecraft:number_provider 注册表中的元素，也可以是内联值\n\n<scale> - 可选的比例值，默认为 1.0\n\n最终结果将乘以 <scale> 并四舍五入到负无穷大\n\ninteger - 用于启用整数模式的可选标志\n\n由于中间步骤的截断，即使 scale 为 1.0，这种模式也不等同于浮点数模式\n\n对数据的修改\n\n新增了 /data 修改命令：append|insert|merge|prepend|set，称为 compute\n\n新的计算来源会评估 minecraft:number_provider 并以整数或浮点数的形式返回结果\n\n语法：compute <target> <provider> [integer]，其中 target、provider 和 integer 的语法与 /compute 函数相同\n\n示例：/data modify storage foo bar set compute entity @n[type=minecraft:armor_stand] {type:score,target:{type:context,target:target_entity},score:baz}\n\n数据组件\n\n修改了 minecraft:consumable\n\n为 teleport_randomly consume 效果添加了一个新的可选字段\n\ndirectional_particles - 布尔值，用于决定是否在传送方向显示粒子轨迹\n\n如果该字段不存在，默认值为 true\n\n更新了 minecraft:block_transformer\n\n内容已被移至单独的注册表中\n\n组件现在必须始终引用 minecraft:block_transformer 注册表 - 现有的内联组件已被移除\n\n修改了 minecraft:attackAnimation 和 minecraft:interactAnimation\n\n`duration` 字段现在是一个非负整数\n\n战利品表（Loot Tables）\n\n战利品表类型（Loot Table Types）\n\n已添加（Added）\n\n`minecraft:command_compute_default`\n\n目前用于 `/compute default` 命令\n\n该命令接受以下参数：\n\n`origin`：命令执行的位置\n\n`this entity`：正在执行的命令的 @s 实体（可选）\n\n已添加（Added）\n\nminecraft:commandComputePosition\n\n当前用于 /compute block 命令\n\n它接受以下参数：\n\n包含在 minecraft:commandComputeDefault 中的所有内容\n\nblock_entity\n\nblock_state\n\n已添加\n\nminecraft:commandComputeEntity\n\n当前用于 /compute entity 命令\n\n它接受以下参数：\n\nMinecraft:commandcompute_default 中包含的所有内容\n\ntarget_entity\n\n战利品功能\n\n修改了 minecraft:set_loot_table\n\n移除了未使用的字段类型\n\n标签字段（以前称为 name）已被重命名为 loot_table_id\n\n方块转换器\n\n添加了 minecraft:block_transformer registry，其中包含将一个方块转换为另一个方块的规则\n\n格式：包含字段的对象列表\n\nblock_state_provider - 用于为转换后的方块提供状态的方块状态提供者\n\n如果 Block State Provider 没有返回结果（例如使用 rule_based_state_provider 时），则会尝试列表中的下一个规则\n\nBlock State Providers 的集合与用于世界生成的 Block State Providers 是相同的\n\nsound - 可选字段，表示交互时播放的声音事件，例如 minecraft:item.axe.strip\n\n如果该字段不存在，则默认不播放任何声音事件\n\nparticle - 可选字段，表示交互时显示的粒子效果\n\n如果该字段不存在，则默认不显示任何粒子效果\n\nnone\n\nscrape\n\nwax_on\n\nwax_off\n\ndisallowed_faces - 可选字段，用于指定被点击方块上哪些面不能被交互\n\n如果尝试与被禁止的面进行交互，系统将尝试执行列表中的下一个规则\n\n如果该字段不存在，系统将使用空列表作为默认值\n\n可设置的值包括：\n\n上\n\n下\n\n北\n\n南\n\n东\n\n西\n\n战利品 - 可选：战利品表（Loot Table）。该表用于在成功变换后决定掉落哪些物品，例如：`minecraft:till/rooted_dirt`\n\n如果没有指定战利品表，则默认不使用战利品表\n\n掉落策略（drop_strategy）- 可选字段，用于配置战利品应从块（Block）的哪个位置掉落\n\n如果没有指定掉落策略，则默认从块的中心（from_middle）掉落\n\n配置选项（Values）\n\nfrom_middle - 从块的中心位置掉落\n\n点击面（clicked_face）- 指定与哪些面进行交互\n\nupdate_from_neighbors - 可选布尔值。如果设置为true，变换后的块将根据相邻块的状态进行更新；例如，这可以使得围栏（fences）能够正确连接\n\n如果没有指定该值，则默认为true\n\n变换类型（transform_type）- 可选字段，用于配置附近块如何受到变换的影响\n\n如果未指定，默认为 single_block\n\n值：\n\nsingle_block - 仅影响被交互的方块\n\ncopper_chest - 如果输入和输出方块都是任何风化状态的铜箱子（无论是打蜡的还是未打蜡的），这种变化将同时影响双层的铜箱子两侧\n\nconsume_on_use - 可选布尔值，决定该物品是否会被消耗\n\n仅适用于可堆叠物品\n\n如果未指定，默认为 true\n\nitem_damage_per_use - 可选整数值，决定每次使用物品时受到的伤害量\n\n仅适用于不可堆叠物品\n\n如果未指定，默认为 0\n\n原版游戏中的默认值：\n\nminecraft:shovel - 铲子的默认值\n\nminecraft:axe - 斧头的默认值\n\nminecraft:hoe - 锄头的默认值\n\n世界生成\n\n噪音设置\n\n将 preliminary_surface_level 重命名为 chunk_surface_level\n\n此密度函数不再在整个区块中隐式插值\n\nore_veins_enabled 字段已被移除，替换为 minecraft:ore_vein Material Rule\n\n已移除 noise.size_horizontal 和 noise.size_vertical 字段，这些参数现在在插值密度函数中指定\n\n新增了可选的 debug_functions 字段——用于在 chunk_generation_stats 调试信息中显示的对象列表及其对应的 Density Function 值\n\n字段（Fields）：\n\nlabel：用于标识该 Density Function 的字符串标签\n\nfunction：用于计算并在玩家位置显示的 Density Function\n\n如果未指定，则不会显示任何 Density Function 值\n\n材质规则（Material Rules）\n\n已添加（Added）\n\nminecraft:ore_vein\n\n格式：包含各个字段的对象（Format: object with fields）\n\nore_block：要放置的矿块状态（Block State）\n\n原始矿石块 - 方块状态，用于放置的原始矿石块\n\n填充块 - 方块状态，用于放置的填充块\n\n原始矿石概率 - 介于0到1之间的浮点数，表示放置原始矿石块而非矿石块的概率\n\n密度函数 - 介于0到1之间的概率值，表示矿脉替换现有方块的概率\n\n如果密度值为0或更低，则不会替换任何方块\n\n丰富度 - 密度函数，表示放置矿石块或原始矿石块（而非填充块）的概率\n\n如果丰富度值为0或更低，则所有方块都将被替换为填充块\n\n如果丰富度值为1或更高，则不会有任何方块被替换为填充块\n\n填充间隙 - 密度函数的作用是覆盖丰富度的设置：如果该值为正数，填充块将始终被放置\n\n已修改\n\nminecraft:noise\n\n引入了以下字段：\n\nshift_x - 可选：密度函数，用于对 x 轴进行域变换\n\n如果未指定，则不进行任何变换（相当于 0）\n\nshift_y - 可选：密度函数，用于对 y 轴进行域变换\n\n如果未指定，则不进行任何变换（相当于 0）\n\nshift_z - 可选：密度函数，用于对 z 轴进行域变换\n\n如果未指定，则不进行任何变换（相当于 0）\n\n已移除\n\nminecraft:shifted_noise\n\n替换为 minecraft:noise\n\n更新\n\nminecraft:interpolated\n\n添加了字段：\n\ncell_size_xz - 正整数，表示 XZ 轴上的插值网格单元的大小（以方块为单位）\n\ncell_size_y - 正整数，表示 Y 轴上的插值网格单元的大小（以方块为单位）\n\n更新\n\nminecraft:cache\n\n(从原名称重命名为)\n\nminecraft:cache_once\n\n无格式更改\n\n已移除\n\nminecraft:cache_2d\n\nminecraft:cache_all_in_cell\n\n，以及\n\nminecraft:flat_cache\n\n可能会被 minecraft:cache 取代\n\n现在可以使用 minecraft:slice 来始终选择 Y=0 的位置，这之前是由 minecraft:flat_cache 处理的\n\n标签\n\n方块标签\n\n新增了 #nether_portal_frame 方块——可用于创建下界传送门\n\n新增了 #conduit_effect_block 方块——可用于建造导管系统\n\n结构标签\n\n#on_woodland_explorer_maps\n\n#on_ocean_explorer_maps\n\n#on_jungle_explorer_maps\n\n#on_swamp_explorer_maps\n\n#on_trial_explorer_map\n\n流体标签\n\n为所有液体添加了 #axolotl_try_find_liquid；美西螈正在尝试寻找这些液体\n\n为所有液体添加了 #dolphin_try_find_liquid；海豚也在尝试寻找这些液体\n\n为所有液体添加了 #frog_try_find.land_near_liquid；青蛙正在尝试在液体附近寻找陆地\n\n为所有能让实体漂浮的液体添加了 #entity_floatable\n\n资源包版本 97\n\n物品精灵\n\n将 item/trial_chamber_map.png 重命名为 item/buried_trial_chambers_map.png\n\n将 item/jungle_temple_map.png 重命名为 item/jungle_pyramid_map.png\n\n用户界面精灵\n\n添加了新的用户界面纹理\n\ngui/realms/friends.png\n\ngui/realms/minigames.png\n\ngui/realms/private_server.png\n\ngui/sprites/widget/realms_button.png\n\ngui/sprite/widget/realms_button_disabled.png\n\ngui/sprite/widget/realms_button.highlighted.png\n\n修复了 26.3 快照 10 中的漏洞\n\n[MC-102881](https://bugs.mojang.com/browse/MC-102881) - 大嘴蛇在传送时不会释放任何粒子效果\n\n[MC-245030](https://bugs.mojang.com/browse/MC-245030) - ‘蜜蜂嗡嗡声’的字幕仅在大蜜蜂第一次发出声音时才会显示\n\n[MC-254547](https://bugs.mojang.com/browse/MC-254547) - 村民在经验条满后立即退出游戏世界时不会升级\n\n[MC-258347](https://bugs.mojang.com/browse/MC-258347) - 炎魔在传送时不会再产生额外的颗粒效果\n\n[MC-265423] - 当村民获得的经验足以让他们升级多次时，他们只会升一级\n\n[MC-268145] - `cache_once` 相关的密度函数无法正常工作\n\n[MC-279586] - 当字幕中的声音从远处重新播放时，字幕仍然会继续淡出，导致覆盖层出现视觉延迟\n\n[MC-296368] `entity.happy_ghast.riding` 的音效事件没有显示字幕\n\n[MC-303360](https://bugs.mojang.com/browse/MC-303360) - 对于每个 Y 层，扁平缓存的噪声密度函数会被重新计算\n\n[MC-306012](https://bugs.mojang.com/browse/MC-306012) - 狐狸在模拟距离的边缘时可以逃离围栏区域\n\n[MC-306778] - 在夜间天气变化时，如果启用夜视效果，雾的颜色不再平滑过渡\n\n[MC-309872] - 当启用“独占全屏”选项并按下 Windows 键时，系统会冻结\n\n[MC-310139] - 怪物在生物群系边界处错误地检测生物群系\n\n[MC-310181](https://bugs.mojang.com/browse/MC-310181) - `commands.setworldspawn.failure.not_overworld` 命令会将维度名称 \"Overworld\" 转换为小写\n\n[MC-310182](https://bugs.mojang.com/browse/MC-310182) - 一些描述性工具提示字符串缺少句点，与类似的字符串不同\n\n[MC-310184](https://bugs.mojang.com/browse/MC-310184) - `commands.bossbar.set.max.unchanged` 命令会将 \"maximum\" 简写为 \"max\"，与类似的字符串不同\n\n[MC-310186](https://bugs.mojang.com/browse/MC-310186) - `options.languageWarning` 字符串缺少句点，与类似的字符串不同\n\n[MC-310187](https://bugs.mojang.com/browse/MC-310187) - `commands.bossbar.get-visible.visible` 命令使用 \"shown\" 而不是 \"visible\"，与类似的字符串不同\n\n[MC-310188](https://bugs.mojang.com/browse/MC-310188) - 某些包含标签列表的字符串总是将“tags”这个词复数化\n\n[MC-310233](https://bugs.mojang.com/browse/MC-310233) - 包含百分比的某些字符串在百分号前有空格，这与其他类似的字符串不同\n\n[MC-310236](https://bugs.mojang.com/browse/MC-310236) - 某些字符串使用“&”符号代替“and”这个词，这与其他类似的字符串不同\n\n[MC-310544](https://bugs.mojang.com/browse/MC-310544) - 现在要在单人游戏中改变难度，需要先启用相关命令\n\n[MC-310568](https://bugs.mojang.com/browse/MC-310568) - 使用 OpenGL 渲染后端的英特尔显卡性能出现显著下降\n\n[MC-310634](https://bugs.mojang.com/browse/MC-310634) - 在废弃营地结构（campsite_old_growth_birch_forest_4）中，桦树永远不会生成\n\n[MC-310635](https://bugs.mojang.com/browse/MC-310635) - 使用物品覆盖功能或通过内容槽填充带有‘charged_projectiles’组件的物品时，会导致服务器卡顿数秒\n\n[MC-310665] - 黑色地毯的羊驼装饰纹理中存在一个多余的半透明像素\n\n[MC-310676] - 在savanna_lamp_post_01村庄结构中，拼图方块的NBT数据中包含一个多余的闭合方括号\n\n[MC-310693] - 在尝试打开废弃营地中的装有地图的箱子时，游戏有时会卡顿\n\n[MC-310719] - 函数copyTextureToBuffer在OpenGL渲染后台将深度纹理作为颜色附件进行绑定\n\n[MC-310738](https://bugs.mojang.com/browse/MC-310738) - 探索地图的名称不一致\n\n[MC-310776](https://bugs.mojang.com/browse/MC-310776) - 在代码中，filled_map.jungle_temple 将丛林金字塔错误地称为 \"jungle temples\"\n\n[MC-310784](https://bugs.mojang.com/browse/MC-310784) - 在某些系统上，从上方看水面时水面会有很多闪烁现象\n\n[MC-310832] - 在标记为 \"clear region\" 的区域中，使用的 mip 级别与实际设置不符\n\n[MC-310886] - test_instance.descriptionDimension 的显示格式是原始的翻译键\n\n[MC-310941] - 骑着鹦鹉螺号时，播放的声音没有生成字幕\n\n[MC-310971](https://bugs.mojang.com/browse/MC-310971) - 阻止生长架子蘑菇的幼苗\n\n[MC-310994](https://bugs.mojang.com/browse/MC-310994) - 点击“World Options”屏幕中的“允许命令”按钮后，相关提示信息未显示\n\n[MC-310995] - 使用命令更改难度时，相应的“World Options”屏幕按钮未更新\n\n[MC-310996] - 更改默认游戏模式时，相应的“World Options”屏幕按钮未更新\n\n[MC-311000] - 在“World Options”菜单中切换“允许命令”选项后，其他按钮不会立即生效/失效\n\n[MC-311017](https://bugs.mojang.com/browse/MC-311017) - 穿着附魔盔甲时，发光轮廓的显示效果与穿着未附魔盔甲时不一致\n\n[MC-311022](https://bugs.mojang.com/browse/MC-311022) - 当给鞋子装备“灵魂速度”效果（尽管该效果已损坏）时，玩家可以永久保持其属性不变\n\n[MC-311038](https://bugs.mojang.com/browse/MC-311038) - 与之前的版本相比，当前版本中的本地坐标计算结果不准确\n\n[MC-311044] - 当稻草床放置在隐形物品框中时，会出现 Z 轴方向的异常行为\n\n[MC-311064] - 奶牛和马只会在未被探索过的区块中生成一次\n\n[MC-311077] - 玩家在 hardcore 模式下死亡后，可以通过世界选项菜单强制将游戏模式切换回生存模式\n\n[MC-311093] - 村民在经验条满时仍未立即升级\n\n[MC-311094] - 村民的折扣仅在交易窗口关闭并重新打开后才会生效\n\n[MC-311115] - 当怪物变种时，无敌状态不会被保留\n\n[MC-311116] - 试炼探索者地图的名称不以‘buried’开头，与古代城市和矿井地图不同\n\n[MC-311148] - 向乘坐载具的末影人射击时，不会播放箭矢击中的声音\n\n[MC-311151](https://bugs.mojang.com/browse/MC-311151) - 杨树制作的手写牌的纹理仍然与游戏界面的纹理不一致\n\n[MC-311153](https://bugs.mojang.com/browse/MC-311153) - 乘坐小船或矿车的末影人不受到燃烧箭的攻击\n\n[MC-311154](https://bugs.mojang.com/browse/MC-311154) - 箭可以穿过乘坐载具的末影人\n\n[MC-311162](https://bugs.mojang.com/browse/MC-311162) - 幽灵箭不会对乘坐载具的末影人施加“发光”效果\n\n[MC-311164](https://bugs.mojang.com/browse/MC-311164) - 带有特效的箭也不会对乘坐载具的末影人产生效果\n\n[MC-311188](https://bugs.mojang.com/browse/MC-311188) - 长矛可以穿过乘坐载具的末影人\n\n[MC-311235](https://bugs.mojang.com/browse/MC-311235) - 将世界从 1.21.11 版本格式升级时，可能会导致其他世界的数据被保存到当前世界中\n\n[MC-311273](https://bugs.mojang.com/browse/MC-311273) - `set_loot_table` 物品修饰符中的 `type` 字段与指定物品修饰符类型的 `type` 字段存在冲突\n\n获取快照\n\n快照功能适用于 Minecraft: Java 版。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“Installations”选项卡中启用快照功能\n\n**测试新版本可能会导致你的世界损坏，因此请进行备份，或者在其他文件夹中运行它们**\n\n跨平台服务器 JAR 文件\n\n[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/82cf54c229336e243fbf50d9f2a6a49734731d0d/server.jar)\n\n在这里报告漏洞：\n\n[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，欢迎加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

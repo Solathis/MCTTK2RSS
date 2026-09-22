@@ -1,0 +1,1198 @@
+{
+  "title": "Minecraft 26.4 Snapshot 1",
+  "translated_title": "Minecraft 26.4 快照 1",
+  "release_date": "2026-09-22T14:30:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-1",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-1/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Welcome to the first snapshot of 26.4! We're kicking things off with a range of technical updates and improvements, including Vulkan becoming the default graphics API.",
+      "translated_text": "欢迎来到 26.4 的第一个快照！我们首先带来了一系列技术更新和改进，其中包括将 Vulkan 设为默认的图形 API。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "变更",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Upgrading worlds from before Caves and Cliffs will now also generate sulfur caves below old chunks",
+      "translated_text": "升级到 Caves and Cliffs 之前的世界时，现在也会在旧区块下方生成硫磺洞穴",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对块、物品和实体的小幅调整",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Red and Brown Mushrooms can now be placed on any block with a solid top face regardless of lighting conditions",
+      "translated_text": "红色和棕色的蘑菇现在可以放置在任何顶部为实心的块上，不受光照条件的影响",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "They can still not spread unless the brightness is less than 13, or their support block overrides light requirements",
+      "translated_text": "不过它们仍然无法传播，除非亮度低于 13，或者它们的支撑块覆盖了光照要求",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "h3",
+      "source_text": "\"Graphics API\" Video Setting",
+      "translated_text": "\"图形 API\" 视频设置",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "\"Default\" now behaves the same as \"Prefer Vulkan\"",
+      "translated_text": "\"默认\" 设置现在与 \"优先使用 Vulkan\" 设置的行为相同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "The game will no longer change the graphics API setting automatically if a startup crash is detected.",
+      "translated_text": "如果检测到启动时发生崩溃，游戏将不再自动更改图形 API 设置。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术变更",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "The Data Pack version is now 122.0",
+      "translated_text": "数据包版本现已更新至 122.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 98.0",
+      "translated_text": "资源包版本现已更新至 98.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "h3",
+      "source_text": "Network Protocol",
+      "translated_text": "网络协议",
+      "meta": {}
+    },
+    {
+      "id": "b0015",
+      "type": "h4",
+      "source_text": "Added minecraft:mod_list Custom Packet Payload",
+      "translated_text": "新增了 minecraft:mod_list 自定义数据包内容",
+      "meta": {}
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "This packet is intended to inform servers about client mods to simplify debugging",
+      "translated_text": "此数据包用于向服务器通报客户端所使用的模组，以便简化调试过程",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Vanilla client sends an empty packet at the start of configuration phase, as it does not know about any mods - that is still a responsibility of 3rd-party modding platforms",
+      "translated_text": "原始客户端在配置阶段会发送一个空数据包，因为它不知道客户端使用的是哪些模组——这仍然是第三方模组平台的职责",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h4",
+      "source_text": "Modified minecraft:intention Packet",
+      "translated_text": "修改了 minecraft:intention 数据包",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "The host field in the serverbound intention packet can now hold additional parameters (previously it stored only the domain name used for connecting to a server)",
+      "translated_text": "服务器返回的 intention 数据包中的 host 字段现在可以携带额外参数（之前仅存储用于连接服务器的域名）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "The new format is similar to URI query strings - the domain can now optionally be followed by a ? character and then followed by key=value pairs separated by a & character",
+      "translated_text": "新格式类似于 URI 查询字符串——现在可以在域名后可选地添加一个？字符，随后是使用 & 字符分隔的键值对",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Empty values can be omitted (including = sign)",
+      "translated_text": "空值可以省略（包括等号 =）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Keys and values are escaped according to the standard URI rules (\"percent-encoded component\")",
+      "translated_text": "键和值会按照标准的 URI 规则进行转义（“百分号编码”）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Keys starting with _ are reserved for vanilla use",
+      "translated_text": "以 _ 开头的键被保留用于原版 Minecraft（vanilla）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Example: example.com?key1=value2&key2",
+      "translated_text": "示例：example.com?key1=value2&key2",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "Users can now input properties in any \"Server Address\" field in the server list",
+      "translated_text": "用户现在可以在服务器列表中的任何“服务器地址”字段中输入属性",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "Additionally, any address in form of <id>@<host> will be parsed as <host>?_id=<id>",
+      "translated_text": "此外，任何形如 <id>@<host> 的地址都会被解析为 <host>?_id=<id>",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "If a server uses SRV DNS records, the host field will contain both original and resolved domains",
+      "translated_text": "如果服务器使用 SRV DNS 记录，主机字段将包含原始域名和解析后的域名",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "If the resolved domain is different from the original domain, the resolved one will be used as the \"primary\" one, while the original one will be added as _o (\"origin\") property",
+      "translated_text": "如果解析出的域名与原始域名不同，解析出的域名将被用作“主要”域名，而原始域名将被添加为 `_o`（“origin”）属性",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Example host string: <redirected domain>?_o=<original domain>:<original port> , while the port field in the intention packet will be set to the resolved port value",
+      "translated_text": "示例主机字符串：`<重定向后的域名>?_o=<原始域名>:<原始端口>`，同时 `intention` 数据包中的端口字段将被设置为解析出的端口值",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "The field size has been extended to 1024 characters",
+      "translated_text": "该字段的大小已扩展到 1024 个字符",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "Note: since the minecraft:intent packet is unencrypted, properties should not be used for any security-sensitive purpose",
+      "translated_text": "注意：由于 `minecraft:intent` 数据包是未加密的，因此不应将其用于任何安全敏感的用途",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "h4",
+      "source_text": "Modified minecraft:transfer Packet",
+      "translated_text": "修改了 `minecraft:transfer` 数据包",
+      "meta": {}
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Added properties field - a string to string map of properties that will be added to the host field in the minecraft:intent packet sent to the target server",
+      "translated_text": "添加了 `properties` 字段——这是一个字符串到字符串的映射，其中包含将添加到发送到目标服务器的 `minecraft:intent` 数据包中的 `host` 字段的属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "h3",
+      "source_text": "Dedicated Server Properties",
+      "translated_text": "专用服务器属性",
+      "meta": {}
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Added allowed-connection-ids",
+      "translated_text": "添加了 `allowed-connection-ids` 属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "A list of comma-separted ids",
+      "translated_text": "一个以逗号分隔的 ID 列表",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "If non-empty, the server will match the values against _id property in minecraft:intent packet",
+      "translated_text": "如果该字段不为空，服务器会将其值与 minecraft:intent 包中的 _id 属性进行匹配",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "If there is no match, the server will reject the connection",
+      "translated_text": "如果没有匹配结果，服务器将拒绝该连接请求",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "This works both for both status and login connections, so any user connecting without the correct _id in the server address will not see the status and will not be able to join the server",
+      "translated_text": "这一规则既适用于状态请求，也适用于登录请求；因此，任何在服务器地址中缺少正确 _id 的用户都无法查看服务器状态，也无法加入服务器",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "Added status-contact-details field",
+      "translated_text": "新增了 status-contact-details 字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "If non-empty, the value of this field will be sent in the minecraft:status_response packet JSON payload under the contact property",
+      "translated_text": "如果该字段不为空，其值将作为 minecraft:status_response 包中的 contact 属性的一部分被发送",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "This value is meant to be used to signal a way to contact the server owners about the server, even if there is no website or other information about it",
+      "translated_text": "该字段的用途是提供一种方式，用于向服务器所有者报告服务器的相关问题，即使服务器没有官方网站或其他相关信息",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "This field is meant to be human-readable, but there are no other restrictions on field format",
+      "translated_text": "该字段应便于人类阅读，但对字段格式没有其他具体要求",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "Added enable-legacy-status field",
+      "translated_text": "添加了 `enable-legacy-status` 字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "This option allows disabling existing legacy (pre-1.7) server status and ping protocol handling",
+      "translated_text": "此选项允许禁用现有的旧版（1.7版之前的）服务器状态和ping协议处理",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "To preserve existing functionality, value defaults to true",
+      "translated_text": "为保留现有功能，该字段的默认值为 `true`",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Note: enable-status needs to be set for any status information (modern or legacy) to be set",
+      "translated_text": "注意：必须先设置 `enable-status`，才能设置任何状态信息（无论是现代版本还是旧版）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "h2",
+      "source_text": "Data Pack Version 122.0",
+      "translated_text": "数据包版本 122.0",
+      "meta": {}
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Entries for different biomes in multi-noise biome sources can no longer overlap across all noise parameters with the same offset",
+      "translated_text": "在多噪声生物群系源中，不同生物群系的条目不能再在具有相同偏移量的所有噪声参数上重叠",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "The fillbiome command will now fill biomes with block accuracy",
+      "translated_text": "`fillbiome` 命令现在会以精确的方块位置来填充生物群系",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "NBT conversion from floating point types to integer types now always converts to the closest possible valid number after rounding down",
+      "translated_text": "从浮点类型到整数类型的NBT转换现在总是向下取整后转换为最接近的有效数值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "特性（Features）",
+      "meta": {}
+    },
+    {
+      "id": "b0055",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改（Changed）",
+      "meta": {}
+    },
+    {
+      "id": "b0056",
+      "type": "text",
+      "source_text": "straight_trunk_placer",
+      "translated_text": "直树放置器（straight_trunk_placer）",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "Added trunk_width field",
+      "translated_text": "新增了树干宽度属性（Added trunk_width field）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "optional int provider, the width of the trunk centered around the origin",
+      "translated_text": "可选的整型参数：树干的中心距离原点的距离（optional int parameter: the distance of the trunk centered around the origin）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "defaults to 1.0",
+      "translated_text": "默认值为1.0（Defaults to 1.0）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h4",
+      "source_text": "Placed Features",
+      "translated_text": "放置特性（Placed Features）",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "The possible domain in the XZ plane of Placed Features included in biomes is now validated",
+      "translated_text": "现在可以验证放置特性在生物群系中的XZ平面内的有效位置（The possible domain in the XZ plane of Placed Features included in biomes is now validated）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Feature placement can only occur within a 3x3 chunk region: as such, it is not valid for a Placed Feature to select a position outside of that range",
+      "translated_text": "特性放置只能在3x3的区块区域内进行；因此，放置特性时不能选择该范围之外的位置（Feature placement can only occur within a 3x3 chunk region; it is not valid for a Placed Feature to select a position outside of that range）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "Note: the size of the feature itself is not currently taken into consideration, which may still overflow the chunk",
+      "translated_text": "注意：目前没有考虑特性本身的大小，它仍可能超出区块的范围（Note: the size of the feature itself is not currently taken into consideration, which may still overflow the chunk）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "h4",
+      "source_text": "Placement Modifiers",
+      "translated_text": "放置修饰符（Placement Modifiers）",
+      "meta": {}
+    },
+    {
+      "id": "b0065",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改（Changed）",
+      "meta": {}
+    },
+    {
+      "id": "b0066",
+      "type": "text",
+      "source_text": "cuboid",
+      "translated_text": "长方体（cuboid）",
+      "meta": {}
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "xz_size and y_size have been adjusted to represent the actual size of the cuboid, instead of implicitly being 1 block larger",
+      "translated_text": "xz_size 和 y_size 已调整为长方体的实际大小，而不再是默认的比实际大 1 个方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "As such, an xz_size of 2 will actually produce a 2x2 cuboid instead of 3x3",
+      "translated_text": "因此，xz_size 为 2 时实际生成的是一个 2x2 的长方体，而不是 3x3 的",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改（Changed）",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "text",
+      "source_text": "fixed_placement",
+      "translated_text": "修复了放置问题（Fixed placement issue）",
+      "meta": {}
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "positions now requires at least one element",
+      "translated_text": "现在位置（positions）至少需要一个元素（positions now require at least one element）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "h4",
+      "source_text": "Noise Settings",
+      "translated_text": "噪声设置（Noise Settings）",
+      "meta": {}
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "The default_block field has been removed",
+      "translated_text": "默认的 block 字段已被移除（The default_block field has been removed）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "This is now always air - any other block should be defined by the Material Rule",
+      "translated_text": "现在这个区域始终是空气；其他任何方块都应该由材质规则（Material Rule）来定义",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "h4",
+      "source_text": "Material Conditions",
+      "translated_text": "材质条件（Material Conditions）",
+      "meta": {}
+    },
+    {
+      "id": "b0076",
+      "type": "text",
+      "source_text": "Updated",
+      "translated_text": "已更新",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "text",
+      "source_text": "minecraft:steep",
+      "translated_text": "minecraft:steep",
+      "meta": {}
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "No longer considers height modifications from Eroded Badlands \"surface extensions\" in an order-dependent way",
+      "translated_text": "不再以依赖顺序的方式考虑风化坏地（Eroded Badlands）的“地表扩展”（surface extensions）对高度的影响",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签（Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0080",
+      "type": "h4",
+      "source_text": "Biome Tags",
+      "translated_text": "生物群系标签（Biome Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "Added #generated_in_below_zero_retrogen - biomes to generate below worlds that predate Caves and Cliffs",
+      "translated_text": "新增了 #generated_in_below_zero_retrogen 标签——用于生成位于洞穴（Caves）和悬崖（Cliffs）存在之前的世界",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "Added #is_cave collection tag",
+      "translated_text": "新增了 #is_cave 收集标签（collection tag）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "h2",
+      "source_text": "Resource Pack Version 98.0",
+      "translated_text": "资源包版本 98.0",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器与后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0085",
+      "type": "h4",
+      "source_text": "Order-Independent Transparency shaders",
+      "translated_text": "与顺序无关的透明度着色器",
+      "meta": {}
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "The OIT algorithm was simplified by replacing the wavelet-based mathematics with depth bin-based accumulation",
+      "translated_text": "OIT 算法通过用基于深度分区的累积方式替换基于小波的数学运算来简化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Slightly improved performance at least on some devices",
+      "translated_text": "至少在某些设备上，性能略有提升",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "Reduced floating point precision issues on average",
+      "translated_text": "平均而言，减少了浮点精度问题",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "OIT_WAVELET_RANK shader define was removed",
+      "translated_text": "移除了 OIT_WAVELET_RANK 着色器定义",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "OIT_COEFF_COUNT shader define was replaced by OIT_NUMBER_OF_DEPTH_BINS",
+      "translated_text": "OIT_COEFF_COUNT 着色器定义被替换为 OIT_NUMBER_OF_DEPTH_BINS",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "OIT_COEFF_ATTACHMENT_COUNT shader define was renamed to OIT_TRANSMITTANCE_TARGET_COUNT",
+      "translated_text": "OIT_COEFF_attachment_COUNT 着色器定义被重命名为 OIT_TRANSMITTANCETARGET_COUNT",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 1",
+      "translated_text": "修复了 26.4 快照 1 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "[MC-8959](https://bugs.mojang.com/browse/MC-8959) - The player automatically jumps when pressing against a block while in water",
+      "translated_text": "[MC-8959](https://bugs.mojang.com/browse/MC-8959) - 玩家在水中的时候碰到方块时会发生自动跳跃现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "[MC-44560](https://bugs.mojang.com/browse/MC-44560) - When pushed to the edge of water or lava, entities jump by themselves",
+      "translated_text": "[MC-44560](https://bugs.mojang.com/browse/MC-44560) - 当生物被推到水边或熔岩边缘时，它们会自动跳起来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "[MC-50749](https://bugs.mojang.com/browse/MC-50749) - Jumping into water against a wall causes the player to bounce",
+      "translated_text": "[MC-50749](https://bugs.mojang.com/browse/MC-50749) - 当玩家从墙上跳进水里时，会遇到弹跳现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "[MC-123848](https://bugs.mojang.com/browse/MC-123848) - Item frames (and items within) drop atop the block they're attached to instead of under it when removed from a ceiling",
+      "translated_text": "[MC-123848](https://bugs.mojang.com/browse/MC-123848) - 当物品从天花板上掉下来时，物品框架（以及物品本身）会落在所附着的方块上方，而不是下方",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-135211](https://bugs.mojang.com/browse/MC-135211) - Entities automatically jump when falling into 1-block-deep water from certain heights",
+      "translated_text": "[MC-135211](https://bugs.mojang.com/browse/MC-135211) - 当生物从特定高度掉入1格深的水中时，会自动跳起来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-135212](https://bugs.mojang.com/browse/MC-135212) - Entities automatically jump when falling into water of any depth from certain heights",
+      "translated_text": "[MC-135212](https://bugs.mojang.com/browse/MC-135212) - 当生物从任何高度掉入水中时，会自动跳起来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-262252](https://bugs.mojang.com/browse/MC-262252) - The generation of lush caves and dripstone caves is poorly defined",
+      "translated_text": "[MC-262252] - 茂盛洞穴和滴石洞穴的生成机制不够明确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-276879](https://bugs.mojang.com/browse/MC-276879) - /data truncates floats when casting to longs, but rounds down in all other cases",
+      "translated_text": "[MC-276879](https://bugs.mojang.com/browse/MC-276879) - 在将浮点数转换为长整型时，数据会被截断；但在其他所有情况下都会向下取整",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-278651](https://bugs.mojang.com/browse/MC-278651) - The host name in handshake packets for SRV records is inconsistent",
+      "translated_text": "[MC-278651](https://bugs.mojang.com/browse/MC-278651) - SRV 记录中的主机名不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-296053](https://bugs.mojang.com/browse/MC-296053) - Item frames don't update properly when modifying their Facing NBT tag",
+      "translated_text": "[MC-296053] - 修改物品的方向 NBT 标签时，物品帧不会正确更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-299060](https://bugs.mojang.com/browse/MC-299060) - Setting item frames' direction with commands can cause desyncs",
+      "translated_text": "[MC-299060] - 使用命令设置物品方向可能导致数据不同步",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-303702](https://bugs.mojang.com/browse/MC-303702) - Small gaps still appear in item models",
+      "translated_text": "[MC-303702] - 物品模型中仍然存在小间隙",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-307065](https://bugs.mojang.com/browse/MC-307065) - Missing optimization for the side faces of the builtin/generated item model",
+      "translated_text": "[MC-307065] - 内置生成的物品模型的侧面没有进行优化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-310051](https://bugs.mojang.com/browse/MC-310051) - Floating point cancellation artifacts from bits.fsh",
+      "translated_text": "[MC-310051](https://bugs.mojang.com/browse/MC-310051) - 由于 bits.fsh 导致浮点数计算误差的问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "[MC-310131](https://bugs.mojang.com/browse/MC-310131) - Placeable entities momentarily appear at the wrong location when placed",
+      "translated_text": "[MC-310131] - 可放置的实体在放置时偶尔会显示在错误的位置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "[MC-310767](https://bugs.mojang.com/browse/MC-310767) - Pipelines always declare a D32_FLOAT depth attachment format with the Vulkan rendering backend",
+      "translated_text": "[MC-310767] - 使用 Vulkan 渲染后端时，管道（pipelines）总是声明 D32_FLOAT 深度附加格式",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "[MC-311195](https://bugs.mojang.com/browse/MC-311195) - Placed armor stands are rotated incorrectly for one tick",
+      "translated_text": "[MC-311195] - 放置的装甲架会在一个游戏刻（tick）内发生错误的旋转",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "[MC-311265](https://bugs.mojang.com/browse/MC-311265) - The world border renders incorrectly from outside",
+      "translated_text": "[MC-311265] - 从世界边界外部看时，世界边界显示不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[MC-311473](https://bugs.mojang.com/browse/MC-311473) - Duplicating items with the scroll wheel in Creative mode can produce ghost items",
+      "translated_text": "[MC-311473] - 在创造模式下使用滚轮复制物品时可能会出现幽灵物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "[MC-311582](https://bugs.mojang.com/browse/MC-311582) - The texture of desert pyramid maps has one inconsistent pixel compared to the others",
+      "translated_text": "[MC-311582] - 沙漠金字塔地图的纹理中有一个与其他纹理不一致的像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-311726](https://bugs.mojang.com/browse/MC-311726) - The water inside waterlogged copper grates has the falling fluid state property set to true",
+      "translated_text": "[MC-311726] - 被水淹没的铜栅栏中的水具有“下落流体”状态属性（falling fluid state property）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-311727](https://bugs.mojang.com/browse/MC-311727) - The check for whether a player is standing on air doesn't use the player's updated position",
+      "translated_text": "[MC-311727] - 检查玩家是否站在空中的逻辑没有使用玩家更新后的位置信息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-311773](https://bugs.mojang.com/browse/MC-311773) - Red and brown mushrooms cannot be placed at any light level, unlike in Bedrock Edition",
+      "translated_text": "[MC-311773] - 红色和棕色的蘑菇不能在任何光照等级下生成，这与基岩版（Bedrock Edition）不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-311786](https://bugs.mojang.com/browse/MC-311786) - Running /test run with a rotationSteps value that is out of range causes an error",
+      "translated_text": "[MC-311786] - 使用超出范围的rotationSteps值运行测试程序会引发错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-311788](https://bugs.mojang.com/browse/MC-311788) - Teleporting item frames moves them further than it should visually",
+      "translated_text": "[MC-311788] - 传送物品时，物品在被传送过程中的移动距离比视觉显示的要远",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "[MC-311818](https://bugs.mojang.com/browse/MC-311818) - Traveling to the End in Spectator mode regenerates the obsidian platform",
+      "translated_text": "[MC-311818] - 在观众模式下前往末地时，黑曜石平台会重新生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "[MC-311836](https://bugs.mojang.com/browse/MC-311836) - Minecart sounds are now distorted",
+      "translated_text": "[MC-311836] - 矿车的相关音效现在出现了失真现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "[MC-311859](https://bugs.mojang.com/browse/MC-311859) - Damaged dyed wolf armor no longer shows cracks in the colored parts",
+      "translated_text": "[MC-311859] - 变色的狼人护甲在损坏后，其有色部分不再显示裂纹",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "[MC-311966](https://bugs.mojang.com/browse/MC-311966) - The tooltip of the \"Quit Shortcuts\" option calls the Command key \"Cmd\"",
+      "translated_text": "[MC-311966] - “退出快捷键”选项的提示文本错误地使用了命令键“Cmd”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0123",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Java版的玩家可以使用快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0124",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的世界，请提前备份数据，或者在与主世界不同的文件夹中运行测试版本。**",
+      "meta": {}
+    },
+    {
+      "id": "b0125",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/30c3b4fddc0821345a9464ab1201f0ef44f570dd/server.jar)",
+      "translated_text": "[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/30c3b4fddc0821345a9464ab1201f0ef44f570dd/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 错误追踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，可以加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Welcome to the first snapshot of 26.4! We're kicking things off with a range of technical updates and improvements, including Vulkan becoming the default graphics API.\n\nChanges\n\nWorld Generation\n\nUpgrading worlds from before Caves and Cliffs will now also generate sulfur caves below old chunks\n\nMinor Tweaks to Blocks, Items and Entities\n\nRed and Brown Mushrooms can now be placed on any block with a solid top face regardless of lighting conditions\n\nThey can still not spread unless the brightness is less than 13, or their support block overrides light requirements\n\n\"Graphics API\" Video Setting\n\n\"Default\" now behaves the same as \"Prefer Vulkan\"\n\nThe game will no longer change the graphics API setting automatically if a startup crash is detected.\n\nTechnical Changes\n\nThe Data Pack version is now 122.0\n\nThe Resource Pack version is now 98.0\n\nNetwork Protocol\n\nAdded minecraft:mod_list Custom Packet Payload\n\nThis packet is intended to inform servers about client mods to simplify debugging\n\nVanilla client sends an empty packet at the start of configuration phase, as it does not know about any mods - that is still a responsibility of 3rd-party modding platforms\n\nModified minecraft:intention Packet\n\nThe host field in the serverbound intention packet can now hold additional parameters (previously it stored only the domain name used for connecting to a server)\n\nThe new format is similar to URI query strings - the domain can now optionally be followed by a ? character and then followed by key=value pairs separated by a & character\n\nEmpty values can be omitted (including = sign)\n\nKeys and values are escaped according to the standard URI rules (\"percent-encoded component\")\n\nKeys starting with _ are reserved for vanilla use\n\nExample: example.com?key1=value2&key2\n\nUsers can now input properties in any \"Server Address\" field in the server list\n\nAdditionally, any address in form of <id>@<host> will be parsed as <host>?_id=<id>\n\nIf a server uses SRV DNS records, the host field will contain both original and resolved domains\n\nIf the resolved domain is different from the original domain, the resolved one will be used as the \"primary\" one, while the original one will be added as _o (\"origin\") property\n\nExample host string: <redirected domain>?_o=<original domain>:<original port> , while the port field in the intention packet will be set to the resolved port value\n\nThe field size has been extended to 1024 characters\n\nNote: since the minecraft:intent packet is unencrypted, properties should not be used for any security-sensitive purpose\n\nModified minecraft:transfer Packet\n\nAdded properties field - a string to string map of properties that will be added to the host field in the minecraft:intent packet sent to the target server\n\nDedicated Server Properties\n\nAdded allowed-connection-ids\n\nA list of comma-separted ids\n\nIf non-empty, the server will match the values against _id property in minecraft:intent packet\n\nIf there is no match, the server will reject the connection\n\nThis works both for both status and login connections, so any user connecting without the correct _id in the server address will not see the status and will not be able to join the server\n\nAdded status-contact-details field\n\nIf non-empty, the value of this field will be sent in the minecraft:status_response packet JSON payload under the contact property\n\nThis value is meant to be used to signal a way to contact the server owners about the server, even if there is no website or other information about it\n\nThis field is meant to be human-readable, but there are no other restrictions on field format\n\nAdded enable-legacy-status field\n\nThis option allows disabling existing legacy (pre-1.7) server status and ping protocol handling\n\nTo preserve existing functionality, value defaults to true\n\nNote: enable-status needs to be set for any status information (modern or legacy) to be set\n\nData Pack Version 122.0\n\nEntries for different biomes in multi-noise biome sources can no longer overlap across all noise parameters with the same offset\n\nCommands\n\nThe fillbiome command will now fill biomes with block accuracy\n\nNBT conversion from floating point types to integer types now always converts to the closest possible valid number after rounding down\n\nWorld Generation\n\nFeatures\n\nChanged\n\nstraight_trunk_placer\n\nAdded trunk_width field\n\noptional int provider, the width of the trunk centered around the origin\n\ndefaults to 1.0\n\nPlaced Features\n\nThe possible domain in the XZ plane of Placed Features included in biomes is now validated\n\nFeature placement can only occur within a 3x3 chunk region: as such, it is not valid for a Placed Feature to select a position outside of that range\n\nNote: the size of the feature itself is not currently taken into consideration, which may still overflow the chunk\n\nPlacement Modifiers\n\nChanged\n\ncuboid\n\nxz_size and y_size have been adjusted to represent the actual size of the cuboid, instead of implicitly being 1 block larger\n\nAs such, an xz_size of 2 will actually produce a 2x2 cuboid instead of 3x3\n\nChanged\n\nfixed_placement\n\npositions now requires at least one element\n\nNoise Settings\n\nThe default_block field has been removed\n\nThis is now always air - any other block should be defined by the Material Rule\n\nMaterial Conditions\n\nUpdated\n\nminecraft:steep\n\nNo longer considers height modifications from Eroded Badlands \"surface extensions\" in an order-dependent way\n\nTags\n\nBiome Tags\n\nAdded #generated_in_below_zero_retrogen - biomes to generate below worlds that predate Caves and Cliffs\n\nAdded #is_cave collection tag\n\nResource Pack Version 98.0\n\nShaders & Post-process Effects\n\nOrder-Independent Transparency shaders\n\nThe OIT algorithm was simplified by replacing the wavelet-based mathematics with depth bin-based accumulation\n\nSlightly improved performance at least on some devices\n\nReduced floating point precision issues on average\n\nOIT_WAVELET_RANK shader define was removed\n\nOIT_COEFF_COUNT shader define was replaced by OIT_NUMBER_OF_DEPTH_BINS\n\nOIT_COEFF_ATTACHMENT_COUNT shader define was renamed to OIT_TRANSMITTANCE_TARGET_COUNT\n\nFixed bugs in 26.4 Snapshot 1\n\n[MC-8959](https://bugs.mojang.com/browse/MC-8959) - The player automatically jumps when pressing against a block while in water\n\n[MC-44560](https://bugs.mojang.com/browse/MC-44560) - When pushed to the edge of water or lava, entities jump by themselves\n\n[MC-50749](https://bugs.mojang.com/browse/MC-50749) - Jumping into water against a wall causes the player to bounce\n\n[MC-123848](https://bugs.mojang.com/browse/MC-123848) - Item frames (and items within) drop atop the block they're attached to instead of under it when removed from a ceiling\n\n[MC-135211](https://bugs.mojang.com/browse/MC-135211) - Entities automatically jump when falling into 1-block-deep water from certain heights\n\n[MC-135212](https://bugs.mojang.com/browse/MC-135212) - Entities automatically jump when falling into water of any depth from certain heights\n\n[MC-262252](https://bugs.mojang.com/browse/MC-262252) - The generation of lush caves and dripstone caves is poorly defined\n\n[MC-276879](https://bugs.mojang.com/browse/MC-276879) - /data truncates floats when casting to longs, but rounds down in all other cases\n\n[MC-278651](https://bugs.mojang.com/browse/MC-278651) - The host name in handshake packets for SRV records is inconsistent\n\n[MC-296053](https://bugs.mojang.com/browse/MC-296053) - Item frames don't update properly when modifying their Facing NBT tag\n\n[MC-299060](https://bugs.mojang.com/browse/MC-299060) - Setting item frames' direction with commands can cause desyncs\n\n[MC-303702](https://bugs.mojang.com/browse/MC-303702) - Small gaps still appear in item models\n\n[MC-307065](https://bugs.mojang.com/browse/MC-307065) - Missing optimization for the side faces of the builtin/generated item model\n\n[MC-310051](https://bugs.mojang.com/browse/MC-310051) - Floating point cancellation artifacts from bits.fsh\n\n[MC-310131](https://bugs.mojang.com/browse/MC-310131) - Placeable entities momentarily appear at the wrong location when placed\n\n[MC-310767](https://bugs.mojang.com/browse/MC-310767) - Pipelines always declare a D32_FLOAT depth attachment format with the Vulkan rendering backend\n\n[MC-311195](https://bugs.mojang.com/browse/MC-311195) - Placed armor stands are rotated incorrectly for one tick\n\n[MC-311265](https://bugs.mojang.com/browse/MC-311265) - The world border renders incorrectly from outside\n\n[MC-311473](https://bugs.mojang.com/browse/MC-311473) - Duplicating items with the scroll wheel in Creative mode can produce ghost items\n\n[MC-311582](https://bugs.mojang.com/browse/MC-311582) - The texture of desert pyramid maps has one inconsistent pixel compared to the others\n\n[MC-311726](https://bugs.mojang.com/browse/MC-311726) - The water inside waterlogged copper grates has the falling fluid state property set to true\n\n[MC-311727](https://bugs.mojang.com/browse/MC-311727) - The check for whether a player is standing on air doesn't use the player's updated position\n\n[MC-311773](https://bugs.mojang.com/browse/MC-311773) - Red and brown mushrooms cannot be placed at any light level, unlike in Bedrock Edition\n\n[MC-311786](https://bugs.mojang.com/browse/MC-311786) - Running /test run with a rotationSteps value that is out of range causes an error\n\n[MC-311788](https://bugs.mojang.com/browse/MC-311788) - Teleporting item frames moves them further than it should visually\n\n[MC-311818](https://bugs.mojang.com/browse/MC-311818) - Traveling to the End in Spectator mode regenerates the obsidian platform\n\n[MC-311836](https://bugs.mojang.com/browse/MC-311836) - Minecart sounds are now distorted\n\n[MC-311859](https://bugs.mojang.com/browse/MC-311859) - Damaged dyed wolf armor no longer shows cracks in the colored parts\n\n[MC-311966](https://bugs.mojang.com/browse/MC-311966) - The tooltip of the \"Quit Shortcuts\" option calls the Command key \"Cmd\"\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/30c3b4fddc0821345a9464ab1201f0ef44f570dd/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "欢迎来到 26.4 的第一个快照！我们首先带来了一系列技术更新和改进，其中包括将 Vulkan 设为默认的图形 API。\n\n变更\n\n世界生成\n\n升级到 Caves and Cliffs 之前的世界时，现在也会在旧区块下方生成硫磺洞穴\n\n对块、物品和实体的小幅调整\n\n红色和棕色的蘑菇现在可以放置在任何顶部为实心的块上，不受光照条件的影响\n\n不过它们仍然无法传播，除非亮度低于 13，或者它们的支撑块覆盖了光照要求\n\n\"图形 API\" 视频设置\n\n\"默认\" 设置现在与 \"优先使用 Vulkan\" 设置的行为相同\n\n如果检测到启动时发生崩溃，游戏将不再自动更改图形 API 设置。\n\n技术变更\n\n数据包版本现已更新至 122.0\n\n资源包版本现已更新至 98.0\n\n网络协议\n\n新增了 minecraft:mod_list 自定义数据包内容\n\n此数据包用于向服务器通报客户端所使用的模组，以便简化调试过程\n\n原始客户端在配置阶段会发送一个空数据包，因为它不知道客户端使用的是哪些模组——这仍然是第三方模组平台的职责\n\n修改了 minecraft:intention 数据包\n\n服务器返回的 intention 数据包中的 host 字段现在可以携带额外参数（之前仅存储用于连接服务器的域名）\n\n新格式类似于 URI 查询字符串——现在可以在域名后可选地添加一个？字符，随后是使用 & 字符分隔的键值对\n\n空值可以省略（包括等号 =）\n\n键和值会按照标准的 URI 规则进行转义（“百分号编码”）\n\n以 _ 开头的键被保留用于原版 Minecraft（vanilla）\n\n示例：example.com?key1=value2&key2\n\n用户现在可以在服务器列表中的任何“服务器地址”字段中输入属性\n\n此外，任何形如 <id>@<host> 的地址都会被解析为 <host>?_id=<id>\n\n如果服务器使用 SRV DNS 记录，主机字段将包含原始域名和解析后的域名\n\n如果解析出的域名与原始域名不同，解析出的域名将被用作“主要”域名，而原始域名将被添加为 `_o`（“origin”）属性\n\n示例主机字符串：`<重定向后的域名>?_o=<原始域名>:<原始端口>`，同时 `intention` 数据包中的端口字段将被设置为解析出的端口值\n\n该字段的大小已扩展到 1024 个字符\n\n注意：由于 `minecraft:intent` 数据包是未加密的，因此不应将其用于任何安全敏感的用途\n\n修改了 `minecraft:transfer` 数据包\n\n添加了 `properties` 字段——这是一个字符串到字符串的映射，其中包含将添加到发送到目标服务器的 `minecraft:intent` 数据包中的 `host` 字段的属性\n\n专用服务器属性\n\n添加了 `allowed-connection-ids` 属性\n\n一个以逗号分隔的 ID 列表\n\n如果该字段不为空，服务器会将其值与 minecraft:intent 包中的 _id 属性进行匹配\n\n如果没有匹配结果，服务器将拒绝该连接请求\n\n这一规则既适用于状态请求，也适用于登录请求；因此，任何在服务器地址中缺少正确 _id 的用户都无法查看服务器状态，也无法加入服务器\n\n新增了 status-contact-details 字段\n\n如果该字段不为空，其值将作为 minecraft:status_response 包中的 contact 属性的一部分被发送\n\n该字段的用途是提供一种方式，用于向服务器所有者报告服务器的相关问题，即使服务器没有官方网站或其他相关信息\n\n该字段应便于人类阅读，但对字段格式没有其他具体要求\n\n添加了 `enable-legacy-status` 字段\n\n此选项允许禁用现有的旧版（1.7版之前的）服务器状态和ping协议处理\n\n为保留现有功能，该字段的默认值为 `true`\n\n注意：必须先设置 `enable-status`，才能设置任何状态信息（无论是现代版本还是旧版）\n\n数据包版本 122.0\n\n在多噪声生物群系源中，不同生物群系的条目不能再在具有相同偏移量的所有噪声参数上重叠\n\n命令\n\n`fillbiome` 命令现在会以精确的方块位置来填充生物群系\n\n从浮点类型到整数类型的NBT转换现在总是向下取整后转换为最接近的有效数值\n\n世界生成\n\n特性（Features）\n\n已更改（Changed）\n\n直树放置器（straight_trunk_placer）\n\n新增了树干宽度属性（Added trunk_width field）\n\n可选的整型参数：树干的中心距离原点的距离（optional int parameter: the distance of the trunk centered around the origin）\n\n默认值为1.0（Defaults to 1.0）\n\n放置特性（Placed Features）\n\n现在可以验证放置特性在生物群系中的XZ平面内的有效位置（The possible domain in the XZ plane of Placed Features included in biomes is now validated）\n\n特性放置只能在3x3的区块区域内进行；因此，放置特性时不能选择该范围之外的位置（Feature placement can only occur within a 3x3 chunk region; it is not valid for a Placed Feature to select a position outside of that range）\n\n注意：目前没有考虑特性本身的大小，它仍可能超出区块的范围（Note: the size of the feature itself is not currently taken into consideration, which may still overflow the chunk）\n\n放置修饰符（Placement Modifiers）\n\n已更改（Changed）\n\n长方体（cuboid）\n\nxz_size 和 y_size 已调整为长方体的实际大小，而不再是默认的比实际大 1 个方块\n\n因此，xz_size 为 2 时实际生成的是一个 2x2 的长方体，而不是 3x3 的\n\n已更改（Changed）\n\n修复了放置问题（Fixed placement issue）\n\n现在位置（positions）至少需要一个元素（positions now require at least one element）\n\n噪声设置（Noise Settings）\n\n默认的 block 字段已被移除（The default_block field has been removed）\n\n现在这个区域始终是空气；其他任何方块都应该由材质规则（Material Rule）来定义\n\n材质条件（Material Conditions）\n\n已更新\n\nminecraft:steep\n\n不再以依赖顺序的方式考虑风化坏地（Eroded Badlands）的“地表扩展”（surface extensions）对高度的影响\n\n标签（Tags）\n\n生物群系标签（Biome Tags）\n\n新增了 #generated_in_below_zero_retrogen 标签——用于生成位于洞穴（Caves）和悬崖（Cliffs）存在之前的世界\n\n新增了 #is_cave 收集标签（collection tag）\n\n资源包版本 98.0\n\n着色器与后期处理效果\n\n与顺序无关的透明度着色器\n\nOIT 算法通过用基于深度分区的累积方式替换基于小波的数学运算来简化\n\n至少在某些设备上，性能略有提升\n\n平均而言，减少了浮点精度问题\n\n移除了 OIT_WAVELET_RANK 着色器定义\n\nOIT_COEFF_COUNT 着色器定义被替换为 OIT_NUMBER_OF_DEPTH_BINS\n\nOIT_COEFF_attachment_COUNT 着色器定义被重命名为 OIT_TRANSMITTANCETARGET_COUNT\n\n修复了 26.4 快照 1 中的漏洞\n\n[MC-8959](https://bugs.mojang.com/browse/MC-8959) - 玩家在水中的时候碰到方块时会发生自动跳跃现象\n\n[MC-44560](https://bugs.mojang.com/browse/MC-44560) - 当生物被推到水边或熔岩边缘时，它们会自动跳起来\n\n[MC-50749](https://bugs.mojang.com/browse/MC-50749) - 当玩家从墙上跳进水里时，会遇到弹跳现象\n\n[MC-123848](https://bugs.mojang.com/browse/MC-123848) - 当物品从天花板上掉下来时，物品框架（以及物品本身）会落在所附着的方块上方，而不是下方\n\n[MC-135211](https://bugs.mojang.com/browse/MC-135211) - 当生物从特定高度掉入1格深的水中时，会自动跳起来\n\n[MC-135212](https://bugs.mojang.com/browse/MC-135212) - 当生物从任何高度掉入水中时，会自动跳起来\n\n[MC-262252] - 茂盛洞穴和滴石洞穴的生成机制不够明确\n\n[MC-276879](https://bugs.mojang.com/browse/MC-276879) - 在将浮点数转换为长整型时，数据会被截断；但在其他所有情况下都会向下取整\n\n[MC-278651](https://bugs.mojang.com/browse/MC-278651) - SRV 记录中的主机名不一致\n\n[MC-296053] - 修改物品的方向 NBT 标签时，物品帧不会正确更新\n\n[MC-299060] - 使用命令设置物品方向可能导致数据不同步\n\n[MC-303702] - 物品模型中仍然存在小间隙\n\n[MC-307065] - 内置生成的物品模型的侧面没有进行优化\n\n[MC-310051](https://bugs.mojang.com/browse/MC-310051) - 由于 bits.fsh 导致浮点数计算误差的问题\n\n[MC-310131] - 可放置的实体在放置时偶尔会显示在错误的位置\n\n[MC-310767] - 使用 Vulkan 渲染后端时，管道（pipelines）总是声明 D32_FLOAT 深度附加格式\n\n[MC-311195] - 放置的装甲架会在一个游戏刻（tick）内发生错误的旋转\n\n[MC-311265] - 从世界边界外部看时，世界边界显示不正确\n\n[MC-311473] - 在创造模式下使用滚轮复制物品时可能会出现幽灵物品\n\n[MC-311582] - 沙漠金字塔地图的纹理中有一个与其他纹理不一致的像素\n\n[MC-311726] - 被水淹没的铜栅栏中的水具有“下落流体”状态属性（falling fluid state property）\n\n[MC-311727] - 检查玩家是否站在空中的逻辑没有使用玩家更新后的位置信息\n\n[MC-311773] - 红色和棕色的蘑菇不能在任何光照等级下生成，这与基岩版（Bedrock Edition）不同\n\n[MC-311786] - 使用超出范围的rotationSteps值运行测试程序会引发错误\n\n[MC-311788] - 传送物品时，物品在被传送过程中的移动距离比视觉显示的要远\n\n[MC-311818] - 在观众模式下前往末地时，黑曜石平台会重新生成\n\n[MC-311836] - 矿车的相关音效现在出现了失真现象\n\n[MC-311859] - 变色的狼人护甲在损坏后，其有色部分不再显示裂纹\n\n[MC-311966] - “退出快捷键”选项的提示文本错误地使用了命令键“Cmd”\n\n获取快照\n\nJava版的玩家可以使用快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n**测试版本可能会损坏你的世界，请提前备份数据，或者在与主世界不同的文件夹中运行测试版本。**\n\n跨平台服务器 JAR 文件：\n\n[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/30c3b4fddc0821345a9464ab1201f0ef44f570dd/server.jar)\n\n在这里报告错误：\n\n[Minecraft 错误追踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，可以加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

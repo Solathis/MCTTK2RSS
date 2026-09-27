@@ -38,6 +38,7 @@
   "retry": {
     "translation": { "max_retries": 3, "wait_for_input": false },
     "download":    { "max_retries": 3, "wait_for_input": false }
+    "max_article_attempts": 3
   },
   "concurrency": {
     "translation_workers": 8,

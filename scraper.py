@@ -111,6 +111,7 @@ DEFAULT_CONFIG = {
     "retry": {
         "translation": { "max_retries": 3, "wait_for_input": False },
         "download":    { "max_retries": 3, "wait_for_input": False }
+        "max_article_attempts": 3
     },
     "concurrency": {
         "translation_workers": 3,

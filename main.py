@@ -264,6 +264,10 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
         with open(modules_cfg_path, encoding="utf-8") as f:
             modules_cfg = json.load(f)
 
+    # 处理失败的 URL 累计失败次数，超过上限才放弃，避免"失败即永久跳过"
+    failed_attempts = dict(state.get("failed_attempts", {}))
+    max_attempts = max(int(config.get("retry", {}).get("max_article_attempts", 3)), 1)
+
     processed = []
     for i, news in enumerate(new_news, 1):
         source = news.get('_source', 'minecraft_api')
@@ -271,16 +275,32 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
         print(f"[主] 处理第 {i}/{len(new_news)} 条 [{source}]")
         print(f"{'=' * 60}")
 
+        url = news['url']
         try:
             item = _process_single_article(news, config, save_dir, modules_cfg)
-            posted_urls.add(news['url'])
-            state["posted_urls"] = list(posted_urls)
-            save_state(state_file, state)
-            if item:
-                processed.append(item)
         except Exception as e:
             print(f"[主] 处理异常: {e}")
             traceback.print_exc()
+            item = None
+
+        if item:
+            posted_urls.add(url)
+            failed_attempts.pop(url, None)
+        else:
+            attempts = failed_attempts.get(url, 0) + 1
+            if attempts >= max_attempts:
+                print(f"[主] 已连续失败 {attempts} 次，放弃该文章: {url}")
+                posted_urls.add(url)
+                failed_attempts.pop(url, None)
+            else:
+                failed_attempts[url] = attempts
+                print(f"[主] 处理失败（第 {attempts}/{max_attempts} 次），下次运行将重试")
+
+        state["posted_urls"] = list(posted_urls)
+        state["failed_attempts"] = failed_attempts
+        save_state(state_file, state)
+        if item:
+            processed.append(item)
 
     return processed
 

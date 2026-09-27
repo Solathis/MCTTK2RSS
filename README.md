@@ -10,7 +10,7 @@
 
 - **自动爬取**：从 Minecraft 官方 API 获取最新新闻，同时支持从 Feedback 网站爬取更新日志
 - **Cloudflare 绕过**：使用 `curl_cffi` 模拟真实浏览器，绕过 Feedback 网站的 Cloudflare 防护
-- **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译
+- **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译与 JSON Schema 结构化输出
 - **智能词汇表**：动态检测专业术语，自动添加译名对照到提示词（`glossary.json`）
 - **三层去重**：连续去重 + 大段重复检测 + 长文本去重，避免内容重复
 - **格式转换**：自动生成 BBCode（MCBBS）和 Markdown 格式
@@ -273,8 +273,8 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 - `get_latest_news_list()` — 从官方 API 获取新闻列表
 - `classify_news_type(title)` — 根据标题判断新闻类型
 - `parse_article_page(url)` — 解析文章页面，提取结构化内容块
-- `translate_text(text)` — 调用 AI API 翻译单段文本（支持词汇表）
-- `translate_blocks(blocks)` — 批量翻译内容块（支持并发）
+- `translate_text(text, response_schema=...)` — 调用 AI API 翻译单段文本（支持词汇表与结构化输出）
+- `translate_blocks(blocks)` — 批量翻译内容块（支持并发，兼容多种返回格式）
 - `process_article(news_item)` — 完整处理单篇官方 API 文章
 - `FeedbackScraper` — Feedback 网站爬虫类（使用 curl_cffi 绕过 Cloudflare）
 - `process_feedback_news(news_item, config)` — 完整处理单篇 Feedback 文章
@@ -378,6 +378,7 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
     "api_key_env": "OPENAI_API_KEY",
     "api_key": "",
     "model": "gpt-4o",
+    "json_schema": true,
     "max_tokens": 10000,
     "timeout": 120
   },
@@ -441,6 +442,9 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
 - **MCBBS 账号**：支持通过环境变量 `MCBBS_USERNAME` / `MCBBS_PASSWORD` 传入
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
+- **翻译丢译文**：批量翻译开启了 JSON Schema 结构化输出（`openai_compat.json_schema`），
+  解析同时兼容 `{"translations": [...]}` / 裸数组、`translated_text` / `text` 两种字段名。
+  若某批返回完全无法解析，日志会输出 `[翻译] 警告: ...` 而不是静默丢弃
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件
 

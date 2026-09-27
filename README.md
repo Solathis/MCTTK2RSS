@@ -9,6 +9,7 @@
 ## 功能特性
 
 - **自动爬取**：从 Minecraft 官方 API 获取最新新闻，同时支持从 Feedback 网站爬取更新日志
+- **版本清单补齐**：额外读取 Mojang Piston 版本清单，避免因 API `sortType=Recent` 排序不可靠而漏掉 Java 版本日志
 - **Cloudflare 绕过**：使用 `curl_cffi` 模拟真实浏览器，绕过 Feedback 网站的 Cloudflare 防护
 - **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译与 JSON Schema 结构化输出
 - **智能词汇表**：动态检测专业术语，自动添加译名对照到提示词（`glossary.json`）
@@ -159,9 +160,35 @@ python main.py --no-json
 
 ## 新闻来源
 
+### Mojang Piston 版本清单（补充 Java 版本日志）
+
+官方搜索 API 的 `sortType=Recent` 按**索引时间**而非发布日期排序，版本更新日志可能不在返回窗口内。因此程序额外读取 Mojang 版本清单来补齐 Java 版本日志：
+
+```json
+{
+  "version_manifest": {
+    "enabled": true,
+    "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "max_versions": 5,
+    "url_templates": {
+      "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
+    }
+  }
+}
+```
+
+- 两个来源的结果会**按 URL 合并去重**；API 已返回同一篇文章时保留 API 版本（元数据更全）
+- 官网对快照与正式版使用**不同 slug**（`minecraft-26-4-snapshot-1` / `minecraft-java-edition-26-3`），
+  因此按类型分别配置模板；`url_templates` 中未列出的类型会被跳过
+- RC / 预发布版官网没有对应文章页，默认不生成候选，避免产生 404
+- 实测：API 返回窗口内只有 `26.4 Snapshot 1`，而版本清单补齐了 `26.3-snapshot-8/9/10`
+
 ### Minecraft 官方 API
 
 从 `https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search` 获取最新新闻，支持按类型过滤。
+
+> 注意：`sortType` 必须为 `Recent`（首字母大写）。写成 `recent` 或省略该参数会返回 2018 年的旧文章。
 
 ### Feedback 网站
 
@@ -271,7 +298,8 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ### scraper.py
 
-- `get_latest_news_list()` — 从官方 API 获取新闻列表
+- `get_latest_news_list()` — 从官方 API 获取新闻列表（按 URL 去重）
+- `get_java_news_from_manifest()` — 从 Mojang Piston 版本清单补齐 Java 版本日志候选
 - `classify_news_type(title)` — 根据标题判断新闻类型
 - `parse_article_page(url)` — 解析文章页面，提取结构化内容块
 - `translate_text(text, response_schema=...)` — 调用 AI API 翻译单段文本（支持词汇表与结构化输出）
@@ -327,31 +355,33 @@ python init_state.py
 ## 处理流程
 
 ```
-Minecraft 官方 API          Feedback 网站
-       ↓                          ↓
-  获取新闻列表              获取各 section 文章列表
-       ↓                          ↓
-  按类型过滤 (news_types)    按 section.enabled 过滤
-       └──────────┬───────────────┘
+Minecraft 官方 API      Piston 版本清单        Feedback 网站
+       ↓                      ↓                     ↓
+  获取新闻列表          取最新 Java 版本      获取各 section 文章列表
+       ↓                      ↓                     ↓
+  按类型过滤 (news_types)  按 url_templates    按 section.enabled 过滤
+       └──────────┬───────────┴─────────────────────┘
                   ↓
-         检查已处理状态 (.state.json)
+          按 URL 合并去重
                   ↓
-         [对每篇新文章]
+          检查已处理状态 (.state.json)
                   ↓
-         解析文章页面 → 提取结构化 blocks
+          [对每篇新文章]
                   ↓
-         AI 翻译标题 + 内容（并发批量）
+          解析文章页面 → 提取结构化 blocks
                   ↓
-         保存 JSON (output/news_*.json)
+          AI 翻译标题 + 内容（并发批量，JSON Schema 结构化输出）
                   ↓
-         转换 BBCode (output/news_*.txt)
-         转换 Markdown (output/news_*.md)
+          保存 JSON (output/news_*.json)   ← 失败则记录次数，下次重试
                   ↓
-         下载头图 (output/news_*.jpg)
+          转换 BBCode (output/news_*.txt)
+          转换 Markdown (output/news_*.md)
                   ↓
-         登录 MCBBS → 上传图片 → 上传 JSON → 发帖
+          下载头图 (output/news_*.jpg)
                   ↓
-         记录已发布状态 (.posted.json)
+          登录 MCBBS → 上传图片 → 上传 JSON → 发帖
+                  ↓
+          记录已发布状态 (.posted.json)
 ```
 
 ## GitHub Actions 部署
@@ -390,6 +420,15 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
     "category": "News",
     "site_base": "https://www.minecraft.net"
   },
+  "version_manifest": {
+    "enabled": true,
+    "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "max_versions": 5,
+    "url_templates": {
+      "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
+    }
+  },
   "feedback_site": {
     "enabled": true,
     "base_url": "https://feedback.minecraft.net",
@@ -426,7 +465,7 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
   },
   "retry": {
     "translation": { "max_retries": 3 },
-    "download": { "max_retries": 3 }
+    "download": { "max_retries": 3 },
     "max_article_attempts": 3
   },
   "concurrency": {

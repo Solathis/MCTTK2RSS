@@ -22,6 +22,15 @@
     "category": "News",
     "site_base": "https://www.minecraft.net"
   },
+  "version_manifest": {
+    "enabled": true,
+    "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+    "max_versions": 5,
+    "url_templates": {
+      "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
+    }
+  },
   "http": {
     "verify_ssl": false,
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
@@ -37,7 +46,7 @@
   },
   "retry": {
     "translation": { "max_retries": 3, "wait_for_input": false },
-    "download":    { "max_retries": 3, "wait_for_input": false }
+    "download":    { "max_retries": 3, "wait_for_input": false },
     "max_article_attempts": 3
   },
   "concurrency": {

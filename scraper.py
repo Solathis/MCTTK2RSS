@@ -97,6 +97,18 @@ DEFAULT_CONFIG = {
         "category": "News",
         "site_base": "https://www.minecraft.net"
     },
+    "version_manifest": {
+        "enabled": True,
+        "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+        "max_versions": 5,
+        # 官网对不同类型使用不同 slug：快照是 minecraft-{ver}，
+        # 正式版是 minecraft-java-edition-{ver}（实测 RC/预发布没有文章页）。
+        # 未在此列出的类型会被跳过，避免生成 404 候选。
+        "url_templates": {
+            "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+            "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
+        }
+    },
     "http": {
         "verify_ssl": False,
         "user_agent": (
@@ -110,7 +122,7 @@ DEFAULT_CONFIG = {
     "output": { "save_dir": "output" },
     "retry": {
         "translation": { "max_retries": 3, "wait_for_input": False },
-        "download":    { "max_retries": 3, "wait_for_input": False }
+        "download":    { "max_retries": 3, "wait_for_input": False },
         "max_article_attempts": 3
     },
     "concurrency": {
@@ -925,11 +937,16 @@ def get_latest_news_list(page_size=None, config=None):
             return []
 
         news_list = []
+        seen_urls = set()
         site_base = cfg["minecraft_api"]["site_base"]
         for item in items:
             news_url = item.get("url", "")
             if news_url and news_url.startswith("/"):
                 news_url = site_base + news_url
+            # API 排序不稳定时同一批结果可能返回重复 URL，按 URL 去重
+            if not news_url or news_url in seen_urls:
+                continue
+            seen_urls.add(news_url)
             news_list.append({
                 "title": item.get("title", ""),
                 "author": item.get("author", ""),
@@ -945,6 +962,96 @@ def get_latest_news_list(page_size=None, config=None):
     except Exception as e:
         print(f"[API] 获取失败: {e}")
         return []
+
+
+# ── Java 版本发现（Piston manifest） ─────────────────
+
+def _version_id_to_url(version_id: str, news_type: str, cfg: dict):
+    """把版本 ID 拼成官网文章 URL；该类型没有对应文章页时返回 None。
+
+    官网对快照与正式版使用不同 slug
+    （minecraft-26-4-snapshot-1 / minecraft-java-edition-26-3），
+    且 Release Candidate / 预发布版没有对应文章页。
+    """
+    templates = cfg.get("version_manifest", {}).get("url_templates", {})
+    template = templates.get(news_type)
+    if not template:
+        return None
+    return template.format(version_id=version_id.replace(".", "-"))
+
+
+def _classify_version_type(version_id: str, version_type: str) -> str:
+    """把 Piston manifest 的版本映射为 news_types 中的类型键。"""
+    vid = version_id.lower()
+    if version_type == "release":
+        return "java_release"
+    # 版本号形如 1.21.5-rc1 / 1.21.5-pre1，也可能带分隔符（-rc-1）
+    if re.search(r"-rc[-.\d]*$", vid):
+        return "java_rc"
+    if re.search(r"-pre[-.\d]*$", vid):
+        return "java_prerelease"
+    return "java_snapshot"
+
+
+def get_java_news_from_manifest(config=None):
+    """通过 Mojang Piston 版本清单获取最新 Java 版本更新文章候选。
+
+    搜索 API 的 sortType=Recent 是按索引时间而非发布日期排序的，会漏掉或错排
+    新版本日志；版本清单严格按 Mojang 发布顺序返回，因此用它补充 Java 版本的
+    更新日志（其余新闻仍由搜索 API 提供）。
+
+    Returns:
+        候选文章列表（含 _version_type 字段），失败或未启用时返回空列表
+    """
+    cfg = config or _get_cfg()
+    vm_cfg = cfg.get("version_manifest", {})
+    if not vm_cfg.get("enabled", True):
+        return []
+
+    manifest_url = vm_cfg.get(
+        "manifest_url", "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
+    )
+    max_versions = max(int(vm_cfg.get("max_versions", 5)), 1)
+
+    try:
+        print(f"[Manifest] 正在获取版本清单 (最多 {max_versions} 条)...")
+        response = requests.get(
+            manifest_url, headers=_make_headers(cfg),
+            timeout=int(cfg["http"].get("timeout", 120)),
+            verify=cfg["http"]["verify_ssl"], proxies=_make_proxies(cfg)
+        )
+        response.raise_for_status()
+        versions = response.json().get("versions", [])
+    except Exception as e:
+        print(f"[Manifest] 获取失败: {e}")
+        return []
+
+    news_list = []
+    for version in versions:
+        if len(news_list) >= max_versions:
+            break
+        version_id = version.get("id", "")
+        version_type = version.get("type", "")
+        # old_beta / old_alpha 没有对应的官网文章页
+        if not version_id or version_type not in ("release", "snapshot"):
+            continue
+        news_type = _classify_version_type(version_id, version_type)
+        article_url = _version_id_to_url(version_id, news_type, cfg)
+        if not article_url:
+            # 未配置该类型的 URL 模板（如 RC / 预发布），跳过以免产生 404 候选
+            continue
+        news_list.append({
+            "title": f"Minecraft {version_id}",
+            "author": "",
+            "imageAltText": "",
+            "description": "",
+            "release_date": "",
+            "url": article_url,
+            "_version_type": news_type,
+        })
+
+    print(f"[Manifest] 获取 {len(news_list)} 条 Java 版本候选")
+    return news_list
 
 
 def classify_news_type(title: str) -> str:

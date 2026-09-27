@@ -33,6 +33,7 @@ from scraper import (
     FeedbackScraper,
     classify_news_type,
     download_header_image,
+    get_java_news_from_manifest,
     get_latest_news_list,
     load_config,
     process_article,
@@ -65,7 +66,8 @@ def filter_news_by_types(news_list: list, config: dict) -> list:
 
     filtered = []
     for news in news_list:
-        ntype = classify_news_type(news['title'])
+        # manifest 来源在发现阶段已完成版本分类，标题中未必含可识别关键词
+        ntype = news.get("_version_type") or classify_news_type(news['title'])
         # "other" 类型不受过滤控制（始终保留或跳过取决于配置）
         if ntype == "other":
             if news_types.get("other", True):
@@ -99,15 +101,32 @@ def save_state(state_file: str, state: dict):
 
 
 def _fetch_all_news(config: dict) -> list:
-    """获取所有来源的新闻（API + Feedback），合并返回"""
+    """获取所有来源的新闻（搜索 API + Java 版本清单 + Feedback），合并去重返回"""
     all_news = []
+    seen_urls = set()
+
+    def _add(items, source):
+        """按 URL 去重后并入结果，返回实际新增条数"""
+        added = 0
+        for news in items:
+            url = news.get('url', '')
+            if not url or url in seen_urls:
+                continue
+            seen_urls.add(url)
+            news['_source'] = source
+            all_news.append(news)
+            added += 1
+        return added
 
     page_size = config.get("minecraft_api", {}).get("pageSize", 10)
     api_news = get_latest_news_list(page_size=page_size, config=config)
-    for news in api_news:
-        news['_source'] = 'minecraft_api'
-    all_news.extend(api_news)
-    print(f"[主] API 新闻: {len(api_news)} 条")
+    print(f"[主] API 新闻: {_add(api_news, 'minecraft_api')} 条")
+
+    # Java 版本清单：搜索 API 的 sortType 按索引时间排序，可能漏掉新版本日志，
+    # 这里用 Mojang 版本清单补齐（API 已返回同一篇文章时保留 API 版本，元数据更全）
+    if config.get("version_manifest", {}).get("enabled", True):
+        manifest_news = get_java_news_from_manifest(config=config)
+        print(f"[主] Manifest Java 版本: {_add(manifest_news, 'version_manifest')} 条")
 
     feedback_config = config.get('feedback_site', {})
     if feedback_config.get('enabled', False):
@@ -253,7 +272,12 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
         print("\n[Dry Run] 新新闻列表：")
         for i, news in enumerate(new_news, 1):
             source = news.get('_source', 'minecraft_api')
-            ntype = classify_news_type(news['title']) if source == 'minecraft_api' else 'feedback'
+            if source == 'minecraft_api':
+                ntype = classify_news_type(news['title'])
+            elif source == 'version_manifest':
+                ntype = news.get('_version_type', 'java_snapshot')
+            else:
+                ntype = 'feedback'
             print(f"  {i}. [{source}][{ntype}] {news['title']}")
             print(f"     {news['url']}")
         return []

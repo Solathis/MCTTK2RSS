@@ -1,0 +1,873 @@
+{
+  "title": "Minecraft 26.4 Snapshot 2",
+  "translated_title": "《我的世界》26.4版本：快照2",
+  "release_date": "2026-09-29T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-2",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-2/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Hi there! It is time for the second snapshot for 26.4, featuring improved render distance fog, a new celestial occluder, and a fresh redesign of the F3 screen.",
+      "translated_text": "大家好！26.4版本的第二个快照来了，其中包含改进的渲染距离雾效、新的天文物体遮挡器，以及F3屏幕的重新设计。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "祝大家采矿愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "改动说明",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "When \"Improved Transparency\" is on, sky background and clouds that are behind the terrain are now blended into the terrain render distance fog making the boundary between the sky and the terrain invisible",
+      "translated_text": "当“提高透明度”功能开启时，天空背景和地形背后的云层会融入到地形渲染的雾效中，使得天空与地形之间的边界变得不可见",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "In the Overworld, the bottom half of the skybox is now occluding the celestial objects such as the sun, the moon and the stars",
+      "translated_text": "在主世界中，天空盒的底部现在会遮挡太阳、月亮和星星等天体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "用户界面",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "The debug overlay (F3 by default) has been redesigned to be easier to read and understand",
+      "translated_text": "调试覆盖层（默认使用F3键显示）经过重新设计，变得更易于阅读和理解",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术改动",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "The Data Pack version is now 122.1",
+      "translated_text": "数据包的版本号现在为122.1",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 99.0",
+      "translated_text": "资源包的版本号现在为99.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "h2",
+      "source_text": "Data Pack Version 122.1",
+      "translated_text": "数据包版本 122.1",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "h3",
+      "source_text": "New Environment Attributes",
+      "translated_text": "新的环境属性",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "h4",
+      "source_text": "minecraft:visual/has_sky_occluder",
+      "translated_text": "minecraft:visual/has_sky_occluder",
+      "meta": {}
+    },
+    {
+      "id": "b0014",
+      "type": "p",
+      "source_text": "Determines whether the sky occluder is enabled for the environment. The sky occluder will occlude the sky box up until a certain angle with fog color with a smooth occlusion border.",
+      "translated_text": "决定是否为该环境启用天空遮蔽器。天空遮蔽器会将天空盒在达到某个角度之前用雾色进行遮挡，并带有平滑的阴影边界。”",
+      "meta": {}
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Value type: boolean",
+      "translated_text": "数据类型：布尔值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Default value: true for the Overworld, false for the Nether and the End",
+      "translated_text": "默认值：主世界为 true，下界和末地分别为 false",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Interpolated: no",
+      "translated_text": "插值方式：否",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h3",
+      "source_text": "Predicates",
+      "translated_text": "谓词",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "h4",
+      "source_text": "Added below_heightmap:",
+      "translated_text": "新增了 below_heightmap 属性",
+      "meta": {}
+    },
+    {
+      "id": "b0020",
+      "type": "p",
+      "source_text": "Checks if the height of the position is below a given heightmap value.",
+      "translated_text": "检查当前位置的海拔是否低于给定的高度图值",
+      "meta": {}
+    },
+    {
+      "id": "b0021",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "heightmap : Heightmap type to compare origin against",
+      "translated_text": "heightmap：用于比较原始值的高度图类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h2",
+      "source_text": "Resource Pack Version 99.0",
+      "translated_text": "资源包版本 99.0",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器与后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "screenquad.vsh was renamed to screentriangle.vsh since it was actually representing a single triangle for a while now",
+      "translated_text": "screenquad.vsh 被重命名为 screentriangle.vsh，因为它实际上一直表示单个三角形",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "h4",
+      "source_text": "Changes for the \"Improved Fog\" feature that is controlled by the \"Improved Transparency\" video setting",
+      "translated_text": "针对“改进的雾效”功能所做的更改，该效果由“改进的透明度”视频设置控制",
+      "meta": {}
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Removed OIT (Order-Independent Transparency, controlled by \"Improved Transparency\" video setting) support from the clouds.fsh , since it is now used to render clouds when OIT is off and to render clouds to an offscreen target when OIT is on",
+      "translated_text": "从 clouds.fsh 中移除了 OIT（顺序无关透明度，由“改进的透明度”视频设置控制）的支持，因为现在当 OIT 关闭时使用该功能来渲染云层，而当 OIT 开启时则将云层渲染到离屏幕的目标区域",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "Added blit_clouds.fsh shader with OIT support that renders clouds from an offscreen target to OIT targets",
+      "translated_text": "添加了支持 OIT 的 blit_clouds.fsh 着色器，可以从离屏幕的目标区域将云层渲染到 OIT 目标区域",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "h4",
+      "source_text": "New Shaders for the Sky Occlusion",
+      "translated_text": "新的天空遮挡着色器",
+      "meta": {}
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "Added sky_occluder.vsh and sky_occluder.fsh shaders which are used to occlude the sky box up until the certain angle with fog color with a smooth occlusion border",
+      "translated_text": "添加了 sky_occluder.vsh 和 sky_occluder.fsh 着色器，它们用于在达到特定角度之前用雾色遮挡天空盒，并生成平滑的遮挡边界",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 2",
+      "translated_text": "修复了 26.4 快照 2 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "[MC-152504](https://bugs.mojang.com/browse/MC-152504) - The sky overlaps fog underwater, notably at sunrise and sunset",
+      "translated_text": "[MC-152504](https://bugs.mojang.com/browse/MC-152504) - 天空在水下时会与雾层重叠，特别是在日出和日落时",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "[MC-184161](https://bugs.mojang.com/browse/MC-184161) - The \"Oh Shiny\" advancement title is missing a comma",
+      "translated_text": "[MC-184161](https://bugs.mojang.com/browse/MC-184161) - “Oh Shiny” 进度奖励的标题缺少逗号",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "[MC-195836](https://bugs.mojang.com/browse/MC-195836) - Some closed captions aren't in the correct tense or are formatted incorrectly",
+      "translated_text": "[MC-195836](https://bugs.mojang.com/browse/MC-195836) - 一些字幕的时态不正确或格式有误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "[MC-212623](https://bugs.mojang.com/browse/MC-212623) - Some closed captions use the word \"angers\" as a verb, therefore making them grammatically incorrect",
+      "translated_text": "[MC-212623](https://bugs.mojang.com/browse/MC-212623) - 一些字幕中 “angers” 被用作动词，导致语法错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "[MC-236052](https://bugs.mojang.com/browse/MC-236052) - Z-fighting can be seen around the necks of small armor stands",
+      "translated_text": "[MC-236052] - 在小型盔甲架的颈部周围可以看到Z轴方向的碰撞效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "[MC-264274](https://bugs.mojang.com/browse/MC-264274) - Placing lily pads and frogspawn does not increment their used:[block] statistics",
+      "translated_text": "[MC-264274] - 放置睡莲和水蛙并不会增加相关方块的使用统计数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "[MC-300250](https://bugs.mojang.com/browse/MC-300250) - Clouds render behind foggy terrain",
+      "translated_text": "[MC-300250] - 云层会显示在雾状地形后面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "[MC-300894](https://bugs.mojang.com/browse/MC-300894) - The harness layer is not scaled correctly on baby happy ghasts",
+      "translated_text": "[MC-300894] - 幼年快乐恶魂身上的背带层比例错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "[MC-310503](https://bugs.mojang.com/browse/MC-310503) - LivingEntity 's constructor randomizes the yaw in radians instead of degrees",
+      "translated_text": "[MC-310503] - LivingEntity的构造函数使用弧度而非度数来随机化yaw值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "[MC-311424](https://bugs.mojang.com/browse/MC-311424) - The Right Shift key is recognized as key.keyboard.unknown (\"Not Bound\") with certain input methods",
+      "translated_text": "[MC-311424] - 在某些输入方式下，右 Shift 键会被识别为“未知键”（“未绑定”）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "[MC-311451](https://bugs.mojang.com/browse/MC-311451) - Mouse input is not recognized on monitors that are in negative positions on Wayland",
+      "translated_text": "[MC-311451] - 在 Wayland 环境下，处于负坐标位置的显示器无法识别鼠标输入",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "[MC-311458](https://bugs.mojang.com/browse/MC-311458) - The \"Adventure\" advancement's icon is inconsistent with the Adventure game mode's icon in the game mode switcher",
+      "translated_text": "[MC-311458] - 'Adventure' 游戏模式的图标与游戏模式切换器中的图标不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "[MC-311758](https://bugs.mojang.com/browse/MC-311758) - Block breaking particles and sounds are not canceled and continue appearing when opening the game mode switcher",
+      "translated_text": "[MC-311758] - 在打开游戏模式切换器时，破坏方块的视觉效果和声音仍然会持续出现",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "[MC-311777](https://bugs.mojang.com/browse/MC-311777) - Block breaking particles and sounds are not canceled and continue appearing when instantly mining a block and swapping the item into the off hand simultaneously",
+      "translated_text": "[MC-311777] - 在瞬间破坏方块并将物品放入副手栏的同时，破坏方块的视觉效果和声音仍然会持续出现",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "[MC-311780](https://bugs.mojang.com/browse/MC-311780) - Trigonometric functions don't wrap angles before being applied and aren't fully periodic",
+      "translated_text": "[MC-311780] - 三角函数在应用之前不会对角度进行取模处理，因此不具备完整的周期性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "[MC-311781](https://bugs.mojang.com/browse/MC-311781) - The game is not minimized when losing focus in fullscreen mode",
+      "translated_text": "[MC-311781](https://bugs.mojang.com/browse/MC-311781) - 在全屏模式下失去焦点时，游戏窗口不会最小化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "[MC-311826](https://bugs.mojang.com/browse/MC-311826) - On some systems, tabbing in and out of the game in fullscreen mode while the \"Toggle Cinematic Camera\" key bind is unbound will toggle it",
+      "translated_text": "[MC-311826](https://bugs.mojang.com/browse/MC-311826) - 在某些系统上，当全屏模式下使用“切换电影相机”键（该键未绑定任何功能）时，切换显示/隐藏游戏窗口的操作会触发该键的功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "[MC-311924](https://bugs.mojang.com/browse/MC-311924) - Breaking an armor stand or block-attached entity near a sculk catalyst consumes the player's experience",
+      "translated_text": "[MC-311924](https://bugs.mojang.com/browse/MC-311924) - 打碎靠近斯库尔克催化剂（Sculk Catalyst）的护甲架或附着有方块的实体会消耗玩家的经验值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "[MC-311933](https://bugs.mojang.com/browse/MC-311933) - The horizontal scroll direction is inverted in the Advancements screen",
+      "translated_text": "[MC-311933](https://bugs.mojang.com/browse/MC-311933) - 在“进展”（Advancements）界面中，水平滚动方向是反向的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "[MC-311949](https://bugs.mojang.com/browse/MC-311949) - The \"Not Bound\" scancode can activate key binds",
+      "translated_text": "[MC-311949](https://bugs.mojang.com/browse/MC-311949) - 带有“未绑定”（Not Bound）标签的键盘扫描码（scancode）可能会激活某些键的绑定功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "[MC-311965](https://bugs.mojang.com/browse/MC-311965) - The commands.posteffect.list.success string always pluralizes the word \"effects\"",
+      "translated_text": "[MC-311965](https://bugs.mojang.com/browse/MC-311965) - 命令 `posteffect.list.success` 在显示信息时总是将 “effects” 一词复数化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "[MC-311969](https://bugs.mojang.com/browse/MC-311969) - Some strings that mention specified slots are missing articles",
+      "translated_text": "[MC-311969](https://bugs.mojang.com/browse/MC-311969) - 一些提及特定插槽数量的字符串缺少冠词“the”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "[MC-311970](https://bugs.mojang.com/browse/MC-311970) - The options.debugGuiScale.tooltip string lacks a period, unlike similar strings",
+      "translated_text": "[MC-311970](https://bugs.mojang.com/browse/MC-311970) - `options.debugGuiScale.tooltip` 这个字符串缺少句号，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "[MC-311971](https://bugs.mojang.com/browse/MC-311971) - Some strings refer to the \"LAN\" setting as the \"multiplayer scope\" and write its value as \"Off\" instead of \"OFF\"",
+      "translated_text": "[MC-311971](https://bugs.mojang.com/browse/MC-311971) - 有些字符串将 “LAN” 设置称为 “multiplayer scope”，并将其值显示为 “Off” 而不是 “OFF”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "[MC-311973](https://bugs.mojang.com/browse/MC-311973) - The options.worldOptions.guest.command_access.tooltip string redundantly includes \"or not\"",
+      "translated_text": "[MC-311973](https://bugs.mojang.com/browse/MC-311973) - `options.worldOptions.guest_command_accesstooltip` 这个字符串冗余地包含了 “or not” 这个词",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "[MC-311977](https://bugs.mojang.com/browse/MC-311977) - The closed caption for riding zombie nautiluses is \"Nautilus bubbles\"",
+      "translated_text": "[MC-311977] - 骑着僵尸鹦鹉螺时的字幕显示为‘Nautilus bubbles’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "[MC-311978](https://bugs.mojang.com/browse/MC-311978) - Some argument error strings introduce the invalid value with a colon instead of surrounding it with single quotes, unlike similar strings",
+      "translated_text": "[MC-311978] - 某些参数错误字符串使用了冒号来表示无效值，而不是用单引号括起来，这与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "[MC-311997](https://bugs.mojang.com/browse/MC-311997) - The options.macFullscreenMenuVisibility.tooltip string is improperly capitalized",
+      "translated_text": "[MC-311997] - options.macFullscreenMenuVisibility.tooltip 这个字符串的大小写不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "li",
+      "source_text": "[MC-311999](https://bugs.mojang.com/browse/MC-311999) - The options.ctrlClickEmulatesRightClick string is missing a hyphen between the words \"Right\" and \"Click\"",
+      "translated_text": "[MC-311999] - optionsctrlClickEmulatesRightClick 这个字符串中‘Right’和‘Click’之间缺少连字符",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "[MC-312035](https://bugs.mojang.com/browse/MC-312035) - Attacking an entity in Creative mode, then switching to Survival mode adds 5 ticks of block break delay",
+      "translated_text": "[MC-312035] - 在创造模式下攻击某个实体后切换到生存模式，会导致拆除方块的延迟增加5个游戏刻",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "[MC-312046](https://bugs.mojang.com/browse/MC-312046) - Mushrooms now generate in excessive quantities in swamps",
+      "translated_text": "[MC-312046] - 蘑菇在沼泽地中生成的数量过多",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "[MC-312064](https://bugs.mojang.com/browse/MC-312064) - The game can randomly crash during chunk generation",
+      "translated_text": "[MC-312064] - 游戏在生成区块时可能会随机崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "[MC-312065](https://bugs.mojang.com/browse/MC-312065) - Some test coordinate strings are displayed with two sets of square brackets, unlike similar strings",
+      "translated_text": "[MC-312065] - 某些测试坐标字符串显示了两组方括号，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "[MC-312066](https://bugs.mojang.com/browse/MC-312066) - Donkeys, horses and mules in water can no longer be ridden onto land without the aid of a partial block",
+      "translated_text": "[MC-312066] - 水中的驴、马和骡子在没有辅助方块的情况下无法骑上陆地",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "[MC-312068](https://bugs.mojang.com/browse/MC-312068) - Some strings are missing articles before the word \"invalid\"",
+      "translated_text": "[MC-312068] - 某些字符串在“invalid”一词前缺少冠词",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "[MC-312075](https://bugs.mojang.com/browse/MC-312075) - The options.directionalAudio.off.tooltip string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312075] - “optionsdirectionalAudio.off.tooltip”字符串的大小写不正确，与其他相似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "[MC-312078](https://bugs.mojang.com/browse/MC-312078) - The options.hideMatchedNames.tooltip string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312078](https://bugs.mojang.com/browse/MC-312078) - 选项 `hideMatchedNames.tooltip` 的字符串大小写不正确，与类似的字符串不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "[MC-312079](https://bugs.mojang.com/browse/MC-312079) - The options.fullscreen.unavailable string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312079](https://bugs.mojang.com/browse/MC-312079) - 选项 `fullscreen.unavailable` 的字符串大小写不正确，与类似的字符串不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "[MC-312080](https://bugs.mojang.com/browse/MC-312080) - The telemetry.event.world_loaded.description string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312080] - 选项 `telemetry.event.world_loaded.description` 的字符串大小写不正确，与类似的字符串不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "[MC-312082](https://bugs.mojang.com/browse/MC-312082) - The advancements.husbandry.uh_oh.title string is missing a hyphen between the words \"Uh\" and \"Oh\"",
+      "translated_text": "[MC-312082] - 选项 `advancements.husbandry.uh_oh.title` 中 “Uh” 和 “Oh” 之间的连字符缺失",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "[MC-312084](https://bugs.mojang.com/browse/MC-312084) - The options.fullscreen.entry string is missing a hyphen before the word \"bit\"",
+      "translated_text": "[MC-312084] - 选项 `fullscreen.entry` 中 “bit” 前面的连字符缺失",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "[MC-312087](https://bugs.mojang.com/browse/MC-312087) - The word \"towards\" within the options.vignette.tooltip string isn't spelled in American English",
+      "translated_text": "[MC-312087] - 选项.vignette-tooltip 字符串中的 ‘towards’ 一词拼写不符合美式英语规范",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "[MC-312088](https://bugs.mojang.com/browse/MC-312088) - Some application control key name strings are displayed without the \"AC\" prefix, unlike similar strings",
+      "translated_text": "[MC-312088] - 某些应用程序控制键的名称字符串没有显示 ‘AC’ 前缀，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "[MC-312089](https://bugs.mojang.com/browse/MC-312089) - Some strings that name screens are improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312089] - 某些用于命名屏幕的字符串大小写不正确，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "[MC-312091](https://bugs.mojang.com/browse/MC-312091) - The chat.copy.click string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312091] chat.copy.click 这个字符串的大小写不正确，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "[MC-312092](https://bugs.mojang.com/browse/MC-312092) - The multiplayer.socialInteractions.not_available string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312092] multiplayer.socialInteractions.not_available 这个字符串的大小写不正确，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "[MC-312102](https://bugs.mojang.com/browse/MC-312102) - The disconnect.loginFailedInfo.invalidSession string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312102](https://bugs.mojang.com/browse/MC-312102) - 变量 `disconnect.loginFailedInfo.invalidSession` 的大小写处理不正确，与其他类似变量不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "[MC-312103](https://bugs.mojang.com/browse/MC-312103) - The entity name \"Experience Orbs\" isn't capitalized within some game rule description strings, unlike similar strings",
+      "translated_text": "[MC-312103](https://bugs.mojang.com/browse/MC-312103) - 在某些游戏规则描述字符串中，实体名称「Experience Orbs」的首字母没有大写，与其他类似字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "[MC-312107](https://bugs.mojang.com/browse/MC-312107) - The selectWorld.backupQuestion.experimental string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312107](https://bugs.mojang.com/browse/MC-312107) - 变量 `selectWorldbackupQuestion.experimental` 的大小写处理不正确，与其他类似变量不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "[MC-312108](https://bugs.mojang.com/browse/MC-312108) - The jigsaw_block.final_state string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312108](https://bugs.mojang.com/browse/MC-312108) - 变量 `jigsaw_block.final_state` 的大小写处理不正确，与其他类似变量不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "[MC-312111](https://bugs.mojang.com/browse/MC-312111) - Some Realms snapshot popup strings are improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312111](https://bugs.mojang.com/browse/MC-312111) - 一些 Realms 快照弹出窗口中的字符串大小写处理不正确，与其他类似字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "[MC-312112](https://bugs.mojang.com/browse/MC-312112) - The mco.configure.world.invite_codes.subtitle string uses the verb \"add\" instead of \"create\", unlike similar strings",
+      "translated_text": "[MC-312112](https://bugs.mojang.com/browse/MC-312112) - mco.configure.world.invite_codes subtitle 使用的是 \"add\" 而不是 \"create\" 动词，与其他类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "[MC-312126](https://bugs.mojang.com/browse/MC-312126) - The options.inGameNotification.tooltip string is improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312126](https://bugs.mojang.com/browse/MC-312126) - options.inGameNotification.tooltip 的首字母大写方式不正确，与其他类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0086",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Java版的Minecraft支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在\"Installations\"选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0087",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的游戏世界，请在备份后或在与主游戏世界不同的文件夹中运行它们。**",
+      "meta": {}
+    },
+    {
+      "id": "b0088",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/e6cac6e2fa35d5847e60dede721ec75f7a28c34d/server.jar)",
+      "translated_text": "[Minecraft 服务器 jar](https://piston-data.mojang.com/v1/objects/e6cac6e2fa35d5847e60dede721ec75f7a28c34d/server.jar_IOC",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在此报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Hi there! It is time for the second snapshot for 26.4, featuring improved render distance fog, a new celestial occluder, and a fresh redesign of the F3 screen.\n\nHappy mining!\n\nChanges\n\nWhen \"Improved Transparency\" is on, sky background and clouds that are behind the terrain are now blended into the terrain render distance fog making the boundary between the sky and the terrain invisible\n\nIn the Overworld, the bottom half of the skybox is now occluding the celestial objects such as the sun, the moon and the stars\n\nUI\n\nThe debug overlay (F3 by default) has been redesigned to be easier to read and understand\n\nTechnical Changes\n\nThe Data Pack version is now 122.1\n\nThe Resource Pack version is now 99.0\n\nData Pack Version 122.1\n\nNew Environment Attributes\n\nminecraft:visual/has_sky_occluder\n\nDetermines whether the sky occluder is enabled for the environment. The sky occluder will occlude the sky box up until a certain angle with fog color with a smooth occlusion border.\n\nValue type: boolean\n\nDefault value: true for the Overworld, false for the Nether and the End\n\nInterpolated: no\n\nPredicates\n\nAdded below_heightmap:\n\nChecks if the height of the position is below a given heightmap value.\n\nFormat:\n\nheightmap : Heightmap type to compare origin against\n\nResource Pack Version 99.0\n\nShaders & Post-process Effects\n\nscreenquad.vsh was renamed to screentriangle.vsh since it was actually representing a single triangle for a while now\n\nChanges for the \"Improved Fog\" feature that is controlled by the \"Improved Transparency\" video setting\n\nRemoved OIT (Order-Independent Transparency, controlled by \"Improved Transparency\" video setting) support from the clouds.fsh , since it is now used to render clouds when OIT is off and to render clouds to an offscreen target when OIT is on\n\nAdded blit_clouds.fsh shader with OIT support that renders clouds from an offscreen target to OIT targets\n\nNew Shaders for the Sky Occlusion\n\nAdded sky_occluder.vsh and sky_occluder.fsh shaders which are used to occlude the sky box up until the certain angle with fog color with a smooth occlusion border\n\nFixed bugs in 26.4 Snapshot 2\n\n[MC-152504](https://bugs.mojang.com/browse/MC-152504) - The sky overlaps fog underwater, notably at sunrise and sunset\n\n[MC-184161](https://bugs.mojang.com/browse/MC-184161) - The \"Oh Shiny\" advancement title is missing a comma\n\n[MC-195836](https://bugs.mojang.com/browse/MC-195836) - Some closed captions aren't in the correct tense or are formatted incorrectly\n\n[MC-212623](https://bugs.mojang.com/browse/MC-212623) - Some closed captions use the word \"angers\" as a verb, therefore making them grammatically incorrect\n\n[MC-236052](https://bugs.mojang.com/browse/MC-236052) - Z-fighting can be seen around the necks of small armor stands\n\n[MC-264274](https://bugs.mojang.com/browse/MC-264274) - Placing lily pads and frogspawn does not increment their used:[block] statistics\n\n[MC-300250](https://bugs.mojang.com/browse/MC-300250) - Clouds render behind foggy terrain\n\n[MC-300894](https://bugs.mojang.com/browse/MC-300894) - The harness layer is not scaled correctly on baby happy ghasts\n\n[MC-310503](https://bugs.mojang.com/browse/MC-310503) - LivingEntity 's constructor randomizes the yaw in radians instead of degrees\n\n[MC-311424](https://bugs.mojang.com/browse/MC-311424) - The Right Shift key is recognized as key.keyboard.unknown (\"Not Bound\") with certain input methods\n\n[MC-311451](https://bugs.mojang.com/browse/MC-311451) - Mouse input is not recognized on monitors that are in negative positions on Wayland\n\n[MC-311458](https://bugs.mojang.com/browse/MC-311458) - The \"Adventure\" advancement's icon is inconsistent with the Adventure game mode's icon in the game mode switcher\n\n[MC-311758](https://bugs.mojang.com/browse/MC-311758) - Block breaking particles and sounds are not canceled and continue appearing when opening the game mode switcher\n\n[MC-311777](https://bugs.mojang.com/browse/MC-311777) - Block breaking particles and sounds are not canceled and continue appearing when instantly mining a block and swapping the item into the off hand simultaneously\n\n[MC-311780](https://bugs.mojang.com/browse/MC-311780) - Trigonometric functions don't wrap angles before being applied and aren't fully periodic\n\n[MC-311781](https://bugs.mojang.com/browse/MC-311781) - The game is not minimized when losing focus in fullscreen mode\n\n[MC-311826](https://bugs.mojang.com/browse/MC-311826) - On some systems, tabbing in and out of the game in fullscreen mode while the \"Toggle Cinematic Camera\" key bind is unbound will toggle it\n\n[MC-311924](https://bugs.mojang.com/browse/MC-311924) - Breaking an armor stand or block-attached entity near a sculk catalyst consumes the player's experience\n\n[MC-311933](https://bugs.mojang.com/browse/MC-311933) - The horizontal scroll direction is inverted in the Advancements screen\n\n[MC-311949](https://bugs.mojang.com/browse/MC-311949) - The \"Not Bound\" scancode can activate key binds\n\n[MC-311965](https://bugs.mojang.com/browse/MC-311965) - The commands.posteffect.list.success string always pluralizes the word \"effects\"\n\n[MC-311969](https://bugs.mojang.com/browse/MC-311969) - Some strings that mention specified slots are missing articles\n\n[MC-311970](https://bugs.mojang.com/browse/MC-311970) - The options.debugGuiScale.tooltip string lacks a period, unlike similar strings\n\n[MC-311971](https://bugs.mojang.com/browse/MC-311971) - Some strings refer to the \"LAN\" setting as the \"multiplayer scope\" and write its value as \"Off\" instead of \"OFF\"\n\n[MC-311973](https://bugs.mojang.com/browse/MC-311973) - The options.worldOptions.guest.command_access.tooltip string redundantly includes \"or not\"\n\n[MC-311977](https://bugs.mojang.com/browse/MC-311977) - The closed caption for riding zombie nautiluses is \"Nautilus bubbles\"\n\n[MC-311978](https://bugs.mojang.com/browse/MC-311978) - Some argument error strings introduce the invalid value with a colon instead of surrounding it with single quotes, unlike similar strings\n\n[MC-311997](https://bugs.mojang.com/browse/MC-311997) - The options.macFullscreenMenuVisibility.tooltip string is improperly capitalized\n\n[MC-311999](https://bugs.mojang.com/browse/MC-311999) - The options.ctrlClickEmulatesRightClick string is missing a hyphen between the words \"Right\" and \"Click\"\n\n[MC-312035](https://bugs.mojang.com/browse/MC-312035) - Attacking an entity in Creative mode, then switching to Survival mode adds 5 ticks of block break delay\n\n[MC-312046](https://bugs.mojang.com/browse/MC-312046) - Mushrooms now generate in excessive quantities in swamps\n\n[MC-312064](https://bugs.mojang.com/browse/MC-312064) - The game can randomly crash during chunk generation\n\n[MC-312065](https://bugs.mojang.com/browse/MC-312065) - Some test coordinate strings are displayed with two sets of square brackets, unlike similar strings\n\n[MC-312066](https://bugs.mojang.com/browse/MC-312066) - Donkeys, horses and mules in water can no longer be ridden onto land without the aid of a partial block\n\n[MC-312068](https://bugs.mojang.com/browse/MC-312068) - Some strings are missing articles before the word \"invalid\"\n\n[MC-312075](https://bugs.mojang.com/browse/MC-312075) - The options.directionalAudio.off.tooltip string is improperly capitalized, unlike similar strings\n\n[MC-312078](https://bugs.mojang.com/browse/MC-312078) - The options.hideMatchedNames.tooltip string is improperly capitalized, unlike similar strings\n\n[MC-312079](https://bugs.mojang.com/browse/MC-312079) - The options.fullscreen.unavailable string is improperly capitalized, unlike similar strings\n\n[MC-312080](https://bugs.mojang.com/browse/MC-312080) - The telemetry.event.world_loaded.description string is improperly capitalized, unlike similar strings\n\n[MC-312082](https://bugs.mojang.com/browse/MC-312082) - The advancements.husbandry.uh_oh.title string is missing a hyphen between the words \"Uh\" and \"Oh\"\n\n[MC-312084](https://bugs.mojang.com/browse/MC-312084) - The options.fullscreen.entry string is missing a hyphen before the word \"bit\"\n\n[MC-312087](https://bugs.mojang.com/browse/MC-312087) - The word \"towards\" within the options.vignette.tooltip string isn't spelled in American English\n\n[MC-312088](https://bugs.mojang.com/browse/MC-312088) - Some application control key name strings are displayed without the \"AC\" prefix, unlike similar strings\n\n[MC-312089](https://bugs.mojang.com/browse/MC-312089) - Some strings that name screens are improperly capitalized, unlike similar strings\n\n[MC-312091](https://bugs.mojang.com/browse/MC-312091) - The chat.copy.click string is improperly capitalized, unlike similar strings\n\n[MC-312092](https://bugs.mojang.com/browse/MC-312092) - The multiplayer.socialInteractions.not_available string is improperly capitalized, unlike similar strings\n\n[MC-312102](https://bugs.mojang.com/browse/MC-312102) - The disconnect.loginFailedInfo.invalidSession string is improperly capitalized, unlike similar strings\n\n[MC-312103](https://bugs.mojang.com/browse/MC-312103) - The entity name \"Experience Orbs\" isn't capitalized within some game rule description strings, unlike similar strings\n\n[MC-312107](https://bugs.mojang.com/browse/MC-312107) - The selectWorld.backupQuestion.experimental string is improperly capitalized, unlike similar strings\n\n[MC-312108](https://bugs.mojang.com/browse/MC-312108) - The jigsaw_block.final_state string is improperly capitalized, unlike similar strings\n\n[MC-312111](https://bugs.mojang.com/browse/MC-312111) - Some Realms snapshot popup strings are improperly capitalized, unlike similar strings\n\n[MC-312112](https://bugs.mojang.com/browse/MC-312112) - The mco.configure.world.invite_codes.subtitle string uses the verb \"add\" instead of \"create\", unlike similar strings\n\n[MC-312126](https://bugs.mojang.com/browse/MC-312126) - The options.inGameNotification.tooltip string is improperly capitalized, unlike similar strings\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/e6cac6e2fa35d5847e60dede721ec75f7a28c34d/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "大家好！26.4版本的第二个快照来了，其中包含改进的渲染距离雾效、新的天文物体遮挡器，以及F3屏幕的重新设计。\n\n祝大家采矿愉快！\n\n改动说明\n\n当“提高透明度”功能开启时，天空背景和地形背后的云层会融入到地形渲染的雾效中，使得天空与地形之间的边界变得不可见\n\n在主世界中，天空盒的底部现在会遮挡太阳、月亮和星星等天体\n\n用户界面\n\n调试覆盖层（默认使用F3键显示）经过重新设计，变得更易于阅读和理解\n\n技术改动\n\n数据包的版本号现在为122.1\n\n资源包的版本号现在为99.0\n\n数据包版本 122.1\n\n新的环境属性\n\nminecraft:visual/has_sky_occluder\n\n决定是否为该环境启用天空遮蔽器。天空遮蔽器会将天空盒在达到某个角度之前用雾色进行遮挡，并带有平滑的阴影边界。”\n\n数据类型：布尔值\n\n默认值：主世界为 true，下界和末地分别为 false\n\n插值方式：否\n\n谓词\n\n新增了 below_heightmap 属性\n\n检查当前位置的海拔是否低于给定的高度图值\n\n格式：\n\nheightmap：用于比较原始值的高度图类型\n\n资源包版本 99.0\n\n着色器与后期处理效果\n\nscreenquad.vsh 被重命名为 screentriangle.vsh，因为它实际上一直表示单个三角形\n\n针对“改进的雾效”功能所做的更改，该效果由“改进的透明度”视频设置控制\n\n从 clouds.fsh 中移除了 OIT（顺序无关透明度，由“改进的透明度”视频设置控制）的支持，因为现在当 OIT 关闭时使用该功能来渲染云层，而当 OIT 开启时则将云层渲染到离屏幕的目标区域\n\n添加了支持 OIT 的 blit_clouds.fsh 着色器，可以从离屏幕的目标区域将云层渲染到 OIT 目标区域\n\n新的天空遮挡着色器\n\n添加了 sky_occluder.vsh 和 sky_occluder.fsh 着色器，它们用于在达到特定角度之前用雾色遮挡天空盒，并生成平滑的遮挡边界\n\n修复了 26.4 快照 2 中的漏洞\n\n[MC-152504](https://bugs.mojang.com/browse/MC-152504) - 天空在水下时会与雾层重叠，特别是在日出和日落时\n\n[MC-184161](https://bugs.mojang.com/browse/MC-184161) - “Oh Shiny” 进度奖励的标题缺少逗号\n\n[MC-195836](https://bugs.mojang.com/browse/MC-195836) - 一些字幕的时态不正确或格式有误\n\n[MC-212623](https://bugs.mojang.com/browse/MC-212623) - 一些字幕中 “angers” 被用作动词，导致语法错误\n\n[MC-236052] - 在小型盔甲架的颈部周围可以看到Z轴方向的碰撞效果\n\n[MC-264274] - 放置睡莲和水蛙并不会增加相关方块的使用统计数\n\n[MC-300250] - 云层会显示在雾状地形后面\n\n[MC-300894] - 幼年快乐恶魂身上的背带层比例错误\n\n[MC-310503] - LivingEntity的构造函数使用弧度而非度数来随机化yaw值\n\n[MC-311424] - 在某些输入方式下，右 Shift 键会被识别为“未知键”（“未绑定”）\n\n[MC-311451] - 在 Wayland 环境下，处于负坐标位置的显示器无法识别鼠标输入\n\n[MC-311458] - 'Adventure' 游戏模式的图标与游戏模式切换器中的图标不一致\n\n[MC-311758] - 在打开游戏模式切换器时，破坏方块的视觉效果和声音仍然会持续出现\n\n[MC-311777] - 在瞬间破坏方块并将物品放入副手栏的同时，破坏方块的视觉效果和声音仍然会持续出现\n\n[MC-311780] - 三角函数在应用之前不会对角度进行取模处理，因此不具备完整的周期性\n\n[MC-311781](https://bugs.mojang.com/browse/MC-311781) - 在全屏模式下失去焦点时，游戏窗口不会最小化\n\n[MC-311826](https://bugs.mojang.com/browse/MC-311826) - 在某些系统上，当全屏模式下使用“切换电影相机”键（该键未绑定任何功能）时，切换显示/隐藏游戏窗口的操作会触发该键的功能\n\n[MC-311924](https://bugs.mojang.com/browse/MC-311924) - 打碎靠近斯库尔克催化剂（Sculk Catalyst）的护甲架或附着有方块的实体会消耗玩家的经验值\n\n[MC-311933](https://bugs.mojang.com/browse/MC-311933) - 在“进展”（Advancements）界面中，水平滚动方向是反向的\n\n[MC-311949](https://bugs.mojang.com/browse/MC-311949) - 带有“未绑定”（Not Bound）标签的键盘扫描码（scancode）可能会激活某些键的绑定功能\n\n[MC-311965](https://bugs.mojang.com/browse/MC-311965) - 命令 `posteffect.list.success` 在显示信息时总是将 “effects” 一词复数化\n\n[MC-311969](https://bugs.mojang.com/browse/MC-311969) - 一些提及特定插槽数量的字符串缺少冠词“the”\n\n[MC-311970](https://bugs.mojang.com/browse/MC-311970) - `options.debugGuiScale.tooltip` 这个字符串缺少句号，与类似的字符串不同\n\n[MC-311971](https://bugs.mojang.com/browse/MC-311971) - 有些字符串将 “LAN” 设置称为 “multiplayer scope”，并将其值显示为 “Off” 而不是 “OFF”\n\n[MC-311973](https://bugs.mojang.com/browse/MC-311973) - `options.worldOptions.guest_command_accesstooltip` 这个字符串冗余地包含了 “or not” 这个词\n\n[MC-311977] - 骑着僵尸鹦鹉螺时的字幕显示为‘Nautilus bubbles’\n\n[MC-311978] - 某些参数错误字符串使用了冒号来表示无效值，而不是用单引号括起来，这与类似的字符串不同\n\n[MC-311997] - options.macFullscreenMenuVisibility.tooltip 这个字符串的大小写不正确\n\n[MC-311999] - optionsctrlClickEmulatesRightClick 这个字符串中‘Right’和‘Click’之间缺少连字符\n\n[MC-312035] - 在创造模式下攻击某个实体后切换到生存模式，会导致拆除方块的延迟增加5个游戏刻\n\n[MC-312046] - 蘑菇在沼泽地中生成的数量过多\n\n[MC-312064] - 游戏在生成区块时可能会随机崩溃\n\n[MC-312065] - 某些测试坐标字符串显示了两组方括号，与类似的字符串不同\n\n[MC-312066] - 水中的驴、马和骡子在没有辅助方块的情况下无法骑上陆地\n\n[MC-312068] - 某些字符串在“invalid”一词前缺少冠词\n\n[MC-312075] - “optionsdirectionalAudio.off.tooltip”字符串的大小写不正确，与其他相似的字符串不同\n\n[MC-312078](https://bugs.mojang.com/browse/MC-312078) - 选项 `hideMatchedNames.tooltip` 的字符串大小写不正确，与类似的字符串不一致\n\n[MC-312079](https://bugs.mojang.com/browse/MC-312079) - 选项 `fullscreen.unavailable` 的字符串大小写不正确，与类似的字符串不一致\n\n[MC-312080] - 选项 `telemetry.event.world_loaded.description` 的字符串大小写不正确，与类似的字符串不一致\n\n[MC-312082] - 选项 `advancements.husbandry.uh_oh.title` 中 “Uh” 和 “Oh” 之间的连字符缺失\n\n[MC-312084] - 选项 `fullscreen.entry` 中 “bit” 前面的连字符缺失\n\n[MC-312087] - 选项.vignette-tooltip 字符串中的 ‘towards’ 一词拼写不符合美式英语规范\n\n[MC-312088] - 某些应用程序控制键的名称字符串没有显示 ‘AC’ 前缀，与类似的字符串不同\n\n[MC-312089] - 某些用于命名屏幕的字符串大小写不正确，与类似的字符串不同\n\n[MC-312091] chat.copy.click 这个字符串的大小写不正确，与类似的字符串不同\n\n[MC-312092] multiplayer.socialInteractions.not_available 这个字符串的大小写不正确，与类似的字符串不同\n\n[MC-312102](https://bugs.mojang.com/browse/MC-312102) - 变量 `disconnect.loginFailedInfo.invalidSession` 的大小写处理不正确，与其他类似变量不同\n\n[MC-312103](https://bugs.mojang.com/browse/MC-312103) - 在某些游戏规则描述字符串中，实体名称「Experience Orbs」的首字母没有大写，与其他类似字符串不同\n\n[MC-312107](https://bugs.mojang.com/browse/MC-312107) - 变量 `selectWorldbackupQuestion.experimental` 的大小写处理不正确，与其他类似变量不同\n\n[MC-312108](https://bugs.mojang.com/browse/MC-312108) - 变量 `jigsaw_block.final_state` 的大小写处理不正确，与其他类似变量不同\n\n[MC-312111](https://bugs.mojang.com/browse/MC-312111) - 一些 Realms 快照弹出窗口中的字符串大小写处理不正确，与其他类似字符串不同\n\n[MC-312112](https://bugs.mojang.com/browse/MC-312112) - mco.configure.world.invite_codes subtitle 使用的是 \"add\" 而不是 \"create\" 动词，与其他类似的字符串不同\n\n[MC-312126](https://bugs.mojang.com/browse/MC-312126) - options.inGameNotification.tooltip 的首字母大写方式不正确，与其他类似的字符串不同\n\n获取快照\n\nJava版的Minecraft支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在\"Installations\"选项卡中启用快照功能。\n\n**测试版本可能会损坏你的游戏世界，请在备份后或在与主游戏世界不同的文件夹中运行它们。**\n\n跨平台服务器JAR文件：\n\n[Minecraft 服务器 jar](https://piston-data.mojang.com/v1/objects/e6cac6e2fa35d5847e60dede721ec75f7a28c34d/server.jar_IOC\n\n在此报告错误：\n\n[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

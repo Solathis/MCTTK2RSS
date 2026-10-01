@@ -13,6 +13,7 @@ from scraper import (
     blocks_to_plaintext,
     build_glossary_prompt,
     classify_news_type,
+    extract_blocks_in_order,
     find_relevant_terms,
     load_config,
     load_glossary,
@@ -268,6 +269,44 @@ class TestBlocksToPlaintext:
         ]
         result = blocks_to_plaintext(blocks, field="source_text")
         assert result == "Hello"
+
+
+# ── extract_blocks_in_order（段落内嵌图片/链接） ────────
+
+class TestExtractBlocksInOrder:
+    """段落内嵌的 <img> 之前会被静默丢弃，这里固定住提取行为。"""
+
+    def _blocks(self, html, base_url="https://www.minecraft.net"):
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(html, "html.parser")
+        blocks = []
+        extract_blocks_in_order(soup.div, blocks, base_url=base_url)
+        return blocks
+
+    def test_paragraph_link(self):
+        blocks = self._blocks('<div><p>见 <a href="/news/x">公告</a></p></div>')
+        assert blocks[0]["type"] == "p"
+        assert blocks[0]["source_text"] == "见 [公告](https://www.minecraft.net/news/x)"
+
+    def test_paragraph_inline_image_kept(self):
+        blocks = self._blocks('<div><p>看图 <img src="/img/a.png" alt="示意图"> 清楚</p></div>')
+        assert len(blocks) == 1
+        text = blocks[0]["source_text"]
+        assert "![示意图](https://www.minecraft.net/img/a.png)" in text
+        assert "看图" in text and "清楚" in text
+
+    def test_standalone_image_is_img_block(self):
+        blocks = self._blocks('<div><img src="/img/a.png" alt="头图"></div>')
+        assert len(blocks) == 1
+        assert blocks[0]["type"] == "img"
+        assert blocks[0]["meta"]["src"] == "https://www.minecraft.net/img/a.png"
+
+    def test_list_item_inline_image_kept(self):
+        blocks = self._blocks('<div><ul><li>项目 <img src="/img/a.png" alt="图"> 说明</li></ul></div>')
+        assert len(blocks) == 1
+        assert blocks[0]["type"] == "li"
+        assert "[img]" not in blocks[0]["source_text"]
+        assert "![图](https://www.minecraft.net/img/a.png)" in blocks[0]["source_text"]
 
 
 # ── reindex_blocks ───────────────────────────────────

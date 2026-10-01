@@ -31,6 +31,55 @@ class TestMdLinksToBBCode:
     def test_empty(self):
         assert _md_links_to_bbcode("") == ""
 
+    def test_nested_brackets_in_label(self):
+        """链接文字含方括号时也要转换（如官网文章的 [预览版/测试版] 后缀）。"""
+        src = ("[9月30日：生物及更多内容！[预览版/测试版]]"
+               "(https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs)")
+        assert _md_links_to_bbcode(src) == (
+            "[url=https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs]"
+            "9月30日：生物及更多内容！[预览版/测试版][/url]"
+        )
+
+    def test_nested_brackets_english(self):
+        src = ("[Sept ember 30: Mobs and more! [Preview/beta]]"
+               "(https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs)")
+        out = _md_links_to_bbcode(src)
+        assert out.startswith("[url=https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs]")
+        assert out.endswith("[/url]")
+        assert "Mobs and more! [Preview/beta]" in out
+
+    def test_parentheses_in_url(self):
+        src = "[Wiki](https://en.wikipedia.org/wiki/Function_(mathematics)) 词条"
+        assert _md_links_to_bbcode(src) == (
+            "[url=https://en.wikipedia.org/wiki/Function_(mathematics)]Wiki[/url] 词条"
+        )
+
+    def test_markdown_image_becomes_img_tag(self):
+        """![alt](url) 不能退化成 ![url=url]alt[/url]，应转成 [img]url[/img]。"""
+        assert _md_links_to_bbcode("![图片](https://x.com/a.png)") == "[img]https://x.com/a.png[/img]"
+
+    def test_image_and_link_mixed(self):
+        result = _md_links_to_bbcode("![图片](https://x.com/a.png) 与 [链接](https://x.com/b)")
+        assert "[img]https://x.com/a.png[/img]" in result
+        assert "[url=https://x.com/b]链接[/url]" in result
+        assert "![url=" not in result
+
+    def test_inline_image_isolated_on_own_line(self):
+        assert _md_links_to_bbcode("看这张图 ![示意图](https://x.com/a.png) 很清楚") == (
+            "看这张图\n[img]https://x.com/a.png[/img]\n很清楚"
+        )
+
+    def test_plain_brackets_untouched(self):
+        assert _md_links_to_bbcode("无 URL 的 [裸括号] 保持原样") == "无 URL 的 [裸括号] 保持原样"
+
+    def test_unclosed_markdown_untouched(self):
+        assert _md_links_to_bbcode("[未闭合](http://x.com") == "[未闭合](http://x.com"
+        assert _md_links_to_bbcode("[未闭合文字(http://x.com)") == "[未闭合文字(http://x.com)"
+
+    def test_existing_bbcode_link_untouched(self):
+        src = "已转好的 [url=http://x.com]文字[/url] 不受影响"
+        assert _md_links_to_bbcode(src) == src
+
 
 # ── _parse_date ──────────────────────────────────────
 
@@ -89,6 +138,54 @@ class TestBBCodeToMarkdown:
         assert "[size" not in result
         assert "[color" not in result
 
+    def test_nested_quote(self):
+        """嵌套引用要分行并保留层级，不能挤成 '> 外层> 内层'。"""
+        assert _bbcode_to_markdown("[quote]外层[quote]内层[/quote]结尾[/quote]") == (
+            "> 外层\n> > 内层\n> 结尾"
+        )
+
+    def test_quote_multiline_nested(self):
+        assert _bbcode_to_markdown("[quote]A\n[quote]B1\nB2[/quote]\nC[/quote]") == (
+            "> A\n> > B1\n> > B2\n> \n> C"
+        )
+
+    def test_quote_is_block_level(self):
+        assert _bbcode_to_markdown("前文\n[quote]引用[/quote]\n后文") == "前文\n> 引用\n\n后文"
+
+    def test_unclosed_quote_kept(self):
+        assert _bbcode_to_markdown("[quote]没有闭合") == "[quote]没有闭合"
+
+    def test_code_block_content_untouched(self):
+        """[code] 内的方括号文本不能被当成样式标签。"""
+        assert _bbcode_to_markdown("[code][b]not bold[/b][i]x[/i][/code]") == "[b]not bold[/b][i]x[/i]"
+
+    def test_list_items_one_per_line(self):
+        assert _bbcode_to_markdown("[list][*]A\n[*]B\n[*]C[/list]") == "- A\n- B\n- C"
+
+    def test_nested_list_indented(self):
+        assert _bbcode_to_markdown("[list][*]外1[list][*]内1[*]内2[/list][*]外2[/list]") == (
+            "- 外1\n    - 内1\n    - 内2\n- 外2"
+        )
+
+    def test_list_with_param(self):
+        assert _bbcode_to_markdown("[list=1][*]A[*]B[/list]") == "- A\n- B"
+
+    def test_literal_star_outside_list_kept(self):
+        """正文里作为字面量出现的 [*] 不应被改成列表项。"""
+        assert _bbcode_to_markdown("某处的 [*] 只是普通字符") == "某处的 [*] 只是普通字符"
+
+    def test_unclosed_list_kept(self):
+        assert _bbcode_to_markdown("[list][*]A") == "[list][*]A"
+
+    def test_list_item_with_link(self):
+        assert _bbcode_to_markdown("[list][*][url=https://x.com]链接[/url] 说明[/list]") == (
+            "- [链接](https://x.com) 说明"
+        )
+
+    def test_list_after_quote_separated(self):
+        """引用块紧跟列表时要补空行，否则列表会被 Markdown 当成引用内容。"""
+        assert _bbcode_to_markdown("[quote]引用[/quote][list][*]A[/list]") == "> 引用\n\n- A"
+
 
 # ── _detect_article_type ─────────────────────────────
 
@@ -134,6 +231,15 @@ class TestBBCodeRenderer:
     def test_para_no_translation(self):
         result = self.r.render([self._block("p", "Hello", "")])
         assert "Hello" in result
+
+    def test_para_link_with_nested_brackets(self):
+        """正文里的嵌套方括号链接也要转成 BBCode，不能残留 Markdown。"""
+        src = ("[9月30日：生物及更多内容！[预览版/测试版]]"
+               "(https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs)")
+        result = self.r.render([self._block("p", src, "")])
+        assert "](https://www.minecraft.net" not in result
+        assert "[url=https://www.minecraft.net/zh-hans/article/drop-4-2026-testing#Mobs]" in result
+        assert "9月30日：生物及更多内容！[预览版/测试版][/url]" in result
 
     def test_heading_h1(self):
         result = self.r.render([self._block("h1", "Title", "标题")])

@@ -19,8 +19,86 @@ from utils import MODULE_TYPE_MAP
 
 # ── 工具函数 ─────────────────────────────────────────
 
+def _find_closing_bracket(text: str, open_pos: int, opener: str, closer: str) -> int:
+    """返回与 text[open_pos] 处 opener 匹配的 closer 下标；找不到返回 -1。"""
+    depth = 0
+    for i in range(open_pos, len(text)):
+        ch = text[i]
+        if ch == opener:
+            depth += 1
+        elif ch == closer:
+            depth -= 1
+            if depth == 0:
+                return i
+    return -1
+
+
+def _md_images_to_bbcode(text: str) -> str:
+    """把内嵌在正文里的 Markdown 图片 ![alt](url) 转成 BBCode [img]url[/img]。
+
+    必须先于链接转换执行：否则 ![alt](url) 会被当成 [alt](url) 链接处理，
+    结果变成 ![url=url]alt[/url] 这种坏标签。
+    图片按块级展示，前后补换行并清掉残留空格，避免和正文粘在同一行。
+    """
+    if not text or '![' not in text:
+        return text
+    text = re.sub(
+        r'!\[[^\]]*\]\((https?://[^)\s]+)\)',
+        lambda m: f'\n[img]{m.group(1)}[/img]\n',
+        text,
+    )
+    text = re.sub(r'[ \t]*\n\[img\]', '\n[img]', text)
+    text = re.sub(r'\[/img\]\n[ \t]*', '[/img]\n', text)
+    return text.strip()
+
+
 def _md_links_to_bbcode(text: str) -> str:
-    return re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'[url=\2]\1[/url]', text)
+    """把 Markdown 链接 [文字](URL) 转成 BBCode [url=URL]文字[/url]。
+
+    链接文字允许含嵌套方括号（如 ``[9月30日：生物及更多内容！[预览版/测试版]](url)``），
+    URL 允许含括号（如 ``https://en.wikipedia.org/wiki/A_(b)``）；
+    因此不能用简单的正则匹配，需要按括号配对扫描。
+    """
+    if not text:
+        return text
+    text = _md_images_to_bbcode(text)
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if text[i] != '[':
+            out.append(text[i])
+            i += 1
+            continue
+        # 图片语法已在上一步转成 BBCode，这里跳过 ![ 避免被当成链接
+        if i > 0 and text[i - 1] == '!':
+            out.append(text[i])
+            i += 1
+            continue
+        # 链接文字：方括号需配对，例如 [a[b]c]
+        text_end = _find_closing_bracket(text, i, '[', ']')
+        if text_end < 0:
+            out.append(text[i:])
+            break
+        if text_end + 1 >= n or text[text_end + 1] != '(':
+            # 不是 Markdown 链接，原样保留
+            out.append(text[i:text_end + 1])
+            i = text_end + 1
+            continue
+        # URL：圆括号需配对（标题行等可含换行，BBCode 里压成空格）
+        url_end = _find_closing_bracket(text, text_end + 1, '(', ')')
+        if url_end < 0:
+            out.append(text[i:text_end + 1])
+            i = text_end + 1
+            continue
+        label = text[i + 1:text_end].replace('\n', ' ')
+        url = text[text_end + 2:url_end].replace('\n', ' ')
+        if label and url:
+            out.append(f'[url={url}]{label}[/url]')
+        else:
+            out.append(text[i:url_end + 1])
+        i = url_end + 1
+    return ''.join(out)
 
 
 def _parse_date(date_str: str) -> str:
@@ -47,9 +125,154 @@ def _parse_date(date_str: str) -> str:
     return date_str
 
 
+def _bbcode_list_to_markdown(content: str, depth: int = 0) -> str:
+    """把 [list] 内部内容转成 Markdown 列表，支持嵌套列表。
+
+    - 仅在 [list] 块内才把 [*] 当项目符号，避免正文里作为字面量出现的 [*] 被误改；
+    - [list]...[/list] 一定开启新的嵌套层级（不依赖 [*] 与 [list] 之间有无换行）。
+    """
+    lines = []
+    item_text = []       # 累积当前 [*] 项的文字
+    nested_seen = False  # 当前项是否已经跟了嵌套列表
+
+    def flush_item():
+        text = ''.join(item_text).strip()
+        if text and not nested_seen:
+            lines.append('    ' * depth + '- ' + text)
+
+    i = 0
+    n = len(content)
+    while i < n:
+        if content.startswith('[*]', i):
+            flush_item()
+            item_text = []
+            nested_seen = False
+            i += 3
+            continue
+        if content.startswith('[list', i):
+            head = content.find(']', i)
+            end = content.find('[/list]', i)
+            if head < 0 or end < 0 or head > end:
+                item_text.append(content[i:])
+                break
+            flush_item()
+            item_text = []
+            nested_seen = True
+            lines.append(_bbcode_list_to_markdown(content[head + 1:end], depth + 1))
+            i = end + len('[/list]')
+            continue
+        item_text.append(content[i])
+        i += 1
+    flush_item()
+    return '\n'.join(line for line in lines if line.strip())
+
+
+def _find_tag_block(text: str, open_pos: int, open_tag: str, close_tag: str) -> int:
+    """返回 open_pos 处 open_tag 对应的 close_tag 起始下标；找不到返回 -1（按嵌套配对）。"""
+    depth = 0
+    pos = open_pos
+    n = len(text)
+    while pos < n:
+        if text.startswith(open_tag, pos):
+            depth += 1
+            pos += len(open_tag)
+            continue
+        if text.startswith(close_tag, pos):
+            depth -= 1
+            if depth == 0:
+                return pos
+            pos += len(close_tag)
+            continue
+        pos += 1
+    return -1
+
+
+def _convert_lists(text: str) -> str:
+    """把 [list]...[/list] 转成 Markdown 列表，按嵌套配对取最外层列表块。
+
+    非贪婪正则会匹配到内层 [list] 的 [/list]，导致嵌套列表结构错乱，
+    因此这里同样按标签配对扫描。
+    """
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        start = text.find('[list', i)
+        if start < 0:
+            out.append(text[i:])
+            break
+        head = text.find(']', start)
+        if head < 0:
+            out.append(text[i:])
+            break
+        close = _find_tag_block(text, start, '[list', '[/list]')
+        if close < 0:
+            # 缺少闭合标签，原样保留
+            out.append(text[i:])
+            break
+        out.append(text[i:start])
+        out.append(_bbcode_list_to_markdown(text[head + 1:close]))
+        i = close + len('[/list]')
+    return ''.join(out)
+
+
+def _convert_quotes(text: str) -> str:
+    """把 [quote] 转成 Markdown 引用块，支持嵌套引用。
+
+    按 [quote]/[/quote] 配对扫描（而非非贪婪正则），先取出最外层引用的完整内容，
+    递归转换其中的内层引用，再整体加 '>' 前缀。
+    """
+    out = []
+    i = 0
+    n = len(text)
+
+    def emit_block(chunk):
+        """引用属于块级元素，与前后文字之间要断开成独立行。"""
+        if not chunk:
+            return
+        if out and not ''.join(out).endswith('\n'):
+            out.append('\n')
+        out.append(chunk)
+        out.append('\n')
+
+    while i < n:
+        start = text.find('[quote]', i)
+        if start < 0:
+            out.append(text[i:])
+            break
+        end = _find_tag_block(text, start, '[quote]', '[/quote]')
+        if end < 0:
+            # 缺少闭合标签，原样保留
+            out.append(text[i:])
+            break
+        out.append(text[i:start])
+        inner = _convert_quotes(text[start + len('[quote]'):end])
+        emit_block(_quote_to_markdown(inner))
+        i = end + len('[/quote]')
+    return ''.join(out).strip('\n')
+
+
+def _quote_to_markdown(content: str) -> str:
+    """给引用内容的每一行加 '>' 前缀；内层引用已由递归处理成 '> ...'。"""
+    return '\n'.join('> ' + line for line in content.splitlines())
+
+
 def _bbcode_to_markdown(bbcode: str) -> str:
+    if not bbcode:
+        return bbcode
     text = bbcode
-    # 最多处理 5 层嵌套 BBCode；超过 5 层的嵌套会��默保留原始标签
+
+    # [code] 内容必须原样保留，否则里面的 [b] 之类会被当成样式标签破坏
+    code_blocks = []
+
+    def _stash_code(m):
+        code_blocks.append(m.group(2))
+        return f'\x00CODE{len(code_blocks) - 1}\x00'
+
+    text = re.sub(r'(\[code(?:=[^\]]*)?\])(.*?)(\[/code\])',
+                  lambda m: _stash_code(m), text, flags=re.DOTALL)
+
+    # 最多处理 5 层嵌套 BBCode；超过 5 层的嵌套会保留原始标签
     for _ in range(5):
         text = re.sub(r'\[b\](.*?)\[/b\]', r'**\1**', text, flags=re.DOTALL)
         text = re.sub(r'\[i\](.*?)\[/i\]', r'*\1*', text, flags=re.DOTALL)
@@ -64,10 +287,16 @@ def _bbcode_to_markdown(bbcode: str) -> str:
         text = re.sub(r'\[float=[^\]]+\](.*?)\[/float\]', r'\1', text, flags=re.DOTALL)
         text = re.sub(r'\[img=[^\]]+\](.*?)\[/img\]', r'![](\1)', text, flags=re.DOTALL)
         text = re.sub(r'\[img\](.*?)\[/img\]', r'![](\1)', text, flags=re.DOTALL)
-        text = re.sub(r'\[list=?\d*\](.*?)\[/list\]', r'\1', text, flags=re.DOTALL)
-        text = text.replace('[*]', '- ')
-        text = re.sub(r'\[quote\](.*?)\[/quote\]',
-                      lambda m: '> ' + m.group(1).replace('\n', '\n> '), text, flags=re.DOTALL)
+        # 先取最外层列表块整体转换（内部嵌套由 _bbcode_list_to_markdown 递归处理）
+        text = _convert_lists(text)
+        # 嵌套引用：先取最外层引用的完整内容（含内层），内层递归转换后整体加引用前缀
+        text = _convert_quotes(text)
+
+    for idx, code in enumerate(code_blocks):
+        text = text.replace(f'\x00CODE{idx}\x00', code)
+
+    # 引用块紧邻列表时补一个空行，否则列表会被 Markdown 当成引用内容
+    text = re.sub(r'((?:^[ \t]*>.*(?:\n|$))+)(?=[ \t]*(?:[-*+] |\d+\. ))', r'\1\n', text, flags=re.MULTILINE)
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 

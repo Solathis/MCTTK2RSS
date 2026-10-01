@@ -398,6 +398,14 @@ def _extract_text_preserve_links(tag: Tag, base_url: str = "", stop_at_lists: bo
             if code_text:
                 parts.append(f"\u00A0`{code_text}`\u00A0")
             return
+        if tag_name == "img":
+            # 段落/列表项内嵌的图片；单独成块的图片由 walk() 里的 img 分支处理
+            src = (node.get("src") or node.get("data-src") or "").strip()
+            if src:
+                src = urljoin(base_url, src) if base_url else src
+                alt = _normalize_whitespace(node.get("alt", ""))
+                parts.append(f"![{alt}]({src})")
+            return
         for child in node.children:
             walk(child)
         if tag_name in ("p", "li", "blockquote"):

@@ -1,0 +1,3048 @@
+{
+  "title": "Minecraft 26.4 Snapshot 3",
+  "translated_title": "《Minecraft》26.4版本快照3",
+  "release_date": "2026-10-06T16:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-3",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/screenshots/26_4_snapshot_3%201170x500.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Brr! Does it feel colder all of a sudden? Minecraft LIVE revealed the first look at our next game drop – and it's frosty. Explore ice caves filled with glittering icicles and ice crystals, plus meet a not-so-chill new hostile mob! This frozen zombie variant is well adapted to colder conditions and can freeze players with its attacks. We're super excited to hear what you think about the new features. Make sure to visit our feedback site at https://aka.ms/mc-gamedrop_winter26 and leave your thoughts!",
+      "translated_text": "嘘！突然感觉冷多了吗？Minecraft LIVE首次展示了我们的下一个游戏更新内容——这次更新的主题是冰霜世界！你将探索充满闪闪发光的冰柱和冰晶的冰洞，同时还会遇到一种全新的、有点“冷酷”的敌对生物！这种冰冻僵尸变异体非常适应寒冷环境，它的攻击能让玩家被冻结！我们非常期待听到你对新内容的反馈，请一定访问我们的反馈网站：https://aka.ms/mc-gamedrop_winter26，留下你的想法吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Beyond the frozen depths, we've also made a number of improvements to Friends! The Friends list has received a refreshed design, along with new search and sorting options to make it easier to find, organize, and manage your friends. So grab your friends and explore!",
+      "translated_text": "在冰封的深处之外，我们还对“好友”功能进行了多项改进！好友列表的设计焕然一新，新增了搜索和排序选项，让你更容易找到、整理和管理你的好友。快叫上你的朋友们一起探索吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "p",
+      "source_text": "Happy ice-caving!",
+      "translated_text": "祝大家冰洞探险愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added the new Ice Caves Biome",
+      "translated_text": "新增了“冰洞”生物群系",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Added Ice Crystals",
+      "translated_text": "添加了冰晶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Added Icicles",
+      "translated_text": "添加了冰柱",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Added the Frostbite mob",
+      "translated_text": "添加了“冰冻”生物（Frostbite mob）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Added the Freezing mob effect",
+      "translated_text": "添加了“冻结”生物效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Added the Ice Ball",
+      "translated_text": "添加了冰球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "h3",
+      "source_text": "Ice Caves",
+      "translated_text": "冰洞",
+      "meta": {}
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "The Ice Cave is a new cave biome that can generate under the colder biomes in the Overworld",
+      "translated_text": "冰洞是一种新的洞穴生物群系，可以在主世界（Overworld）中较寒冷的生物群系下方生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "It consists mainly of Packed Ice and Calcite",
+      "translated_text": "冰洞主要由压实的冰（Packed Ice）和方解石（Calcite）组成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Icicles generate hanging from the ceiling",
+      "translated_text": "冰柱会从天花板上悬挂下来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Large Icicles made of Packed Ice generate on the ground and hanging from the ceiling",
+      "translated_text": "由压实的冰构成的大冰柱会掉在地上，并从天花板上悬挂下来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Patches of Snow occasionally generate on the ground",
+      "translated_text": "地面上偶尔会生成雪块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Ores generate embedded in pockets of Stone and Deepslate",
+      "translated_text": "矿石会嵌入在石头和深石中生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "Glow Lichen does not generate in this biome",
+      "translated_text": "这种生物群落中不会生成发光地衣",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "In addition to the mobs that normally spawn in caves, Strays and Frostbites can also spawn here",
+      "translated_text": "除了通常在洞穴中生成的怪物外，迷途者和霜咬怪物也有可能在这里出现",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "Ice Crystals occasionally generate on the ground",
+      "translated_text": "地面上偶尔会生成冰晶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "h3",
+      "source_text": "Ice Crystal",
+      "translated_text": "冰晶",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "A new crystal-like block similar to Amethyst Clusters",
+      "translated_text": "一种类似于紫水晶簇的新晶体状方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Breaks if the support block is removed",
+      "translated_text": "如果支撑方块被移除，这个方块也会随之破坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "It emits light and can be placed in any direction",
+      "translated_text": "这种方块会发光，可以朝任何方向放置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "h3",
+      "source_text": "Icicle",
+      "translated_text": "冰柱",
+      "meta": {}
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "A new speleothem-like block similar to Dripstone and Sulfur Spikes",
+      "translated_text": "一种类似钟乳石和硫黄尖锥的新块体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Icicles can be found all over the ceiling of ice caves",
+      "translated_text": "冰洞的天花板上到处都可以找到冰柱",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "Can naturally grow up to 5 blocks long when pointing downward",
+      "translated_text": "这种冰柱在向下生长时最长可达5个方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Only grows in areas without nearby light sources and outside the Nether",
+      "translated_text": "仅在没有光源的区域以及下界之外生长",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "It can be placed in any direction and has a base, middle and tip variant",
+      "translated_text": "可以朝任何方向放置，并有底部、中间和顶端的多种形态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "Damages entities when it falls and deals extra damage to entities that land on it",
+      "translated_text": "掉落时会对实体造成伤害，而落在上面的实体会受到额外伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Pointed blocks break when exposed to nearby light sources or when placed in the Nether",
+      "translated_text": "暴露在光源附近或放置在下界时，这种冰柱会破裂",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "h3",
+      "source_text": "Frostbite",
+      "translated_text": "冻伤",
+      "meta": {}
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "The Frostbite is a zombie variant that can throw Ice Balls",
+      "translated_text": "冻伤是一种僵尸变种，能够投掷冰球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Spawns in cold/icy biomes",
+      "translated_text": "出现在寒冷/结冰的生物群系中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "Switches between melee and ranged combat based on target distance and whether they have Ice Balls",
+      "translated_text": "根据目标距离以及目标是否持有冰球，在近战和远程战斗之间切换",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Melee attacks apply Freezing, while ranged attacks throw Ice Balls",
+      "translated_text": "近战攻击会产生冻结效果，而远程攻击则会投掷冰球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "Transforms into a Zombie when underwater for long enough",
+      "translated_text": "在水下待太久会变成僵尸",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "Drops Rotten Flesh and Ice Balls",
+      "translated_text": "会掉落腐肉和冰球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "It can stand on top of Powder Snow",
+      "translated_text": "能够站在粉雪上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "It is immune to freezing and does not get slowed by the Freezing effect or Powder Snow",
+      "translated_text": "对冻结效果免疫，也不会受到冻结效果或粉雪的影响而减速",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "Zombies and Husks transform into Frostbites when inside Powder Snow",
+      "translated_text": "僵尸和尸壳在粉雪中会变成冰冻状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "h3",
+      "source_text": "Freezing Mob Effect",
+      "translated_text": "冻结怪物效果",
+      "meta": {}
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "The Freezing effect will cause players to shake and eventually deal damage",
+      "translated_text": "冻结效果会使玩家颤抖，并最终造成伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Causes those affected to slowly become frozen as if in Powdered Snow for its duration",
+      "translated_text": "会使受影响者在效果持续时间内逐渐被冻住，就像处于粉雪中一样",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "Leather Armor protects from freezing, just like with Powder Snow, but will not keep the effect from being applied and will not remove the effect",
+      "translated_text": "皮甲可以防止冻结，就像使用“粉末雪”效果一样；但它不会阻止冻结效果的施加，也不会消除该效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Mobs will take additional damage from Freezing while they are affected by this effect",
+      "translated_text": "受到冻结效果影响的怪物会受到额外的伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "Mobs that are vulnerable to Freezing have a five times multiplier to the damage taken",
+      "translated_text": "容易受到冻结影响的怪物所承受的伤害会增加五倍",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Lingering Potion, Splash Potion, and Potion of Freezing can be brewed using Ice Balls",
+      "translated_text": "“持续效果药水”、“溅射药水”和“冻结药水”可以使用“冰球”来制作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "Arrows of Freezing can be crafted by placing a Lingering Potion of Freezing in the middle of the crafting table surrounded by eight Arrows",
+      "translated_text": "“冻结箭”可以通过在制作台中放入一个“持续效果药水”，然后周围放置八支箭来制作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "h3",
+      "source_text": "Ice Ball",
+      "translated_text": "冰球",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "Ice Balls are new projectile used by the Frostbite",
+      "translated_text": "冰球是“冻伤效果”使用的一种新投射物",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "They deal a small amount of damage and have knockback",
+      "translated_text": "冰球会造成少量伤害，并且具有击退效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "Deals 4 damage to entities it hits, scaling down with velocity",
+      "translated_text": "冰球会对击中的实体造成4点伤害，伤害量会随着速度的增加而减少",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "Breaks on impact with blocks or entities, creating a particle effect and sound",
+      "translated_text": "与方块或实体碰撞时会发生破碎，同时会产生粒子效果和声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "部分内容已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体进行了微调",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Snow can now be placed on Packed Ice",
+      "translated_text": "现在可以在压实的冰面上放置雪块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "Snowballs now apply knockback to players",
+      "translated_text": "雪球现在会对玩家产生击退效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "用户界面相关更改",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "Lightmap visualization is now configurable as lightmap_texture in debug options and appears in the Light group",
+      "translated_text": "光照贴图的可视化设置现在可以在调试选项中配置为“lightmap_texture”，并显示在“Light”组中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Its visibility setting is saved with the debug profile",
+      "translated_text": "其可见性设置会随着调试配置文件一起保存",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "It can now be displayed alongside the FPS and network charts",
+      "translated_text": "光照贴图现在可以与FPS和网络图表一起显示",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "The Social Interactions screen has been replaced with the new Other Players screen",
+      "translated_text": "社交互动屏幕已被新的“其他玩家”屏幕取代",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "The \"Social Interactions\" keybind has been renamed to \"Other Players\"",
+      "translated_text": "“社交互动”快捷键已更名为“其他玩家”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "The Friends button has received a new icon",
+      "translated_text": "好友按钮更换了新的图标",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "The \"Visibility\" option has been moved from Online Options into the Friends list",
+      "translated_text": "“可见性”选项已从“在线选项”中移至好友列表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "The icon buttons in the pause menu have been reordered to match the main menu",
+      "translated_text": "暂停菜单中的图标按钮顺序已调整以匹配主菜单的布局",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "h4",
+      "source_text": "Friends",
+      "translated_text": "好友",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "Updated the design of the Friends list",
+      "translated_text": "好友列表的设计已更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "Added searching",
+      "translated_text": "添加了搜索功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "In the Friends tab, the profile name text box used for sending requests also functions as a search box",
+      "translated_text": "在好友选项卡中，用于发送请求的个人资料名称输入框同时也可用作搜索框",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "In the requests tab, a search box appears at the top if you have 15 or more requests",
+      "translated_text": "在请求选项卡中，如果你有15条或更多请求，顶部会出现一个搜索框",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "Added sorting",
+      "translated_text": "添加了排序功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "Sort modes can be cycled through by pressing the new sort button",
+      "translated_text": "通过点击新的排序按钮可以循环切换排序方式",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "The current sort modes are:",
+      "translated_text": "当前的排序方式有：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "Sort by who's online - friends who are listed as online appear at the top of the list",
+      "translated_text": "按在线状态排序——显示为在线的朋友会出现在列表顶部",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "Sort by alphabetical order - friends are sorted according to the alphabetical order of their names",
+      "translated_text": "按字母顺序排序——朋友会根据名字的字母顺序排列",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "Clicking on a player's icon in the Friends list now opens their Player Options",
+      "translated_text": "现在点击好友列表中的玩家图标会打开他们的玩家设置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "Removed \"Remove Friend\" button",
+      "translated_text": "移除了“移除好友”按钮",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "This functionality is now accessible through Player Options instead",
+      "translated_text": "此功能现在可以通过玩家设置来访问",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "h4",
+      "source_text": "Player Options",
+      "translated_text": "玩家设置",
+      "meta": {}
+    },
+    {
+      "id": "b0083",
+      "type": "p",
+      "source_text": "Player Options is a new screen accessible through both the Friends list and Other Players.",
+      "translated_text": "玩家设置是一个新的界面，既可以通过好友列表也可以通过“其他玩家”入口访问",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "It contains per-player social actions previously spread across the Friends list and Social Interactions",
+      "translated_text": "它包含了之前分散在好友列表和社交互动中的个性化操作功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "These actions are:",
+      "translated_text": "这些操作包括：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "Sending or canceling a friend request",
+      "translated_text": "发送或取消好友请求",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Accepting or declining a friend request",
+      "translated_text": "接受或拒绝好友请求",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "Muting a player",
+      "translated_text": "静音玩家",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "Reporting a player",
+      "translated_text": "举报玩家",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "Muting a player hides their chat messages until the next time you start the game",
+      "translated_text": "静音玩家后，他们的聊天消息将不会显示，直到你下次开始游戏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "Blocking players is managed through Other Players",
+      "translated_text": "-blocking玩家的功能通过“其他玩家”界面进行管理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "h4",
+      "source_text": "Other Players",
+      "translated_text": "“其他玩家”",
+      "meta": {}
+    },
+    {
+      "id": "b0093",
+      "type": "p",
+      "source_text": "Other Players is a new menu which has been added to replace Social Interactions.",
+      "translated_text": "“其他玩家”是一个新添加的菜单，用于替代“社交互动”界面",
+      "meta": {}
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "Other Players is only available when playing on a world open to multiplayer",
+      "translated_text": "“其他玩家”仅在允许多人玩的世界中可用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "This includes:",
+      "translated_text": "这包括：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "Playing in singleplayer worlds open to LAN",
+      "translated_text": "在局域网（LAN）可访问的单人游戏世界中游玩",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "Playing on dedicated servers",
+      "translated_text": "在专用服务器上游玩",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "Playing on Realms",
+      "translated_text": "在 Realms 服务器上游玩",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "It can be opened by pressing the \"Other Players\" icon button in the pause menu",
+      "translated_text": "可以通过暂停菜单中的“其他玩家”图标按钮打开该列表",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "It can also be opened from in-game using the \"Other Players\" key ('P' by default)",
+      "translated_text": "也可以通过游戏内的“其他玩家”键（默认为‘P’）打开该列表",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "It lists the players currently online in the world you are in",
+      "translated_text": "该列表会显示你当前所在游戏世界中在线的玩家",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "It lists players who are not online anymore, but may still be of interest:",
+      "translated_text": "该列表还会显示已离线但可能仍具兴趣的玩家",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "Players who were just online but left",
+      "translated_text": "刚刚上线后又离开的玩家",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "Players who recently sent messages in the chat",
+      "translated_text": "最近在聊天中发送过消息的玩家",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "Clicking on a player's icon in the list opens their Player Options",
+      "translated_text": "点击列表中的玩家图标可以打开他们的玩家设置（Player Options）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "h4",
+      "source_text": "Player Reporting",
+      "translated_text": "玩家举报（Player Reporting）",
+      "meta": {}
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "Redesigned the save/discard draft confirmation screen",
+      "translated_text": "重新设计了保存/丢弃草稿确认界面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "Player reports saved as drafts no longer prompt you to discard them upon exiting a world if they can be continued later",
+      "translated_text": "如果玩家报告可以稍后继续，那么保存为草稿的玩家报告在退出游戏时不会再提示你丢弃它们",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "Chat reports can never be continued",
+      "translated_text": "聊天报告无法继续发送",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "Name reports can be continued if the reported player is in your Friends list",
+      "translated_text": "如果被举报的玩家在你的好友列表中，名字报告可以继续发送",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "Skin reports can be continued if the reported player is in your Friends list",
+      "translated_text": "如果被举报的玩家在你的好友列表中，皮肤报告可以继续发送",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "Pressing \"Quit Game\" in the main menu will now give a warning if you have an unsent draft report that would be lost",
+      "translated_text": "现在，在主菜单中点击“退出游戏”（Quit Game）时会弹出警告，提醒你有未发送的草稿报告可能会丢失",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "h4",
+      "source_text": "Debug Overlay",
+      "translated_text": "调试覆盖层（Debug Overlay）",
+      "meta": {}
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "A new chunk_section_status shows the rendering status of chunks around you. This will impact performance at high view distances.",
+      "translated_text": "新的“chunk_section_status”功能显示了你周围块的渲染状态。这可能会影响高视野距离下的游戏性能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "The chunk load overlay has been split off from visualize_chunks_on_server and into a new chunk_load_status",
+      "translated_text": "区块加载提示界面已从 `visualize_chunks_on_server` 中分离出来，并重新命名为 `chunk_load_status`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性更改",
+      "meta": {}
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "The Data Pack version is now 123.0",
+      "translated_text": "数据包版本现为您看到的 123.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 100.0",
+      "translated_text": "资源包版本现为您看到的 100.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "h2",
+      "source_text": "Data Pack Versions 122.0 through 123.0",
+      "translated_text": "数据包版本范围为 122.0 至 123.0",
+      "meta": {}
+    },
+    {
+      "id": "b0120",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成机制",
+      "meta": {}
+    },
+    {
+      "id": "b0121",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0122",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "相关内容已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0123",
+      "type": "text",
+      "source_text": "minecraft:speleothem_cluster",
+      "translated_text": "`minecraft:speleothem_cluster`",
+      "meta": {}
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "Added placement_options - a field that contains various settings for the placement of the Speleothem cluster:",
+      "translated_text": "新增了 `placement_options` 字段——该字段用于设置洞穴群（Speleothem cluster）的放置参数。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "placement_mode - represented by an enum that is one of floor_and_ceiling , floor_only , ceiling_only",
+      "translated_text": "placement_mode - 由一个枚举表示，可选值包含 floor_and_ceiling、floor_only 和 ceiling_only",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "base_block_transformer - sets a state on the base block of the Speleothem block",
+      "translated_text": "base_block_transformer - 用于设置 Speleothem 块的基础块的状态",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "none - the regular base block state used in Sulfur Spikes and Dripstone Spikes",
+      "translated_text": "none - 在硫黄尖锥（Sulfur Spikes）和滴石尖锥（Dripstone Spikes）中使用的常规基础块状态",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "set_attached - the state of the base block of the Icicle when it is attached to a surface",
+      "translated_text": "set Attached - 冰柱（Icicle）附着在表面时的状态",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "allow_water_placement - boolean indicating whether the Speleothem can be placed in water or not",
+      "translated_text": "allow_water-placement - 布尔值，表示 Speleothem 块是否可以放置在水中",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "text",
+      "source_text": "minecraft:large_dripstone",
+      "translated_text": "minecraft:large_dripstone",
+      "meta": {}
+    },
+    {
+      "id": "b0132",
+      "type": "text",
+      "source_text": "(renamed from",
+      "translated_text": "(从...重命名)",
+      "meta": {}
+    },
+    {
+      "id": "b0133",
+      "type": "text",
+      "source_text": "minecraft:large_speleothem",
+      "translated_text": "minecraft:large_speleothem",
+      "meta": {}
+    },
+    {
+      "id": "b0134",
+      "type": "text",
+      "source_text": ")",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "Added field base_block - Block State Provider, the block to build the large dripstone out of",
+      "translated_text": "新增字段 `base_block` — 用于指定构建大型滴石的方块类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "h4",
+      "source_text": "Noise Settings",
+      "translated_text": "添加了噪声设置",
+      "meta": {}
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "Added new Noises:",
+      "translated_text": "新增了多种噪声效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "li",
+      "source_text": "ice_cave_gradient",
+      "translated_text": "冰洞地形（ice_cave_gradient）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0139",
+      "type": "h4",
+      "source_text": "Feature Placements",
+      "translated_text": "特性放置功能（Feature Placements）",
+      "meta": {}
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "Added the following Ore Placements:",
+      "translated_text": "新增了以下矿石生成规则",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "ice_cave_ore_coal_upper",
+      "translated_text": "冰洞中的煤层（ice_cave_ore_coal_upper）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "li",
+      "source_text": "ice_cave_ore_coal_lower",
+      "translated_text": "冰洞中的煤层（ice_cave_ore_coal_lower）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "ice_cave_ore_copper",
+      "translated_text": "冰洞中的铜矿（ice_cave_ore_copper）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "ice_cave_ore_diamond",
+      "translated_text": "冰洞中的钻石矿（ice_cave_ore_diamond）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "li",
+      "source_text": "ice_cave_ore_diamond_medium",
+      "translated_text": "冰穴中的中等大小钻石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "ice_cave_ore_diamond_large",
+      "translated_text": "冰穴中的大型钻石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "ice_cave_ore_diamond_buried",
+      "translated_text": "埋藏在地下的冰穴钻石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "ice_cave_ore_iron_upper",
+      "translated_text": "冰穴中的上层铁矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "ice_cave_ore_iron_middle",
+      "translated_text": "冰穴中的中层铁矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "ice_cave_ore_iron_small",
+      "translated_text": "冰穴中的小型铁矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "ice_cave_ore_gold",
+      "translated_text": "冰穴中的金矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "li",
+      "source_text": "ice_cave_ore_gold_lower",
+      "translated_text": "冰穴中的下层金矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "ice_cave_ore_lapis",
+      "translated_text": "冰穴中的青金石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "ice_cave_ore_lapis_buried",
+      "translated_text": "埋藏在地下的冰穴青金石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "ice_cave_ore_redstone",
+      "translated_text": "冰穴中的红石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "ice_cave_ore_redstone_lower",
+      "translated_text": "冰穴中的下层红石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "li",
+      "source_text": "ice_cave_ore_andesite_upper",
+      "translated_text": "冰穴中的安山岩矿石（上层）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "ice_cave_ore_andesite_lower",
+      "translated_text": "冰穴中的安山岩矿石（下层）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "ice_cave_ore_diorite_upper",
+      "translated_text": "冰穴中的闪长岩矿石（上层）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "li",
+      "source_text": "ice_cave_ore_diorite_lower",
+      "translated_text": "冰穴中的闪长岩矿石（下层）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0161",
+      "type": "li",
+      "source_text": "ice_cave_ore_gravel",
+      "translated_text": "冰穴中的砂石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0162",
+      "type": "li",
+      "source_text": "These are all identical to their non-ice-cave counterparts, only that they place a patch of stone or deepslate (depending on y-level) before placing the ore itself",
+      "translated_text": "这些矿石与非冰穴中的对应矿石完全相同，只不过在放置矿石之前会先放置一块石头或深石板（具体取决于 y 坐标）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "They can replace Ice and Calcite as well",
+      "translated_text": "它们也可以替代冰矿石和方解石矿石",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "h3",
+      "source_text": "Block Sound Sets",
+      "translated_text": "方块音效集",
+      "meta": {}
+    },
+    {
+      "id": "b0165",
+      "type": "p",
+      "source_text": "Added minecraft:block_sound_set registry containing definitions for sounds produced by different categories of blocks.",
+      "translated_text": "添加了 `minecraft:block_sound_set` 注册表，其中包含了不同类别方块产生的声音的定义。",
+      "meta": {}
+    },
+    {
+      "id": "b0166",
+      "type": "p",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：一个包含以下字段的对象：",
+      "meta": {}
+    },
+    {
+      "id": "b0167",
+      "type": "li",
+      "source_text": "volume - a float between 0.00001 and 10.0 , the relative volume at which all sounds will be played",
+      "translated_text": "`volume` – 一个介于 0.00001 和 10.0 之间的浮点数，表示所有声音的播放响度；如果未指定，则默认为 1.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0168",
+      "type": "li",
+      "source_text": "If not present, defaults to 1.0",
+      "translated_text": "如果未指定，则默认为 1.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0169",
+      "type": "li",
+      "source_text": "pitch - a float between 0.00001 and 2.0 , the relative pitch at which all sounds will be played",
+      "translated_text": "`pitch` – 一个介于 0.00001 和 2.0 之间的浮点数，表示所有声音的播放音调；如果未指定，则默认为 1.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "If not present, defaults to 1.0",
+      "translated_text": "如果未指定，则默认为 1.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "li",
+      "source_text": "break_sound - Sound Event, the sound that will be played when the block gets broken",
+      "translated_text": "`break_sound` – 声音事件，方块被破坏时播放的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0172",
+      "type": "li",
+      "source_text": "step_sound - Sound Event, the sound that will be played when an entity walks on top of the block",
+      "translated_text": "`step_sound` – 声音事件，实体站在方块上时播放的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0173",
+      "type": "li",
+      "source_text": "place_sound - Sound Event, the sound that will be played when the block gets placed",
+      "translated_text": "`place_sound` – 声音事件，放置方块时播放的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0174",
+      "type": "li",
+      "source_text": "hit_sound - Sound Event, the sound that will be played while the block is being destroyed",
+      "translated_text": "hit_sound - 声音事件：在方块被破坏时播放的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0175",
+      "type": "li",
+      "source_text": "fall_sound - Sound Event, the sound that will be played when an entity falls onto the block",
+      "translated_text": "fall_sound - 声音事件：当实体落在方块上时播放的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0176",
+      "type": "li",
+      "source_text": "All sound fields are optional",
+      "translated_text": "所有声音字段都是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0177",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0178",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0179",
+      "type": "li",
+      "source_text": "Added block tag ice_cave_ore_replaceables to describe all blocks which are allowed to be replaced by ores within Ice Caves (in addition to stone_ore_replaceables , height_specific_ore_replaceables and deepslate_ore_replaceables )",
+      "translated_text": "新增了方块标签 `ice_cave_ore_replaceables`，用于描述在冰穴中可以被矿石替换的所有方块（除了 `stone_ore_replaceables`、`height_specific_ore_replaceables` 和 `deepslate_ore_replaceables`）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0180",
+      "type": "li",
+      "source_text": "Added block tag melts_icicle_above to describe all blocks causing Icicles directly above to melt",
+      "translated_text": "新增了方块标签 `melts_icicle_above`，用于描述会导致上方冰柱融化的所有方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0181",
+      "type": "li",
+      "source_text": "Added block tag large_icicle_replaceable to describe all blocks which are allowed to be replaced by Large Icicles within the Ice Caves biome",
+      "translated_text": "新增了方块标签 `large_icicle_replaceable`，用于描述在冰穴生物群系中可以被大冰柱替换的所有方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0182",
+      "type": "li",
+      "source_text": "Added several block tags to affect how mobs pathfind:",
+      "translated_text": "新增了几个方块标签，以影响怪物的路径寻找行为",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0183",
+      "type": "li",
+      "source_text": "#pathfinding/avoid_in_air - blocks to be avoided while flying, either due to danger our potential to get stuck",
+      "translated_text": "#pathfinding/avoid_in_air - 飞行时需要避免的方块，因为这些方块可能存在危险或导致玩家卡住",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0184",
+      "type": "li",
+      "source_text": "#pathfinding/damage_cautious - blocks that will damage entities that walk through them, but are not considered dangerous enough to avoid entirely",
+      "translated_text": "#pathfinding/damage_cautious - 会伤害通过的实体的方块，但危险程度不足以完全避免",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0185",
+      "type": "li",
+      "source_text": "#pathfinding/damaging - blocks that will damage entities that walk through them",
+      "translated_text": "#pathfinding/damaging - 会伤害通过的实体的方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0186",
+      "type": "li",
+      "source_text": "#pathfinding/drop_down - blocks that can be dropped down through",
+      "translated_text": "#pathfinding/drop_down - 可以向下投下的方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0187",
+      "type": "li",
+      "source_text": "#pathfinding/leaves - blocks that are considered leaves",
+      "translated_text": "#pathfinding/leaves - 被视为树叶的方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0188",
+      "type": "li",
+      "source_text": "#pathfinding/open - blocks that are considered completely open to walk through",
+      "translated_text": "#pathfinding/open - 可以完全通过的开放方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0189",
+      "type": "li",
+      "source_text": "#pathfinding/powder_snow - blocks that are considered powder snow",
+      "translated_text": "#pathfinding/powder_snow - 被视为粉雪的方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0190",
+      "type": "li",
+      "source_text": "#pathfinding/rails - blocks that are considered rails",
+      "translated_text": "#pathfinding/rails - 被视为铁轨的方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0191",
+      "type": "li",
+      "source_text": "#pathfinding/sticky - blocks that are considered sticky, causing slowed movement and inability to jump",
+      "translated_text": "#pathfinding/sticky - 有粘性的方块，会导致移动缓慢且无法跳跃",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0192",
+      "type": "h4",
+      "source_text": "Item Tags",
+      "translated_text": "物品标签",
+      "meta": {}
+    },
+    {
+      "id": "b0193",
+      "type": "li",
+      "source_text": "Added #frostbite_preferred_weapons for items picked up and used by the Frostbite",
+      "translated_text": "为 Frostbite 流派拾取并使用的物品添加了 #frostbite_preferred_weapons 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0194",
+      "type": "li",
+      "source_text": "Added #knocks_back_players_even_with_zero_damage for items which shall apply knockback even if they do 0 damage",
+      "translated_text": "为那些即使造成 0 点伤害也会产生击退效果的物品添加了 #knocks_back_players_even_with_zero_damage 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0195",
+      "type": "li",
+      "source_text": "Added #sheep_wool_dyes - items that can be used to dye a Sheep's wool",
+      "translated_text": "新增了 #sheep_wool_dyes 物品——这些物品可以用来给羊的羊毛上色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0196",
+      "type": "li",
+      "source_text": "The color will be taken from the minecraft:dye component of the used item stack",
+      "translated_text": "颜色的选择将来自所使用物品堆栈中的 minecraft:dye 组件",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0197",
+      "type": "h4",
+      "source_text": "Biome Tags",
+      "translated_text": "生物群系标签",
+      "meta": {}
+    },
+    {
+      "id": "b0198",
+      "type": "li",
+      "source_text": "Added #spawns_strays_without_powder_snow to describe all biomes which allow the spawning of strays without requiring powder snow on the surface above them",
+      "translated_text": "新增了 #spawns_strays_without_powder_snow 标签，用于描述所有无需地表有粉末雪即可产生产崽生物群系的类别",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0199",
+      "type": "h4",
+      "source_text": "Block Sound Set Tags",
+      "translated_text": "方块音效集标签",
+      "meta": {}
+    },
+    {
+      "id": "b0200",
+      "type": "li",
+      "source_text": "Added #sounds_wooden - block sound sets which when stepped on cause Horses to produce a galloping sound",
+      "translated_text": "新增了 #sounds_wooden 标签——踩在这些方块上时，马会发出奔跑的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0201",
+      "type": "h3",
+      "source_text": "Particles",
+      "translated_text": "粒子效果",
+      "meta": {}
+    },
+    {
+      "id": "b0202",
+      "type": "li",
+      "source_text": "Removed particle type minecraft:item_snowball",
+      "translated_text": "移除了粒子类型 `minecraft:item_snowball`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0203",
+      "type": "h4",
+      "source_text": "Added minecraft:freezing",
+      "translated_text": "新增了 `minecraft:freezing`",
+      "meta": {}
+    },
+    {
+      "id": "b0204",
+      "type": "li",
+      "source_text": "Emitted by Entities which are affected by the Freezing mob effect",
+      "translated_text": "由受到 `Freezing` 守护兽效果影响的实体发出的效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0205",
+      "type": "li",
+      "source_text": "Has no fields",
+      "translated_text": "该效果没有额外的字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0206",
+      "type": "h2",
+      "source_text": "Resource Pack Versions 98.0 through 100.0",
+      "translated_text": "资源包版本 98.0 至 100.0",
+      "meta": {}
+    },
+    {
+      "id": "b0207",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "方块精灵（Block Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0208",
+      "type": "li",
+      "source_text": "Added new Block texture:",
+      "translated_text": "新增了方块纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0209",
+      "type": "li",
+      "source_text": "block/ice_crystal.png",
+      "translated_text": "文件名：`block/ice_crystal.png`",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0210",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "新增了方块纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0211",
+      "type": "li",
+      "source_text": "block/ice_crystal.png",
+      "translated_text": "文件名：`block/ice_crystal.png`",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0212",
+      "type": "li",
+      "source_text": "block/icicle_down_base.png",
+      "translated_text": "block/icicle_down_base.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0213",
+      "type": "li",
+      "source_text": "block/icicle_down_frustum.png",
+      "translated_text": "block/icicle_down_frustum.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0214",
+      "type": "li",
+      "source_text": "block/icicle_down_middle.png",
+      "translated_text": "block/icicle_down_middle.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0215",
+      "type": "li",
+      "source_text": "block/icicle_down_tip.png",
+      "translated_text": "block/icicle_down_tip.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0216",
+      "type": "li",
+      "source_text": "block/icicle_down_tip_merge.png",
+      "translated_text": "block/icicle_down_tip_merge.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0217",
+      "type": "li",
+      "source_text": "block/icicle_side.png",
+      "translated_text": "block/icicle_side.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0218",
+      "type": "li",
+      "source_text": "block/icicle_top.png",
+      "translated_text": "block/icicle_top.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0219",
+      "type": "h3",
+      "source_text": "Item Sprites",
+      "translated_text": "物品精灵（Item Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0220",
+      "type": "li",
+      "source_text": "Added new Item texture:",
+      "translated_text": "添加了新的物品纹理（Added new Item texture:）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0221",
+      "type": "li",
+      "source_text": "item/ice_crystal.png",
+      "translated_text": "item/ice_crystal.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0222",
+      "type": "li",
+      "source_text": "Added new Item texture:",
+      "translated_text": "添加了新的物品纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0223",
+      "type": "li",
+      "source_text": "item/frostbite_spawn_egg.png",
+      "translated_text": "item/frostbite_spawn_egg.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0224",
+      "type": "li",
+      "source_text": "item/ice_ball.png",
+      "translated_text": "item/ice_ball.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0225",
+      "type": "li",
+      "source_text": "item/ice_crystal.png",
+      "translated_text": "item/ice_crystal.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0226",
+      "type": "li",
+      "source_text": "item/icicle.png",
+      "translated_text": "item/icicle.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0227",
+      "type": "h3",
+      "source_text": "UI Sprites",
+      "translated_text": "用户界面精灵（UI Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0228",
+      "type": "li",
+      "source_text": "Added new UI textures:",
+      "translated_text": "添加了新的用户界面纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0229",
+      "type": "li",
+      "source_text": "mob_effect/freezing.png",
+      "translated_text": "怪物效果：冻结（mob_effect/freezing.png）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0230",
+      "type": "li",
+      "source_text": "friends/background_light.png",
+      "translated_text": "好友背景图：浅色（friends/background_light.png）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0231",
+      "type": "li",
+      "source_text": "friends/presence_all.png",
+      "translated_text": "好友状态图标：全部可见（friends/presence_all.png）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0232",
+      "type": "li",
+      "source_text": "friends/presence_limited.png",
+      "translated_text": "friends/presence_limited.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0233",
+      "type": "li",
+      "source_text": "friends/presence_none.png",
+      "translated_text": "friends/presence_none.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0234",
+      "type": "li",
+      "source_text": "friends/profile.png",
+      "translated_text": "friends/profile.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0235",
+      "type": "li",
+      "source_text": "friends/profile_highlighted.png",
+      "translated_text": "friends/profilehighlighted.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0236",
+      "type": "li",
+      "source_text": "friends/sort_alphabetical.png",
+      "translated_text": "friends/sort_alphabetical.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0237",
+      "type": "li",
+      "source_text": "friends/sort_presence.png",
+      "translated_text": "friends/sort_presence.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0238",
+      "type": "li",
+      "source_text": "friends/tab_selected.png",
+      "translated_text": "friends/tab_selected.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0239",
+      "type": "li",
+      "source_text": "pause_menu/other_players.png",
+      "translated_text": "pause_menu/other_players.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0240",
+      "type": "li",
+      "source_text": "The following textures have been renamed:",
+      "translated_text": "以下纹理已被重命名：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0241",
+      "type": "li",
+      "source_text": "friends/button.png -> friends/tab.png",
+      "translated_text": "friends/button.png -> friends/tab.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0242",
+      "type": "li",
+      "source_text": "friends/button_highlighted.png -> friends/tab_highlighted.png",
+      "translated_text": "friends/button.highlighted.png -> friends/tab_highlighted.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0243",
+      "type": "li",
+      "source_text": "friends/loading.png -> widget/loading.png",
+      "translated_text": "friends-loading.png -> widget.loading.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0244",
+      "type": "li",
+      "source_text": "pause_menu/social_interactions.png -> pause_menu/feedback.png",
+      "translated_text": "pause_menu/social_interactions.png -> pause_menu/feedback.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0245",
+      "type": "li",
+      "source_text": "The following textures have been removed:",
+      "translated_text": "已移除以下纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0246",
+      "type": "li",
+      "source_text": "friends/button_disabled.png",
+      "translated_text": "friends/button_disabled.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0247",
+      "type": "li",
+      "source_text": "friends/remove.png",
+      "translated_text": "friends/remove.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0248",
+      "type": "li",
+      "source_text": "pause_menu/player_reporting.png",
+      "translated_text": "pause_menu/player_reporting.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0249",
+      "type": "li",
+      "source_text": "toast/social_interactions.png",
+      "translated_text": "toast/social_interactions.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0250",
+      "type": "h3",
+      "source_text": "Entity Textures",
+      "translated_text": "实体纹理",
+      "meta": {}
+    },
+    {
+      "id": "b0251",
+      "type": "li",
+      "source_text": "Added new Entity textures:",
+      "translated_text": "添加了新的实体纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0252",
+      "type": "li",
+      "source_text": "entity/zombie/frostbite.png",
+      "translated_text": "entity/zombie/frostbite.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0253",
+      "type": "li",
+      "source_text": "entity/zombie/frostbite_baby.png",
+      "translated_text": "entity/zombie/frostbite_baby.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0254",
+      "type": "li",
+      "source_text": "entity/zombie/frostbite_outer_layer.png",
+      "translated_text": "entity/zombie/frostbite_outer_layer.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0255",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "声音",
+      "meta": {}
+    },
+    {
+      "id": "b0256",
+      "type": "li",
+      "source_text": "Added new sound events:",
+      "translated_text": "新增了以下声音事件：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0257",
+      "type": "li",
+      "source_text": "entity.frostbite.ambient",
+      "translated_text": "entity.frostbite.ambient",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0258",
+      "type": "li",
+      "source_text": "entity.frostbite.death",
+      "translated_text": "entity.frostbite.death",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0259",
+      "type": "li",
+      "source_text": "entity.frostbite.hurt",
+      "translated_text": "entity.frostbite.hurt",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0260",
+      "type": "li",
+      "source_text": "entity.frostbite.step",
+      "translated_text": "entity.frostbite.step",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0261",
+      "type": "li",
+      "source_text": "block.ice.break",
+      "translated_text": "block.ice_break",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0262",
+      "type": "li",
+      "source_text": "block.ice.fall",
+      "translated_text": "ice块掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0263",
+      "type": "li",
+      "source_text": "block.ice.hit",
+      "translated_text": "冰块被击中",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0264",
+      "type": "li",
+      "source_text": "block.ice.place",
+      "translated_text": "放置冰块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0265",
+      "type": "li",
+      "source_text": "block.ice.step",
+      "translated_text": "踩在冰块上",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0266",
+      "type": "li",
+      "source_text": "block.ice_crystal.break",
+      "translated_text": "打破冰晶块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0267",
+      "type": "li",
+      "source_text": "block.ice_crystal.fall",
+      "translated_text": "冰晶块掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0268",
+      "type": "li",
+      "source_text": "block.ice_crystal.hit",
+      "translated_text": "冰晶块被击中",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0269",
+      "type": "li",
+      "source_text": "block.ice_crystal.place",
+      "translated_text": "放置冰晶块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0270",
+      "type": "li",
+      "source_text": "block.ice_crystal.step",
+      "translated_text": "踩在冰晶块上",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0271",
+      "type": "li",
+      "source_text": "block.icicle.break",
+      "translated_text": "打破冰柱",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0272",
+      "type": "li",
+      "source_text": "block.icicle.fall",
+      "translated_text": "block.icicle.fall",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0273",
+      "type": "li",
+      "source_text": "block.icicle.hit",
+      "translated_text": "block.icicle_hit",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0274",
+      "type": "li",
+      "source_text": "block.icicle.place",
+      "translated_text": "block.icicle.place",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0275",
+      "type": "li",
+      "source_text": "block.icicle.step",
+      "translated_text": "block.icicle.step",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0276",
+      "type": "li",
+      "source_text": "block.icicle.land",
+      "translated_text": "block.icicle_land",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0277",
+      "type": "li",
+      "source_text": "entity.ice_ball.break",
+      "translated_text": "entity.ice_ball;break",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0278",
+      "type": "li",
+      "source_text": "entity.ice_ball.throw",
+      "translated_text": "entity.ice-ball THROW",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0279",
+      "type": "h3",
+      "source_text": "Particles",
+      "translated_text": "Particles",
+      "meta": {}
+    },
+    {
+      "id": "b0280",
+      "type": "li",
+      "source_text": "Added new Particle textures:",
+      "translated_text": "新增了新的粒子纹理？（Added new Particle textures?）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0281",
+      "type": "li",
+      "source_text": "particle/freezing_0.png",
+      "translated_text": "particle/freezing_0.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0282",
+      "type": "li",
+      "source_text": "particle/freezing_1.png",
+      "translated_text": "particle/freezing_1.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0283",
+      "type": "li",
+      "source_text": "particle/freezing_2.png",
+      "translated_text": "particle/freezing_2.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0284",
+      "type": "li",
+      "source_text": "particle/freezing_3.png",
+      "translated_text": "particle/freezing_3.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0285",
+      "type": "li",
+      "source_text": "particle/freezing_4.png",
+      "translated_text": "particle/freezing_4.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0286",
+      "type": "li",
+      "source_text": "particle/freezing_5.png",
+      "translated_text": "particle/freezing_5.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0287",
+      "type": "h3",
+      "source_text": "Item Models",
+      "translated_text": "物品模型",
+      "meta": {}
+    },
+    {
+      "id": "b0288",
+      "type": "li",
+      "source_text": "Added new Item Models:",
+      "translated_text": "新增了物品模型：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0289",
+      "type": "li",
+      "source_text": "item/icicle",
+      "translated_text": "item/icicle",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0290",
+      "type": "h3",
+      "source_text": "Block Models",
+      "translated_text": "方块模型",
+      "meta": {}
+    },
+    {
+      "id": "b0291",
+      "type": "li",
+      "source_text": "Added new Block Models:",
+      "translated_text": "新增了方块模型：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0292",
+      "type": "li",
+      "source_text": "block/icicle",
+      "translated_text": "添加了 icicle （冰柱）方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0293",
+      "type": "li",
+      "source_text": "block/icicle_base",
+      "translated_text": "添加了 icicle_base （冰柱底座）方块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0294",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 3",
+      "translated_text": "修复了 26.4 Snapshot 3 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0295",
+      "type": "li",
+      "source_text": "[MC-212616](https://bugs.mojang.com/browse/MC-212616) - The dye staining sound does not play when dyes are used on tamed wolves or cats",
+      "translated_text": "[MC-212616](https://bugs.mojang.com/browse/MC-212616) - 在驯服的狼或猫身上使用染料时，染色音效不会播放",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0296",
+      "type": "li",
+      "source_text": "[MC-303468](https://bugs.mojang.com/browse/MC-303468) - Pets can be teleported to the incorrect coordinates when going through a nether portal",
+      "translated_text": "[MC-303468](https://bugs.mojang.com/browse/MC-303468) - 宠物通过下界传送门时可能会被传送到错误的坐标",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0297",
+      "type": "li",
+      "source_text": "[MC-306017](https://bugs.mojang.com/browse/MC-306017) - The main arm doesn't swing when making a tamed wolf sit or stand while holding a dye matching its collar color",
+      "translated_text": "[MC-306017] - 当驯服的狼手持与项圈颜色相同的染料时，它坐下或站立时主手臂不会摆动",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0298",
+      "type": "li",
+      "source_text": "[MC-307830](https://bugs.mojang.com/browse/MC-307830) - The game's framerate is limited to 20 fps with the Vulkan rendering backend on some systems",
+      "translated_text": "[MC-307830](https://bugs.mojang.com/browse/MC-307830) - 在某些系统上，使用 Vulkan 渲染后游戏帧率被限制在 20 fps",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0299",
+      "type": "li",
+      "source_text": "[MC-308037](https://bugs.mojang.com/browse/MC-308037) - Unselected tabs in the friends menu show white text instead of gray",
+      "translated_text": "[MC-308037] - 朋友菜单中未选中的标签页显示的是白色文字而非灰色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0300",
+      "type": "li",
+      "source_text": "[MC-308051](https://bugs.mojang.com/browse/MC-308051) - The icons on several buttons do not adhere to the UI pixel grid",
+      "translated_text": "[MC-308051](https://bugs.mojang.com/browse/MC-308051) - 多个按钮上的图标没有遵循用户界面的像素网格。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0301",
+      "type": "li",
+      "source_text": "[MC-308747](https://bugs.mojang.com/browse/MC-308747) - The social interactions button in the game menu is grayed out in LAN worlds with no players",
+      "translated_text": "[MC-308747](https://bugs.mojang.com/browse/MC-308747) - 在没有玩家的网络世界中，游戏菜单中的社交互动按钮会显示为灰色。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0302",
+      "type": "li",
+      "source_text": "[MC-308994](https://bugs.mojang.com/browse/MC-308994) - The Chat Restrictions screen does not display Xbox communication settings that affect the chat",
+      "translated_text": "[MC-308994] - “聊天限制”屏幕没有显示影响聊天的 Xbox 通信设置。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0303",
+      "type": "li",
+      "source_text": "[MC-309896](https://bugs.mojang.com/browse/MC-309896) - The options.allowFriendRequests.tooltip and options.inGameNotification.tooltip strings lack a period, unlike similar strings",
+      "translated_text": "[MC-309896] - “options.allowFriendRequests.tooltip”和“options.inGameNotification.tooltip”这两个字符串缺少句点，而类似的字符串则有句点。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0304",
+      "type": "li",
+      "source_text": "[MC-309906](https://bugs.mojang.com/browse/MC-309906) - The term \"Friends List\" is inconsistently capitalized across strings",
+      "translated_text": "[MC-309906] - “Friends List”（好友列表）这个词在不同字符串中的大小写格式不一致。」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0305",
+      "type": "li",
+      "source_text": "[MC-310124](https://bugs.mojang.com/browse/MC-310124) - Leaving a menu that was opened using the keyboard doesn't select its button from the previous screen",
+      "translated_text": "[MC-310124] - 退出通过键盘打开的菜单时，不会选择上一个屏幕中的相关按钮",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0306",
+      "type": "li",
+      "source_text": "[MC-310237](https://bugs.mojang.com/browse/MC-310237) - The gui.friends.error.generic string uses an em dash, unlike similar strings",
+      "translated_text": "[MC-310237] - friends.errorgeneric 字符串使用了破折号（em dash），而类似的字符串则没有",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0307",
+      "type": "li",
+      "source_text": "[MC-310854](https://bugs.mojang.com/browse/MC-310854) - The buttons in the friends screen have inconsistent outlines",
+      "translated_text": "[MC-310854] - 朋友界面中的按钮轮廓不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0308",
+      "type": "li",
+      "source_text": "[MC-311932](https://bugs.mojang.com/browse/MC-311932) - The Caps Lock key can no longer activate sprinting, sneaking, etc. when the control in question is set to \"Hold\"",
+      "translated_text": "[MC-311932] - 当相关控制模式设置为“Hold”时，大写锁定键（Caps Lock）不再能激活冲刺、潜行等功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0309",
+      "type": "li",
+      "source_text": "[MC-311963](https://bugs.mojang.com/browse/MC-311963) - The subtitles.block.poplar_leaves.ambient string uses a present participle instead of the present tense, unlike similar strings",
+      "translated_text": "[MC-311963] - subtitles.block.poplar_leaves.ambient 字符串使用了现在分词，而类似的字符串使用了现在时}",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0310",
+      "type": "li",
+      "source_text": "[MC-312120](https://bugs.mojang.com/browse/MC-312120) - Enabling the \"Exclusive Fullscreen\" option while the game is windowed and then entering non-exclusive fullscreen does not update the \"Exclusive Fullscreen\" option's button to \"OFF\"",
+      "translated_text": "[MC-312120] - 在游戏处于窗口模式时启用“独占全屏”选项，之后切换到非独占全屏模式后，该选项的按钮仍未更新为“关闭”状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0311",
+      "type": "li",
+      "source_text": "[MC-312198](https://bugs.mojang.com/browse/MC-312198) - Almost no small mushrooms generate on mushroom islands anymore",
+      "translated_text": "[MC-312198] - 蘑菇岛上几乎不再生成小蘑菇了",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0312",
+      "type": "li",
+      "source_text": "[MC-312213](https://bugs.mojang.com/browse/MC-312213) - The game crashes when using custom Superflat presets containing air",
+      "translated_text": "[MC-312213] - 使用包含空气元素的自定义Superflat预设时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0313",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取Snapshot（游戏快照）",
+      "meta": {}
+    },
+    {
+      "id": "b0314",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版现在支持使用快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0315",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的游戏世界，因此请备份数据或在不同文件夹中运行它们。**",
+      "meta": {}
+    },
+    {
+      "id": "b0316",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0317",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/2d89c95c030e635387448f332961074ce1adbb4b/server.jar)",
+      "translated_text": "[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/2d89c95c030e635387448f332961074ce1adbb4b/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0318",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0319",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0320",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0321",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊聊天，也可以加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Brr! Does it feel colder all of a sudden? Minecraft LIVE revealed the first look at our next game drop – and it's frosty. Explore ice caves filled with glittering icicles and ice crystals, plus meet a not-so-chill new hostile mob! This frozen zombie variant is well adapted to colder conditions and can freeze players with its attacks. We're super excited to hear what you think about the new features. Make sure to visit our feedback site at https://aka.ms/mc-gamedrop_winter26 and leave your thoughts!\n\nBeyond the frozen depths, we've also made a number of improvements to Friends! The Friends list has received a refreshed design, along with new search and sorting options to make it easier to find, organize, and manage your friends. So grab your friends and explore!\n\nHappy ice-caving!\n\nNew Features\n\nAdded the new Ice Caves Biome\n\nAdded Ice Crystals\n\nAdded Icicles\n\nAdded the Frostbite mob\n\nAdded the Freezing mob effect\n\nAdded the Ice Ball\n\nIce Caves\n\nThe Ice Cave is a new cave biome that can generate under the colder biomes in the Overworld\n\nIt consists mainly of Packed Ice and Calcite\n\nIcicles generate hanging from the ceiling\n\nLarge Icicles made of Packed Ice generate on the ground and hanging from the ceiling\n\nPatches of Snow occasionally generate on the ground\n\nOres generate embedded in pockets of Stone and Deepslate\n\nGlow Lichen does not generate in this biome\n\nIn addition to the mobs that normally spawn in caves, Strays and Frostbites can also spawn here\n\nIce Crystals occasionally generate on the ground\n\nIce Crystal\n\nA new crystal-like block similar to Amethyst Clusters\n\nBreaks if the support block is removed\n\nIt emits light and can be placed in any direction\n\nIcicle\n\nA new speleothem-like block similar to Dripstone and Sulfur Spikes\n\nIcicles can be found all over the ceiling of ice caves\n\nCan naturally grow up to 5 blocks long when pointing downward\n\nOnly grows in areas without nearby light sources and outside the Nether\n\nIt can be placed in any direction and has a base, middle and tip variant\n\nDamages entities when it falls and deals extra damage to entities that land on it\n\nPointed blocks break when exposed to nearby light sources or when placed in the Nether\n\nFrostbite\n\nThe Frostbite is a zombie variant that can throw Ice Balls\n\nSpawns in cold/icy biomes\n\nSwitches between melee and ranged combat based on target distance and whether they have Ice Balls\n\nMelee attacks apply Freezing, while ranged attacks throw Ice Balls\n\nTransforms into a Zombie when underwater for long enough\n\nDrops Rotten Flesh and Ice Balls\n\nIt can stand on top of Powder Snow\n\nIt is immune to freezing and does not get slowed by the Freezing effect or Powder Snow\n\nZombies and Husks transform into Frostbites when inside Powder Snow\n\nFreezing Mob Effect\n\nThe Freezing effect will cause players to shake and eventually deal damage\n\nCauses those affected to slowly become frozen as if in Powdered Snow for its duration\n\nLeather Armor protects from freezing, just like with Powder Snow, but will not keep the effect from being applied and will not remove the effect\n\nMobs will take additional damage from Freezing while they are affected by this effect\n\nMobs that are vulnerable to Freezing have a five times multiplier to the damage taken\n\nLingering Potion, Splash Potion, and Potion of Freezing can be brewed using Ice Balls\n\nArrows of Freezing can be crafted by placing a Lingering Potion of Freezing in the middle of the crafting table surrounded by eight Arrows\n\nIce Ball\n\nIce Balls are new projectile used by the Frostbite\n\nThey deal a small amount of damage and have knockback\n\nDeals 4 damage to entities it hits, scaling down with velocity\n\nBreaks on impact with blocks or entities, creating a particle effect and sound\n\nChanges\n\nMinor Tweaks to Blocks, Items and Entities\n\nSnow can now be placed on Packed Ice\n\nSnowballs now apply knockback to players\n\nUI\n\nLightmap visualization is now configurable as lightmap_texture in debug options and appears in the Light group\n\nIts visibility setting is saved with the debug profile\n\nIt can now be displayed alongside the FPS and network charts\n\nThe Social Interactions screen has been replaced with the new Other Players screen\n\nThe \"Social Interactions\" keybind has been renamed to \"Other Players\"\n\nThe Friends button has received a new icon\n\nThe \"Visibility\" option has been moved from Online Options into the Friends list\n\nThe icon buttons in the pause menu have been reordered to match the main menu\n\nFriends\n\nUpdated the design of the Friends list\n\nAdded searching\n\nIn the Friends tab, the profile name text box used for sending requests also functions as a search box\n\nIn the requests tab, a search box appears at the top if you have 15 or more requests\n\nAdded sorting\n\nSort modes can be cycled through by pressing the new sort button\n\nThe current sort modes are:\n\nSort by who's online - friends who are listed as online appear at the top of the list\n\nSort by alphabetical order - friends are sorted according to the alphabetical order of their names\n\nClicking on a player's icon in the Friends list now opens their Player Options\n\nRemoved \"Remove Friend\" button\n\nThis functionality is now accessible through Player Options instead\n\nPlayer Options\n\nPlayer Options is a new screen accessible through both the Friends list and Other Players.\n\nIt contains per-player social actions previously spread across the Friends list and Social Interactions\n\nThese actions are:\n\nSending or canceling a friend request\n\nAccepting or declining a friend request\n\nMuting a player\n\nReporting a player\n\nMuting a player hides their chat messages until the next time you start the game\n\nBlocking players is managed through Other Players\n\nOther Players\n\nOther Players is a new menu which has been added to replace Social Interactions.\n\nOther Players is only available when playing on a world open to multiplayer\n\nThis includes:\n\nPlaying in singleplayer worlds open to LAN\n\nPlaying on dedicated servers\n\nPlaying on Realms\n\nIt can be opened by pressing the \"Other Players\" icon button in the pause menu\n\nIt can also be opened from in-game using the \"Other Players\" key ('P' by default)\n\nIt lists the players currently online in the world you are in\n\nIt lists players who are not online anymore, but may still be of interest:\n\nPlayers who were just online but left\n\nPlayers who recently sent messages in the chat\n\nClicking on a player's icon in the list opens their Player Options\n\nPlayer Reporting\n\nRedesigned the save/discard draft confirmation screen\n\nPlayer reports saved as drafts no longer prompt you to discard them upon exiting a world if they can be continued later\n\nChat reports can never be continued\n\nName reports can be continued if the reported player is in your Friends list\n\nSkin reports can be continued if the reported player is in your Friends list\n\nPressing \"Quit Game\" in the main menu will now give a warning if you have an unsent draft report that would be lost\n\nDebug Overlay\n\nA new chunk_section_status shows the rendering status of chunks around you. This will impact performance at high view distances.\n\nThe chunk load overlay has been split off from visualize_chunks_on_server and into a new chunk_load_status\n\nTechnical Changes\n\nThe Data Pack version is now 123.0\n\nThe Resource Pack version is now 100.0\n\nData Pack Versions 122.0 through 123.0\n\nWorld Generation\n\nFeatures\n\nChanged\n\nminecraft:speleothem_cluster\n\nAdded placement_options - a field that contains various settings for the placement of the Speleothem cluster:\n\nplacement_mode - represented by an enum that is one of floor_and_ceiling , floor_only , ceiling_only\n\nbase_block_transformer - sets a state on the base block of the Speleothem block\n\nnone - the regular base block state used in Sulfur Spikes and Dripstone Spikes\n\nset_attached - the state of the base block of the Icicle when it is attached to a surface\n\nallow_water_placement - boolean indicating whether the Speleothem can be placed in water or not\n\nChanged\n\nminecraft:large_dripstone\n\n(renamed from\n\nminecraft:large_speleothem\n\n)\n\nAdded field base_block - Block State Provider, the block to build the large dripstone out of\n\nNoise Settings\n\nAdded new Noises:\n\nice_cave_gradient\n\nFeature Placements\n\nAdded the following Ore Placements:\n\nice_cave_ore_coal_upper\n\nice_cave_ore_coal_lower\n\nice_cave_ore_copper\n\nice_cave_ore_diamond\n\nice_cave_ore_diamond_medium\n\nice_cave_ore_diamond_large\n\nice_cave_ore_diamond_buried\n\nice_cave_ore_iron_upper\n\nice_cave_ore_iron_middle\n\nice_cave_ore_iron_small\n\nice_cave_ore_gold\n\nice_cave_ore_gold_lower\n\nice_cave_ore_lapis\n\nice_cave_ore_lapis_buried\n\nice_cave_ore_redstone\n\nice_cave_ore_redstone_lower\n\nice_cave_ore_andesite_upper\n\nice_cave_ore_andesite_lower\n\nice_cave_ore_diorite_upper\n\nice_cave_ore_diorite_lower\n\nice_cave_ore_gravel\n\nThese are all identical to their non-ice-cave counterparts, only that they place a patch of stone or deepslate (depending on y-level) before placing the ore itself\n\nThey can replace Ice and Calcite as well\n\nBlock Sound Sets\n\nAdded minecraft:block_sound_set registry containing definitions for sounds produced by different categories of blocks.\n\nFormat: object with fields:\n\nvolume - a float between 0.00001 and 10.0 , the relative volume at which all sounds will be played\n\nIf not present, defaults to 1.0\n\npitch - a float between 0.00001 and 2.0 , the relative pitch at which all sounds will be played\n\nIf not present, defaults to 1.0\n\nbreak_sound - Sound Event, the sound that will be played when the block gets broken\n\nstep_sound - Sound Event, the sound that will be played when an entity walks on top of the block\n\nplace_sound - Sound Event, the sound that will be played when the block gets placed\n\nhit_sound - Sound Event, the sound that will be played while the block is being destroyed\n\nfall_sound - Sound Event, the sound that will be played when an entity falls onto the block\n\nAll sound fields are optional\n\nTags\n\nBlock Tags\n\nAdded block tag ice_cave_ore_replaceables to describe all blocks which are allowed to be replaced by ores within Ice Caves (in addition to stone_ore_replaceables , height_specific_ore_replaceables and deepslate_ore_replaceables )\n\nAdded block tag melts_icicle_above to describe all blocks causing Icicles directly above to melt\n\nAdded block tag large_icicle_replaceable to describe all blocks which are allowed to be replaced by Large Icicles within the Ice Caves biome\n\nAdded several block tags to affect how mobs pathfind:\n\n#pathfinding/avoid_in_air - blocks to be avoided while flying, either due to danger our potential to get stuck\n\n#pathfinding/damage_cautious - blocks that will damage entities that walk through them, but are not considered dangerous enough to avoid entirely\n\n#pathfinding/damaging - blocks that will damage entities that walk through them\n\n#pathfinding/drop_down - blocks that can be dropped down through\n\n#pathfinding/leaves - blocks that are considered leaves\n\n#pathfinding/open - blocks that are considered completely open to walk through\n\n#pathfinding/powder_snow - blocks that are considered powder snow\n\n#pathfinding/rails - blocks that are considered rails\n\n#pathfinding/sticky - blocks that are considered sticky, causing slowed movement and inability to jump\n\nItem Tags\n\nAdded #frostbite_preferred_weapons for items picked up and used by the Frostbite\n\nAdded #knocks_back_players_even_with_zero_damage for items which shall apply knockback even if they do 0 damage\n\nAdded #sheep_wool_dyes - items that can be used to dye a Sheep's wool\n\nThe color will be taken from the minecraft:dye component of the used item stack\n\nBiome Tags\n\nAdded #spawns_strays_without_powder_snow to describe all biomes which allow the spawning of strays without requiring powder snow on the surface above them\n\nBlock Sound Set Tags\n\nAdded #sounds_wooden - block sound sets which when stepped on cause Horses to produce a galloping sound\n\nParticles\n\nRemoved particle type minecraft:item_snowball\n\nAdded minecraft:freezing\n\nEmitted by Entities which are affected by the Freezing mob effect\n\nHas no fields\n\nResource Pack Versions 98.0 through 100.0\n\nBlock Sprites\n\nAdded new Block texture:\n\nblock/ice_crystal.png\n\nAdded new Block textures:\n\nblock/ice_crystal.png\n\nblock/icicle_down_base.png\n\nblock/icicle_down_frustum.png\n\nblock/icicle_down_middle.png\n\nblock/icicle_down_tip.png\n\nblock/icicle_down_tip_merge.png\n\nblock/icicle_side.png\n\nblock/icicle_top.png\n\nItem Sprites\n\nAdded new Item texture:\n\nitem/ice_crystal.png\n\nAdded new Item texture:\n\nitem/frostbite_spawn_egg.png\n\nitem/ice_ball.png\n\nitem/ice_crystal.png\n\nitem/icicle.png\n\nUI Sprites\n\nAdded new UI textures:\n\nmob_effect/freezing.png\n\nfriends/background_light.png\n\nfriends/presence_all.png\n\nfriends/presence_limited.png\n\nfriends/presence_none.png\n\nfriends/profile.png\n\nfriends/profile_highlighted.png\n\nfriends/sort_alphabetical.png\n\nfriends/sort_presence.png\n\nfriends/tab_selected.png\n\npause_menu/other_players.png\n\nThe following textures have been renamed:\n\nfriends/button.png -> friends/tab.png\n\nfriends/button_highlighted.png -> friends/tab_highlighted.png\n\nfriends/loading.png -> widget/loading.png\n\npause_menu/social_interactions.png -> pause_menu/feedback.png\n\nThe following textures have been removed:\n\nfriends/button_disabled.png\n\nfriends/remove.png\n\npause_menu/player_reporting.png\n\ntoast/social_interactions.png\n\nEntity Textures\n\nAdded new Entity textures:\n\nentity/zombie/frostbite.png\n\nentity/zombie/frostbite_baby.png\n\nentity/zombie/frostbite_outer_layer.png\n\nSounds\n\nAdded new sound events:\n\nentity.frostbite.ambient\n\nentity.frostbite.death\n\nentity.frostbite.hurt\n\nentity.frostbite.step\n\nblock.ice.break\n\nblock.ice.fall\n\nblock.ice.hit\n\nblock.ice.place\n\nblock.ice.step\n\nblock.ice_crystal.break\n\nblock.ice_crystal.fall\n\nblock.ice_crystal.hit\n\nblock.ice_crystal.place\n\nblock.ice_crystal.step\n\nblock.icicle.break\n\nblock.icicle.fall\n\nblock.icicle.hit\n\nblock.icicle.place\n\nblock.icicle.step\n\nblock.icicle.land\n\nentity.ice_ball.break\n\nentity.ice_ball.throw\n\nParticles\n\nAdded new Particle textures:\n\nparticle/freezing_0.png\n\nparticle/freezing_1.png\n\nparticle/freezing_2.png\n\nparticle/freezing_3.png\n\nparticle/freezing_4.png\n\nparticle/freezing_5.png\n\nItem Models\n\nAdded new Item Models:\n\nitem/icicle\n\nBlock Models\n\nAdded new Block Models:\n\nblock/icicle\n\nblock/icicle_base\n\nFixed bugs in 26.4 Snapshot 3\n\n[MC-212616](https://bugs.mojang.com/browse/MC-212616) - The dye staining sound does not play when dyes are used on tamed wolves or cats\n\n[MC-303468](https://bugs.mojang.com/browse/MC-303468) - Pets can be teleported to the incorrect coordinates when going through a nether portal\n\n[MC-306017](https://bugs.mojang.com/browse/MC-306017) - The main arm doesn't swing when making a tamed wolf sit or stand while holding a dye matching its collar color\n\n[MC-307830](https://bugs.mojang.com/browse/MC-307830) - The game's framerate is limited to 20 fps with the Vulkan rendering backend on some systems\n\n[MC-308037](https://bugs.mojang.com/browse/MC-308037) - Unselected tabs in the friends menu show white text instead of gray\n\n[MC-308051](https://bugs.mojang.com/browse/MC-308051) - The icons on several buttons do not adhere to the UI pixel grid\n\n[MC-308747](https://bugs.mojang.com/browse/MC-308747) - The social interactions button in the game menu is grayed out in LAN worlds with no players\n\n[MC-308994](https://bugs.mojang.com/browse/MC-308994) - The Chat Restrictions screen does not display Xbox communication settings that affect the chat\n\n[MC-309896](https://bugs.mojang.com/browse/MC-309896) - The options.allowFriendRequests.tooltip and options.inGameNotification.tooltip strings lack a period, unlike similar strings\n\n[MC-309906](https://bugs.mojang.com/browse/MC-309906) - The term \"Friends List\" is inconsistently capitalized across strings\n\n[MC-310124](https://bugs.mojang.com/browse/MC-310124) - Leaving a menu that was opened using the keyboard doesn't select its button from the previous screen\n\n[MC-310237](https://bugs.mojang.com/browse/MC-310237) - The gui.friends.error.generic string uses an em dash, unlike similar strings\n\n[MC-310854](https://bugs.mojang.com/browse/MC-310854) - The buttons in the friends screen have inconsistent outlines\n\n[MC-311932](https://bugs.mojang.com/browse/MC-311932) - The Caps Lock key can no longer activate sprinting, sneaking, etc. when the control in question is set to \"Hold\"\n\n[MC-311963](https://bugs.mojang.com/browse/MC-311963) - The subtitles.block.poplar_leaves.ambient string uses a present participle instead of the present tense, unlike similar strings\n\n[MC-312120](https://bugs.mojang.com/browse/MC-312120) - Enabling the \"Exclusive Fullscreen\" option while the game is windowed and then entering non-exclusive fullscreen does not update the \"Exclusive Fullscreen\" option's button to \"OFF\"\n\n[MC-312198](https://bugs.mojang.com/browse/MC-312198) - Almost no small mushrooms generate on mushroom islands anymore\n\n[MC-312213](https://bugs.mojang.com/browse/MC-312213) - The game crashes when using custom Superflat presets containing air\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/2d89c95c030e635387448f332961074ce1adbb4b/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "嘘！突然感觉冷多了吗？Minecraft LIVE首次展示了我们的下一个游戏更新内容——这次更新的主题是冰霜世界！你将探索充满闪闪发光的冰柱和冰晶的冰洞，同时还会遇到一种全新的、有点“冷酷”的敌对生物！这种冰冻僵尸变异体非常适应寒冷环境，它的攻击能让玩家被冻结！我们非常期待听到你对新内容的反馈，请一定访问我们的反馈网站：https://aka.ms/mc-gamedrop_winter26，留下你的想法吧！\n\n在冰封的深处之外，我们还对“好友”功能进行了多项改进！好友列表的设计焕然一新，新增了搜索和排序选项，让你更容易找到、整理和管理你的好友。快叫上你的朋友们一起探索吧！\n\n祝大家冰洞探险愉快！\n\n新功能\n\n新增了“冰洞”生物群系\n\n添加了冰晶\n\n添加了冰柱\n\n添加了“冰冻”生物（Frostbite mob）\n\n添加了“冻结”生物效果\n\n添加了冰球\n\n冰洞\n\n冰洞是一种新的洞穴生物群系，可以在主世界（Overworld）中较寒冷的生物群系下方生成\n\n冰洞主要由压实的冰（Packed Ice）和方解石（Calcite）组成\n\n冰柱会从天花板上悬挂下来\n\n由压实的冰构成的大冰柱会掉在地上，并从天花板上悬挂下来\n\n地面上偶尔会生成雪块\n\n矿石会嵌入在石头和深石中生成\n\n这种生物群落中不会生成发光地衣\n\n除了通常在洞穴中生成的怪物外，迷途者和霜咬怪物也有可能在这里出现\n\n地面上偶尔会生成冰晶\n\n冰晶\n\n一种类似于紫水晶簇的新晶体状方块\n\n如果支撑方块被移除，这个方块也会随之破坏\n\n这种方块会发光，可以朝任何方向放置\n\n冰柱\n\n一种类似钟乳石和硫黄尖锥的新块体\n\n冰洞的天花板上到处都可以找到冰柱\n\n这种冰柱在向下生长时最长可达5个方块\n\n仅在没有光源的区域以及下界之外生长\n\n可以朝任何方向放置，并有底部、中间和顶端的多种形态\n\n掉落时会对实体造成伤害，而落在上面的实体会受到额外伤害\n\n暴露在光源附近或放置在下界时，这种冰柱会破裂\n\n冻伤\n\n冻伤是一种僵尸变种，能够投掷冰球\n\n出现在寒冷/结冰的生物群系中\n\n根据目标距离以及目标是否持有冰球，在近战和远程战斗之间切换\n\n近战攻击会产生冻结效果，而远程攻击则会投掷冰球\n\n在水下待太久会变成僵尸\n\n会掉落腐肉和冰球\n\n能够站在粉雪上\n\n对冻结效果免疫，也不会受到冻结效果或粉雪的影响而减速\n\n僵尸和尸壳在粉雪中会变成冰冻状态\n\n冻结怪物效果\n\n冻结效果会使玩家颤抖，并最终造成伤害\n\n会使受影响者在效果持续时间内逐渐被冻住，就像处于粉雪中一样\n\n皮甲可以防止冻结，就像使用“粉末雪”效果一样；但它不会阻止冻结效果的施加，也不会消除该效果\n\n受到冻结效果影响的怪物会受到额外的伤害\n\n容易受到冻结影响的怪物所承受的伤害会增加五倍\n\n“持续效果药水”、“溅射药水”和“冻结药水”可以使用“冰球”来制作\n\n“冻结箭”可以通过在制作台中放入一个“持续效果药水”，然后周围放置八支箭来制作\n\n冰球\n\n冰球是“冻伤效果”使用的一种新投射物\n\n冰球会造成少量伤害，并且具有击退效果\n\n冰球会对击中的实体造成4点伤害，伤害量会随着速度的增加而减少\n\n与方块或实体碰撞时会发生破碎，同时会产生粒子效果和声音\n\n部分内容已更改\n\n对方块、物品和实体进行了微调\n\n现在可以在压实的冰面上放置雪块\n\n雪球现在会对玩家产生击退效果\n\n用户界面相关更改\n\n光照贴图的可视化设置现在可以在调试选项中配置为“lightmap_texture”，并显示在“Light”组中\n\n其可见性设置会随着调试配置文件一起保存\n\n光照贴图现在可以与FPS和网络图表一起显示\n\n社交互动屏幕已被新的“其他玩家”屏幕取代\n\n“社交互动”快捷键已更名为“其他玩家”\n\n好友按钮更换了新的图标\n\n“可见性”选项已从“在线选项”中移至好友列表\n\n暂停菜单中的图标按钮顺序已调整以匹配主菜单的布局\n\n好友\n\n好友列表的设计已更新\n\n添加了搜索功能\n\n在好友选项卡中，用于发送请求的个人资料名称输入框同时也可用作搜索框\n\n在请求选项卡中，如果你有15条或更多请求，顶部会出现一个搜索框\n\n添加了排序功能\n\n通过点击新的排序按钮可以循环切换排序方式\n\n当前的排序方式有：\n\n按在线状态排序——显示为在线的朋友会出现在列表顶部\n\n按字母顺序排序——朋友会根据名字的字母顺序排列\n\n现在点击好友列表中的玩家图标会打开他们的玩家设置\n\n移除了“移除好友”按钮\n\n此功能现在可以通过玩家设置来访问\n\n玩家设置\n\n玩家设置是一个新的界面，既可以通过好友列表也可以通过“其他玩家”入口访问\n\n它包含了之前分散在好友列表和社交互动中的个性化操作功能\n\n这些操作包括：\n\n发送或取消好友请求\n\n接受或拒绝好友请求\n\n静音玩家\n\n举报玩家\n\n静音玩家后，他们的聊天消息将不会显示，直到你下次开始游戏\n\n-blocking玩家的功能通过“其他玩家”界面进行管理\n\n“其他玩家”\n\n“其他玩家”是一个新添加的菜单，用于替代“社交互动”界面\n\n“其他玩家”仅在允许多人玩的世界中可用\n\n这包括：\n\n在局域网（LAN）可访问的单人游戏世界中游玩\n\n在专用服务器上游玩\n\n在 Realms 服务器上游玩\n\n可以通过暂停菜单中的“其他玩家”图标按钮打开该列表\n\n也可以通过游戏内的“其他玩家”键（默认为‘P’）打开该列表\n\n该列表会显示你当前所在游戏世界中在线的玩家\n\n该列表还会显示已离线但可能仍具兴趣的玩家\n\n刚刚上线后又离开的玩家\n\n最近在聊天中发送过消息的玩家\n\n点击列表中的玩家图标可以打开他们的玩家设置（Player Options）\n\n玩家举报（Player Reporting）\n\n重新设计了保存/丢弃草稿确认界面\n\n如果玩家报告可以稍后继续，那么保存为草稿的玩家报告在退出游戏时不会再提示你丢弃它们\n\n聊天报告无法继续发送\n\n如果被举报的玩家在你的好友列表中，名字报告可以继续发送\n\n如果被举报的玩家在你的好友列表中，皮肤报告可以继续发送\n\n现在，在主菜单中点击“退出游戏”（Quit Game）时会弹出警告，提醒你有未发送的草稿报告可能会丢失\n\n调试覆盖层（Debug Overlay）\n\n新的“chunk_section_status”功能显示了你周围块的渲染状态。这可能会影响高视野距离下的游戏性能\n\n区块加载提示界面已从 `visualize_chunks_on_server` 中分离出来，并重新命名为 `chunk_load_status`\n\n技术性更改\n\n数据包版本现为您看到的 123.0\n\n资源包版本现为您看到的 100.0\n\n数据包版本范围为 122.0 至 123.0\n\n世界生成机制\n\n新功能\n\n相关内容已更改\n\n`minecraft:speleothem_cluster`\n\n新增了 `placement_options` 字段——该字段用于设置洞穴群（Speleothem cluster）的放置参数。\n\nplacement_mode - 由一个枚举表示，可选值包含 floor_and_ceiling、floor_only 和 ceiling_only\n\nbase_block_transformer - 用于设置 Speleothem 块的基础块的状态\n\nnone - 在硫黄尖锥（Sulfur Spikes）和滴石尖锥（Dripstone Spikes）中使用的常规基础块状态\n\nset Attached - 冰柱（Icicle）附着在表面时的状态\n\nallow_water-placement - 布尔值，表示 Speleothem 块是否可以放置在水中\n\n已更改\n\nminecraft:large_dripstone\n\n(从...重命名)\n\nminecraft:large_speleothem\n\n新增字段 `base_block` — 用于指定构建大型滴石的方块类型\n\n添加了噪声设置\n\n新增了多种噪声效果\n\n冰洞地形（ice_cave_gradient）\n\n特性放置功能（Feature Placements）\n\n新增了以下矿石生成规则\n\n冰洞中的煤层（ice_cave_ore_coal_upper）\n\n冰洞中的煤层（ice_cave_ore_coal_lower）\n\n冰洞中的铜矿（ice_cave_ore_copper）\n\n冰洞中的钻石矿（ice_cave_ore_diamond）\n\n冰穴中的中等大小钻石矿石\n\n冰穴中的大型钻石矿石\n\n埋藏在地下的冰穴钻石矿石\n\n冰穴中的上层铁矿石\n\n冰穴中的中层铁矿石\n\n冰穴中的小型铁矿石\n\n冰穴中的金矿石\n\n冰穴中的下层金矿石\n\n冰穴中的青金石矿石\n\n埋藏在地下的冰穴青金石矿石\n\n冰穴中的红石矿石\n\n冰穴中的下层红石矿石\n\n冰穴中的安山岩矿石（上层）\n\n冰穴中的安山岩矿石（下层）\n\n冰穴中的闪长岩矿石（上层）\n\n冰穴中的闪长岩矿石（下层）\n\n冰穴中的砂石矿石\n\n这些矿石与非冰穴中的对应矿石完全相同，只不过在放置矿石之前会先放置一块石头或深石板（具体取决于 y 坐标）\n\n它们也可以替代冰矿石和方解石矿石\n\n方块音效集\n\n添加了 `minecraft:block_sound_set` 注册表，其中包含了不同类别方块产生的声音的定义。\n\n格式：一个包含以下字段的对象：\n\n`volume` – 一个介于 0.00001 和 10.0 之间的浮点数，表示所有声音的播放响度；如果未指定，则默认为 1.0\n\n如果未指定，则默认为 1.0\n\n`pitch` – 一个介于 0.00001 和 2.0 之间的浮点数，表示所有声音的播放音调；如果未指定，则默认为 1.0\n\n如果未指定，则默认为 1.0\n\n`break_sound` – 声音事件，方块被破坏时播放的声音\n\n`step_sound` – 声音事件，实体站在方块上时播放的声音\n\n`place_sound` – 声音事件，放置方块时播放的声音\n\nhit_sound - 声音事件：在方块被破坏时播放的声音\n\nfall_sound - 声音事件：当实体落在方块上时播放的声音\n\n所有声音字段都是可选的\n\n标签\n\n方块标签\n\n新增了方块标签 `ice_cave_ore_replaceables`，用于描述在冰穴中可以被矿石替换的所有方块（除了 `stone_ore_replaceables`、`height_specific_ore_replaceables` 和 `deepslate_ore_replaceables`）\n\n新增了方块标签 `melts_icicle_above`，用于描述会导致上方冰柱融化的所有方块\n\n新增了方块标签 `large_icicle_replaceable`，用于描述在冰穴生物群系中可以被大冰柱替换的所有方块\n\n新增了几个方块标签，以影响怪物的路径寻找行为\n\n#pathfinding/avoid_in_air - 飞行时需要避免的方块，因为这些方块可能存在危险或导致玩家卡住\n\n#pathfinding/damage_cautious - 会伤害通过的实体的方块，但危险程度不足以完全避免\n\n#pathfinding/damaging - 会伤害通过的实体的方块\n\n#pathfinding/drop_down - 可以向下投下的方块\n\n#pathfinding/leaves - 被视为树叶的方块\n\n#pathfinding/open - 可以完全通过的开放方块\n\n#pathfinding/powder_snow - 被视为粉雪的方块\n\n#pathfinding/rails - 被视为铁轨的方块\n\n#pathfinding/sticky - 有粘性的方块，会导致移动缓慢且无法跳跃\n\n物品标签\n\n为 Frostbite 流派拾取并使用的物品添加了 #frostbite_preferred_weapons 标签\n\n为那些即使造成 0 点伤害也会产生击退效果的物品添加了 #knocks_back_players_even_with_zero_damage 标签\n\n新增了 #sheep_wool_dyes 物品——这些物品可以用来给羊的羊毛上色\n\n颜色的选择将来自所使用物品堆栈中的 minecraft:dye 组件\n\n生物群系标签\n\n新增了 #spawns_strays_without_powder_snow 标签，用于描述所有无需地表有粉末雪即可产生产崽生物群系的类别\n\n方块音效集标签\n\n新增了 #sounds_wooden 标签——踩在这些方块上时，马会发出奔跑的声音\n\n粒子效果\n\n移除了粒子类型 `minecraft:item_snowball`\n\n新增了 `minecraft:freezing`\n\n由受到 `Freezing` 守护兽效果影响的实体发出的效果\n\n该效果没有额外的字段\n\n资源包版本 98.0 至 100.0\n\n方块精灵（Block Sprites）\n\n新增了方块纹理：\n\n文件名：`block/ice_crystal.png`\n\n新增了方块纹理：\n\n文件名：`block/ice_crystal.png`\n\nblock/icicle_down_base.png\n\nblock/icicle_down_frustum.png\n\nblock/icicle_down_middle.png\n\nblock/icicle_down_tip.png\n\nblock/icicle_down_tip_merge.png\n\nblock/icicle_side.png\n\nblock/icicle_top.png\n\n物品精灵（Item Sprites）\n\n添加了新的物品纹理（Added new Item texture:）\n\nitem/ice_crystal.png\n\n添加了新的物品纹理：\n\nitem/frostbite_spawn_egg.png\n\nitem/ice_ball.png\n\nitem/ice_crystal.png\n\nitem/icicle.png\n\n用户界面精灵（UI Sprites）\n\n添加了新的用户界面纹理：\n\n怪物效果：冻结（mob_effect/freezing.png）\n\n好友背景图：浅色（friends/background_light.png）\n\n好友状态图标：全部可见（friends/presence_all.png）\n\nfriends/presence_limited.png\n\nfriends/presence_none.png\n\nfriends/profile.png\n\nfriends/profilehighlighted.png\n\nfriends/sort_alphabetical.png\n\nfriends/sort_presence.png\n\nfriends/tab_selected.png\n\npause_menu/other_players.png\n\n以下纹理已被重命名：\n\nfriends/button.png -> friends/tab.png\n\nfriends/button.highlighted.png -> friends/tab_highlighted.png\n\nfriends-loading.png -> widget.loading.png\n\npause_menu/social_interactions.png -> pause_menu/feedback.png\n\n已移除以下纹理：\n\nfriends/button_disabled.png\n\nfriends/remove.png\n\npause_menu/player_reporting.png\n\ntoast/social_interactions.png\n\n实体纹理\n\n添加了新的实体纹理：\n\nentity/zombie/frostbite.png\n\nentity/zombie/frostbite_baby.png\n\nentity/zombie/frostbite_outer_layer.png\n\n声音\n\n新增了以下声音事件：\n\nentity.frostbite.ambient\n\nentity.frostbite.death\n\nentity.frostbite.hurt\n\nentity.frostbite.step\n\nblock.ice_break\n\nice块掉落\n\n冰块被击中\n\n放置冰块\n\n踩在冰块上\n\n打破冰晶块\n\n冰晶块掉落\n\n冰晶块被击中\n\n放置冰晶块\n\n踩在冰晶块上\n\n打破冰柱\n\nblock.icicle.fall\n\nblock.icicle_hit\n\nblock.icicle.place\n\nblock.icicle.step\n\nblock.icicle_land\n\nentity.ice_ball;break\n\nentity.ice-ball THROW\n\nParticles\n\n新增了新的粒子纹理？（Added new Particle textures?）\n\nparticle/freezing_0.png\n\nparticle/freezing_1.png\n\nparticle/freezing_2.png\n\nparticle/freezing_3.png\n\nparticle/freezing_4.png\n\nparticle/freezing_5.png\n\n物品模型\n\n新增了物品模型：\n\nitem/icicle\n\n方块模型\n\n新增了方块模型：\n\n添加了 icicle （冰柱）方块\n\n添加了 icicle_base （冰柱底座）方块\n\n修复了 26.4 Snapshot 3 中的漏洞\n\n[MC-212616](https://bugs.mojang.com/browse/MC-212616) - 在驯服的狼或猫身上使用染料时，染色音效不会播放\n\n[MC-303468](https://bugs.mojang.com/browse/MC-303468) - 宠物通过下界传送门时可能会被传送到错误的坐标\n\n[MC-306017] - 当驯服的狼手持与项圈颜色相同的染料时，它坐下或站立时主手臂不会摆动\n\n[MC-307830](https://bugs.mojang.com/browse/MC-307830) - 在某些系统上，使用 Vulkan 渲染后游戏帧率被限制在 20 fps\n\n[MC-308037] - 朋友菜单中未选中的标签页显示的是白色文字而非灰色\n\n[MC-308051](https://bugs.mojang.com/browse/MC-308051) - 多个按钮上的图标没有遵循用户界面的像素网格。」\n\n[MC-308747](https://bugs.mojang.com/browse/MC-308747) - 在没有玩家的网络世界中，游戏菜单中的社交互动按钮会显示为灰色。」\n\n[MC-308994] - “聊天限制”屏幕没有显示影响聊天的 Xbox 通信设置。」\n\n[MC-309896] - “options.allowFriendRequests.tooltip”和“options.inGameNotification.tooltip”这两个字符串缺少句点，而类似的字符串则有句点。」\n\n[MC-309906] - “Friends List”（好友列表）这个词在不同字符串中的大小写格式不一致。」\n\n[MC-310124] - 退出通过键盘打开的菜单时，不会选择上一个屏幕中的相关按钮\n\n[MC-310237] - friends.errorgeneric 字符串使用了破折号（em dash），而类似的字符串则没有\n\n[MC-310854] - 朋友界面中的按钮轮廓不一致\n\n[MC-311932] - 当相关控制模式设置为“Hold”时，大写锁定键（Caps Lock）不再能激活冲刺、潜行等功能\n\n[MC-311963] - subtitles.block.poplar_leaves.ambient 字符串使用了现在分词，而类似的字符串使用了现在时}\n\n[MC-312120] - 在游戏处于窗口模式时启用“独占全屏”选项，之后切换到非独占全屏模式后，该选项的按钮仍未更新为“关闭”状态\n\n[MC-312198] - 蘑菇岛上几乎不再生成小蘑菇了\n\n[MC-312213] - 使用包含空气元素的自定义Superflat预设时，游戏会崩溃\n\n获取Snapshot（游戏快照）\n\nMinecraft: Java版现在支持使用快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n**测试版本可能会损坏你的游戏世界，因此请备份数据或在不同文件夹中运行它们。**\n\n跨平台服务器 JAR 文件：\n\n[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/2d89c95c030e635387448f332961074ce1adbb4b/server.jar)\n\n在这里报告错误：\n\n[Minecraft 问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊聊天，也可以加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

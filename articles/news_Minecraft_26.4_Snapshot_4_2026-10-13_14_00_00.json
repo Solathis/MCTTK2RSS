@@ -1,0 +1,1597 @@
+{
+  "title": "Minecraft 26.4 Snapshot 4",
+  "translated_title": "《Minecraft》26.4版本快照4",
+  "release_date": "2026-10-13T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-4",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-4/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "With 26.4 Snapshot 4, we're breaking out a cool new block, introducing Brittle Ice! And Jukeboxes can now keep the music going with playlists by putting your music discs in a chest above them, making dance parties much easier. Just be careful not to dance on the Brittle Ice, as it'll start cracking under your feet...",
+      "translated_text": "在 26.4 Snapshot 4 中，我们推出了一种全新的方块——脆冰（Brittle Ice）！此外，现在播放器（Jukebox）可以通过在上方放置音乐光盘来使用播放列表，让舞会变得更加轻松。不过要注意，不要在脆冰上跳舞，否则它可能会在你脚下破碎……",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy Dance Break!",
+      "translated_text": "美好的舞会时光！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新增功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Jukebox Playlists",
+      "translated_text": "添加了播放器播放列表功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added Brittle Ice",
+      "translated_text": "新增了脆冰方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "h3",
+      "source_text": "Jukebox Playlists",
+      "translated_text": "播放器播放列表功能",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Place a single Chest, Trapped Chest, or any Copper Chest variant directly above a Jukebox to use its Music Discs as a playlist",
+      "translated_text": "将一个普通的箱子（Chest）、陷阱箱子（Trapped Chest）或任何铜质箱子（Copper Chest）直接放置在播放器上方，就可以使用其中的音乐光盘作为播放列表了。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Discs play in slot order, skipping empty slots and other non-music-disc items and looping back to the start",
+      "translated_text": "光盘会按顺序播放，跳过空的插槽和其他非音乐光盘物品，并循环播放到开头。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "When a disc finishes, the Jukebox swaps it with the next disc in the chest",
+      "translated_text": "当一张光盘播放完毕时，播放器会自动更换为箱子中的下一张光盘。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "If the chest has no Music Discs, the disc in the Jukebox plays again",
+      "translated_text": "如果箱子中没有音乐 Disc，唱片机中的乐盘会再次播放",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Ejecting the current disc skips to the next available disc",
+      "translated_text": "弹出当前乐盘后，游戏会跳转到下一张可用的乐盘",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "h3",
+      "source_text": "Brittle Ice",
+      "translated_text": "脆弱冰块（Brittle Ice）",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Brittle Ice is a new block that can be found in Ice Caves",
+      "translated_text": "脆弱冰块是一种新的方块，可以在冰洞中找到",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Once a player or mob steps on it, it will start to crack and eventually break",
+      "translated_text": "一旦玩家或怪物踩在上面，它就会开始裂开，最终破碎",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "The Frostbite mob can walk on Brittle Ice without breaking it",
+      "translated_text": "霜冻兽（Frostbite mob）可以踩在脆弱冰块上而不会将其破坏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Brittle Ice only generates naturally in Ice Caves as part of the crevasse feature",
+      "translated_text": "脆弱冰块只会自然生成在冰洞中，作为冰裂隙特征的一部分",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "It is obtainable with Silk Touch",
+      "translated_text": "可以使用“丝质触觉”（Silk Touch）来获取脆弱冰块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "It can also be created by water flowing onto a Blue Ice block",
+      "translated_text": "水流到蓝色冰块（Blue Ice block）上时也可以生成脆弱冰块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Any water block that borders the Blue Ice block horizontally will turn into Brittle Ice",
+      "translated_text": "与蓝色冰块水平相邻的任何水块都会变成脆弱冰块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "更改",
+      "meta": {}
+    },
+    {
+      "id": "b0021",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体的小幅调整",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Frosted Ice now emits a vibration event when changing state",
+      "translated_text": "结霜冰在状态改变时现在会发出振动事件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Ice, Frosted Ice, and Brittle Ice will no longer show their inside block faces when placed next to each other",
+      "translated_text": "冰、结霜冰和脆冰在相邻放置时将不再显示其内部块面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Zombies, Drowned, and Husks are now immune to freezing and will not take damage from the Freezing effect",
+      "translated_text": "僵尸、溺亡者和尸壳现在对冻结具有免疫性，不会受到冻结效果的伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "Drowned now turn into a Zombie before converting into a Frostbite when they are in Powder Snow",
+      "translated_text": "溺亡者在转化为霜冻伤害之前会先变成僵尸",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效",
+      "meta": {}
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Added custom sounds for Ice, Packed Ice, Blue Ice and Frosted Ice blocks",
+      "translated_text": "为冰块、压实的冰块、蓝冰和结霜冰添加了自定义音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "Renamed minecraft:amethyst block sound set to minecraft:amethyst_block to better match sound event names",
+      "translated_text": "将 `minecraft:amethyst_block` 的音效集名称更改为 `minecraft:amethyst_block`，以更好地匹配音效事件名称",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性更改",
+      "meta": {}
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "The Data Pack version is now 124.0",
+      "translated_text": "数据包的版本现在是124.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 100.1",
+      "translated_text": "资源包的版本现在是100.1",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "h3",
+      "source_text": "Network Protocol",
+      "translated_text": "网络协议",
+      "meta": {}
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "The server now more consistently disconnects clients when a packet they sent causes an error",
+      "translated_text": "当客户端发送的数据包导致错误时，服务器现在会更一致地断开与该客户端的连接",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "h2",
+      "source_text": "Data Pack Version 124.0",
+      "translated_text": "数据包版本124.0",
+      "meta": {}
+    },
+    {
+      "id": "b0035",
+      "type": "h3",
+      "source_text": "Sound events",
+      "translated_text": "音效事件",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "Removed sound events:",
+      "translated_text": "移除了音效事件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "minecraft:intentionally_empty",
+      "translated_text": "minecraft:intentionally_empty",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "h3",
+      "source_text": "Sulfur Cube Archetypes",
+      "translated_text": "硫方怪的构建类型",
+      "meta": {}
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "Fields hit_sound and push_sound in sound_settings structure are now optional",
+      "translated_text": "在sound_settings结构中，fields_hit_sound和push_sound现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "h3",
+      "source_text": "Chicken Sound Variants",
+      "translated_text": "鸡的声音变体",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "Fields ambient_sound , hurt_sound , death_sound , step_sound in adult_sounds and baby_sounds structures are now optional",
+      "translated_text": "在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音以及脚步音现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "h3",
+      "source_text": "Cow Sound Variants",
+      "translated_text": "牛的声音变体",
+      "meta": {}
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "Fields ambient_sound , hurt_sound , death_sound , step_sound are now optional",
+      "translated_text": "在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音以及脚步音现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "h3",
+      "source_text": "Cat Sound Variants",
+      "translated_text": "猫的声音变体",
+      "meta": {}
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Fields ambient_sound , stray_ambient_sound , hiss_sound , hurt_sound , death_sound , eat_sound , beg_for_food_sound , purr_sound , purreow_sound in adult_sounds and baby_sounds structures are now optional",
+      "translated_text": "在“成人声音”和“幼年声音”结构中，田野的环境音、流浪环境音、嘶嘶声、受伤音、死亡音、进食声、乞食声、咕噜声以及“purreow”声现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "h3",
+      "source_text": "Pig Sound Variants",
+      "translated_text": "猪的声音变体",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Fields ambient_sound , hurt_sound , death_sound , step_sound , eat_sound in adult_sounds and baby_sounds structures are now optional",
+      "translated_text": "在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音、脚步音以及进食声现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "h3",
+      "source_text": "Wolf Sound Variants",
+      "translated_text": "狼的声音变体",
+      "meta": {}
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Fields ambient_sound , hurt_sound , death_sound , step_sound , growl_sound , pant_sound , whine_sound in adult_sounds and baby_sounds structures are now optional",
+      "translated_text": "在成体声音（adult_sounds）和幼年声音（baby_sounds）结构中，field的环境音（ambient_sound）、受伤音（hurt_sound）、死亡音（death_sound）、脚步声（step_sound）、低吼声（growl_sound）、喘息声（pant_sound）以及哀鸣声（whine_sound）现在都是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "h3",
+      "source_text": "Fluid States",
+      "translated_text": "流体状态（Fluid States）",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "Removed flowing_water and flowing_lava fluid types",
+      "translated_text": "移除了流动的水（flowing_water）和流动的岩浆（flowing_lava）这两种流体类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "Fluid types now have the following properties",
+      "translated_text": "流体类型现在具有以下属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "level : Integer; same as before, the level of fluid from 1 to 8",
+      "translated_text": "level: 整数；与之前相同，液体的层级范围为1到8",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "source : Boolean; true for source blocks, false otherwise",
+      "translated_text": "source: 布尔值；如果是源块则为true，否则为false",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "h3",
+      "source_text": "Predicates",
+      "translated_text": "谓词（Predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0056",
+      "type": "h4",
+      "source_text": "Block Predicates",
+      "translated_text": "方块谓词（Block Predicates）",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "text",
+      "source_text": "Updated",
+      "translated_text": "已更新（Updated）",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "text",
+      "source_text": "matching_fluids",
+      "translated_text": "匹配流体（matching_fluids）",
+      "meta": {}
+    },
+    {
+      "id": "b0059",
+      "type": "p",
+      "source_text": "Added a state field to match state properties",
+      "translated_text": "添加了一个状态字段，以便与状态属性进行匹配",
+      "meta": {}
+    },
+    {
+      "id": "b0060",
+      "type": "p",
+      "source_text": "Format:",
+      "translated_text": "格式：",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "state : A map of name-value properties to be matched against the fluid state properties",
+      "translated_text": "state：一个名称-值属性的映射，用于与流体的状态属性进行匹配",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Value can be integer, boolean or string or object with optional min and max properties",
+      "translated_text": "值可以是整数、布尔值、字符串或对象，并可设置最小值和最大值属性",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "h3",
+      "source_text": "Enchantments",
+      "translated_text": "附魔",
+      "meta": {}
+    },
+    {
+      "id": "b0064",
+      "type": "h4",
+      "source_text": "Changed minecraft:explode Enchantment Effect",
+      "translated_text": "修改了minecraft:explode附魔效果",
+      "meta": {}
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "Fields small_particle , large_particle and sound are now optional",
+      "translated_text": "smallParticle、largeParticle和sound字段现在是可选的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成",
+      "meta": {}
+    },
+    {
+      "id": "b0067",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "特性",
+      "meta": {}
+    },
+    {
+      "id": "b0068",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0069",
+      "type": "text",
+      "source_text": "crevasse",
+      "translated_text": "裂缝",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "text",
+      "source_text": "Feature Type",
+      "translated_text": "功能类型",
+      "meta": {}
+    },
+    {
+      "id": "b0071",
+      "type": "p",
+      "source_text": "Carves a winding, tapered crevasse into exposed terrain. The crevasse follows the terrain surface, extends in opposite directions from its placement position and requires a minimum connected footprint before carving.",
+      "translated_text": "在裸露的地形上雕刻出一条蜿蜒、逐渐变窄的裂缝。裂缝沿着地形表面延伸，从放置位置向相反方向生长，并且雕刻前需要最小连贯的占地范围。」",
+      "meta": {}
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：包含字段的对象。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "max_width - integer (between 2 and 8), maximum cross-section width in blocks",
+      "translated_text": "max_width - 整数（2到8之间），裂缝的最大横截面积（以方块为单位）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "max_length - integer (between 4 and 16), maximum end-to-end length in blocks",
+      "translated_text": "max_length - 整数（4到16之间），裂缝的最大端到端长度（以方块为单位）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "min_footprint - integer (between 1 and 32), minimum connected horizontal footprint required before carving",
+      "translated_text": "min_footprint - 整数（1到32之间），雕刻前所需的最小水平连贯占地范围",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "cursor_surface_search_range - positive integer, maximum amount of blocks the cursor will scan downwards to find its next position",
+      "translated_text": "cursor_surface_search_range - 正整数，光标向下扫描的最大方块数，以寻找下一个位置",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "column_surface_search_range - positive integer, maximum amount of blocks each carving will scan downwards to find a carvable surface",
+      "translated_text": "column_surface_search_range",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "twistiness - float (between 0.0 and 16.0), amount of horizontal curvature",
+      "translated_text": "twistiness",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "tapering - float (between 0.0 and 1.0), amount of tapering applied on each step of growing the crevasse",
+      "translated_text": "tapering",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "turn_factor - float (between 0.0 and 1.0), intensity of rotation applied on each step of growing the crevasse",
+      "translated_text": "turn_factor",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "carve_depth - int provider, carve depth below the origin terrain surface",
+      "translated_text": "carve_depth",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "fill_depth - int provider, fill depth below the origin terrain surface",
+      "translated_text": "fill_depth",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "surface_block - Block state provider, block placed over the crevasse opening",
+      "translated_text": "surface_block",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "fill_block - Block state provider, block placed at or below the selected fill depth",
+      "translated_text": "fill_block",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "carvable_blocks - Block predicate, which blocks the crevasse is allowed to remove",
+      "translated_text": "可挖掘的方块（carvable_blocks）——用于指定哪些带有裂缝的方块可以被移除",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "acceptable_barrier - Block predicate, which pre-existing blocks to accept as part of a barrier",
+      "translated_text": "可接受的屏障方块（acceptable_barrier）——用于指定哪些已存在的方块可以作为屏障的一部分",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签（Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0088",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签（Block Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "Added block tag #jukebox_containers to describe all blocks usable by a Jukebox as a source for music disc playlists",
+      "translated_text": "新增了 #jukebox_containers 方块标签，用于描述所有可以被 Jukebox 用作音乐唱片播放列表来源的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "Added block tag #face_occluding_ice_blocks to describe all ice blocks that should enable face culling when placed next to each other",
+      "translated_text": "新增了 #face_occluding_ice_blocks 方块标签，用于描述所有在相互堆叠时能够实现表面剔除（face culling）的冰块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "h4",
+      "source_text": "Entity Type Tags",
+      "translated_text": "实体类型标签（Entity Type Tags）",
+      "meta": {}
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "Added the entity type tag #does_not_break_brittle_ice for mobs that do not break Brittle Ice blocks when stepping on them",
+      "translated_text": "新增了 #does_not_break_brittle_ice 实体类型标签，用于标识那些踩在脆弱冰块上时不会破坏它的生物",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "h2",
+      "source_text": "Resource Pack Version 100.1",
+      "translated_text": "资源包版本 100.1",
+      "meta": {}
+    },
+    {
+      "id": "b0094",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "方块精灵（Block Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "Updated the following Block textures:",
+      "translated_text": "更新了以下块纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "block/jukebox_side.png",
+      "translated_text": "block/jukebox_side.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "block/jukebox_top.png",
+      "translated_text": "block/jukebox_top.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "添加了新的块纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "block/brittle_ice_0.png",
+      "translated_text": "block/brittle_ice_0.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "block/brittle_ice_1.png",
+      "translated_text": "block/brittle_ice_1.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "block/brittle_ice_2.png",
+      "translated_text": "block/brittle_ice_2.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "block/brittle_ice_3.png",
+      "translated_text": "block/brittle_ice_3.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "block/jukebox_bottom.png",
+      "translated_text": "block/jukebox_bottom.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "声音",
+      "meta": {}
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "Added new sound events:",
+      "translated_text": "添加了新的音效事件：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "block.blue_ice.break",
+      "translated_text": "蓝色冰块被破坏（block.blue_ice_break）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "block.blue_ice.fall",
+      "translated_text": "蓝色冰块掉落（block.blue_ice.fall）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "block.blue_ice.hit",
+      "translated_text": "蓝色冰块被击中（block.blue_ice_hit）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "block.blue_ice.place",
+      "translated_text": "放置蓝色冰块（block.blue_ice.place）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "block.blue_ice.step",
+      "translated_text": "在蓝色冰块上行走（block.blue_ice.step）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "block.brittle_ice.break",
+      "translated_text": "脆弱冰块被破坏（block.brittle_ice_break）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "block.brittle_ice.fall",
+      "translated_text": "脆弱冰块掉落（block.brittle_ice.fall）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "block.brittle_ice.hit",
+      "translated_text": "脆弱冰块被击中（block.brittle_ice_hit）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "block.brittle_ice.place",
+      "translated_text": "放置脆弱冰块（block.brittle_ice.place）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "block.brittle_ice.step",
+      "translated_text": "脆冰台阶",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "block.brittle_ice.crack",
+      "translated_text": "脆冰裂缝",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "block.frosted_ice.break",
+      "translated_text": "冰霜冰块破碎",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "block.frosted_ice.fall",
+      "translated_text": "冰霜冰块掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "block.frosted_ice.hit",
+      "translated_text": "冰霜冰块被击中",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "block.frosted_ice.place",
+      "translated_text": "放置冰霜冰块",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "block.frosted_ice.step",
+      "translated_text": "冰霜冰块台阶",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "block.ice.ambient",
+      "translated_text": "普通冰块（环境용）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "block.packed_ice.break",
+      "translated_text": "压实的冰块破碎",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "block.packed_ice.fall",
+      "translated_text": "压实的冰块掉落",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "block.packed_ice.hit",
+      "translated_text": "block.packed_ice_hit",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "block.packed_ice.place",
+      "translated_text": "block.packed_ice.place",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "block.packed_ice.step",
+      "translated_text": "block.packed_ice.step",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "entity.drowned.converted_to_zombie",
+      "translated_text": "entity.drowned.converted_to_zombie",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 4",
+      "translated_text": "修复了26.4快照4中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "[MC-80827](https://bugs.mojang.com/browse/MC-80827) - Mob statistics are missing space between the mob's name and the description",
+      "translated_text": "[MC-80827](https://bugs.mojang.com/browse/MC-80827) - 宠物统计数据缺少宠物名称和描述之间的空格",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "[MC-148455](https://bugs.mojang.com/browse/MC-148455) - Dispensing an item with special behavior only plays the item's usage sound for certain cases",
+      "translated_text": "[MC-148455](https://bugs.mojang.com/browse/MC-148455) - 在某些情况下，发放具有特殊行为的物品时只播放物品的使用音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "[MC-149032](https://bugs.mojang.com/browse/MC-149032) - Clicking non-button areas of the stonecutter block selection GUI plays a clicking sound",
+      "translated_text": "[MC-149032](https://bugs.mojang.com/browse/MC-149032) - 点击切石机选择界面的非按钮区域时会发出点击音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "[MC-163196](https://bugs.mojang.com/browse/MC-163196) - Several blocks which can be placed on the sides of slime blocks cannot be placed on the sides of honey blocks",
+      "translated_text": "[MC-163196] - 一些可以放置在粘液块旁边的方块不能放置在蜂蜜块旁边",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "li",
+      "source_text": "[MC-166792](https://bugs.mojang.com/browse/MC-166792) - Attempting to navigate beyond the 100 page limit in a book and quill plays the page rustling sound",
+      "translated_text": "[MC-166792] - 尝试在书籍或羽毛笔中浏览超过100页的内容时，会播放页面翻动的音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "[MC-195474](https://bugs.mojang.com/browse/MC-195474) - Can't move focus away from the \"Done\" button after pressing Tab to focus on it in the sign editing screen",
+      "translated_text": "[MC-195474] - 在信号编辑界面中，按 Tab 键将焦点移至“完成”按钮后，无法将焦点移开该按钮",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "li",
+      "source_text": "[MC-207916](https://bugs.mojang.com/browse/MC-207916) - Flint and steel and fire charges do not make a sound when igniting TNT",
+      "translated_text": "[MC-207916] - 用打火石和火制造火药时，没有发出任何声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "[MC-251040](https://bugs.mojang.com/browse/MC-251040) - Several blocks which can be placed on top of slime blocks cannot be placed on top of honey blocks",
+      "translated_text": "[MC-251040] - 有些可以放置在粘液块上的方块无法放置在蜂蜜块上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "li",
+      "source_text": "[MC-251041](https://bugs.mojang.com/browse/MC-251041) - Several blocks which can be placed on the bottom of slime blocks cannot be placed on the bottom of honey blocks",
+      "translated_text": "[MC-251041] - 有些可以放置在粘液块底部的方块无法放置在蜂蜜块底部",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0139",
+      "type": "li",
+      "source_text": "[MC-275975](https://bugs.mojang.com/browse/MC-275975) - The \"Unknown element name\" codec error is missing a space",
+      "translated_text": "[MC-275975](https://bugs.mojang.com/browse/MC-275975) - ‘Unknown element name’ 编码错误中缺少一个空格",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "[MC-280455](https://bugs.mojang.com/browse/MC-280455) - Items equippable on the saddle slot that have a custom equipping sound do not play the specified sound when saddling entities",
+      "translated_text": "[MC-280455] - 可装备在鞍槽上的物品，如果具有自定义装备音效，在为实体装配鞍时不会播放该音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "[MC-280480](https://bugs.mojang.com/browse/MC-280480) - The flint and steel clicking sound is not played when attempting to ignite TNT with a flint and steel when the tnt_explodes game rule is set to false",
+      "translated_text": "[MC-280480] - 当`tnt_explodes`游戏规则设置为`false`时，使用打火石和钢尝试点燃TNT时不会播放打火石和钢的点击音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "li",
+      "source_text": "[MC-304895](https://bugs.mojang.com/browse/MC-304895) - The overworld sky is no longer black in End biomes",
+      "translated_text": "[MC-304895] - 主世界的天空在末地生物群系中不再呈现黑色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "[MC-305544](https://bugs.mojang.com/browse/MC-305544) - Using the middle mouse button in Survival/Creative/Adventure mode and switching to Spectator mode opens the Spectator mode hotbar",
+      "translated_text": "[MC-305544] - 在生存模式/创造模式/冒险模式中使用鼠标中键切换到观众模式时，会打开观众模式的热键栏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "[MC-307672](https://bugs.mojang.com/browse/MC-307672) - The name_tag_distance attribute overrides the below_name_distance attribute",
+      "translated_text": "[MC-307672] - name_tag_distance 属性会覆盖 below_name_distance 属性",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "li",
+      "source_text": "[MC-309335](https://bugs.mojang.com/browse/MC-309335) - Any mouse button can be used to interact with entries in the world, server, and language selection screens",
+      "translated_text": "[MC-309335] - 任何鼠标按钮都可用于与世界、服务器和语言选择界面中的条目进行交互",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "[MC-309336](https://bugs.mojang.com/browse/MC-309336) - Any mouse button can be used to select and apply command autocomplete suggestions",
+      "translated_text": "[MC-309336] - 任何鼠标按钮都可用于选择和应用命令自动完成建议",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "[MC-310088](https://bugs.mojang.com/browse/MC-310088) - The taskbar icon displays the Java logo instead of the game's logo",
+      "translated_text": "[MC-310088] - 任务栏图标显示的是 Java 的标志，而不是游戏的标志",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "[MC-311312](https://bugs.mojang.com/browse/MC-311312) - Endermen and entities eating chorus fruit can still pass through the world border",
+      "translated_text": "[MC-311312] - 埃ndermen 和吃紫颂水果的实体仍然可以穿过世界边界",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "[MC-312200](https://bugs.mojang.com/browse/MC-312200) - \"Vegetation\" is misspelled as \"Vegitation\" on the debug overlay",
+      "translated_text": "[MC-312200] - 调试叠加层中将 \"Vegetation\" 拼写成了 \"Vegitation\"",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "[MC-312201](https://bugs.mojang.com/browse/MC-312201) - \"Continents\" is misspelled as \"Contintents\" on the debug overlay",
+      "translated_text": "[MC-312201] - 在调试界面中，",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "[MC-312242](https://bugs.mojang.com/browse/MC-312242) - Mushrooms cannot be placed on thin blocks that provide central support, unlike in Bedrock Edition",
+      "translated_text": "[MC-312242] - 在这个版本中，蘑菇不能放置在提供中央支撑的薄块上，而在基岩版中是可以的。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "li",
+      "source_text": "[MC-312256](https://bugs.mojang.com/browse/MC-312256) - Breaking an armor stand in one hit does not trigger sculk shriekers",
+      "translated_text": "[MC-312256] - 一次性破坏一个护甲架不会触发怪物的尖叫效果。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "[MC-312273](https://bugs.mojang.com/browse/MC-312273) - The placement sound is not played when a dispenser places an armor stand",
+      "translated_text": "[MC-312273] - 分发器放置护甲架时不会播放放置音效。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "[MC-312362](https://bugs.mojang.com/browse/MC-312362) - Frostbites throwing ice balls shows and plays the \"Drowned throws Trident\" sound in closed captions",
+      "translated_text": "[MC-312362] - 冻伤生物投掷冰球时，在字幕中显示和播放的是“溺水者投掷三叉戟”的音效。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "[MC-312367](https://bugs.mojang.com/browse/MC-312367) - The closed caption for hurting a frostbite says \"hurts\" instead of \"is hurt\"",
+      "translated_text": "[MC-312367] - 伤害冻伤角色的字幕中写的是“hurts”（受伤），而不是“is hurt”（被伤害）。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "[MC-312378](https://bugs.mojang.com/browse/MC-312378) - Ice caves are not part of the #is_cave biome tag",
+      "translated_text": "[MC-312378](https://bugs.mojang.com/browse/MC-312378) - 冰洞不属于#is_cave生物群落的标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "li",
+      "source_text": "[MC-312379](https://bugs.mojang.com/browse/MC-312379) - Gravel blobs no longer generate in biomes they previously did",
+      "translated_text": "[MC-312379](https://bugs.mojang.com/browse/MC-312379) - 砾石团不再在之前会生成的生物群落中生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "[MC-312382](https://bugs.mojang.com/browse/MC-312382) - Husks and zombies take damage from powder snow before converting, unlike skeletons",
+      "translated_text": "[MC-312382] - 尸壳和僵尸在转化为其他形态之前会受到粉雪的伤害，而骷髅则不会",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "[MC-312383](https://bugs.mojang.com/browse/MC-312383) - Frostbites convert to themselves while in powder snow",
+      "translated_text": "[MC-312383] - 冻伤在粉雪中会自行转化为其他形态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "li",
+      "source_text": "[MC-312385](https://bugs.mojang.com/browse/MC-312385) - Drowned die in powder snow instead of converting to frostbites",
+      "translated_text": "[MC-312385] - 溺水者在粉雪中会死亡，而不会转化为冻伤",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0161",
+      "type": "li",
+      "source_text": "[MC-312398](https://bugs.mojang.com/browse/MC-312398) - Clicking on villagers with shears while they are holding out certain items causes the items to drop",
+      "translated_text": "[MC-312398] - 当村民手持某些物品时，点击他们会导致这些物品掉落",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0162",
+      "type": "li",
+      "source_text": "[MC-312415](https://bugs.mojang.com/browse/MC-312415) - The closed caption for husks converting to zombies in powder snow is incorrect",
+      "translated_text": "[MC-312415](https://bugs.mojang.com/browse/MC-312415) - 在粉末雪环境中，尸壳转化为僵尸时的字幕显示有误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "[MC-312456](https://bugs.mojang.com/browse/MC-312456) - Mobs immune to freezing in powder snow can get the Freezing effect applied to them, unlike frostbites",
+      "translated_text": "[MC-312456](https://bugs.mojang.com/browse/MC-312456) - 在粉末雪环境中对冻结免疫的怪物仍然会受到冻结效果的影响，这与霜冻伤害不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0165",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版支持快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能",
+      "meta": {}
+    },
+    {
+      "id": "b0166",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会导致游戏世界损坏，请务必备份数据，并/或将测试版本安装在与主世界不同的文件夹中。**",
+      "meta": {}
+    },
+    {
+      "id": "b0167",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件",
+      "meta": {}
+    },
+    {
+      "id": "b0168",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/46cf02cd84c4fe3417c094d2edb778df8722fe3d/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/46cf02cd84c4fe3417c094d2edb778df8722fe3d/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0169",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告漏洞：",
+      "meta": {}
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0172",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "With 26.4 Snapshot 4, we're breaking out a cool new block, introducing Brittle Ice! And Jukeboxes can now keep the music going with playlists by putting your music discs in a chest above them, making dance parties much easier. Just be careful not to dance on the Brittle Ice, as it'll start cracking under your feet...\n\nHappy Dance Break!\n\nNew Features\n\nAdded Jukebox Playlists\n\nAdded Brittle Ice\n\nJukebox Playlists\n\nPlace a single Chest, Trapped Chest, or any Copper Chest variant directly above a Jukebox to use its Music Discs as a playlist\n\nDiscs play in slot order, skipping empty slots and other non-music-disc items and looping back to the start\n\nWhen a disc finishes, the Jukebox swaps it with the next disc in the chest\n\nIf the chest has no Music Discs, the disc in the Jukebox plays again\n\nEjecting the current disc skips to the next available disc\n\nBrittle Ice\n\nBrittle Ice is a new block that can be found in Ice Caves\n\nOnce a player or mob steps on it, it will start to crack and eventually break\n\nThe Frostbite mob can walk on Brittle Ice without breaking it\n\nBrittle Ice only generates naturally in Ice Caves as part of the crevasse feature\n\nIt is obtainable with Silk Touch\n\nIt can also be created by water flowing onto a Blue Ice block\n\nAny water block that borders the Blue Ice block horizontally will turn into Brittle Ice\n\nChanges\n\nMinor Tweaks to Blocks, Items and Entities\n\nFrosted Ice now emits a vibration event when changing state\n\nIce, Frosted Ice, and Brittle Ice will no longer show their inside block faces when placed next to each other\n\nZombies, Drowned, and Husks are now immune to freezing and will not take damage from the Freezing effect\n\nDrowned now turn into a Zombie before converting into a Frostbite when they are in Powder Snow\n\nSounds\n\nAdded custom sounds for Ice, Packed Ice, Blue Ice and Frosted Ice blocks\n\nRenamed minecraft:amethyst block sound set to minecraft:amethyst_block to better match sound event names\n\nTechnical Changes\n\nThe Data Pack version is now 124.0\n\nThe Resource Pack version is now 100.1\n\nNetwork Protocol\n\nThe server now more consistently disconnects clients when a packet they sent causes an error\n\nData Pack Version 124.0\n\nSound events\n\nRemoved sound events:\n\nminecraft:intentionally_empty\n\nSulfur Cube Archetypes\n\nFields hit_sound and push_sound in sound_settings structure are now optional\n\nChicken Sound Variants\n\nFields ambient_sound , hurt_sound , death_sound , step_sound in adult_sounds and baby_sounds structures are now optional\n\nCow Sound Variants\n\nFields ambient_sound , hurt_sound , death_sound , step_sound are now optional\n\nCat Sound Variants\n\nFields ambient_sound , stray_ambient_sound , hiss_sound , hurt_sound , death_sound , eat_sound , beg_for_food_sound , purr_sound , purreow_sound in adult_sounds and baby_sounds structures are now optional\n\nPig Sound Variants\n\nFields ambient_sound , hurt_sound , death_sound , step_sound , eat_sound in adult_sounds and baby_sounds structures are now optional\n\nWolf Sound Variants\n\nFields ambient_sound , hurt_sound , death_sound , step_sound , growl_sound , pant_sound , whine_sound in adult_sounds and baby_sounds structures are now optional\n\nFluid States\n\nRemoved flowing_water and flowing_lava fluid types\n\nFluid types now have the following properties\n\nlevel : Integer; same as before, the level of fluid from 1 to 8\n\nsource : Boolean; true for source blocks, false otherwise\n\nPredicates\n\nBlock Predicates\n\nUpdated\n\nmatching_fluids\n\nAdded a state field to match state properties\n\nFormat:\n\nstate : A map of name-value properties to be matched against the fluid state properties\n\nValue can be integer, boolean or string or object with optional min and max properties\n\nEnchantments\n\nChanged minecraft:explode Enchantment Effect\n\nFields small_particle , large_particle and sound are now optional\n\nWorld Generation\n\nFeatures\n\nAdded\n\ncrevasse\n\nFeature Type\n\nCarves a winding, tapered crevasse into exposed terrain. The crevasse follows the terrain surface, extends in opposite directions from its placement position and requires a minimum connected footprint before carving.\n\nFormat: object with fields:\n\nmax_width - integer (between 2 and 8), maximum cross-section width in blocks\n\nmax_length - integer (between 4 and 16), maximum end-to-end length in blocks\n\nmin_footprint - integer (between 1 and 32), minimum connected horizontal footprint required before carving\n\ncursor_surface_search_range - positive integer, maximum amount of blocks the cursor will scan downwards to find its next position\n\ncolumn_surface_search_range - positive integer, maximum amount of blocks each carving will scan downwards to find a carvable surface\n\ntwistiness - float (between 0.0 and 16.0), amount of horizontal curvature\n\ntapering - float (between 0.0 and 1.0), amount of tapering applied on each step of growing the crevasse\n\nturn_factor - float (between 0.0 and 1.0), intensity of rotation applied on each step of growing the crevasse\n\ncarve_depth - int provider, carve depth below the origin terrain surface\n\nfill_depth - int provider, fill depth below the origin terrain surface\n\nsurface_block - Block state provider, block placed over the crevasse opening\n\nfill_block - Block state provider, block placed at or below the selected fill depth\n\ncarvable_blocks - Block predicate, which blocks the crevasse is allowed to remove\n\nacceptable_barrier - Block predicate, which pre-existing blocks to accept as part of a barrier\n\nTags\n\nBlock Tags\n\nAdded block tag #jukebox_containers to describe all blocks usable by a Jukebox as a source for music disc playlists\n\nAdded block tag #face_occluding_ice_blocks to describe all ice blocks that should enable face culling when placed next to each other\n\nEntity Type Tags\n\nAdded the entity type tag #does_not_break_brittle_ice for mobs that do not break Brittle Ice blocks when stepping on them\n\nResource Pack Version 100.1\n\nBlock Sprites\n\nUpdated the following Block textures:\n\nblock/jukebox_side.png\n\nblock/jukebox_top.png\n\nAdded new Block textures:\n\nblock/brittle_ice_0.png\n\nblock/brittle_ice_1.png\n\nblock/brittle_ice_2.png\n\nblock/brittle_ice_3.png\n\nblock/jukebox_bottom.png\n\nSounds\n\nAdded new sound events:\n\nblock.blue_ice.break\n\nblock.blue_ice.fall\n\nblock.blue_ice.hit\n\nblock.blue_ice.place\n\nblock.blue_ice.step\n\nblock.brittle_ice.break\n\nblock.brittle_ice.fall\n\nblock.brittle_ice.hit\n\nblock.brittle_ice.place\n\nblock.brittle_ice.step\n\nblock.brittle_ice.crack\n\nblock.frosted_ice.break\n\nblock.frosted_ice.fall\n\nblock.frosted_ice.hit\n\nblock.frosted_ice.place\n\nblock.frosted_ice.step\n\nblock.ice.ambient\n\nblock.packed_ice.break\n\nblock.packed_ice.fall\n\nblock.packed_ice.hit\n\nblock.packed_ice.place\n\nblock.packed_ice.step\n\nentity.drowned.converted_to_zombie\n\nFixed bugs in 26.4 Snapshot 4\n\n[MC-80827](https://bugs.mojang.com/browse/MC-80827) - Mob statistics are missing space between the mob's name and the description\n\n[MC-148455](https://bugs.mojang.com/browse/MC-148455) - Dispensing an item with special behavior only plays the item's usage sound for certain cases\n\n[MC-149032](https://bugs.mojang.com/browse/MC-149032) - Clicking non-button areas of the stonecutter block selection GUI plays a clicking sound\n\n[MC-163196](https://bugs.mojang.com/browse/MC-163196) - Several blocks which can be placed on the sides of slime blocks cannot be placed on the sides of honey blocks\n\n[MC-166792](https://bugs.mojang.com/browse/MC-166792) - Attempting to navigate beyond the 100 page limit in a book and quill plays the page rustling sound\n\n[MC-195474](https://bugs.mojang.com/browse/MC-195474) - Can't move focus away from the \"Done\" button after pressing Tab to focus on it in the sign editing screen\n\n[MC-207916](https://bugs.mojang.com/browse/MC-207916) - Flint and steel and fire charges do not make a sound when igniting TNT\n\n[MC-251040](https://bugs.mojang.com/browse/MC-251040) - Several blocks which can be placed on top of slime blocks cannot be placed on top of honey blocks\n\n[MC-251041](https://bugs.mojang.com/browse/MC-251041) - Several blocks which can be placed on the bottom of slime blocks cannot be placed on the bottom of honey blocks\n\n[MC-275975](https://bugs.mojang.com/browse/MC-275975) - The \"Unknown element name\" codec error is missing a space\n\n[MC-280455](https://bugs.mojang.com/browse/MC-280455) - Items equippable on the saddle slot that have a custom equipping sound do not play the specified sound when saddling entities\n\n[MC-280480](https://bugs.mojang.com/browse/MC-280480) - The flint and steel clicking sound is not played when attempting to ignite TNT with a flint and steel when the tnt_explodes game rule is set to false\n\n[MC-304895](https://bugs.mojang.com/browse/MC-304895) - The overworld sky is no longer black in End biomes\n\n[MC-305544](https://bugs.mojang.com/browse/MC-305544) - Using the middle mouse button in Survival/Creative/Adventure mode and switching to Spectator mode opens the Spectator mode hotbar\n\n[MC-307672](https://bugs.mojang.com/browse/MC-307672) - The name_tag_distance attribute overrides the below_name_distance attribute\n\n[MC-309335](https://bugs.mojang.com/browse/MC-309335) - Any mouse button can be used to interact with entries in the world, server, and language selection screens\n\n[MC-309336](https://bugs.mojang.com/browse/MC-309336) - Any mouse button can be used to select and apply command autocomplete suggestions\n\n[MC-310088](https://bugs.mojang.com/browse/MC-310088) - The taskbar icon displays the Java logo instead of the game's logo\n\n[MC-311312](https://bugs.mojang.com/browse/MC-311312) - Endermen and entities eating chorus fruit can still pass through the world border\n\n[MC-312200](https://bugs.mojang.com/browse/MC-312200) - \"Vegetation\" is misspelled as \"Vegitation\" on the debug overlay\n\n[MC-312201](https://bugs.mojang.com/browse/MC-312201) - \"Continents\" is misspelled as \"Contintents\" on the debug overlay\n\n[MC-312242](https://bugs.mojang.com/browse/MC-312242) - Mushrooms cannot be placed on thin blocks that provide central support, unlike in Bedrock Edition\n\n[MC-312256](https://bugs.mojang.com/browse/MC-312256) - Breaking an armor stand in one hit does not trigger sculk shriekers\n\n[MC-312273](https://bugs.mojang.com/browse/MC-312273) - The placement sound is not played when a dispenser places an armor stand\n\n[MC-312362](https://bugs.mojang.com/browse/MC-312362) - Frostbites throwing ice balls shows and plays the \"Drowned throws Trident\" sound in closed captions\n\n[MC-312367](https://bugs.mojang.com/browse/MC-312367) - The closed caption for hurting a frostbite says \"hurts\" instead of \"is hurt\"\n\n[MC-312378](https://bugs.mojang.com/browse/MC-312378) - Ice caves are not part of the #is_cave biome tag\n\n[MC-312379](https://bugs.mojang.com/browse/MC-312379) - Gravel blobs no longer generate in biomes they previously did\n\n[MC-312382](https://bugs.mojang.com/browse/MC-312382) - Husks and zombies take damage from powder snow before converting, unlike skeletons\n\n[MC-312383](https://bugs.mojang.com/browse/MC-312383) - Frostbites convert to themselves while in powder snow\n\n[MC-312385](https://bugs.mojang.com/browse/MC-312385) - Drowned die in powder snow instead of converting to frostbites\n\n[MC-312398](https://bugs.mojang.com/browse/MC-312398) - Clicking on villagers with shears while they are holding out certain items causes the items to drop\n\n[MC-312415](https://bugs.mojang.com/browse/MC-312415) - The closed caption for husks converting to zombies in powder snow is incorrect\n\n[MC-312456](https://bugs.mojang.com/browse/MC-312456) - Mobs immune to freezing in powder snow can get the Freezing effect applied to them, unlike frostbites\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/46cf02cd84c4fe3417c094d2edb778df8722fe3d/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "在 26.4 Snapshot 4 中，我们推出了一种全新的方块——脆冰（Brittle Ice）！此外，现在播放器（Jukebox）可以通过在上方放置音乐光盘来使用播放列表，让舞会变得更加轻松。不过要注意，不要在脆冰上跳舞，否则它可能会在你脚下破碎……\n\n美好的舞会时光！\n\n新增功能\n\n添加了播放器播放列表功能\n\n新增了脆冰方块\n\n播放器播放列表功能\n\n将一个普通的箱子（Chest）、陷阱箱子（Trapped Chest）或任何铜质箱子（Copper Chest）直接放置在播放器上方，就可以使用其中的音乐光盘作为播放列表了。\n\n光盘会按顺序播放，跳过空的插槽和其他非音乐光盘物品，并循环播放到开头。\n\n当一张光盘播放完毕时，播放器会自动更换为箱子中的下一张光盘。\n\n如果箱子中没有音乐 Disc，唱片机中的乐盘会再次播放\n\n弹出当前乐盘后，游戏会跳转到下一张可用的乐盘\n\n脆弱冰块（Brittle Ice）\n\n脆弱冰块是一种新的方块，可以在冰洞中找到\n\n一旦玩家或怪物踩在上面，它就会开始裂开，最终破碎\n\n霜冻兽（Frostbite mob）可以踩在脆弱冰块上而不会将其破坏\n\n脆弱冰块只会自然生成在冰洞中，作为冰裂隙特征的一部分\n\n可以使用“丝质触觉”（Silk Touch）来获取脆弱冰块\n\n水流到蓝色冰块（Blue Ice block）上时也可以生成脆弱冰块\n\n与蓝色冰块水平相邻的任何水块都会变成脆弱冰块\n\n更改\n\n对方块、物品和实体的小幅调整\n\n结霜冰在状态改变时现在会发出振动事件\n\n冰、结霜冰和脆冰在相邻放置时将不再显示其内部块面\n\n僵尸、溺亡者和尸壳现在对冻结具有免疫性，不会受到冻结效果的伤害\n\n溺亡者在转化为霜冻伤害之前会先变成僵尸\n\n音效\n\n为冰块、压实的冰块、蓝冰和结霜冰添加了自定义音效\n\n将 `minecraft:amethyst_block` 的音效集名称更改为 `minecraft:amethyst_block`，以更好地匹配音效事件名称\n\n技术性更改\n\n数据包的版本现在是124.0\n\n资源包的版本现在是100.1\n\n网络协议\n\n当客户端发送的数据包导致错误时，服务器现在会更一致地断开与该客户端的连接\n\n数据包版本124.0\n\n音效事件\n\n移除了音效事件\n\nminecraft:intentionally_empty\n\n硫方怪的构建类型\n\n在sound_settings结构中，fields_hit_sound和push_sound现在是可选的\n\n鸡的声音变体\n\n在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音以及脚步音现在是可选的\n\n牛的声音变体\n\n在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音以及脚步音现在是可选的\n\n猫的声音变体\n\n在“成人声音”和“幼年声音”结构中，田野的环境音、流浪环境音、嘶嘶声、受伤音、死亡音、进食声、乞食声、咕噜声以及“purreow”声现在是可选的\n\n猪的声音变体\n\n在“成人声音”和“幼年声音”结构中，田野的环境音、受伤音、死亡音、脚步音以及进食声现在是可选的\n\n狼的声音变体\n\n在成体声音（adult_sounds）和幼年声音（baby_sounds）结构中，field的环境音（ambient_sound）、受伤音（hurt_sound）、死亡音（death_sound）、脚步声（step_sound）、低吼声（growl_sound）、喘息声（pant_sound）以及哀鸣声（whine_sound）现在都是可选的\n\n流体状态（Fluid States）\n\n移除了流动的水（flowing_water）和流动的岩浆（flowing_lava）这两种流体类型\n\n流体类型现在具有以下属性\n\nlevel: 整数；与之前相同，液体的层级范围为1到8\n\nsource: 布尔值；如果是源块则为true，否则为false\n\n谓词（Predicates）\n\n方块谓词（Block Predicates）\n\n已更新（Updated）\n\n匹配流体（matching_fluids）\n\n添加了一个状态字段，以便与状态属性进行匹配\n\n格式：\n\nstate：一个名称-值属性的映射，用于与流体的状态属性进行匹配\n\n值可以是整数、布尔值、字符串或对象，并可设置最小值和最大值属性\n\n附魔\n\n修改了minecraft:explode附魔效果\n\nsmallParticle、largeParticle和sound字段现在是可选的\n\n世界生成\n\n特性\n\n已添加\n\n裂缝\n\n功能类型\n\n在裸露的地形上雕刻出一条蜿蜒、逐渐变窄的裂缝。裂缝沿着地形表面延伸，从放置位置向相反方向生长，并且雕刻前需要最小连贯的占地范围。」\n\n格式：包含字段的对象。\n\nmax_width - 整数（2到8之间），裂缝的最大横截面积（以方块为单位）\n\nmax_length - 整数（4到16之间），裂缝的最大端到端长度（以方块为单位）\n\nmin_footprint - 整数（1到32之间），雕刻前所需的最小水平连贯占地范围\n\ncursor_surface_search_range - 正整数，光标向下扫描的最大方块数，以寻找下一个位置\n\ncolumn_surface_search_range\n\ntwistiness\n\ntapering\n\nturn_factor\n\ncarve_depth\n\nfill_depth\n\nsurface_block\n\nfill_block\n\n可挖掘的方块（carvable_blocks）——用于指定哪些带有裂缝的方块可以被移除\n\n可接受的屏障方块（acceptable_barrier）——用于指定哪些已存在的方块可以作为屏障的一部分\n\n标签（Tags）\n\n方块标签（Block Tags）\n\n新增了 #jukebox_containers 方块标签，用于描述所有可以被 Jukebox 用作音乐唱片播放列表来源的方块\n\n新增了 #face_occluding_ice_blocks 方块标签，用于描述所有在相互堆叠时能够实现表面剔除（face culling）的冰块\n\n实体类型标签（Entity Type Tags）\n\n新增了 #does_not_break_brittle_ice 实体类型标签，用于标识那些踩在脆弱冰块上时不会破坏它的生物\n\n资源包版本 100.1\n\n方块精灵（Block Sprites）\n\n更新了以下块纹理：\n\nblock/jukebox_side.png\n\nblock/jukebox_top.png\n\n添加了新的块纹理：\n\nblock/brittle_ice_0.png\n\nblock/brittle_ice_1.png\n\nblock/brittle_ice_2.png\n\nblock/brittle_ice_3.png\n\nblock/jukebox_bottom.png\n\n声音\n\n添加了新的音效事件：\n\n蓝色冰块被破坏（block.blue_ice_break）\n\n蓝色冰块掉落（block.blue_ice.fall）\n\n蓝色冰块被击中（block.blue_ice_hit）\n\n放置蓝色冰块（block.blue_ice.place）\n\n在蓝色冰块上行走（block.blue_ice.step）\n\n脆弱冰块被破坏（block.brittle_ice_break）\n\n脆弱冰块掉落（block.brittle_ice.fall）\n\n脆弱冰块被击中（block.brittle_ice_hit）\n\n放置脆弱冰块（block.brittle_ice.place）\n\n脆冰台阶\n\n脆冰裂缝\n\n冰霜冰块破碎\n\n冰霜冰块掉落\n\n冰霜冰块被击中\n\n放置冰霜冰块\n\n冰霜冰块台阶\n\n普通冰块（环境용）\n\n压实的冰块破碎\n\n压实的冰块掉落\n\nblock.packed_ice_hit\n\nblock.packed_ice.place\n\nblock.packed_ice.step\n\nentity.drowned.converted_to_zombie\n\n修复了26.4快照4中的漏洞\n\n[MC-80827](https://bugs.mojang.com/browse/MC-80827) - 宠物统计数据缺少宠物名称和描述之间的空格\n\n[MC-148455](https://bugs.mojang.com/browse/MC-148455) - 在某些情况下，发放具有特殊行为的物品时只播放物品的使用音效\n\n[MC-149032](https://bugs.mojang.com/browse/MC-149032) - 点击切石机选择界面的非按钮区域时会发出点击音效\n\n[MC-163196] - 一些可以放置在粘液块旁边的方块不能放置在蜂蜜块旁边\n\n[MC-166792] - 尝试在书籍或羽毛笔中浏览超过100页的内容时，会播放页面翻动的音效\n\n[MC-195474] - 在信号编辑界面中，按 Tab 键将焦点移至“完成”按钮后，无法将焦点移开该按钮\n\n[MC-207916] - 用打火石和火制造火药时，没有发出任何声音\n\n[MC-251040] - 有些可以放置在粘液块上的方块无法放置在蜂蜜块上\n\n[MC-251041] - 有些可以放置在粘液块底部的方块无法放置在蜂蜜块底部\n\n[MC-275975](https://bugs.mojang.com/browse/MC-275975) - ‘Unknown element name’ 编码错误中缺少一个空格\n\n[MC-280455] - 可装备在鞍槽上的物品，如果具有自定义装备音效，在为实体装配鞍时不会播放该音效\n\n[MC-280480] - 当`tnt_explodes`游戏规则设置为`false`时，使用打火石和钢尝试点燃TNT时不会播放打火石和钢的点击音效\n\n[MC-304895] - 主世界的天空在末地生物群系中不再呈现黑色\n\n[MC-305544] - 在生存模式/创造模式/冒险模式中使用鼠标中键切换到观众模式时，会打开观众模式的热键栏\n\n[MC-307672] - name_tag_distance 属性会覆盖 below_name_distance 属性\n\n[MC-309335] - 任何鼠标按钮都可用于与世界、服务器和语言选择界面中的条目进行交互\n\n[MC-309336] - 任何鼠标按钮都可用于选择和应用命令自动完成建议\n\n[MC-310088] - 任务栏图标显示的是 Java 的标志，而不是游戏的标志\n\n[MC-311312] - 埃ndermen 和吃紫颂水果的实体仍然可以穿过世界边界\n\n[MC-312200] - 调试叠加层中将 \"Vegetation\" 拼写成了 \"Vegitation\"\n\n[MC-312201] - 在调试界面中，\n\n[MC-312242] - 在这个版本中，蘑菇不能放置在提供中央支撑的薄块上，而在基岩版中是可以的。\n\n[MC-312256] - 一次性破坏一个护甲架不会触发怪物的尖叫效果。\n\n[MC-312273] - 分发器放置护甲架时不会播放放置音效。\n\n[MC-312362] - 冻伤生物投掷冰球时，在字幕中显示和播放的是“溺水者投掷三叉戟”的音效。\n\n[MC-312367] - 伤害冻伤角色的字幕中写的是“hurts”（受伤），而不是“is hurt”（被伤害）。\n\n[MC-312378](https://bugs.mojang.com/browse/MC-312378) - 冰洞不属于#is_cave生物群落的标签\n\n[MC-312379](https://bugs.mojang.com/browse/MC-312379) - 砾石团不再在之前会生成的生物群落中生成\n\n[MC-312382] - 尸壳和僵尸在转化为其他形态之前会受到粉雪的伤害，而骷髅则不会\n\n[MC-312383] - 冻伤在粉雪中会自行转化为其他形态\n\n[MC-312385] - 溺水者在粉雪中会死亡，而不会转化为冻伤\n\n[MC-312398] - 当村民手持某些物品时，点击他们会导致这些物品掉落\n\n[MC-312415](https://bugs.mojang.com/browse/MC-312415) - 在粉末雪环境中，尸壳转化为僵尸时的字幕显示有误\n\n[MC-312456](https://bugs.mojang.com/browse/MC-312456) - 在粉末雪环境中对冻结免疫的怪物仍然会受到冻结效果的影响，这与霜冻伤害不同\n\n获取快照\n\nMinecraft: Java版支持快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能\n\n**测试版本可能会导致游戏世界损坏，请务必备份数据，并/或将测试版本安装在与主世界不同的文件夹中。**\n\n跨平台服务器JAR文件\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/46cf02cd84c4fe3417c094d2edb778df8722fe3d/server.jar)\n\n在这里报告漏洞：",
+  "source": "minecraft_api"
+}

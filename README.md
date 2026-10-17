@@ -33,7 +33,8 @@ MCTTK/
 ├── utils.py             # 公共工具：MODULE_TYPE_MAP、classify_article_type、load_dotenv
 ├── scheduler.py         # 定时调度器（每 10 分钟运行一次）
 ├── init_state.py        # 初始化状态工具（测试用）
-├── config.json          # 统一配置文件
+├── config.sample.json   # 配置模板（复制为 config.json 后修改）
+├── config.json          # 本地配置（不入库，.gitignore 已忽略）
 ├── glossary.json        # 专业术语词汇表
 ├── modules_config.json  # 帖子模板模块配置
 ├── pyproject.toml       # 项目配置（依赖声明、Ruff 规则、pytest 路径）
@@ -84,7 +85,13 @@ pip install curl_cffi        # Feedback 爬虫
 
 ### 2. 配置
 
-编辑 `config.json`，至少配置 AI 翻译接口：
+先复制配置模板（`config.json` 已被 `.gitignore` 忽略，不会提交到仓库）：
+
+```bash
+cp config.sample.json config.json   # Windows PowerShell: Copy-Item config.sample.json config.json
+```
+
+然后编辑 `config.json`，至少配置 AI 翻译接口：
 
 ```json
 {
@@ -438,6 +445,7 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
   },
   "http": {
     "verify_ssl": false,
+    "ca_bundle": "",
     "user_agent": "Mozilla/5.0 ...",
     "proxies": { "http": "", "https": "" },
     "timeout": 120
@@ -485,9 +493,21 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；
   连续失败达到 `retry.max_article_attempts`（默认 3）次后才放弃，避免个别坏链接被反复重试
-- **翻译丢译文**：批量翻译开启了 JSON Schema 结构化输出（`openai_compat.json_schema`），
+- **翻译丢译文**：批量翻译开启了结构化输出（`openai_compat.json_schema`），
   解析同时兼容 `{"translations": [...]}` / 裸数组、`translated_text` / `text` 两种字段名。
   若某批返回完全无法解析，日志会输出 `[翻译] 警告: ...` 而不是静默丢弃
+- **400 错误 / 结构化输出降级**：结构化输出按能力降级——
+  `response_format={"type": "json_schema"}` → `{"type": "json_object"}` → 不传该字段（纯提示词约束）。
+  DeepSeek 等接口只支持 `json_object`，收到 `json_schema` 会返回 400
+  （`This response_format type is unavailable now`），此时程序会自动降级并记住该模型不支持，
+  后续批次不再重复撞 400。HTTP 错误会连同响应体一起打印，便于定位原因
+- **Feedback 抓取 TLS 报错**：`curl_cffi` 自带 certifi 信任库、不走系统证书存储，
+  代理 / VPN / 杀毒软件做 TLS 中间人解密时会报
+  `curl: (60) unable to get local issuer certificate`。`http.verify_ssl: false`
+  现在同时作用于 `curl_cffi`（跳过校验）；想保留校验时用 `http.ca_bundle` 指向
+  中间人软件的 CA 证书（`.pem`）。日志会给出对应的处理建议
+- **配置文件不入库**：仓库只保留 `config.sample.json` 模板，`config.json` 已被 `.gitignore` 忽略；
+  首次使用请复制模板。API Key、MCBBS 密码等敏感信息建议放在 `.env`（同样被忽略）
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件
 

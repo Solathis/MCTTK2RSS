@@ -5,20 +5,30 @@ from pathlib import Path
 import pytest
 
 CONFIG_PATH = Path(__file__).parent.parent / "config.json"
+SAMPLE_PATH = Path(__file__).parent.parent / "config.sample.json"
+
+
+def _active_config_path() -> Path:
+    """本地开发校验 config.json；CI / 新克隆没有本地配置时校验模板。
+
+    config.json 已改为不入库（.gitignore 忽略），仓库只保留 config.sample.json，
+    因此这里必须能退回到模板，否则 CI 会因为缺少文件整片失败。
+    """
+    return CONFIG_PATH if CONFIG_PATH.exists() else SAMPLE_PATH
 
 
 @pytest.fixture(scope="module")
 def config():
-    with open(CONFIG_PATH, encoding="utf-8") as f:
+    with open(_active_config_path(), encoding="utf-8") as f:
         return json.load(f)
 
 
 class TestConfigStructure:
-    def test_file_exists(self):
-        assert CONFIG_PATH.exists(), "config.json 不存在"
+    def test_config_file_available(self):
+        assert _active_config_path().exists(), "既没有 config.json 也没有 config.sample.json"
 
     def test_valid_json(self):
-        with open(CONFIG_PATH, encoding="utf-8") as f:
+        with open(_active_config_path(), encoding="utf-8") as f:
             data = json.load(f)
         assert isinstance(data, dict)
 
@@ -118,3 +128,16 @@ class TestConfigStructure:
         if fb.get("enabled"):
             assert "base_url" in fb
             assert fb["base_url"].startswith("https://")
+
+
+class TestSampleConfig:
+    """config.sample.json 是唯一入库的配置，不能带任何真实凭据。"""
+
+    def test_sample_exists(self):
+        assert SAMPLE_PATH.exists(), "仓库必须保留 config.sample.json 模板"
+
+    def test_sample_has_no_secrets(self):
+        data = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        assert data["openai_compat"]["api_key"] == "", "模板里不能出现真实 API Key"
+        assert data["mcbbs"]["password"] == "", "模板里不能出现真实密码"
+        assert data["mcbbs"]["username"] == "", "模板里不能出现真实用户名"

@@ -27,7 +27,8 @@ cp .env.example .env
 # MCBBS_PASSWORD=你的密码
 ```
 
-2. 确认 `config.json` 中的 API 配置正确，然后启动：
+2. 若还没有本地配置，先 `cp config.sample.json config.json`（`config.json` 不入库），
+   确认其中的 API 配置正确，然后启动：
 
 ```bash
 docker-compose up -d

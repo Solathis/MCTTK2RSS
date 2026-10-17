@@ -111,6 +111,9 @@ DEFAULT_CONFIG = {
     },
     "http": {
         "verify_ssl": False,
+        # 自定义 CA 证书路径（.pem）。设置后优先于 verify_ssl，
+        # 用于代理/杀毒软件做 TLS 解密、其根证书不在 certifi 中的场景
+        "ca_bundle": "",
         "user_agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
@@ -527,6 +530,25 @@ def extract_blocks_in_order(container: Tag, blocks: list, base_url: str = ""):
 
 # ── Feedback 网站爬虫 ───────────────────────────────
 
+_TLS_ERROR_MARKERS = (
+    "certificate",
+    "cert verify",
+    "curl: (51)",
+    "curl: (58)",
+    "curl: (60)",
+    "handshake",
+    "ssl connect",
+    "sslcertverificationerror",
+    "unable to get local issuer",
+)
+
+
+def _looks_like_cert_error(exc) -> bool:
+    """判断异常是否属于 TLS/证书校验失败（用于给出可操作的提示）。"""
+    text = f"{type(exc).__name__}: {exc}".lower()
+    return any(marker in text for marker in _TLS_ERROR_MARKERS)
+
+
 class FeedbackScraper:
     """
     Minecraft Feedback 网站爬虫类
@@ -558,6 +580,14 @@ class FeedbackScraper:
             'Sec-Fetch-Dest': 'document',
         }
         self.session = cffi_requests.Session()
+        # curl_cffi 自带 certifi 信任库，不走系统证书存储。
+        # 代理 / VPN / 杀毒软件做 TLS 解密时，其根证书不在 certifi 里，
+        # 就会报 curl: (60) unable to get local issuer certificate。
+        # 这里沿用 http.verify_ssl：false 时跳过校验，http.ca_bundle 可指定自定义 CA。
+        http_config = config.get('http', {})
+        self.ca_bundle = http_config.get('ca_bundle') or ''
+        self.verify_ssl = http_config.get('verify_ssl', True)
+        self.verify = self.ca_bundle or bool(self.verify_ssl)
 
     def fetch_page(self, url, referer=None, max_retries=3):
         full_url = urljoin(self.base_url, url)
@@ -578,7 +608,8 @@ class FeedbackScraper:
                 log_debug(f"[Feedback] 发送请求 (尝试 {attempt + 1}/{max_retries})")
                 response = self.session.get(
                     full_url, headers=headers,
-                    timeout=self.timeout, impersonate="chrome"
+                    timeout=self.timeout, impersonate="chrome",
+                    verify=self.verify
                 )
 
                 # 记录响应详情
@@ -608,7 +639,22 @@ class FeedbackScraper:
                 return BeautifulSoup(response.text, 'html.parser')
 
             except Exception as e:
-                log_error(f"[Feedback] 获取页面失败 {full_url}: {type(e).__name__}: {e}")
+                if _looks_like_cert_error(e):
+                    log_error(f"[Feedback] TLS 证书校验失败 {full_url}: {type(e).__name__}: {e}")
+                    if self.verify:
+                        log_error(
+                            "[Feedback] curl_cffi 使用自带的 certifi 信任库，代理/VPN 或杀毒软件"
+                            "做 TLS 解密时其根证书不在库中。请在 config.json 的 http 段设置 "
+                            '"verify_ssl": false 跳过校验，或用 "ca_bundle" 指向本单位/杀毒软件的 '
+                            "CA 证书（.pem 文件）"
+                        )
+                    else:
+                        log_error(
+                            "[Feedback] 已跳过证书校验（http.verify_ssl=false），TLS 仍在握手阶段失败，"
+                            "通常是代理未启动/端口不对、网络被拦截或 DNS 被污染，请检查代理与网络设置"
+                        )
+                else:
+                    log_error(f"[Feedback] 获取页面失败 {full_url}: {type(e).__name__}: {e}")
                 if hasattr(e, 'response') and e.response is not None:
                     log_debug(f"[Feedback] 错误响应状态码: {e.response.status_code}")
                     log_debug(f"[Feedback] 错误响应头: {dict(e.response.headers)}")
@@ -810,6 +856,94 @@ def _extract_translation_items(parsed_result):
     return []
 
 
+# 记录服务端拒绝过的 response_format（host, model, 类型），
+# 避免同一个模型在本次运行里每次调用都白白撞一次 400。
+_REJECTED_RESPONSE_FORMATS = set()
+
+
+def _response_format_candidates(cfg, response_schema):
+    """按服务端能力从强到弱排列本次请求可用的 response_format。
+
+    不同 OpenAI 兼容服务端的结构化输出能力不同：有的支持完整的 json_schema，
+    DeepSeek 只支持 {"type": "json_object"}，还有的服务端两者都不支持。
+    候选末尾的 None 表示完全不传 response_format，退回用提示词约束 JSON。
+    """
+    oc = cfg.get("openai_compat", {})
+    if not response_schema or not oc.get("json_schema", True):
+        return [None]
+
+    host = str(oc.get("host", ""))
+    model = str(oc.get("model", ""))
+    candidates = [
+        {
+            "type": "json_schema",
+            "json_schema": {
+                "name": "translation_result",
+                "strict": True,
+                "schema": response_schema,
+            },
+        },
+        {"type": "json_object"},
+        None,
+    ]
+    return [
+        fmt for fmt in candidates
+        if fmt is None or (host, model, fmt["type"]) not in _REJECTED_RESPONSE_FORMATS
+    ]
+
+
+def _apply_response_format(payload, fmt):
+    """写入 response_format；json_object 模式要求提示词里出现 json 字样。"""
+    if not fmt:
+        payload.pop("response_format", None)
+        return
+    payload["response_format"] = fmt
+    if fmt["type"] == "json_object":
+        system_message = payload["messages"][0]
+        if "json" not in str(system_message.get("content", "")).lower():
+            # 部分服务端（如 DeepSeek）要求提示词显式提到 JSON 才允许 json_object
+            system_message["content"] = (
+                f"{system_message.get('content', '')}\n"
+                "请只输出 JSON 对象，不要输出其他内容。"
+            )
+
+
+def _read_body(response):
+    """尽力读取响应体；zstd 等 requests 不支持的编码会抛错，此时返回 None。"""
+    try:
+        body = response.text
+    except Exception:
+        return None
+    return body if isinstance(body, str) else None
+
+
+def _short_error(response, limit=300):
+    """截取响应体，便于定位 400/5xx 的具体原因。"""
+    if response is None:
+        return "<无响应>"
+    body = _read_body(response)
+    if body is None:
+        encoding = ""
+        with contextlib.suppress(Exception):
+            encoding = response.headers.get("content-encoding", "")
+        return f"<无法解码响应体，content-encoding={encoding or '未知'}>"
+    body = body.strip().replace("\n", " ")
+    return body[:limit] if body else "<空响应体>"
+
+
+def _is_response_format_rejected(response):
+    """判断 400 是否是"服务端不支持该 response_format"引起的。"""
+    if response.status_code != 400:
+        return False
+    body = _read_body(response)
+    if body is None:
+        # 连响应体都解不出来时无法判断原因，直接降级：
+        # 换成更保守的输出格式不影响结果正确性
+        return True
+    body = body.lower()
+    return "response_format" in body or "json_schema" in body or "json schema" in body
+
+
 def translate_text(text, system_prompt=None, use_glossary=True, config=None, glossary=None,
                    response_schema=None):
     """
@@ -859,31 +993,29 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
     api_url = f"https://{host}{endpoint}"
     headers = {
         "Accept": "application/json",
+        "Accept-Encoding": "gzip",
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": text}
-        ],
-        "max_tokens": max_tokens
-    }
-
-    # 结构化输出：仅在调用方提供 schema 且配置开启时使用
-    if response_schema and cfg.get("openai_compat", {}).get("json_schema", True):
-        payload["response_format"] = {
-            "type": "json_schema",
-            "json_schema": {
-                "name": "translation_result",
-                "strict": True,
-                "schema": response_schema
-            }
-        }
+    # 结构化输出：仅在调用方提供 schema 且配置开启时使用。
+    # 服务端不支持当前方式时按候选列表降级，见 _response_format_candidates。
+    format_candidates = _response_format_candidates(cfg, response_schema)
+    format_index = 0
 
     retry_count = 0
-    while retry_count <= max_retries:
+    while format_index < len(format_candidates) and retry_count <= max_retries:
+        current_format = format_candidates[format_index]
+        # 每轮重建 payload：上一轮的 response_format 与提示词补充不能残留
+        payload = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": text}
+            ],
+            "max_tokens": max_tokens
+        }
+        _apply_response_format(payload, current_format)
+
         try:
             if retry_count > 0:
                 print(f"[翻译] 第 {retry_count} 次重试...")
@@ -891,6 +1023,13 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
                 api_url, json=payload, headers=headers,
                 timeout=timeout, verify=verify_ssl, proxies=proxies
             )
+            # 服务端不支持该结构化输出方式时立即降级，不占用重试次数
+            if current_format and _is_response_format_rejected(response):
+                _REJECTED_RESPONSE_FORMATS.add((host, model, current_format["type"]))
+                print(f"[翻译] 服务端不支持 response_format={current_format['type']}，"
+                      f"降级重试: {_short_error(response)}")
+                format_index += 1
+                continue
             response.raise_for_status()
             result = response.json()
             content = result["choices"][0]["message"]["content"]
@@ -900,7 +1039,7 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
         except requests.exceptions.ConnectionError as e:
             print(f"[翻译] 连接失败: {e}")
         except requests.exceptions.HTTPError as e:
-            print(f"[翻译] HTTP 错误: {e}")
+            print(f"[翻译] HTTP 错误: {e} | 响应: {_short_error(getattr(e, 'response', None))}")
         except (KeyError, IndexError) as e:
             print(f"[翻译] 响应格式错误: {e}")
             return None
@@ -912,7 +1051,10 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
         if retry_count <= max_retries:
             time.sleep(retry_count * 2)
 
-    print(f"[翻译] 已重试 {max_retries} 次，跳过")
+    if format_index >= len(format_candidates):
+        print("[翻译] 服务端拒绝了所有结构化输出方式，跳过")
+    else:
+        print(f"[翻译] 已重试 {max_retries} 次，跳过")
     return None
 
 

@@ -73,6 +73,8 @@
     "enabled": true,
     "base_url": "https://feedback.minecraft.net",
     "knowledge_base_url": "https://feedback.minecraft.net/hc/en-us/categories/115000410252-Knowledge-Base",
+    "use_api": true,
+    "api_locale": "en-us",
     "timeout": 30,
     "sections": [
       {

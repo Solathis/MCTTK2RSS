@@ -201,11 +201,17 @@ python main.py --no-json
 
 从 `https://feedback.minecraft.net` 爬取更新日志，在 `config.json` 的 `feedback_site` 中配置：
 
+> **默认走 Zendesk Help Center 公开 API**（`use_api`，默认 `true`）。页面和 RSS 会触发 Cloudflare
+> 挑战（`403` + `cf-mitigated: challenge`），而官方 JSON API 可稳定访问，且列表接口已包含正文，
+> 因此优先用 API 抓取；API 不可用时才回退到页面解析。每个栏目需要配置 `section_id`。
+
 ```json
 {
   "feedback_site": {
     "enabled": true,
     "base_url": "https://feedback.minecraft.net",
+    "use_api": true,
+    "api_locale": "en-us",
     "sections": [
       {
         "name": "Release Changelogs",
@@ -506,6 +512,10 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
   `curl: (60) unable to get local issuer certificate`。`http.verify_ssl: false`
   现在同时作用于 `curl_cffi`（跳过校验）；想保留校验时用 `http.ca_bundle` 指向
   中间人软件的 CA 证书（`.pem`）。日志会给出对应的处理建议
+- **Feedback 被 Cloudflare 拦截**：页面与 RSS 会返回挑战页（`403` + `cf-mitigated: challenge`），
+  这是站点的机器人防护，硬碰没有意义。抓取默认走 Zendesk Help Center 公开 API
+  （见上文 [Feedback 网站](#feedback-网站)）：列表接口一次带回标题、链接与正文，
+  失败时才回退页面解析。若机房 IP 连 API 都被挑战，请降低频率或改用代理，而不是加大重试
 - **配置文件不入库**：仓库只保留 `config.sample.json` 模板，`config.json` 已被 `.gitignore` 忽略；
   首次使用请复制模板。API Key、MCBBS 密码等敏感信息建议放在 `.env`（同样被忽略）
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理

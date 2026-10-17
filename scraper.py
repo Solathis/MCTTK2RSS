@@ -549,6 +549,39 @@ def _looks_like_cert_error(exc) -> bool:
     return any(marker in text for marker in _TLS_ERROR_MARKERS)
 
 
+# 文章正文里的发布日期：Zendesk 的正文把「Posted:」和首段塞在同一个 <p> 里，
+# 直接 get_text() 会把整段正文拼进来，所以只取符合日期格式的那一段。
+_POSTED_DATE_RE = re.compile(r'(\d{1,2}\s+[A-Za-z]+\s+\d{4})')
+
+
+def _extract_posted_date(body_div):
+    """从 article-body 中提取「25 September 2026」形式的发布日期。"""
+    if not body_div:
+        return ''
+    posted = body_div.find('strong', string='Posted:')
+    if not posted or not posted.parent:
+        return ''
+    raw = posted.parent.get_text(' ', strip=True)
+    match = _POSTED_DATE_RE.search(raw)
+    return match.group(1) if match else ''
+
+
+# Feedback 文章正文缓存（URL → {title, content, posted_date, url}）。
+# process_feedback_news 每篇文章都会新建 FeedbackScraper 实例，
+# 用模块级缓存才能让"列表 API 已带正文"这件事真正省掉文章页请求。
+_FEEDBACK_ARTICLE_CACHE = {}
+_FEEDBACK_ARTICLE_CACHE_LIMIT = 50
+
+
+def _cache_feedback_article(url, article):
+    """缓存文章正文，容量满时丢弃最早的一条（插入顺序即抓取顺序）。"""
+    if not url:
+        return
+    if url not in _FEEDBACK_ARTICLE_CACHE and len(_FEEDBACK_ARTICLE_CACHE) >= _FEEDBACK_ARTICLE_CACHE_LIMIT:
+        _FEEDBACK_ARTICLE_CACHE.pop(next(iter(_FEEDBACK_ARTICLE_CACHE)))
+    _FEEDBACK_ARTICLE_CACHE[url] = article
+
+
 class FeedbackScraper:
     """
     Minecraft Feedback 网站爬虫类
@@ -565,6 +598,10 @@ class FeedbackScraper:
         self.feedback_config = config.get('feedback_site', {})
         self.base_url = self.feedback_config.get('base_url', 'https://feedback.minecraft.net')
         self.timeout = self.feedback_config.get('timeout', 30)
+        # 页面层（HTML / RSS）带 Cloudflare Bot Management，会被挑战；
+        # 站方提供的 Zendesk Help Center 公开 API 不受影响，因此默认优先走 API。
+        self.use_api = self.feedback_config.get('use_api', True)
+        self.api_locale = self.feedback_config.get('api_locale', 'en-us')
         self.headers = {
             'Accept': (
                 'text/html,application/xhtml+xml,application/xml;q=0.9,'
@@ -696,13 +733,156 @@ class FeedbackScraper:
             result['title'] = title_elem.get_text(strip=True)
         article_body = soup.find('div', class_='article-body')
         if article_body:
-            posted_elem = article_body.find('strong', string='Posted:')
-            if posted_elem and posted_elem.parent:
-                result['posted_date'] = posted_elem.parent.get_text(strip=True).replace('Posted:', '').strip()
+            result['posted_date'] = _extract_posted_date(article_body)
             result['content'] = str(article_body)
         return result
 
+    # ── Zendesk Help Center 公开 API ──────────────────
+    # feedback.minecraft.net 的页面 / RSS 走 Cloudflare Bot Management（403 + cf-mitigated:
+    # challenge），但站方给 Help Center 提供的 JSON API 可以直接访问，而且列表接口
+    # 已包含正文 HTML。因此优先走官方 API：请求更少、更稳定，也不需要和反爬对抗。
+
+    @staticmethod
+    def _retry_after(response):
+        """读取 429 的 Retry-After（秒），限制在 1~60 秒。"""
+        with contextlib.suppress(AttributeError, TypeError, ValueError):
+            value = response.headers.get('retry-after')
+            if value:
+                return max(1, min(int(float(value)), 60))
+        return None
+
+    @staticmethod
+    def _article_id_from_url(url):
+        """从 /hc/en-us/articles/49175370527501-xxx 里取出文章 ID。"""
+        match = re.search(r'/articles/(\d+)', url or '')
+        return match.group(1) if match else None
+
+    def _api_get(self, path, params=None, max_retries=2):
+        """请求 Help Center API，返回解析后的 JSON；失败返回 None。"""
+        url = f"{self.base_url}/api/v2/help_center/{self.api_locale}/{path.lstrip('/')}"
+        headers = {**self.headers, 'Accept': 'application/json'}
+        for attempt in range(max_retries + 1):
+            try:
+                kwargs = {} if params is None else {'params': params}
+                response = self.session.get(
+                    url, headers=headers, timeout=self.timeout,
+                    impersonate="chrome", verify=self.verify, **kwargs
+                )
+                if response.status_code == 429:
+                    wait = self._retry_after(response) or 5 * (attempt + 1)
+                    log_warning(f"[Feedback] API 限流（429），{wait} 秒后重试: {url}")
+                    time.sleep(wait)
+                    continue
+                if response.status_code == 403:
+                    log_warning(f"[Feedback] API 被 Cloudflare 挑战（403），改用页面解析: {url}")
+                    return None
+                if response.status_code >= 400:
+                    log_warning(f"[Feedback] API 返回 {response.status_code}: {url}")
+                    return None
+                return response.json()
+            except Exception as e:
+                log_warning(f"[Feedback] API 请求失败 {url}: {type(e).__name__}: {e}")
+                if attempt < max_retries:
+                    time.sleep(2 * (attempt + 1))
+        return None
+
+    @staticmethod
+    def _format_posted_date(value):
+        """把 API 的 created_at（ISO8601）转成页面上的「25 September 2026」风格。"""
+        months = ('January', 'February', 'March', 'April', 'May', 'June',
+                  'July', 'August', 'September', 'October', 'November', 'December')
+        try:
+            parsed = datetime.strptime(value, '%Y-%m-%dT%H:%M:%SZ')
+        except (TypeError, ValueError):
+            return ''
+        return f"{parsed.day} {months[parsed.month - 1]} {parsed.year}"
+
+    def _article_from_api(self, article):
+        """把 API 文章对象转成与页面解析一致的 {title, content, posted_date, url}。
+
+        API 的 body 是 article-body 内部的 HTML，这里补一层 div.article-body，
+        让 convert_feedback_html_to_blocks 与页面解析逻辑完全复用。
+        """
+        body = article.get('body') or ''
+        soup = BeautifulSoup(f'<div class="article-body">{body}</div>', 'html.parser')
+        body_div = soup.find('div', class_='article-body')
+        posted_date = _extract_posted_date(body_div)
+        return {
+            'title': article.get('title') or article.get('name') or '',
+            'content': str(body_div) if body_div else body,
+            'posted_date': posted_date or self._format_posted_date(article.get('created_at', '')),
+            'url': article.get('html_url') or article.get('url') or '',
+            'id': article.get('id'),
+        }
+
+    def _get_latest_articles_via_api(self, limit_per_section):
+        """按 section_id 调 API 取每个栏目的最新文章（正文一并缓存）。"""
+        result = {}
+        for section_config in self.feedback_config.get('sections', []):
+            if not section_config.get('enabled', True):
+                continue
+            section_name = section_config.get('name')
+            section_id = section_config.get('section_id')
+            if not section_name or not section_id:
+                continue
+            articles_count = int(section_config.get('articles_count', limit_per_section))
+            data = self._api_get(
+                f"sections/{section_id}/articles.json",
+                params={
+                    'per_page': max(1, min(articles_count, 100)),
+                    # 按发布时间倒序：updated_at 会因为旧文章被补改而被顶到前面
+                    'sort_by': 'created_at',
+                    'sort_order': 'desc',
+                },
+            )
+            if not data:
+                continue
+            articles = []
+            for raw in data.get('articles', []):
+                if raw.get('draft'):
+                    continue
+                parsed = self._article_from_api(raw)
+                if not parsed['url'] or not parsed['content']:
+                    continue
+                _cache_feedback_article(parsed['url'], parsed)
+                articles.append({
+                    'title': parsed['title'],
+                    'url': parsed['url'],
+                    'release_date': parsed['posted_date'],
+                })
+            if not articles:
+                continue
+            log_info(f"[Feedback] API 获取栏目「{section_name}」{len(articles)} 篇")
+            result[section_name] = {
+                'name_cn': section_config.get('name_cn', section_name),
+                'section_url': section_config.get('url', ''),
+                'articles': articles,
+            }
+        return result
+
     def get_latest_articles(self, limit_per_section=6):
+        """优先走 Help Center API，缺栏目或失败时才回退页面解析。"""
+        result = self._get_latest_articles_via_api(limit_per_section) if self.use_api else {}
+
+        missing = [
+            section_config.get('name')
+            for section_config in self.feedback_config.get('sections', [])
+            if section_config.get('enabled', True)
+            and section_config.get('name')
+            and section_config.get('name') not in result
+        ]
+        if missing:
+            log_warning(f"[Feedback] API 未覆盖 {len(missing)} 个栏目，回退页面解析: {', '.join(missing)}")
+            html_result = self._get_latest_articles_via_html(limit_per_section)
+            for name in missing:
+                if name in html_result:
+                    result[name] = html_result[name]
+
+        if not result:
+            log_error("[Feedback] 未能获取任何栏目（API 与页面解析均失败）")
+        return result
+
+    def _get_latest_articles_via_html(self, limit_per_section=6):
         knowledge_base_url = self.feedback_config.get('knowledge_base_url')
         if not knowledge_base_url:
             log_error("[Feedback] 未配置 knowledge_base_url")
@@ -731,6 +911,23 @@ class FeedbackScraper:
         return result
 
     def fetch_article_content(self, article_url):
+        # 列表 API 已把正文带回来并缓存，这里直接命中，不再请求文章页
+        cached = _FEEDBACK_ARTICLE_CACHE.get(article_url)
+        if cached:
+            log_debug(f"[Feedback] 命中 API 缓存: {article_url}")
+            return cached
+
+        if self.use_api:
+            article_id = self._article_id_from_url(article_url)
+            if article_id:
+                data = self._api_get(f"articles/{article_id}.json")
+                raw = (data or {}).get('article')
+                if raw:
+                    parsed = self._article_from_api(raw)
+                    parsed['url'] = parsed['url'] or article_url
+                    _cache_feedback_article(article_url, parsed)
+                    return parsed
+
         log_info(f"[Feedback] 获取文章: {article_url}")
         referer = self.feedback_config.get('knowledge_base_url', self.base_url)
         soup = self.fetch_page(article_url, referer=referer)

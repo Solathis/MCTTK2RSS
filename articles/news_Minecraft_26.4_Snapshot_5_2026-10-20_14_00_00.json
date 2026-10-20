@@ -1,0 +1,1239 @@
+{
+  "title": "Minecraft 26.4 Snapshot 5",
+  "translated_title": "《Minecraft》26.4 版本 snapshot 5",
+  "release_date": "2026-10-20T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-5",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-5/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "This week's snapshot comes packed with a bunch of new things for you to try out! In 26.4 Snapshot 5, we're introducing Packed Ice Bricks, including a bunch of variants, and YES, they work in the Stonecutter! We've also got a frosty new advancement for anyone who decides to fight ice with ice and take out a Frostbite with an Ice Ball.",
+      "translated_text": "本周的快照更新带来了许多新的内容供您尝试！在26.4 Snapshot 5中，我们引入了“压缩冰砖”（Packed Ice Bricks），包括多种变体，而且这些压缩冰砖可以在切石机（Stonecutter）中使用！对于那些选择用冰来对抗冰敌人，并通过投掷冰球（Ice Ball）击败敌人的人来说，还有一个全新的成就系统。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy Mining!",
+      "translated_text": "祝你采矿愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Packed Ice Bricks",
+      "translated_text": "新增了“压缩冰砖”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "h3",
+      "source_text": "Packed Ice Bricks",
+      "translated_text": "“压缩冰砖”",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Packed Ice Bricks can be crafted from 2x2 Packed Ice",
+      "translated_text": "“压缩冰砖”可以通过2x2的“压缩冰”（Packed Ice）材料制作出来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Packed Ice Bricks have a Slab, Stair, Wall, and Chiseled variant",
+      "translated_text": "“压缩冰砖”有平板（Slab）、楼梯（Stair）、墙壁（Wall）和雕刻（Chiseled）三种类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Packed Ice Brick Slabs, Stairs, Walls, as well as Chiseled Packed Ice can also be crafted using a Stonecutter",
+      "translated_text": "“压缩冰砖”制成的平板、楼梯和墙壁，以及经过雕刻处理的压缩冰，同样可以使用切石机进行制作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Packed Ice Bricks and Chiseled Packed Ice belong to the Fast Sliding Sulfur Cube archetype",
+      "translated_text": "“压缩冰砖”和经过雕刻处理的压缩冰属于“快速滑动的硫方怪”（Fast Sliding Sulfur Cube）原型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "h3",
+      "source_text": "Advancements",
+      "translated_text": "成就系统更新",
+      "meta": {}
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Added new \"What Goes Around Comes Around\" Adventure advancement for killing a Frostbite with an Ice Ball",
+      "translated_text": "新增了“因果循环”冒险模式成就，用于使用冰球杀死“冻伤”怪物",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "变更",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Mobs can now break Decorated Pots, Chorus Flowers and Speleothem blocks with projectiles in an adventure mode world, unless the mob_griefing gamerule is set to false",
+      "translated_text": "在冒险模式的世界中，怪物现在可以用投射物破坏装饰花盆、紫颂之花和洞穴石块，除非游戏规则「mob_griefing」被设置为「false」",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效",
+      "meta": {}
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Added ambient sounds to regular Ice block",
+      "translated_text": "为普通的冰块添加了环境音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "When an Ice block is surrounded by at least 8 Ice blocks in all horizontal directions (east, west, north, and south), with one Air block above and one Water block below, it has a chance to emit a sound",
+      "translated_text": "当一个冰块在所有水平方向（东、西、北、南）上至少被8个冰块包围，上方有1个空气块，下方有1个水块时，它有可能发出音效",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "h3",
+      "source_text": "Video Settings",
+      "translated_text": "视频设置",
+      "meta": {}
+    },
+    {
+      "id": "b0018",
+      "type": "h4",
+      "source_text": "\"Prefer DXGI Present\" Video Setting",
+      "translated_text": "“优先使用 DirectX 渲染”视频设置",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "This is a new option to attempt to use DirectX to present the game",
+      "translated_text": "这是一个新选项，用于尝试使用 DirectX 来渲染游戏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "This only exists on Windows, and not all hardware supports it",
+      "translated_text": "此功能仅存在于 Windows 上，且并非所有硬件都支持",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "The default is off, and we consider this option \"experimental\" - it may not work for everyone",
+      "translated_text": "默认情况下这个功能是关闭的，我们将其视为“实验性”功能——可能并不适用于所有玩家",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "With DXGI enabled, you *may* see improvements with IME support, Variable Refresh Rate support, and faster alt-tabbing whilst in fullscreen mode",
+      "translated_text": "启用 DXGI 后，您可能会发现输入法(IME)支持、可变刷新率支持以及在全屏模式下使用 Alt+Tab 切换窗口的速度有所提升",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性变更",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "The Data Pack version is now 125.0",
+      "translated_text": "数据包的版本现在为 125.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 100.2",
+      "translated_text": "资源包的版本现在为 100.2",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "h3",
+      "source_text": "Network Protocol",
+      "translated_text": "网络协议",
+      "meta": {}
+    },
+    {
+      "id": "b0027",
+      "type": "h4",
+      "source_text": "Modified Login Protocol",
+      "translated_text": "登录协议已修改",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "Encryption and compression must now be explicitly applied by the server by sending one of two packets that carry connection options",
+      "translated_text": "加密和压缩功能现在必须由服务器通过发送两种数据包之一来明确执行，这些数据包包含了连接选项",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "The client must acknowledge the change with a matching packet",
+      "translated_text": "客户端必须用相应的数据包来确认这一变更",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "Every packet sent and received by the client after the acknowledgement will use the new settings",
+      "translated_text": "在确认变更之后，客户端发送和接收的所有数据包都将使用新的设置",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "Previously changes were applied immediately on both sides, which might've lead to malformed packets",
+      "translated_text": "之前，更改会在双方立即生效，这可能会导致数据包格式错误。",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Packets that can carry options:",
+      "translated_text": "可以携带选项的数据包：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "minecraft:login_finished (clientbound) and minecraft:login_acknowledged (serverbound)",
+      "translated_text": "minecraft:login_finished (客户端发送) 和 minecraft:login_acknowledged (服务器接收)",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "minecraft:apply_options (clientbound) and minecraft:options_applied (serverbound)",
+      "translated_text": "minecraft:apply_options (客户端发送) 和 minecraft:options_applied (服务器接收)",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "h2",
+      "source_text": "Data Pack Version 125.0",
+      "translated_text": "数据包版本 125.0",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "h3",
+      "source_text": "Data Components",
+      "translated_text": "数据组件（Data Components）",
+      "meta": {}
+    },
+    {
+      "id": "b0037",
+      "type": "h4",
+      "source_text": "minecraft:consumable",
+      "translated_text": "minecraft:consumable",
+      "meta": {}
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "The sound field is now fully optional (defaulted to minecraft:entity.generic.eat before)",
+      "translated_text": "现在声音字段是完全可选的（默认值为 minecraft:entity.generic.eat）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "h4",
+      "source_text": "minecraft:equippable",
+      "translated_text": "minecraft:equippable",
+      "meta": {}
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "The equip_sound field is now fully optional (defaulted to minecraft:item.armor.equip_generic )",
+      "translated_text": "现在装备声音字段是完全可选的（默认值为 minecraft:item.armor.equip_generic）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "The shearing_sound field is now fully optional (defaulted to minecraft:item.shears.snip )",
+      "translated_text": "“shearing_sound”字段现在完全是可选的（默认值为 `minecraft:item.shears.snip`）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0043",
+      "type": "h4",
+      "source_text": "Features",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0044",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0045",
+      "type": "text",
+      "source_text": "ore",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0046",
+      "type": "text",
+      "source_text": "and",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "text",
+      "source_text": "scattered_ore",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "Blocks discarded due to air exposure will no longer fall through to the next replacement rule",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "h4",
+      "source_text": "Density Functions",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0050",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "text",
+      "source_text": "upscale",
+      "translated_text": "放大（Upscale）",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "text",
+      "source_text": "(renamed from",
+      "translated_text": "(从...重命名而来)",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "text",
+      "source_text": "interpolated",
+      "translated_text": "插值（Interpolate）",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "text",
+      "source_text": ")",
+      "translated_text": "空",
+      "meta": {}
+    },
+    {
+      "id": "b0055",
+      "type": "p",
+      "source_text": "Samples the input function at a reduced resolution, and upscales on each axis with the specified modes. Modes that require more samples will generally perform worse. Upscaling is performed by axis in order: Z, X, then Y.",
+      "translated_text": "以较低的分辨率采样输入函数，并根据指定的模式在每个轴上进行放大。需要更多样本的模式通常性能较差。放大按轴顺序进行：Z轴、X轴、然后是Y轴。",
+      "meta": {}
+    },
+    {
+      "id": "b0056",
+      "type": "p",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：一个包含字段的对象",
+      "meta": {}
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "input - Density Function, the input function to sample",
+      "translated_text": "input - 密度函数（Density Function），即要采样的输入函数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "x , y , z - object with fields, the configuration for this axis",
+      "translated_text": "x, y, z - 包含字段的对象，表示该轴的配置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "mode - one of: nearest_neighbor , interpolate_linear , interpolate_cosine , interpolate_cubic , b_spline_cubic , the mode to use",
+      "translated_text": "mode - 可选模式包括：nearest_neighbor, interpolate_linear, interpolate_cosine, interpolate_cubic, b_spline_cubic",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "li",
+      "source_text": "nearest_neighbor",
+      "translated_text": "nearest_neighbor",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "1 sample per axis",
+      "translated_text": "每个轴上取1个样本",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Value is discontinuous across cell boundaries, gradient is always 0",
+      "translated_text": "值在单元格边界处是不连续的，梯度始终为0",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "Values at cell vertices always equal the cell value",
+      "translated_text": "单元格顶点的值始终等于该单元格的值",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "interpolate_linear",
+      "translated_text": "线性插值",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "2 samples per axis",
+      "translated_text": "每个轴上取2个样本",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "Value is continuous, gradient is constant within a cell but discontinuous across cell boundaries",
+      "translated_text": "值是连续的，但在单元格内梯度保持不变，在单元格边界处是不连续的",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "Values at cell vertices always equal the cell value",
+      "translated_text": "单元格顶点的值始终等于该单元格的值",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "interpolate_cosine",
+      "translated_text": "余弦插值",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "2 samples per axis",
+      "translated_text": "每个轴上取2个样本",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "Value and gradient are continuous",
+      "translated_text": "值和梯度都是连续的",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "Gradient is 0 at cell boundaries",
+      "translated_text": "单元格边界处的梯度值为 0",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "Values at cell vertices always equal the cell value",
+      "translated_text": "单元格顶点的值始终等于该单元格的值",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "interpolate_cubic",
+      "translated_text": "插值方法：cubic",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "4 samples per axis",
+      "translated_text": "每个轴上有 4 个采样点",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "Value and gradient are continuous",
+      "translated_text": "值和梯度是连续的",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "Values at cell vertices always equal the cell value",
+      "translated_text": "单元格顶点的值始终等于该单元格的值",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "b_spline_cubic",
+      "translated_text": "插值方法：b_spline_cubic",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "4 samples per axis",
+      "translated_text": "每个轴上有 4 个采样点",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "Value and gradient are continuous",
+      "translated_text": "值和梯度是连续的",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "Values at cell vertices do not necessarily equal the cell value",
+      "translated_text": "单元格顶点的值不一定等于该单元格的值",
+      "meta": {
+        "indent_level": 3,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "cell_size - integer between 1 and 64, the size of each upscaling cell",
+      "translated_text": "cell_size - 一个介于1到64之间的整数，表示每个放大单元的大小",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0083",
+      "type": "h4",
+      "source_text": "Biome Tags",
+      "translated_text": "生物群系标签",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "Added #spawns_ice_variants_underground to describe all biomes which allow the spawning of cold variants without requiring sky access",
+      "translated_text": "添加了#spawns_ice_variants_underground标签，用于描述所有允许生成寒冷变体的生物群系，而这些生物群系不需要能够看到天空",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "Renamed spawns_strays_without_powder_snow to spawns_cold_variants_underground",
+      "translated_text": "将spawns_strays_without_powder_snow重命名为spawns_cold_variants_underground",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "h4",
+      "source_text": "Entity Type Tags",
+      "translated_text": "实体类型标签",
+      "meta": {}
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Replaced the #ignores_poison_and_regen tag with separate #immune_to_poison and #immune_to_regeneration tags",
+      "translated_text": "将#ignores-poison_and_regen标签替换为独立的#immune_to_poison和#immune_to_regeneration标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "Renamed the #freeze_immune_entity_types tag to #immune_to_freezing",
+      "translated_text": "将#freeze_immune_entity_types标签重命名为#immune_to_freezing",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "Added #immune_to_wither for mobs that are immune to the wither effect",
+      "translated_text": "为对‘凋零’效果免疫的怪物添加了#immune_to_wither标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "Added #immune_to_weakness for mobs that are immune to the weakness effect",
+      "translated_text": "为对‘虚弱’效果免疫的怪物添加了#immune_to_weakness标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "h2",
+      "source_text": "Resource Pack Version 100.2",
+      "translated_text": "资源包版本 100.2",
+      "meta": {}
+    },
+    {
+      "id": "b0092",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "方块精灵",
+      "meta": {}
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "添加了新的方块纹理：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "block/chiseled_packed_ice.png",
+      "translated_text": "block/chiseled_packed_ice.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "block/packed_ice_bricks.png",
+      "translated_text": "block/packed_ice_bricks.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 5",
+      "translated_text": "修复了 26.4 版本 5 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-25976](https://bugs.mojang.com/browse/MC-25976) - Blocks broken by flowing fluids do not produce particles or make breaking sounds",
+      "translated_text": "[MC-25976](https://bugs.mojang.com/browse/MC-25976) - 被流动的流体破坏的方块不会产生碎片或破坏音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-170550](https://bugs.mojang.com/browse/MC-170550) - The snowy_shepherds_house_1 village structure never generates",
+      "translated_text": "[MC-170550](https://bugs.mojang.com/browse/MC-170550) - snowy_shepherds_house_1 村庄结构永远不会生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-270793](https://bugs.mojang.com/browse/MC-270793) - Mobs with multiple entity type tags corresponding to effect immunity only respect one",
+      "translated_text": "[MC-270793](https://bugs.mojang.com/browse/MC-270793) - 具有多个实体类型标签的怪物只会遵循其中一个效果免疫规则",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-308621](https://bugs.mojang.com/browse/MC-308621) - Race condition in the dedicated server's compression setup",
+      "translated_text": "[MC-308621](https://bugs.mojang.com/browse/MC-308621) - 专用服务器压缩设置中的竞态条件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-312316](https://bugs.mojang.com/browse/MC-312316) - Creakings still try to attack players after they switch to Creative mode",
+      "translated_text": "[MC-312316](https://bugs.mojang.com/browse/MC-312316) - 变得更模糊的怪物（Creakings）在玩家切换到创造模式后仍会试图攻击玩家",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-312360](https://bugs.mojang.com/browse/MC-312360) - Paintings break outside the world border",
+      "translated_text": "[MC-312360](https://bugs.mojang.com/browse/MC-312360) - 画作在世界边界之外会破碎",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-312377](https://bugs.mojang.com/browse/MC-312377) - The bottom face of icicles on the floor is rotated 180 degrees",
+      "translated_text": "[MC-312377](https://bugs.mojang.com/browse/MC-312377) - 地板上冰柱的底部面被旋转了180度",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-312386](https://bugs.mojang.com/browse/MC-312386) - The #spawns_strays_without_powder_snow biome tag's name makes no sense",
+      "translated_text": "[MC-312386](https://bugs.mojang.com/browse/MC-312386) - #spawns_strays_without_powder_snow 生物群系的命名逻辑不合理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-312404](https://bugs.mojang.com/browse/MC-312404) - Frostbites can naturally spawn in normal caves under cold biomes, unlike strays",
+      "translated_text": "[MC-312404](https://bugs.mojang.com/browse/MC-312404) - 在寒冷生物群系中的普通洞穴中，冻伤（Frostbites）会自然生成，而迷路的怪物（Strays）则不会",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-312431](https://bugs.mojang.com/browse/MC-312431) - Red and brown mushrooms now spread incorrectly",
+      "translated_text": "[MC-312431](https://bugs.mojang.com/browse/MC-312431) - 红色和棕色蘑菇的传播方式出现了问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "[MC-312496](https://bugs.mojang.com/browse/MC-312496) - Icicle models use the deprecated shade field",
+      "translated_text": "[MC-312496](https://bugs.mojang.com/browse/MC-312496) - 冰柱模型使用了过时的阴影（shade）字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "[MC-312497](https://bugs.mojang.com/browse/MC-312497) - Template models for icicles are not prefixed with template_",
+      "translated_text": "[MC-312497] - 冰柱的模板模型没有加上 `template_` 前缀",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "[MC-312563](https://bugs.mojang.com/browse/MC-312563) - The icicle in the Creative mode inventory is placed in the wrong spot",
+      "translated_text": "[MC-312563] - 创造模式下的冰柱被放置在了错误的位置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "[MC-312587](https://bugs.mojang.com/browse/MC-312587) - The game crashes when trying to render the hidden tooltips of music discs in jukebox playlists",
+      "translated_text": "[MC-312587] - 玩家在尝试渲染自动点唱机播放列表中的音乐唱片隐藏提示时游戏崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[MC-312612](https://bugs.mojang.com/browse/MC-312612) - Jukeboxes can pull from double chests if a single chest was turned into a double chest after being placed",
+      "translated_text": "[MC-312612] - 如果一个箱子被放置后变成了双倍箱子，自动点唱机可以从该双倍箱子中取唱片",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "[MC-312613](https://bugs.mojang.com/browse/MC-312613) - Jukeboxes don't pull discs from single chests that are created by breaking a double chest",
+      "translated_text": "[MC-312613] - 自动点唱机无法从通过打碎双倍箱子生成的单个箱子中取唱片",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-312621](https://bugs.mojang.com/browse/MC-312621) - Zombies, husks, drowned, strays, and frostbites are now affected by Poison and Regeneration",
+      "translated_text": "[MC-312621](https://bugs.mojang.com/browse/MC-312621) - 僵尸、尸壳、淹死玩家、迷路的玩家以及受冻的玩家现在也会受到毒状效果和恢复效果的影响",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-312630](https://bugs.mojang.com/browse/MC-312630) - Ruined portals don't generate in ice caves",
+      "translated_text": "[MC-312630](https://bugs.mojang.com/browse/MC-312630) - 毁坏的传送门不会再出现在冰洞中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-312631](https://bugs.mojang.com/browse/MC-312631) - Ice caves are not part of the #stronghold_biased_to biome tag",
+      "translated_text": "[MC-312631](https://bugs.mojang.com/browse/MC-312631) - 冰洞不再属于#stronghold_biased_to biome标签的生物群系范围内",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-312640](https://bugs.mojang.com/browse/MC-312640) - Any mouse button can be used to select entries in the statistics menu",
+      "translated_text": "[MC-312640](https://bugs.mojang.com/browse/MC-312640) - 现在可以使用任意鼠标按钮来选择统计菜单中的条目",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-312641](https://bugs.mojang.com/browse/MC-312641) - Any mouse button can be used to open links on the death screen",
+      "translated_text": "[MC-312641](https://bugs.mojang.com/browse/MC-312641) - 现在可以使用任意鼠标按钮在死亡屏幕上打开链接",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "[MC-312642](https://bugs.mojang.com/browse/MC-312642) - Pointed dripstone below flowing lava drips water instead of lava",
+      "translated_text": "[MC-312642](https://bugs.mojang.com/browse/MC-312642) - 放置在流动熔岩下方的滴水石会滴水，而不是熔岩",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "[MC-312644](https://bugs.mojang.com/browse/MC-312644) - Dispensers filling glass bottles don't play the bottle filling sound",
+      "translated_text": "[MC-312644](https://bugs.mojang.com/browse/MC-312644) - 用于填充玻璃瓶的分配器不会播放填充玻璃瓶的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "[MC-312645](https://bugs.mojang.com/browse/MC-312645) - Dispensers equipping chests on donkeys, mules or llamas don't play the chest equipping sound",
+      "translated_text": "[MC-312645](https://bugs.mojang.com/browse/MC-312645) - 将箱子装备到驴、骡子或羊驼身上的分配器不会播放装备箱子的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "[MC-312652](https://bugs.mojang.com/browse/MC-312652) - Flint and steel and fire charges don't make a sound when igniting sulfur cubes holding TNT",
+      "translated_text": "[MC-312652](https://bugs.mojang.com/browse/MC-312652) - 用打火石和钢铁点燃装着TNT的硫方怪时，不会发出任何声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "[MC-312654](https://bugs.mojang.com/browse/MC-312654) - Dispensers consume the durability of flint and steel and play their clicking sound despite there being nothing to ignite",
+      "translated_text": "[MC-312654](https://bugs.mojang.com/browse/MC-312654) - 即使没有可点燃的对象，分配器也会消耗打火石和钢铁的耐久度，并发出点击声",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "[MC-312669](https://bugs.mojang.com/browse/MC-312669) - Any mouse button can be used to close the friends and other players menus when clicking outside of them",
+      "translated_text": "[MC-312669](https://bugs.mojang.com/browse/MC-312669) - 点击好友和其他玩家菜单时，可以使用任意鼠标按钮来关闭这些菜单",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "[MC-312693](https://bugs.mojang.com/browse/MC-312693) - Projectiles shot by mobs can no longer break decorated pots, chorus flowers, pointed dripstone, sulfur spikes, or icicles",
+      "translated_text": "[MC-312693](https://bugs.mojang.com/browse/MC-312693) - 由怪物发射的投射物不再能够破坏装饰过的陶罐、紫颂花、有尖端的滴水石、硫黄尖锥或冰柱",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "[MC-312715](https://bugs.mojang.com/browse/MC-312715) - The game crashes when a jukebox in a playlist has a negative playlist_position value",
+      "translated_text": "[MC-312715](https://bugs.mojang.com/browse/MC-312715) - 当播放列表中的自动播放器（jukebox）具有负的 playlist_position 值时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "[MC-312717](https://bugs.mojang.com/browse/MC-312717) - Mobs can spawn on honey blocks",
+      "translated_text": "[MC-312717] - 怪物可以在蜂蜜块上生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0128",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft Java版现在支持快照功能。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”（Installations）选项卡中启用快照功能",
+      "meta": {}
+    },
+    {
+      "id": "b0129",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的世界，请备份数据并将它们存储在与主世界不同的文件夹中**",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/ed041232700614aeaaf72a6ea88b7f58ca3f8e4a/server.jar)",
+      "translated_text": "[《我的世界》服务器jar文件](https://piston-data.mojang.com/v1/objects/ed041232700614aeaaf72a6ea88b7f58ca3f8e4a/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在此报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[《我的世界》问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，欢迎加入我们的[官方《我的世界》Discord服务器](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "This week's snapshot comes packed with a bunch of new things for you to try out! In 26.4 Snapshot 5, we're introducing Packed Ice Bricks, including a bunch of variants, and YES, they work in the Stonecutter! We've also got a frosty new advancement for anyone who decides to fight ice with ice and take out a Frostbite with an Ice Ball.\n\nHappy Mining!\n\nNew Features\n\nAdded Packed Ice Bricks\n\nPacked Ice Bricks\n\nPacked Ice Bricks can be crafted from 2x2 Packed Ice\n\nPacked Ice Bricks have a Slab, Stair, Wall, and Chiseled variant\n\nPacked Ice Brick Slabs, Stairs, Walls, as well as Chiseled Packed Ice can also be crafted using a Stonecutter\n\nPacked Ice Bricks and Chiseled Packed Ice belong to the Fast Sliding Sulfur Cube archetype\n\nAdvancements\n\nAdded new \"What Goes Around Comes Around\" Adventure advancement for killing a Frostbite with an Ice Ball\n\nChanges\n\nMobs can now break Decorated Pots, Chorus Flowers and Speleothem blocks with projectiles in an adventure mode world, unless the mob_griefing gamerule is set to false\n\nSounds\n\nAdded ambient sounds to regular Ice block\n\nWhen an Ice block is surrounded by at least 8 Ice blocks in all horizontal directions (east, west, north, and south), with one Air block above and one Water block below, it has a chance to emit a sound\n\nVideo Settings\n\n\"Prefer DXGI Present\" Video Setting\n\nThis is a new option to attempt to use DirectX to present the game\n\nThis only exists on Windows, and not all hardware supports it\n\nThe default is off, and we consider this option \"experimental\" - it may not work for everyone\n\nWith DXGI enabled, you *may* see improvements with IME support, Variable Refresh Rate support, and faster alt-tabbing whilst in fullscreen mode\n\nTechnical Changes\n\nThe Data Pack version is now 125.0\n\nThe Resource Pack version is now 100.2\n\nNetwork Protocol\n\nModified Login Protocol\n\nEncryption and compression must now be explicitly applied by the server by sending one of two packets that carry connection options\n\nThe client must acknowledge the change with a matching packet\n\nEvery packet sent and received by the client after the acknowledgement will use the new settings\n\nPreviously changes were applied immediately on both sides, which might've lead to malformed packets\n\nPackets that can carry options:\n\nminecraft:login_finished (clientbound) and minecraft:login_acknowledged (serverbound)\n\nminecraft:apply_options (clientbound) and minecraft:options_applied (serverbound)\n\nData Pack Version 125.0\n\nData Components\n\nminecraft:consumable\n\nThe sound field is now fully optional (defaulted to minecraft:entity.generic.eat before)\n\nminecraft:equippable\n\nThe equip_sound field is now fully optional (defaulted to minecraft:item.armor.equip_generic )\n\nThe shearing_sound field is now fully optional (defaulted to minecraft:item.shears.snip )\n\nWorld Generation\n\nFeatures\n\nChanged\n\nore\n\nand\n\nscattered_ore\n\nBlocks discarded due to air exposure will no longer fall through to the next replacement rule\n\nDensity Functions\n\nChanged\n\nupscale\n\n(renamed from\n\ninterpolated\n\n)\n\nSamples the input function at a reduced resolution, and upscales on each axis with the specified modes. Modes that require more samples will generally perform worse. Upscaling is performed by axis in order: Z, X, then Y.\n\nFormat: object with fields:\n\ninput - Density Function, the input function to sample\n\nx , y , z - object with fields, the configuration for this axis\n\nmode - one of: nearest_neighbor , interpolate_linear , interpolate_cosine , interpolate_cubic , b_spline_cubic , the mode to use\n\nnearest_neighbor\n\n1 sample per axis\n\nValue is discontinuous across cell boundaries, gradient is always 0\n\nValues at cell vertices always equal the cell value\n\ninterpolate_linear\n\n2 samples per axis\n\nValue is continuous, gradient is constant within a cell but discontinuous across cell boundaries\n\nValues at cell vertices always equal the cell value\n\ninterpolate_cosine\n\n2 samples per axis\n\nValue and gradient are continuous\n\nGradient is 0 at cell boundaries\n\nValues at cell vertices always equal the cell value\n\ninterpolate_cubic\n\n4 samples per axis\n\nValue and gradient are continuous\n\nValues at cell vertices always equal the cell value\n\nb_spline_cubic\n\n4 samples per axis\n\nValue and gradient are continuous\n\nValues at cell vertices do not necessarily equal the cell value\n\ncell_size - integer between 1 and 64, the size of each upscaling cell\n\nTags\n\nBiome Tags\n\nAdded #spawns_ice_variants_underground to describe all biomes which allow the spawning of cold variants without requiring sky access\n\nRenamed spawns_strays_without_powder_snow to spawns_cold_variants_underground\n\nEntity Type Tags\n\nReplaced the #ignores_poison_and_regen tag with separate #immune_to_poison and #immune_to_regeneration tags\n\nRenamed the #freeze_immune_entity_types tag to #immune_to_freezing\n\nAdded #immune_to_wither for mobs that are immune to the wither effect\n\nAdded #immune_to_weakness for mobs that are immune to the weakness effect\n\nResource Pack Version 100.2\n\nBlock Sprites\n\nAdded new Block textures:\n\nblock/chiseled_packed_ice.png\n\nblock/packed_ice_bricks.png\n\nFixed bugs in 26.4 Snapshot 5\n\n[MC-25976](https://bugs.mojang.com/browse/MC-25976) - Blocks broken by flowing fluids do not produce particles or make breaking sounds\n\n[MC-170550](https://bugs.mojang.com/browse/MC-170550) - The snowy_shepherds_house_1 village structure never generates\n\n[MC-270793](https://bugs.mojang.com/browse/MC-270793) - Mobs with multiple entity type tags corresponding to effect immunity only respect one\n\n[MC-308621](https://bugs.mojang.com/browse/MC-308621) - Race condition in the dedicated server's compression setup\n\n[MC-312316](https://bugs.mojang.com/browse/MC-312316) - Creakings still try to attack players after they switch to Creative mode\n\n[MC-312360](https://bugs.mojang.com/browse/MC-312360) - Paintings break outside the world border\n\n[MC-312377](https://bugs.mojang.com/browse/MC-312377) - The bottom face of icicles on the floor is rotated 180 degrees\n\n[MC-312386](https://bugs.mojang.com/browse/MC-312386) - The #spawns_strays_without_powder_snow biome tag's name makes no sense\n\n[MC-312404](https://bugs.mojang.com/browse/MC-312404) - Frostbites can naturally spawn in normal caves under cold biomes, unlike strays\n\n[MC-312431](https://bugs.mojang.com/browse/MC-312431) - Red and brown mushrooms now spread incorrectly\n\n[MC-312496](https://bugs.mojang.com/browse/MC-312496) - Icicle models use the deprecated shade field\n\n[MC-312497](https://bugs.mojang.com/browse/MC-312497) - Template models for icicles are not prefixed with template_\n\n[MC-312563](https://bugs.mojang.com/browse/MC-312563) - The icicle in the Creative mode inventory is placed in the wrong spot\n\n[MC-312587](https://bugs.mojang.com/browse/MC-312587) - The game crashes when trying to render the hidden tooltips of music discs in jukebox playlists\n\n[MC-312612](https://bugs.mojang.com/browse/MC-312612) - Jukeboxes can pull from double chests if a single chest was turned into a double chest after being placed\n\n[MC-312613](https://bugs.mojang.com/browse/MC-312613) - Jukeboxes don't pull discs from single chests that are created by breaking a double chest\n\n[MC-312621](https://bugs.mojang.com/browse/MC-312621) - Zombies, husks, drowned, strays, and frostbites are now affected by Poison and Regeneration\n\n[MC-312630](https://bugs.mojang.com/browse/MC-312630) - Ruined portals don't generate in ice caves\n\n[MC-312631](https://bugs.mojang.com/browse/MC-312631) - Ice caves are not part of the #stronghold_biased_to biome tag\n\n[MC-312640](https://bugs.mojang.com/browse/MC-312640) - Any mouse button can be used to select entries in the statistics menu\n\n[MC-312641](https://bugs.mojang.com/browse/MC-312641) - Any mouse button can be used to open links on the death screen\n\n[MC-312642](https://bugs.mojang.com/browse/MC-312642) - Pointed dripstone below flowing lava drips water instead of lava\n\n[MC-312644](https://bugs.mojang.com/browse/MC-312644) - Dispensers filling glass bottles don't play the bottle filling sound\n\n[MC-312645](https://bugs.mojang.com/browse/MC-312645) - Dispensers equipping chests on donkeys, mules or llamas don't play the chest equipping sound\n\n[MC-312652](https://bugs.mojang.com/browse/MC-312652) - Flint and steel and fire charges don't make a sound when igniting sulfur cubes holding TNT\n\n[MC-312654](https://bugs.mojang.com/browse/MC-312654) - Dispensers consume the durability of flint and steel and play their clicking sound despite there being nothing to ignite\n\n[MC-312669](https://bugs.mojang.com/browse/MC-312669) - Any mouse button can be used to close the friends and other players menus when clicking outside of them\n\n[MC-312693](https://bugs.mojang.com/browse/MC-312693) - Projectiles shot by mobs can no longer break decorated pots, chorus flowers, pointed dripstone, sulfur spikes, or icicles\n\n[MC-312715](https://bugs.mojang.com/browse/MC-312715) - The game crashes when a jukebox in a playlist has a negative playlist_position value\n\n[MC-312717](https://bugs.mojang.com/browse/MC-312717) - Mobs can spawn on honey blocks\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/ed041232700614aeaaf72a6ea88b7f58ca3f8e4a/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "本周的快照更新带来了许多新的内容供您尝试！在26.4 Snapshot 5中，我们引入了“压缩冰砖”（Packed Ice Bricks），包括多种变体，而且这些压缩冰砖可以在切石机（Stonecutter）中使用！对于那些选择用冰来对抗冰敌人，并通过投掷冰球（Ice Ball）击败敌人的人来说，还有一个全新的成就系统。\n\n祝你采矿愉快！\n\n新功能\n\n新增了“压缩冰砖”\n\n“压缩冰砖”\n\n“压缩冰砖”可以通过2x2的“压缩冰”（Packed Ice）材料制作出来\n\n“压缩冰砖”有平板（Slab）、楼梯（Stair）、墙壁（Wall）和雕刻（Chiseled）三种类型\n\n“压缩冰砖”制成的平板、楼梯和墙壁，以及经过雕刻处理的压缩冰，同样可以使用切石机进行制作\n\n“压缩冰砖”和经过雕刻处理的压缩冰属于“快速滑动的硫方怪”（Fast Sliding Sulfur Cube）原型\n\n成就系统更新\n\n新增了“因果循环”冒险模式成就，用于使用冰球杀死“冻伤”怪物\n\n变更\n\n在冒险模式的世界中，怪物现在可以用投射物破坏装饰花盆、紫颂之花和洞穴石块，除非游戏规则「mob_griefing」被设置为「false」\n\n音效\n\n为普通的冰块添加了环境音效\n\n当一个冰块在所有水平方向（东、西、北、南）上至少被8个冰块包围，上方有1个空气块，下方有1个水块时，它有可能发出音效\n\n视频设置\n\n“优先使用 DirectX 渲染”视频设置\n\n这是一个新选项，用于尝试使用 DirectX 来渲染游戏\n\n此功能仅存在于 Windows 上，且并非所有硬件都支持\n\n默认情况下这个功能是关闭的，我们将其视为“实验性”功能——可能并不适用于所有玩家\n\n启用 DXGI 后，您可能会发现输入法(IME)支持、可变刷新率支持以及在全屏模式下使用 Alt+Tab 切换窗口的速度有所提升\n\n技术性变更\n\n数据包的版本现在为 125.0\n\n资源包的版本现在为 100.2\n\n网络协议\n\n登录协议已修改\n\n加密和压缩功能现在必须由服务器通过发送两种数据包之一来明确执行，这些数据包包含了连接选项\n\n客户端必须用相应的数据包来确认这一变更\n\n在确认变更之后，客户端发送和接收的所有数据包都将使用新的设置\n\n之前，更改会在双方立即生效，这可能会导致数据包格式错误。\n\n可以携带选项的数据包：\n\nminecraft:login_finished (客户端发送) 和 minecraft:login_acknowledged (服务器接收)\n\nminecraft:apply_options (客户端发送) 和 minecraft:options_applied (服务器接收)\n\n数据包版本 125.0\n\n数据组件（Data Components）\n\nminecraft:consumable\n\n现在声音字段是完全可选的（默认值为 minecraft:entity.generic.eat）\n\nminecraft:equippable\n\n现在装备声音字段是完全可选的（默认值为 minecraft:item.armor.equip_generic）\n\n“shearing_sound”字段现在完全是可选的（默认值为 `minecraft:item.shears.snip`）\n\n放大（Upscale）\n\n(从...重命名而来)\n\n插值（Interpolate）\n\n空\n\n以较低的分辨率采样输入函数，并根据指定的模式在每个轴上进行放大。需要更多样本的模式通常性能较差。放大按轴顺序进行：Z轴、X轴、然后是Y轴。\n\n格式：一个包含字段的对象\n\ninput - 密度函数（Density Function），即要采样的输入函数\n\nx, y, z - 包含字段的对象，表示该轴的配置\n\nmode - 可选模式包括：nearest_neighbor, interpolate_linear, interpolate_cosine, interpolate_cubic, b_spline_cubic\n\nnearest_neighbor\n\n每个轴上取1个样本\n\n值在单元格边界处是不连续的，梯度始终为0\n\n单元格顶点的值始终等于该单元格的值\n\n线性插值\n\n每个轴上取2个样本\n\n值是连续的，但在单元格内梯度保持不变，在单元格边界处是不连续的\n\n单元格顶点的值始终等于该单元格的值\n\n余弦插值\n\n每个轴上取2个样本\n\n值和梯度都是连续的\n\n单元格边界处的梯度值为 0\n\n单元格顶点的值始终等于该单元格的值\n\n插值方法：cubic\n\n每个轴上有 4 个采样点\n\n值和梯度是连续的\n\n单元格顶点的值始终等于该单元格的值\n\n插值方法：b_spline_cubic\n\n每个轴上有 4 个采样点\n\n值和梯度是连续的\n\n单元格顶点的值不一定等于该单元格的值\n\ncell_size - 一个介于1到64之间的整数，表示每个放大单元的大小\n\n标签\n\n生物群系标签\n\n添加了#spawns_ice_variants_underground标签，用于描述所有允许生成寒冷变体的生物群系，而这些生物群系不需要能够看到天空\n\n将spawns_strays_without_powder_snow重命名为spawns_cold_variants_underground\n\n实体类型标签\n\n将#ignores-poison_and_regen标签替换为独立的#immune_to_poison和#immune_to_regeneration标签\n\n将#freeze_immune_entity_types标签重命名为#immune_to_freezing\n\n为对‘凋零’效果免疫的怪物添加了#immune_to_wither标签\n\n为对‘虚弱’效果免疫的怪物添加了#immune_to_weakness标签\n\n资源包版本 100.2\n\n方块精灵\n\n添加了新的方块纹理：\n\nblock/chiseled_packed_ice.png\n\nblock/packed_ice_bricks.png\n\n修复了 26.4 版本 5 中的漏洞\n\n[MC-25976](https://bugs.mojang.com/browse/MC-25976) - 被流动的流体破坏的方块不会产生碎片或破坏音效\n\n[MC-170550](https://bugs.mojang.com/browse/MC-170550) - snowy_shepherds_house_1 村庄结构永远不会生成\n\n[MC-270793](https://bugs.mojang.com/browse/MC-270793) - 具有多个实体类型标签的怪物只会遵循其中一个效果免疫规则\n\n[MC-308621](https://bugs.mojang.com/browse/MC-308621) - 专用服务器压缩设置中的竞态条件\n\n[MC-312316](https://bugs.mojang.com/browse/MC-312316) - 变得更模糊的怪物（Creakings）在玩家切换到创造模式后仍会试图攻击玩家\n\n[MC-312360](https://bugs.mojang.com/browse/MC-312360) - 画作在世界边界之外会破碎\n\n[MC-312377](https://bugs.mojang.com/browse/MC-312377) - 地板上冰柱的底部面被旋转了180度\n\n[MC-312386](https://bugs.mojang.com/browse/MC-312386) - #spawns_strays_without_powder_snow 生物群系的命名逻辑不合理\n\n[MC-312404](https://bugs.mojang.com/browse/MC-312404) - 在寒冷生物群系中的普通洞穴中，冻伤（Frostbites）会自然生成，而迷路的怪物（Strays）则不会\n\n[MC-312431](https://bugs.mojang.com/browse/MC-312431) - 红色和棕色蘑菇的传播方式出现了问题\n\n[MC-312496](https://bugs.mojang.com/browse/MC-312496) - 冰柱模型使用了过时的阴影（shade）字段\n\n[MC-312497] - 冰柱的模板模型没有加上 `template_` 前缀\n\n[MC-312563] - 创造模式下的冰柱被放置在了错误的位置\n\n[MC-312587] - 玩家在尝试渲染自动点唱机播放列表中的音乐唱片隐藏提示时游戏崩溃\n\n[MC-312612] - 如果一个箱子被放置后变成了双倍箱子，自动点唱机可以从该双倍箱子中取唱片\n\n[MC-312613] - 自动点唱机无法从通过打碎双倍箱子生成的单个箱子中取唱片\n\n[MC-312621](https://bugs.mojang.com/browse/MC-312621) - 僵尸、尸壳、淹死玩家、迷路的玩家以及受冻的玩家现在也会受到毒状效果和恢复效果的影响\n\n[MC-312630](https://bugs.mojang.com/browse/MC-312630) - 毁坏的传送门不会再出现在冰洞中\n\n[MC-312631](https://bugs.mojang.com/browse/MC-312631) - 冰洞不再属于#stronghold_biased_to biome标签的生物群系范围内\n\n[MC-312640](https://bugs.mojang.com/browse/MC-312640) - 现在可以使用任意鼠标按钮来选择统计菜单中的条目\n\n[MC-312641](https://bugs.mojang.com/browse/MC-312641) - 现在可以使用任意鼠标按钮在死亡屏幕上打开链接\n\n[MC-312642](https://bugs.mojang.com/browse/MC-312642) - 放置在流动熔岩下方的滴水石会滴水，而不是熔岩\n\n[MC-312644](https://bugs.mojang.com/browse/MC-312644) - 用于填充玻璃瓶的分配器不会播放填充玻璃瓶的声音\n\n[MC-312645](https://bugs.mojang.com/browse/MC-312645) - 将箱子装备到驴、骡子或羊驼身上的分配器不会播放装备箱子的声音\n\n[MC-312652](https://bugs.mojang.com/browse/MC-312652) - 用打火石和钢铁点燃装着TNT的硫方怪时，不会发出任何声音\n\n[MC-312654](https://bugs.mojang.com/browse/MC-312654) - 即使没有可点燃的对象，分配器也会消耗打火石和钢铁的耐久度，并发出点击声\n\n[MC-312669](https://bugs.mojang.com/browse/MC-312669) - 点击好友和其他玩家菜单时，可以使用任意鼠标按钮来关闭这些菜单\n\n[MC-312693](https://bugs.mojang.com/browse/MC-312693) - 由怪物发射的投射物不再能够破坏装饰过的陶罐、紫颂花、有尖端的滴水石、硫黄尖锥或冰柱\n\n[MC-312715](https://bugs.mojang.com/browse/MC-312715) - 当播放列表中的自动播放器（jukebox）具有负的 playlist_position 值时，游戏会崩溃\n\n[MC-312717] - 怪物可以在蜂蜜块上生成\n\n获取快照\n\nMinecraft Java版现在支持快照功能。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”（Installations）选项卡中启用快照功能\n\n**测试版本可能会损坏你的世界，请备份数据并将它们存储在与主世界不同的文件夹中**\n\n跨平台服务器 JAR 文件\n\n[《我的世界》服务器jar文件](https://piston-data.mojang.com/v1/objects/ed041232700614aeaaf72a6ea88b7f58ca3f8e4a/server.jar)\n\n在此报告错误：\n\n[《我的世界》问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想提供反馈吗？\n\n如有任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想交流，欢迎加入我们的[官方《我的世界》Discord服务器](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

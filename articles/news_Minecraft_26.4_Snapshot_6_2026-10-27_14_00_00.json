@@ -1,0 +1,1276 @@
+{
+  "title": "Minecraft 26.4 Snapshot 6",
+  "translated_title": "Minecraft 26.4 快照 6",
+  "release_date": "2026-10-27T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-6",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-6/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "It's getting chilly in here! This week's 26.4 Snapshot 6 brings snow bricks, a new set of building blocks for anyone who wants their builds to look even cooler ;) We're also adding a new archetype to the Sulfur Cube family: the Cold Sulfur Cube. It's a frosty little friend that knows a thing or two about ice.",
+      "translated_text": "这里变得冷飕飕的了！本周的 26.4 版本更新（Snapshot 6）带来了雪砖，这是一组新的建筑材料，能让你的建筑看起来更加酷炫 ;) 我们还为硫方怪（Sulfur Cube）系列添加了一个新的原型：冷硫方怪（Cold Sulfur Cube）。它是个喜欢在冰上活动的家伙，对冰有很多了解。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Stay cool and happy building!",
+      "translated_text": "建造时保持冷静和愉快吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Snow Bricks",
+      "translated_text": "增加了雪砖",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added new Cold Sulfur Cube archetype",
+      "translated_text": "新增了冷硫方怪原型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "h3",
+      "source_text": "Snow Bricks",
+      "translated_text": "雪砖",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "li",
+      "source_text": "Snow Bricks can be crafted from 2x2 Snow Blocks",
+      "translated_text": "雪砖可以用 2x2 的雪块（Snow Blocks）制作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Snow Bricks have a Slab, Stair, and Wall variant",
+      "translated_text": "雪砖有平板、楼梯和墙壁三种类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "A Stonecutter cannot be used to craft Snow Brick Slabs, Stairs, and Walls",
+      "translated_text": "切石机（Stonecutter）无法用于制作雪砖平板、楼梯和墙壁",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Snow Bricks belong to the Fast Sliding Sulfur Cube archetype",
+      "translated_text": "雪砖属于“快速滑动的硫方怪”（Fast Sliding Sulfur Cube）原型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Snow Bricks only drop themselves if mined with a Shovel",
+      "translated_text": "只有使用铲子挖掘时，雪砖才会掉落",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "h3",
+      "source_text": "Cold Sulfur Cube Archetype",
+      "translated_text": "“冷硫方怪”原型",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "A new Sulfur Cube archetype that belongs to the special archetype category",
+      "translated_text": "一种属于特殊原型类别的新硫方怪原型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "It has the same properties as the Fast Sliding archetype, but floats and replaces water below it with a disk of Frosted Ice when it moves, similar to the Frost Walker enchantment",
+      "translated_text": "它具有与“快速滑动”原型相同的属性，但在移动时会漂浮，并将下方的水替换为霜冻冰块，类似于“霜冻行者”附魔",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Air blocks above the water block are required for Frosted Ice placement",
+      "translated_text": "放置霜冻冰块需要水方块上方的空气方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Will only place Frosted Ice if the Sulfur Cube starts its movement while it is on ground",
+      "translated_text": "只有当硫方怪在地面时开始移动时，才会放置霜冻冰块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Used when the Sulfur Cube absorbs a Blue Ice block",
+      "translated_text": "当硫方怪吸收蓝色冰块时使用的状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "发生了变更",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Changed the default JVM options",
+      "translated_text": "更改了默认的JVM选项",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "Mobs falling through lava may take slightly less fall damage in some cases",
+      "translated_text": "在某些情况下，从熔岩中掉落的怪物受到的坠落伤害可能会稍低",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体进行了一些小调整",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "All Packed Ice Brick variants will now require a pickaxe to be mined in order to drop themselves",
+      "translated_text": "现在所有压缩冰砖（Packed Ice Brick）在开采时都需要使用镐才能掉落",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "Brittle Ice will no longer crack when a Stray is standing on top of it",
+      "translated_text": "脆冰（Brittle Ice）上站立的流浪生物（Stray）不会再导致冰块破裂",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "声音相关改动",
+      "meta": {}
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "Added ambient sounds to Ice Crystals",
+      "translated_text": "为冰晶（Ice Crystals）添加了环境音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "An Ice crystal block has a chance of playing an ambient sound if it has a block of packed ice below",
+      "translated_text": "如果冰晶块下方有压缩冰砖，该冰晶块有可能播放环境音效",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "h3",
+      "source_text": "Default JVM Options",
+      "translated_text": "默认的JVM选项",
+      "meta": {}
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "The game now automatically sets its Java heap size based on your system's RAM, using up to 25% with a maximum of 4 GB",
+      "translated_text": "游戏现在会根据你的系统内存自动设置Java堆内存大小，最多使用25%，最大值为4GB",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性改动",
+      "meta": {}
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "The Data Pack version is now 125.1",
+      "translated_text": "数据包（Data Pack）的版本现在是125.1",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 101.0",
+      "translated_text": "资源包版本现已更新至101.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "h2",
+      "source_text": "Data Pack Version 125.1",
+      "translated_text": "数据包版本更新至125.1",
+      "meta": {}
+    },
+    {
+      "id": "b0033",
+      "type": "h3",
+      "source_text": "Sulfur Cube Archetypes",
+      "translated_text": "新增“硫方怪”（Sulfur Cube）原型",
+      "meta": {}
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "Added new location_based_effects field - an optional list of location-based effects",
+      "translated_text": "新增了`location_based_effects`字段——这是一个可选的基于位置效果的列表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "The format for each entry is exactly the same as a location-based enchantment effect",
+      "translated_text": "每个条目的格式与基于位置的附魔效果完全相同",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "Level-based values in this definition will always be evaluated with level 1",
+      "translated_text": "此定义中的等级相关值始终以等级1进行评估",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "h3",
+      "source_text": "World Generation",
+      "translated_text": "世界生成（World Generation）相关更新",
+      "meta": {}
+    },
+    {
+      "id": "b0038",
+      "type": "h4",
+      "source_text": "Density Functions",
+      "translated_text": "密度函数（Density Functions）相关更新",
+      "meta": {}
+    },
+    {
+      "id": "b0039",
+      "type": "text",
+      "source_text": "Changed",
+      "translated_text": "部分内容已更改",
+      "meta": {}
+    },
+    {
+      "id": "b0040",
+      "type": "text",
+      "source_text": "gradient",
+      "translated_text": "新增“gradient”（渐变效果）",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "The from_coordinate and to_coordinate fields now additionally accept a Vertical Anchor, as long as axis is y",
+      "translated_text": "`from.coordinate` 和 `to.coordinate` 字段现在还支持一个垂直锚点（Vertical Anchor），前提是轴是 y 轴。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "text",
+      "source_text": "Added",
+      "translated_text": "已添加",
+      "meta": {}
+    },
+    {
+      "id": "b0043",
+      "type": "text",
+      "source_text": "domain_warp",
+      "translated_text": "`domain_warp`",
+      "meta": {}
+    },
+    {
+      "id": "b0044",
+      "type": "p",
+      "source_text": "Samples an input function by applying an offset to each sampled coordinate.",
+      "translated_text": "通过为每个采样坐标应用偏移量来测试输入函数。",
+      "meta": {}
+    },
+    {
+      "id": "b0045",
+      "type": "p",
+      "source_text": "Note: if the offsets change rapidly by large amount, performance may degrade significantly. This function should be used sparingly.",
+      "translated_text": "注意：如果偏移量发生剧烈且快速的变化，性能可能会显著下降。应谨慎使用此函数。",
+      "meta": {}
+    },
+    {
+      "id": "b0046",
+      "type": "p",
+      "source_text": "Format: object with fields:",
+      "translated_text": "格式：带有字段的对象。",
+      "meta": {}
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "input - Density Function, the input function to sample",
+      "translated_text": "`input` - 密度函数（Density Function），用于采样的输入函数。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "offset_x - Density Function, the offset to apply to sampled X coordinates",
+      "translated_text": "`offset_x` - 密度函数（Density Function），应用于采样 X 坐标的偏移量。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "The result is implicitly truncated to an integer",
+      "translated_text": "结果会自动被截断为整数。",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "If not specified, defaults to: 0.0",
+      "translated_text": "如果未指定，默认值为：0.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "offset_y - Density Function, the offset to apply to sampled Y coordinates",
+      "translated_text": "偏移量_y - 密度函数，用于对采样的 Y 坐标应用的偏移量",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "The result is implicitly truncated to an integer",
+      "translated_text": "结果会隐式地被截断为整数",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "If not specified, defaults to: 0.0",
+      "translated_text": "如果未指定，默认值为：0.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "offset_z - Density Function, the offset to apply to sampled Z coordinates",
+      "translated_text": "偏移量_z - 密度函数，用于对采样的 Z 坐标应用的偏移量",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "The result is implicitly truncated to an integer",
+      "translated_text": "结果会隐式地被截断为整数",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "If not specified, defaults to: 0.0",
+      "translated_text": "如果未指定，默认值为：0.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "p",
+      "source_text": "At least one of offset_x, offset_y, or offset_z must be specified.",
+      "translated_text": "必须至少指定 offset_x、offset_y 或 offset_z 中的一个",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "h4",
+      "source_text": "Structure Pool Elements",
+      "translated_text": "结构池元素",
+      "meta": {}
+    },
+    {
+      "id": "b0059",
+      "type": "text",
+      "source_text": "Added optional",
+      "translated_text": "已添加可选选项",
+      "meta": {}
+    },
+    {
+      "id": "b0060",
+      "type": "text",
+      "source_text": "corner_constraint",
+      "translated_text": "角点约束",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "text",
+      "source_text": "Field",
+      "translated_text": "字段",
+      "meta": {}
+    },
+    {
+      "id": "b0062",
+      "type": "p",
+      "source_text": "Limits the placement of a structure pool element this by sampling a Density Function at the corners of its bounding box.",
+      "translated_text": "通过在结构池元素的边界框的角点处采样密度函数来限制其放置位置",
+      "meta": {}
+    },
+    {
+      "id": "b0063",
+      "type": "p",
+      "source_text": "Format: list of objects with fields:",
+      "translated_text": "格式：包含字段的对象列表",
+      "meta": {}
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "density_function - the Density Function to sample at the bounding box' corner",
+      "translated_text": "density_function - 在边界框的角点处采样的密度函数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "acceptable_density - inclusive range of doubles, a corner's sampled density within this range counts as \"inside\"",
+      "translated_text": "acceptable_density - 双精度浮点数的可接受范围；在指定范围内的采样密度被视为‘内部’",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "padding - integer between 0 and 8 , the padding of the bounding box before sampling its corners",
+      "translated_text": "padding - 0到8之间的整数；在采样边界框的角点之前的填充量",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "If not present, defaults to 0",
+      "translated_text": "如果未指定，则默认为0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "corners - one of all , top , or bottom , which corners to check",
+      "translated_text": "corners - 可以检查的角点：top（顶部）、bottom（底部）或all（全部）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "If not present, defaults to all",
+      "translated_text": "如果未指定，则默认为全部角点",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "required_corners - range between 1 and 8 , the number of corners that must be inside acceptable_density for the check to pass",
+      "translated_text": "required_corners - 1到8之间的范围；必须有多个角点在指定的可接受密度范围内，检查才能通过",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0072",
+      "type": "h4",
+      "source_text": "Fluid Tags",
+      "translated_text": "流体标签",
+      "meta": {}
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "Added #swimmable for fluids that players can swim in",
+      "translated_text": "为可让玩家游泳的流体添加了 #swimmable 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "h4",
+      "source_text": "Item Tags",
+      "translated_text": "物品标签",
+      "meta": {}
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "Added #sulfur_cube_archetype/cold - items that can be placed inside the Sulfur Cube that turns it into a Cold Sulfur Cube archetype",
+      "translated_text": "添加了 #sulfur_cube_archetype/cold 标签——这些物品可以放置在硫方怪内，使其变成冷硫方怪",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "h4",
+      "source_text": "Entity Type Tags",
+      "translated_text": "实体类型标签",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "Added #swimming - entity types that are considered swimming in water",
+      "translated_text": "为在水中的实体类型添加了 #swimming 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "Added #flying - entity types that are considered flying",
+      "translated_text": "为在空中移动的实体类型添加了 #flying 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "h2",
+      "source_text": "Resource Pack Version 101.0",
+      "translated_text": "资源包版本 101.0",
+      "meta": {}
+    },
+    {
+      "id": "b0080",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "区块精灵",
+      "meta": {}
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "添加了新的块纹理：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "block/snow_bricks.png",
+      "translated_text": "block/snow_bricks.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "Added new sound events:",
+      "translated_text": "添加了新的音效事件：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "block.ice_crystal.ambient",
+      "translated_text": "block.ice_crystal.ambient",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "h3",
+      "source_text": "Block Models",
+      "translated_text": "块模型",
+      "meta": {}
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "Removed Block Models:",
+      "translated_text": "移除了块模型：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "block/cube_top",
+      "translated_text": "block/cube_top",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 6",
+      "translated_text": "修复了26.4版本Snapshot 6中的错误",
+      "meta": {}
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "[MC-127491](https://bugs.mojang.com/browse/MC-127491) - Drowned, zombie villagers and zombified piglins have the DrownedConversionTime and InWaterTime tags",
+      "translated_text": "[MC-127491](https://bugs.mojang.com/browse/MC-127491) - 淹死的村民和变成僵尸的猪灵会拥有DrownedConversionTime和InWaterTime标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "[MC-269319](https://bugs.mojang.com/browse/MC-269319) - Bringing the camera close to the player in third-person view underwater disables the water overlay and zoom effect",
+      "translated_text": "[MC-269319] - 在水下第三人称视角下将摄像机拉近玩家时，水面的叠加效果和缩放效果会失效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "[MC-308361](https://bugs.mojang.com/browse/MC-308361) - Small sulfur cubes that split from bucketed sulfur cubes can despawn",
+      "translated_text": "[MC-308361] - 从装满硫磺的桶中分离出来的小硫磺方块会消失",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "[MC-311992](https://bugs.mojang.com/browse/MC-311992) - The code used to join a Realm is inconsistently referred to as both an \"Invite Code\" and a \"Join Code\"",
+      "translated_text": "[MC-311992] - 用于加入服务器的代码被不一致地称为“邀请码”（Invite Code）和“加入码”（Join Code）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "[MC-311994](https://bugs.mojang.com/browse/MC-311994) - Delayed block breaking completes early or stalls",
+      "translated_text": "[MC-311994] - 延迟破坏方块的逻辑有时会过早完成，有时会卡住",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "[MC-312016](https://bugs.mojang.com/browse/MC-312016) - The water overlay does not render when the player's head is against a block above them",
+      "translated_text": "[MC-312016] - 当玩家头部碰到上方的方块时，水面叠加效果无法显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "[MC-312270](https://bugs.mojang.com/browse/MC-312270) - The game crashes when trying to open the inventory while spectating a mob",
+      "translated_text": "[MC-312270] - 在观察怪物时尝试打开背包会导致游戏崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-312384](https://bugs.mojang.com/browse/MC-312384) - Standing in fire or lava while under the effect of Freezing spams the fire extinguishing sound",
+      "translated_text": "[MC-312384](https://bugs.mojang.com/browse/MC-312384) - 当玩家处于冻结状态（Freezing）时站在火或熔岩中，会频繁触发灭火声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-312450](https://bugs.mojang.com/browse/MC-312450) - Jumping right before breaking a block makes the block reappear for a short amount of time",
+      "translated_text": "[MC-312450](https://bugs.mojang.com/browse/MC-312450) - 在破坏方块之前立即跳跃会导致方块短暂重新出现",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-312489](https://bugs.mojang.com/browse/MC-312489) - The \"How Did We Get Here?\" advancement doesn't require the Freezing effect",
+      "translated_text": "[MC-312489] - “How Did We Get Here?”（我们的起点）这一成就并不需要冻结效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-312490](https://bugs.mojang.com/browse/MC-312490) - The \"A Furious Cocktail\" advancement doesn't require the Freezing effect",
+      "translated_text": "[MC-312490] - “A Furious Cocktail”（暴怒鸡尾酒）这一成就也不需要冻结效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-312501](https://bugs.mojang.com/browse/MC-312501) - The multiplayer.other_players.not_available string is missing a verb and is improperly capitalized",
+      "translated_text": "[MC-312501](https://bugs.mojang.com/browse/MC-312501) - 多人游戏中的 `other_players.not_available` 这个字符串缺少动词，并且大小写使用不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-312529](https://bugs.mojang.com/browse/MC-312529) - The gui.player_options.unfriend.confirm string refers to the friends list as \"your Friends\", unlike similar strings",
+      "translated_text": "[MC-312529] - 在 `gui.player_options.unfriend.confirm` 中，提到的好友列表被表述为“your Friends”，这与其他类似字符串的用法不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-312530](https://bugs.mojang.com/browse/MC-312530) - The options.hideMatchedNames.tooltip string refers to muted players as \"hidden players\", unlike similar strings",
+      "translated_text": "[MC-312530] - 在 `options.hideMatchedNames.tooltip` 中，被静音的玩家被表述为“hidden players”，这与其他类似字符串的用法不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-312531](https://bugs.mojang.com/browse/MC-312531) - The gui.abuseReport.discard.draft.overwrite string uses the words \"report draft\" instead of \"draft report\", unlike similar strings",
+      "translated_text": "[MC-312531] - 在 `gui.abuseReport.discard.draft.overwrite` 中，使用的是“report draft”而不是“draft report”这样的表述，与其他类似字符串的用法不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-312532](https://bugs.mojang.com/browse/MC-312532) - Zombie villagers spawn as their plains variant in ice caves instead of the snowy one",
+      "translated_text": "[MC-312532] - 僵尸村民在冰洞中生成时使用的是它们原本的平原版本，而不是雪地版本",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-312533](https://bugs.mojang.com/browse/MC-312533) - The gui.abuseReport.draft.restart string uses the verb \"Start\" instead of \"Create\", unlike similar strings",
+      "translated_text": "[MC-312533] - 在 `gui.abuseReport.discardRestart` 中，使用的动词是“Start”而不是“Create”，这与其他类似字符串的用法不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "[MC-312574](https://bugs.mojang.com/browse/MC-312574) - Entities can crack and destroy brittle ice when the mob_griefing game rule is set to false",
+      "translated_text": "[MC-312574](https://bugs.mojang.com/browse/MC-312574) - 当游戏规则 `mob_griefing` 被设置为 `false` 时，实体可以碎裂并破坏脆冰",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "[MC-312576](https://bugs.mojang.com/browse/MC-312576) - Brittle ice can be cracked and destroyed by players inside spawn protection",
+      "translated_text": "[MC-312576](https://bugs.mojang.com/browse/MC-312576) - 玩家可以在出生点保护区内破坏脆冰",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "[MC-312579](https://bugs.mojang.com/browse/MC-312579) - The game crashes when opening the inventory while a below_name scoreboard objective is active",
+      "translated_text": "[MC-312579] - 当 `below_name scoreboard` 目标激活时，打开物品栏会导致游戏崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "[MC-312584](https://bugs.mojang.com/browse/MC-312584) - The chat messages report button claims chat is disabled or blocked when reporting friends from the title screen",
+      "translated_text": "[MC-312584] - 在标题界面举报朋友时，聊天消息的报告按钮显示聊天功能被禁用或被阻止",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[MC-312589](https://bugs.mojang.com/browse/MC-312589) - Frostbites, zombie villagers and zombified piglins have the FrostbiteConversionTime tag",
+      "translated_text": "[MC-312589] - 冻伤、僵尸村民和僵尸化的小 piglin 都带有 `FrostbiteConversionTime` 标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "[MC-312592](https://bugs.mojang.com/browse/MC-312592) - Gravel blobs generate in a different order than before, causing feature order cycles in data packs",
+      "translated_text": "[MC-312592](https://bugs.mojang.com/browse/MC-312592) - 砂砾块的生成顺序发生了变化，导致数据包中的功能顺序出现循环",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-312606](https://bugs.mojang.com/browse/MC-312606) - Sculk sensors are activated upon jukeboxes automatically switching discs in playlists",
+      "translated_text": "[MC-312606](https://bugs.mojang.com/browse/MC-312606) - 当自动更换播放列表中光盘时，Sculk 传感器会被激活",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-312610](https://bugs.mojang.com/browse/MC-312610) - Shulkers do not crack brittle ice when standing on it",
+      "translated_text": "[MC-312610] - Shulkers 站在脆冰上时不会破坏它",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-312624](https://bugs.mojang.com/browse/MC-312624) - Lily pads cannot be placed on brittle ice",
+      "translated_text": "[MC-312624](https://bugs.mojang.com/browse/MC-312624) - 睡莲无法放置在脆冰上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-312625](https://bugs.mojang.com/browse/MC-312625) - Iron golems summoned by villagers can spawn on brittle ice",
+      "translated_text": "[MC-312625] - 村民召唤的铁造型兵可以出现在脆冰上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-312629](https://bugs.mojang.com/browse/MC-312629) - Ice caves generate gravel, diorite, and andesite blobs twice",
+      "translated_text": "[MC-312629] - 冰洞会生成两次砂砾块、闪长岩块和安山岩块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "[MC-312632](https://bugs.mojang.com/browse/MC-312632) - Icicles and sulfur spikes are not part of the #dangerous_for_teleportation block tag, unlike pointed dripstone",
+      "translated_text": "[MC-312632] - 冰柱和硫黄尖锥并不属于 #dangerous_for_teleportation 块标签的范围内，这与尖形的滴水石不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "[MC-312638](https://bugs.mojang.com/browse/MC-312638) - Music discs ejected from jukeboxes with chests above them spawn inside the chests",
+      "translated_text": "[MC-312638] - 当吉他箱上方有箱子时，从吉他箱中弹出的音乐光盘会出现在箱子的内部",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "[MC-312639](https://bugs.mojang.com/browse/MC-312639) - Opening a screen while in a world automatically focuses a button if the tab or any of the arrow keys was used previously",
+      "translated_text": "[MC-312639] - 如果之前使用了标签页键或方向键，那么在世界中打开屏幕时系统会自动将焦点放在某个按钮上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "[MC-312651](https://bugs.mojang.com/browse/MC-312651) - The bottom face of a jukebox uses its new texture when the \"Programmer Art\" resource pack is enabled",
+      "translated_text": "[MC-312651] - 当启用 “Programmer Art” 资源包时，吉他箱的底面会使用新的纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "[MC-312665](https://bugs.mojang.com/browse/MC-312665) - The game crashes in the pause menu when the music toast is on and a music track cannot be played",
+      "translated_text": "[MC-312665] - 当音乐提示功能开启且无法播放音乐曲目时，游戏会在暂停菜单中崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "[MC-312678](https://bugs.mojang.com/browse/MC-312678) - Spruce wall hanging signs use the oak map color on maps",
+      "translated_text": "[MC-312678] - 紫杉木质墙挂标识在某些地图上会显示橡木地图的颜色",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "[MC-312682](https://bugs.mojang.com/browse/MC-312682) - Lava can start fires next to crimson and warped shelves",
+      "translated_text": "[MC-312682] - 熔岩会在绯红和诡异材质的架子旁边引发火灾",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "[MC-312775](https://bugs.mojang.com/browse/MC-312775) - UI elements from screens behind popups can be hovered over with the mouse cursor",
+      "translated_text": "[MC-312775] - 鼠标光标可以悬停在弹窗后面的屏幕元素上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "[MC-312778](https://bugs.mojang.com/browse/MC-312778) - Red and brown mushrooms can visually float on top of walls that have the up block state property set to false",
+      "translated_text": "[MC-312778] - 红色和棕色的蘑菇可以在标记为“不可破坏”（up block state property set to false）的墙壁上“悬浮”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "[MC-312780](https://bugs.mojang.com/browse/MC-312780) - Oak, birch, spruce, and jungle trees no longer convert the block below their trunks into dirt",
+      "translated_text": "[MC-312780] - 橡木、桦木、紫杉和丛林树木不会再将树干下方的方块转化为泥土",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "[MC-312783](https://bugs.mojang.com/browse/MC-312783) - Consumable and equippable items lose their default sounds after upgrading worlds",
+      "translated_text": "[MC-312783] - 世界升级后，可消耗物品和装备会失去其默认的音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "[MC-312801](https://bugs.mojang.com/browse/MC-312801) - Magma cubes stop being visible at a shorter distance than slimes and sulfur cubes of the same size",
+      "translated_text": "[MC-312801] - 同大小的岩浆方块比史莱姆和硫方块的可见距离更短",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "[MC-312804](https://bugs.mojang.com/browse/MC-312804) - Some villager trades still unexpectedly differ from 1.21.11",
+      "translated_text": "[MC-312804] - 某些村民的交易方式仍与1.21.11版本不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0131",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0132",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能",
+      "meta": {}
+    },
+    {
+      "id": "b0133",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会导致你的世界数据损坏，请备份数据，或在不同文件夹中运行测试版本**",
+      "meta": {}
+    },
+    {
+      "id": "b0134",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/a022ed5cfa7e7f8a52c91b21ecf5a976b5a516f9/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/a022ed5cfa7e7f8a52c91b21ecf5a976b5a516f9/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告漏洞：",
+      "meta": {}
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[《我的世界》问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0139",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想交流，欢迎加入我们的[官方《我的世界》Discord服务器](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "It's getting chilly in here! This week's 26.4 Snapshot 6 brings snow bricks, a new set of building blocks for anyone who wants their builds to look even cooler ;) We're also adding a new archetype to the Sulfur Cube family: the Cold Sulfur Cube. It's a frosty little friend that knows a thing or two about ice.\n\nStay cool and happy building!\n\nNew Features\n\nAdded Snow Bricks\n\nAdded new Cold Sulfur Cube archetype\n\nSnow Bricks\n\nSnow Bricks can be crafted from 2x2 Snow Blocks\n\nSnow Bricks have a Slab, Stair, and Wall variant\n\nA Stonecutter cannot be used to craft Snow Brick Slabs, Stairs, and Walls\n\nSnow Bricks belong to the Fast Sliding Sulfur Cube archetype\n\nSnow Bricks only drop themselves if mined with a Shovel\n\nCold Sulfur Cube Archetype\n\nA new Sulfur Cube archetype that belongs to the special archetype category\n\nIt has the same properties as the Fast Sliding archetype, but floats and replaces water below it with a disk of Frosted Ice when it moves, similar to the Frost Walker enchantment\n\nAir blocks above the water block are required for Frosted Ice placement\n\nWill only place Frosted Ice if the Sulfur Cube starts its movement while it is on ground\n\nUsed when the Sulfur Cube absorbs a Blue Ice block\n\nChanges\n\nChanged the default JVM options\n\nMobs falling through lava may take slightly less fall damage in some cases\n\nMinor Tweaks to Blocks, Items and Entities\n\nAll Packed Ice Brick variants will now require a pickaxe to be mined in order to drop themselves\n\nBrittle Ice will no longer crack when a Stray is standing on top of it\n\nSounds\n\nAdded ambient sounds to Ice Crystals\n\nAn Ice crystal block has a chance of playing an ambient sound if it has a block of packed ice below\n\nDefault JVM Options\n\nThe game now automatically sets its Java heap size based on your system's RAM, using up to 25% with a maximum of 4 GB\n\nTechnical Changes\n\nThe Data Pack version is now 125.1\n\nThe Resource Pack version is now 101.0\n\nData Pack Version 125.1\n\nSulfur Cube Archetypes\n\nAdded new location_based_effects field - an optional list of location-based effects\n\nThe format for each entry is exactly the same as a location-based enchantment effect\n\nLevel-based values in this definition will always be evaluated with level 1\n\nWorld Generation\n\nDensity Functions\n\nChanged\n\ngradient\n\nThe from_coordinate and to_coordinate fields now additionally accept a Vertical Anchor, as long as axis is y\n\nAdded\n\ndomain_warp\n\nSamples an input function by applying an offset to each sampled coordinate.\n\nNote: if the offsets change rapidly by large amount, performance may degrade significantly. This function should be used sparingly.\n\nFormat: object with fields:\n\ninput - Density Function, the input function to sample\n\noffset_x - Density Function, the offset to apply to sampled X coordinates\n\nThe result is implicitly truncated to an integer\n\nIf not specified, defaults to: 0.0\n\noffset_y - Density Function, the offset to apply to sampled Y coordinates\n\nThe result is implicitly truncated to an integer\n\nIf not specified, defaults to: 0.0\n\noffset_z - Density Function, the offset to apply to sampled Z coordinates\n\nThe result is implicitly truncated to an integer\n\nIf not specified, defaults to: 0.0\n\nAt least one of offset_x, offset_y, or offset_z must be specified.\n\nStructure Pool Elements\n\nAdded optional\n\ncorner_constraint\n\nField\n\nLimits the placement of a structure pool element this by sampling a Density Function at the corners of its bounding box.\n\nFormat: list of objects with fields:\n\ndensity_function - the Density Function to sample at the bounding box' corner\n\nacceptable_density - inclusive range of doubles, a corner's sampled density within this range counts as \"inside\"\n\npadding - integer between 0 and 8 , the padding of the bounding box before sampling its corners\n\nIf not present, defaults to 0\n\ncorners - one of all , top , or bottom , which corners to check\n\nIf not present, defaults to all\n\nrequired_corners - range between 1 and 8 , the number of corners that must be inside acceptable_density for the check to pass\n\nTags\n\nFluid Tags\n\nAdded #swimmable for fluids that players can swim in\n\nItem Tags\n\nAdded #sulfur_cube_archetype/cold - items that can be placed inside the Sulfur Cube that turns it into a Cold Sulfur Cube archetype\n\nEntity Type Tags\n\nAdded #swimming - entity types that are considered swimming in water\n\nAdded #flying - entity types that are considered flying\n\nResource Pack Version 101.0\n\nBlock Sprites\n\nAdded new Block textures:\n\nblock/snow_bricks.png\n\nSounds\n\nAdded new sound events:\n\nblock.ice_crystal.ambient\n\nBlock Models\n\nRemoved Block Models:\n\nblock/cube_top\n\nFixed bugs in 26.4 Snapshot 6\n\n[MC-127491](https://bugs.mojang.com/browse/MC-127491) - Drowned, zombie villagers and zombified piglins have the DrownedConversionTime and InWaterTime tags\n\n[MC-269319](https://bugs.mojang.com/browse/MC-269319) - Bringing the camera close to the player in third-person view underwater disables the water overlay and zoom effect\n\n[MC-308361](https://bugs.mojang.com/browse/MC-308361) - Small sulfur cubes that split from bucketed sulfur cubes can despawn\n\n[MC-311992](https://bugs.mojang.com/browse/MC-311992) - The code used to join a Realm is inconsistently referred to as both an \"Invite Code\" and a \"Join Code\"\n\n[MC-311994](https://bugs.mojang.com/browse/MC-311994) - Delayed block breaking completes early or stalls\n\n[MC-312016](https://bugs.mojang.com/browse/MC-312016) - The water overlay does not render when the player's head is against a block above them\n\n[MC-312270](https://bugs.mojang.com/browse/MC-312270) - The game crashes when trying to open the inventory while spectating a mob\n\n[MC-312384](https://bugs.mojang.com/browse/MC-312384) - Standing in fire or lava while under the effect of Freezing spams the fire extinguishing sound\n\n[MC-312450](https://bugs.mojang.com/browse/MC-312450) - Jumping right before breaking a block makes the block reappear for a short amount of time\n\n[MC-312489](https://bugs.mojang.com/browse/MC-312489) - The \"How Did We Get Here?\" advancement doesn't require the Freezing effect\n\n[MC-312490](https://bugs.mojang.com/browse/MC-312490) - The \"A Furious Cocktail\" advancement doesn't require the Freezing effect\n\n[MC-312501](https://bugs.mojang.com/browse/MC-312501) - The multiplayer.other_players.not_available string is missing a verb and is improperly capitalized\n\n[MC-312529](https://bugs.mojang.com/browse/MC-312529) - The gui.player_options.unfriend.confirm string refers to the friends list as \"your Friends\", unlike similar strings\n\n[MC-312530](https://bugs.mojang.com/browse/MC-312530) - The options.hideMatchedNames.tooltip string refers to muted players as \"hidden players\", unlike similar strings\n\n[MC-312531](https://bugs.mojang.com/browse/MC-312531) - The gui.abuseReport.discard.draft.overwrite string uses the words \"report draft\" instead of \"draft report\", unlike similar strings\n\n[MC-312532](https://bugs.mojang.com/browse/MC-312532) - Zombie villagers spawn as their plains variant in ice caves instead of the snowy one\n\n[MC-312533](https://bugs.mojang.com/browse/MC-312533) - The gui.abuseReport.draft.restart string uses the verb \"Start\" instead of \"Create\", unlike similar strings\n\n[MC-312574](https://bugs.mojang.com/browse/MC-312574) - Entities can crack and destroy brittle ice when the mob_griefing game rule is set to false\n\n[MC-312576](https://bugs.mojang.com/browse/MC-312576) - Brittle ice can be cracked and destroyed by players inside spawn protection\n\n[MC-312579](https://bugs.mojang.com/browse/MC-312579) - The game crashes when opening the inventory while a below_name scoreboard objective is active\n\n[MC-312584](https://bugs.mojang.com/browse/MC-312584) - The chat messages report button claims chat is disabled or blocked when reporting friends from the title screen\n\n[MC-312589](https://bugs.mojang.com/browse/MC-312589) - Frostbites, zombie villagers and zombified piglins have the FrostbiteConversionTime tag\n\n[MC-312592](https://bugs.mojang.com/browse/MC-312592) - Gravel blobs generate in a different order than before, causing feature order cycles in data packs\n\n[MC-312606](https://bugs.mojang.com/browse/MC-312606) - Sculk sensors are activated upon jukeboxes automatically switching discs in playlists\n\n[MC-312610](https://bugs.mojang.com/browse/MC-312610) - Shulkers do not crack brittle ice when standing on it\n\n[MC-312624](https://bugs.mojang.com/browse/MC-312624) - Lily pads cannot be placed on brittle ice\n\n[MC-312625](https://bugs.mojang.com/browse/MC-312625) - Iron golems summoned by villagers can spawn on brittle ice\n\n[MC-312629](https://bugs.mojang.com/browse/MC-312629) - Ice caves generate gravel, diorite, and andesite blobs twice\n\n[MC-312632](https://bugs.mojang.com/browse/MC-312632) - Icicles and sulfur spikes are not part of the #dangerous_for_teleportation block tag, unlike pointed dripstone\n\n[MC-312638](https://bugs.mojang.com/browse/MC-312638) - Music discs ejected from jukeboxes with chests above them spawn inside the chests\n\n[MC-312639](https://bugs.mojang.com/browse/MC-312639) - Opening a screen while in a world automatically focuses a button if the tab or any of the arrow keys was used previously\n\n[MC-312651](https://bugs.mojang.com/browse/MC-312651) - The bottom face of a jukebox uses its new texture when the \"Programmer Art\" resource pack is enabled\n\n[MC-312665](https://bugs.mojang.com/browse/MC-312665) - The game crashes in the pause menu when the music toast is on and a music track cannot be played\n\n[MC-312678](https://bugs.mojang.com/browse/MC-312678) - Spruce wall hanging signs use the oak map color on maps\n\n[MC-312682](https://bugs.mojang.com/browse/MC-312682) - Lava can start fires next to crimson and warped shelves\n\n[MC-312775](https://bugs.mojang.com/browse/MC-312775) - UI elements from screens behind popups can be hovered over with the mouse cursor\n\n[MC-312778](https://bugs.mojang.com/browse/MC-312778) - Red and brown mushrooms can visually float on top of walls that have the up block state property set to false\n\n[MC-312780](https://bugs.mojang.com/browse/MC-312780) - Oak, birch, spruce, and jungle trees no longer convert the block below their trunks into dirt\n\n[MC-312783](https://bugs.mojang.com/browse/MC-312783) - Consumable and equippable items lose their default sounds after upgrading worlds\n\n[MC-312801](https://bugs.mojang.com/browse/MC-312801) - Magma cubes stop being visible at a shorter distance than slimes and sulfur cubes of the same size\n\n[MC-312804](https://bugs.mojang.com/browse/MC-312804) - Some villager trades still unexpectedly differ from 1.21.11\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/a022ed5cfa7e7f8a52c91b21ecf5a976b5a516f9/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "这里变得冷飕飕的了！本周的 26.4 版本更新（Snapshot 6）带来了雪砖，这是一组新的建筑材料，能让你的建筑看起来更加酷炫 ;) 我们还为硫方怪（Sulfur Cube）系列添加了一个新的原型：冷硫方怪（Cold Sulfur Cube）。它是个喜欢在冰上活动的家伙，对冰有很多了解。\n\n建造时保持冷静和愉快吧！\n\n新功能\n\n增加了雪砖\n\n新增了冷硫方怪原型\n\n雪砖\n\n雪砖可以用 2x2 的雪块（Snow Blocks）制作\n\n雪砖有平板、楼梯和墙壁三种类型\n\n切石机（Stonecutter）无法用于制作雪砖平板、楼梯和墙壁\n\n雪砖属于“快速滑动的硫方怪”（Fast Sliding Sulfur Cube）原型\n\n只有使用铲子挖掘时，雪砖才会掉落\n\n“冷硫方怪”原型\n\n一种属于特殊原型类别的新硫方怪原型\n\n它具有与“快速滑动”原型相同的属性，但在移动时会漂浮，并将下方的水替换为霜冻冰块，类似于“霜冻行者”附魔\n\n放置霜冻冰块需要水方块上方的空气方块\n\n只有当硫方怪在地面时开始移动时，才会放置霜冻冰块\n\n当硫方怪吸收蓝色冰块时使用的状态\n\n发生了变更\n\n更改了默认的JVM选项\n\n在某些情况下，从熔岩中掉落的怪物受到的坠落伤害可能会稍低\n\n对方块、物品和实体进行了一些小调整\n\n现在所有压缩冰砖（Packed Ice Brick）在开采时都需要使用镐才能掉落\n\n脆冰（Brittle Ice）上站立的流浪生物（Stray）不会再导致冰块破裂\n\n声音相关改动\n\n为冰晶（Ice Crystals）添加了环境音效\n\n如果冰晶块下方有压缩冰砖，该冰晶块有可能播放环境音效\n\n默认的JVM选项\n\n游戏现在会根据你的系统内存自动设置Java堆内存大小，最多使用25%，最大值为4GB\n\n技术性改动\n\n数据包（Data Pack）的版本现在是125.1\n\n资源包版本现已更新至101.0\n\n数据包版本更新至125.1\n\n新增“硫方怪”（Sulfur Cube）原型\n\n新增了`location_based_effects`字段——这是一个可选的基于位置效果的列表\n\n每个条目的格式与基于位置的附魔效果完全相同\n\n此定义中的等级相关值始终以等级1进行评估\n\n世界生成（World Generation）相关更新\n\n密度函数（Density Functions）相关更新\n\n部分内容已更改\n\n新增“gradient”（渐变效果）\n\n`from.coordinate` 和 `to.coordinate` 字段现在还支持一个垂直锚点（Vertical Anchor），前提是轴是 y 轴。\n\n已添加\n\n`domain_warp`\n\n通过为每个采样坐标应用偏移量来测试输入函数。\n\n注意：如果偏移量发生剧烈且快速的变化，性能可能会显著下降。应谨慎使用此函数。\n\n格式：带有字段的对象。\n\n`input` - 密度函数（Density Function），用于采样的输入函数。\n\n`offset_x` - 密度函数（Density Function），应用于采样 X 坐标的偏移量。\n\n结果会自动被截断为整数。\n\n如果未指定，默认值为：0.0\n\n偏移量_y - 密度函数，用于对采样的 Y 坐标应用的偏移量\n\n结果会隐式地被截断为整数\n\n如果未指定，默认值为：0.0\n\n偏移量_z - 密度函数，用于对采样的 Z 坐标应用的偏移量\n\n结果会隐式地被截断为整数\n\n如果未指定，默认值为：0.0\n\n必须至少指定 offset_x、offset_y 或 offset_z 中的一个\n\n结构池元素\n\n已添加可选选项\n\n角点约束\n\n字段\n\n通过在结构池元素的边界框的角点处采样密度函数来限制其放置位置\n\n格式：包含字段的对象列表\n\ndensity_function - 在边界框的角点处采样的密度函数\n\nacceptable_density - 双精度浮点数的可接受范围；在指定范围内的采样密度被视为‘内部’\n\npadding - 0到8之间的整数；在采样边界框的角点之前的填充量\n\n如果未指定，则默认为0\n\ncorners - 可以检查的角点：top（顶部）、bottom（底部）或all（全部）\n\n如果未指定，则默认为全部角点\n\nrequired_corners - 1到8之间的范围；必须有多个角点在指定的可接受密度范围内，检查才能通过\n\n标签\n\n流体标签\n\n为可让玩家游泳的流体添加了 #swimmable 标签\n\n物品标签\n\n添加了 #sulfur_cube_archetype/cold 标签——这些物品可以放置在硫方怪内，使其变成冷硫方怪\n\n实体类型标签\n\n为在水中的实体类型添加了 #swimming 标签\n\n为在空中移动的实体类型添加了 #flying 标签\n\n资源包版本 101.0\n\n区块精灵\n\n添加了新的块纹理：</text\n\nblock/snow_bricks.png\n\n音效\n\n添加了新的音效事件：</text\n\nblock.ice_crystal.ambient\n\n块模型\n\n移除了块模型：</text\n\nblock/cube_top\n\n修复了26.4版本Snapshot 6中的错误\n\n[MC-127491](https://bugs.mojang.com/browse/MC-127491) - 淹死的村民和变成僵尸的猪灵会拥有DrownedConversionTime和InWaterTime标签\n\n[MC-269319] - 在水下第三人称视角下将摄像机拉近玩家时，水面的叠加效果和缩放效果会失效\n\n[MC-308361] - 从装满硫磺的桶中分离出来的小硫磺方块会消失\n\n[MC-311992] - 用于加入服务器的代码被不一致地称为“邀请码”（Invite Code）和“加入码”（Join Code）\n\n[MC-311994] - 延迟破坏方块的逻辑有时会过早完成，有时会卡住\n\n[MC-312016] - 当玩家头部碰到上方的方块时，水面叠加效果无法显示\n\n[MC-312270] - 在观察怪物时尝试打开背包会导致游戏崩溃\n\n[MC-312384](https://bugs.mojang.com/browse/MC-312384) - 当玩家处于冻结状态（Freezing）时站在火或熔岩中，会频繁触发灭火声音\n\n[MC-312450](https://bugs.mojang.com/browse/MC-312450) - 在破坏方块之前立即跳跃会导致方块短暂重新出现\n\n[MC-312489] - “How Did We Get Here?”（我们的起点）这一成就并不需要冻结效果\n\n[MC-312490] - “A Furious Cocktail”（暴怒鸡尾酒）这一成就也不需要冻结效果\n\n[MC-312501](https://bugs.mojang.com/browse/MC-312501) - 多人游戏中的 `other_players.not_available` 这个字符串缺少动词，并且大小写使用不正确\n\n[MC-312529] - 在 `gui.player_options.unfriend.confirm` 中，提到的好友列表被表述为“your Friends”，这与其他类似字符串的用法不一致\n\n[MC-312530] - 在 `options.hideMatchedNames.tooltip` 中，被静音的玩家被表述为“hidden players”，这与其他类似字符串的用法不一致\n\n[MC-312531] - 在 `gui.abuseReport.discard.draft.overwrite` 中，使用的是“report draft”而不是“draft report”这样的表述，与其他类似字符串的用法不同\n\n[MC-312532] - 僵尸村民在冰洞中生成时使用的是它们原本的平原版本，而不是雪地版本\n\n[MC-312533] - 在 `gui.abuseReport.discardRestart` 中，使用的动词是“Start”而不是“Create”，这与其他类似字符串的用法不同\n\n[MC-312574](https://bugs.mojang.com/browse/MC-312574) - 当游戏规则 `mob_griefing` 被设置为 `false` 时，实体可以碎裂并破坏脆冰\n\n[MC-312576](https://bugs.mojang.com/browse/MC-312576) - 玩家可以在出生点保护区内破坏脆冰\n\n[MC-312579] - 当 `below_name scoreboard` 目标激活时，打开物品栏会导致游戏崩溃\n\n[MC-312584] - 在标题界面举报朋友时，聊天消息的报告按钮显示聊天功能被禁用或被阻止\n\n[MC-312589] - 冻伤、僵尸村民和僵尸化的小 piglin 都带有 `FrostbiteConversionTime` 标签\n\n[MC-312592](https://bugs.mojang.com/browse/MC-312592) - 砂砾块的生成顺序发生了变化，导致数据包中的功能顺序出现循环\n\n[MC-312606](https://bugs.mojang.com/browse/MC-312606) - 当自动更换播放列表中光盘时，Sculk 传感器会被激活\n\n[MC-312610] - Shulkers 站在脆冰上时不会破坏它\n\n[MC-312624](https://bugs.mojang.com/browse/MC-312624) - 睡莲无法放置在脆冰上\n\n[MC-312625] - 村民召唤的铁造型兵可以出现在脆冰上\n\n[MC-312629] - 冰洞会生成两次砂砾块、闪长岩块和安山岩块\n\n[MC-312632] - 冰柱和硫黄尖锥并不属于 #dangerous_for_teleportation 块标签的范围内，这与尖形的滴水石不同\n\n[MC-312638] - 当吉他箱上方有箱子时，从吉他箱中弹出的音乐光盘会出现在箱子的内部\n\n[MC-312639] - 如果之前使用了标签页键或方向键，那么在世界中打开屏幕时系统会自动将焦点放在某个按钮上\n\n[MC-312651] - 当启用 “Programmer Art” 资源包时，吉他箱的底面会使用新的纹理\n\n[MC-312665] - 当音乐提示功能开启且无法播放音乐曲目时，游戏会在暂停菜单中崩溃\n\n[MC-312678] - 紫杉木质墙挂标识在某些地图上会显示橡木地图的颜色\n\n[MC-312682] - 熔岩会在绯红和诡异材质的架子旁边引发火灾\n\n[MC-312775] - 鼠标光标可以悬停在弹窗后面的屏幕元素上\n\n[MC-312778] - 红色和棕色的蘑菇可以在标记为“不可破坏”（up block state property set to false）的墙壁上“悬浮”\n\n[MC-312780] - 橡木、桦木、紫杉和丛林树木不会再将树干下方的方块转化为泥土\n\n[MC-312783] - 世界升级后，可消耗物品和装备会失去其默认的音效\n\n[MC-312801] - 同大小的岩浆方块比史莱姆和硫方块的可见距离更短\n\n[MC-312804] - 某些村民的交易方式仍与1.21.11版本不同\n\n获取快照\n\nMinecraft: Java版支持使用快照。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能\n\n**测试版本可能会导致你的世界数据损坏，请备份数据，或在不同文件夹中运行测试版本**\n\n跨平台服务器JAR文件\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/a022ed5cfa7e7f8a52c91b21ecf5a976b5a516f9/server.jar)\n\n在这里报告漏洞：\n\n[《我的世界》问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想交流，欢迎加入我们的[官方《我的世界》Discord服务器](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

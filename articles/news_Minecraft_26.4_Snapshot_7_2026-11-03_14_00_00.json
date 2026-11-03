@@ -1,0 +1,1659 @@
+{
+  "title": "Minecraft 26.4 Snapshot 7",
+  "translated_title": "Minecraft 26.4 版本更新：Snapshot 7",
+  "release_date": "2026-11-03T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-7",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-7/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Minecraft 26.4 Snapshot 7 is here with a brand new music disc and a flurry of new blocks! These are the final gameplay features for the upcoming game drop, so grab your tools, turn up the music, and let's get to mining and crafting!",
+      "translated_text": "Minecraft 26.4 Snapshot 7 已经上线，带来了全新的音乐光盘和许多新的方块！这些是即将推出的游戏更新中的最终游戏功能，所以准备好你的工具，打开音乐，让我们开始采矿和制作吧！",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy building!",
+      "translated_text": "建筑愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新增功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Calcite Blockset",
+      "translated_text": "新增了方解石方块集",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "li",
+      "source_text": "Added a new Music Disc with the track \"Flurry\" by Hyper Potions",
+      "translated_text": "新增了一张音乐光盘，其中收录了 Hyper Potions 演唱的曲目“Flurry”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Added a new decorative block to the game... somewhere",
+      "translated_text": "游戏中新增了一种装饰性方块……不过具体位置暂时未知",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "h3",
+      "source_text": "Calcite",
+      "translated_text": "方解石",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Added the Calcite Block Set",
+      "translated_text": "新增了方解石方块集",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Calcite now has a Pillar, Slab, Stair, and Wall variant",
+      "translated_text": "方解石现在有了柱子、板块、楼梯和墙壁三种形态",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Calcite Pillars, Slabs, Stairs, and Walls can also be crafted using a Stonecutter",
+      "translated_text": "方解石柱子、板块、楼梯和墙壁也可以使用切石机来制作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Added the Polished Calcite Block Set",
+      "translated_text": "添加了抛光方解石块集",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "li",
+      "source_text": "Polished Calcite can be crafted from 2x2 Calcite Blocks",
+      "translated_text": "抛光方解石可以从2x2的方解石块制作而成",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "Polished Calcite, Slabs, Stairs, and Walls can also be crafted using a Stonecutter",
+      "translated_text": "抛光方解石、石板、楼梯和墙壁也可以使用切石机制作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Added the Polished Calcite Bricks Block set",
+      "translated_text": "添加了抛光方解石砖块集",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Polished Calcite Bricks can be crafted from 2x2 Polished Calcite Blocks",
+      "translated_text": "抛光方解石砖可以从2x2的抛光方解石块制作而成",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Polished Calcite Brick Slabs, Stairs, and Walls can also be crafted using a Stonecutter",
+      "translated_text": "抛光方解石砖石板、楼梯和墙壁也可以使用切石机制作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "Calcite, Polished Calcite, and Polished Calcite Bricks belong to the Slow Bouncy Sulfur Cube archetype",
+      "translated_text": "方解石、抛光方解石和抛光方解石砖都属于“缓慢跳跃的硫方怪”原型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "h3",
+      "source_text": "Music and Sound",
+      "translated_text": "音乐与音效",
+      "meta": {}
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "Added a new music disc",
+      "translated_text": "添加了一张新的音乐磁盘",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "\"Flurry\" by Hyper Potions",
+      "translated_text": "歌曲 \"Flurry\" 由 Hyper Potions 创作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Has a chance of being found in Igloo basement Chests",
+      "translated_text": "有几率在冰屋地下的箱子里找到",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "Has a comparator output of 7 when played in a Jukebox",
+      "translated_text": "在唱片机中使用时会输出比较器的结果 7",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "发生了变化",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Updated the Main Menu background panorama",
+      "translated_text": "更新了主菜单的背景画面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体进行了小幅调整",
+      "meta": {}
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "Being on fire now counters the Freezing Effect similar to wearing leather armor",
+      "translated_text": "现在着火可以抵消冷冻效果，类似于穿着皮革盔甲",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Wearing any piece of leather armor will prevent Zombies and Skeletons from converting into Frostbites or Strays",
+      "translated_text": "穿着任何一件皮革盔甲都可以防止僵尸和骷髅变成霜冻状态或游荡状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "Strays now spawn in the following biomes:",
+      "translated_text": "游荡状态的角色现在会在以下生物群系中生成：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Deep Frozen Ocean",
+      "translated_text": "极寒冰洋",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "Frozen Ocean",
+      "translated_text": "冰冻海洋",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "Frozen Peaks",
+      "translated_text": "冰冻山峰",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "Frozen River",
+      "translated_text": "冰冻河流",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Jagged Peaks",
+      "translated_text": "崎岖的山峰",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "Snowy Slopes",
+      "translated_text": "积雪的斜坡",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "h3",
+      "source_text": "\"Graphics API\" Video Setting",
+      "translated_text": "\\\\",
+      "meta": {}
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "\"Default\" will now randomly pick either OpenGL or Vulkan on each startup",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *As we've been defaulting to Vulkan for this snapshot series, we have had little testing on the OpenGL backend. After some recent big changes to our rendering code, we want to temporarily test both backends. This will be reverted in a future snapshot.*",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0038",
+      "type": "h3",
+      "source_text": "Realms",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "The \"Play\" buttons in the Realms menus are now purple",
+      "translated_text": "",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "Hovering entries in lists, such as friends or worlds, now outlines the entry in gray",
+      "translated_text": "在列表中悬停时（例如好友或世界），对应的条目会以灰色轮廓显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "Navigating to edit boxes now differs between keyboard and arrow key navigation",
+      "translated_text": "使用键盘和箭头键导航时，进入编辑框的方式有所不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "When using the Tab key, the edit box will be focused and editable",
+      "translated_text": "使用 Tab 键时，编辑框会变为可编辑状态",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "When using arrow keys, the edit box will be highlighted but not editable, similar to slider buttons",
+      "translated_text": "使用箭头键时，编辑框会被高亮显示但无法编辑，与滑块按钮类似",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Pressing Enter or Space will make the box editable",
+      "translated_text": "按下 Enter 或空格键后，编辑框将变为可编辑状态",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "The mouse cursor is now hidden while navigating the UI with the keyboard, and reappears when the mouse is moved",
+      "translated_text": "使用键盘导航 UI 时，鼠标光标会隐藏；当移动鼠标时，光标会重新出现",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Added a tooltip to the recipe book button",
+      "translated_text": "为配方书按钮添加了工具提示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "h3",
+      "source_text": "Accessibility",
+      "translated_text": "辅助功能（可访问性优化）",
+      "meta": {}
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "Gameplay screens, such as the Crafting Table, now support keyboard navigation and narration",
+      "translated_text": "游戏玩法界面（如制图台）现在支持键盘导航和语音播报",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *This is the first step towards making gameplay screens more accessible. As always, we'd love to hear your feedback, so please head on over to [the feedback site](https://aka.ms/MCKeyboardNavigationNarrationGameplayScreensJava).*",
+      "translated_text": "**开发者备注**：*这是让游戏画面更易使用的第一步。一如既往，我们很乐意听取您的反馈，请访问[反馈网站](https://aka.ms/MCKeyboardNavigationNarrationGameplayScreensJava)。",
+      "meta": {}
+    },
+    {
+      "id": "b0051",
+      "type": "h4",
+      "source_text": "Gameplay Screen Keyboard Navigation",
+      "translated_text": "游戏画面的键盘导航",
+      "meta": {}
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "Gameplay screens can now be focused and used with the keyboard",
+      "translated_text": "现在可以使用键盘聚焦和操作游戏画面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "li",
+      "source_text": "Tab moves between groups of slots, and the arrow keys move between slots within a group",
+      "translated_text": "Tab 键在不同的物品槽组之间切换，箭头键在同一个槽组内的物品之间切换",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "The Stonecutter recipes, Loom patterns, Enchanting Table options, and Villager and Wandering Trader trades are also navigated as a group",
+      "translated_text": "切石机配方、织布机图案、附魔台选项以及村民和流浪商人的交易也属于同一组可导航的选项",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "The following interactions can be used on slots:",
+      "translated_text": "可以在这些物品槽上执行以下操作：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "Enter/Space behaves as a left-click",
+      "translated_text": "按 Enter/Space 键相当于左键点击",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "Holding Control while pressing Enter/Space behaves like a right-click",
+      "translated_text": "按住 Control 键再按 Enter/Space 键相当于右键点击",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Holding Shift while pressing Enter/Space behaves like Shift-clicking",
+      "translated_text": "按住 Shift 键的同时按 Enter/Space 键的行为类似于使用 Shift 键点击",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "Double-pressing Enter/Space collects matching items, like double-clicking",
+      "translated_text": "双击 Enter/Space 键可以收集相同类型的物品，类似于双击操作",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "li",
+      "source_text": "Moving with the arrow keys while holding Enter/Space spreads the carried stack across slots, like holding left-click and dragging with the mouse",
+      "translated_text": "按住 Enter/Space 键的同时使用箭头键移动，会将携带的物品堆分配到其他槽位中，类似于按住鼠标左键并拖动",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "The hotbar keys and the Drop item key act on the focused slot",
+      "translated_text": "热键和物品掉落键作用于当前聚焦的槽位",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "The Creative Inventory and the Recipe Book are not yet supported",
+      "translated_text": "创意背包和食谱书目前还不支持",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "h4",
+      "source_text": "Gameplay Screen Narration",
+      "translated_text": "游戏玩法画面的文字说明",
+      "meta": {}
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "The narrator now reads out slots in gameplay screens",
+      "translated_text": "现在画面上会有文字提示用户的操作结果，例如告诉玩家选择的是哪个槽位",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "Slots are narrated with their contents, item tooltip, and name for special slots such as armor, fuel, and potion slots",
+      "translated_text": "对于特殊槽位（如护甲、燃料和药水槽位），系统会同时说明槽位的名称、内含物品以及物品的提示信息",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "The slot's position is narrated (e.g. \"3 out of 9\") in a group or as a column and row in a grid",
+      "translated_text": "槽位的位置会通过文字提示出来（例如：‘第3个槽位（共9个）’），无论是作为一组显示还是作为网格中的行列显示",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "Stonecutter recipes and Loom patterns are narrated with their column and row, and trades and Enchanting Table options with their position in the list",
+      "translated_text": "切石机的制作配方和织布机的图案会以行列形式展示；交易和附魔台的相关选项则根据其在列表中的位置进行说明。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "When a group is focused, the narrator mentions which arrow keys move within it",
+      "translated_text": "当选中的群体被高亮显示时，旁白会说明哪些箭头键可用于在该群体内移动。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性变更。",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "The Data Pack version is now 126.0",
+      "translated_text": "数据包的版本现已更新为126.0。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 102.0",
+      "translated_text": "资源包的版本现已更新为102.0。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0072",
+      "type": "h2",
+      "source_text": "Data Pack Version 126.0",
+      "translated_text": "数据包版本：126.0",
+      "meta": {}
+    },
+    {
+      "id": "b0073",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "The effect command now accepts mob effect tags",
+      "translated_text": "现在，“effect”命令可以接受怪物效果标签作为参数。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "Time arguments now fail if the provided value in ticks is greater than 2147483647",
+      "translated_text": "如果提供的时间值（以游戏刻为单位）超过2147483647，命令将无法正常执行。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "h3",
+      "source_text": "Debug Worlds",
+      "translated_text": "调试世界功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "Can now be modified as normal with block placement, breaking, and commands",
+      "translated_text": "现在可以通过放置方块、破坏方块和使用命令来正常修改它们",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "The blocks will no longer update automatically, you must create a new debug world to see new blocks",
+      "translated_text": "这些方块将不再自动更新，你需要创建一个新的调试世界才能看到新的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "Now include one of each entity type",
+      "translated_text": "现在每种实体类型都会包含一个实例",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "Entity types that can be babies will have a baby version included above the adult version",
+      "translated_text": "能够产下幼年的实体类型，在成年版本的上方会显示幼年版本",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "Will now be tick-frozen on load",
+      "translated_text": "加载游戏时这些实体将被设置为“冻结”状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "Will now be created in \"Normal\" difficulty",
+      "translated_text": "这些实体现在将在“普通”难度模式下生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "Will now have the following game rules set to false :",
+      "translated_text": "现在以下游戏规则将被设置为“关闭”状态：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "advance_time",
+      "translated_text": "advance_time",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "advance_weather (this was already the case, listing here for completeness)",
+      "translated_text": "advance_weather（这个功能本来就已经存在了，这里只是为了完整性而列出）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "spawn_wandering_traders",
+      "translated_text": "spawn_wandering_traders",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "tnt_explodes",
+      "translated_text": "tnt_explodes",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "Removed unused #swimming and #flying Entity Type Tags",
+      "translated_text": "移除了未使用的 #swimming 和 #flying 实体类型标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "h3",
+      "source_text": "Block Sound Sets",
+      "translated_text": "区块音效集",
+      "meta": {}
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "Removed unused minecraft:twisting_vines block sound set",
+      "translated_text": "移除了未使用的 minecraft:twisting_vines 匹配音效集",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "h2",
+      "source_text": "Resource Pack Version 102.0",
+      "translated_text": "资源包版本 102.0",
+      "meta": {}
+    },
+    {
+      "id": "b0093",
+      "type": "h3",
+      "source_text": "Block Sprites",
+      "translated_text": "区块精灵",
+      "meta": {}
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "Renamed Block Textures:",
+      "translated_text": "更改了区块纹理的命名",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "Renamed block/icicle_down_base.png to block/icicle_base.png",
+      "translated_text": "将 block/icicle_down_base.png 重命名为 block/icicle_base.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "Renamed block/icicle_down_frustum.png to block/icicle_frustum.png",
+      "translated_text": "将 block/icicle_down_frustum.png 重命名为 block/icicle_frustum.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "Renamed block/icicle_down_middle.png to block/icicle_middle.png",
+      "translated_text": "将 block/icicle_down_middle.png 重命名为 block/icicle_middle.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "Renamed block/icicle_down_tip.png to block/icicle_tip.png",
+      "translated_text": "将 block/icicle_down_tip.png 重命名为 block/icicle_tip.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "Renamed block/icicle_down_tip_merge.png to block/icicle_tip_merge.png",
+      "translated_text": "将 block/icicle_down_tip_merge.png 重命名为 block/icicle_tip_merge.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "Added new Block textures:",
+      "translated_text": "添加了新的方块纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "block/calcite_pillar_side.png",
+      "translated_text": "block/calcite_pillar_side.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "block/calcite_pillar_top.png",
+      "translated_text": "block/calcite_pillar_top.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "block/polished_calcite.png",
+      "translated_text": "block/polished_calcite.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "block/polished_calcite_bricks.png",
+      "translated_text": "block/polished_calcite_bricks.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "block/polished_calcite_slab_side.png",
+      "translated_text": "block/polished_calcite_slab_side.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "h3",
+      "source_text": "Item Sprites",
+      "translated_text": "物品精灵（Item Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "Added new Item texture:",
+      "translated_text": "添加了新的物品纹理：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "item/music_disc_flurry.png",
+      "translated_text": "item/music_disc_flurry.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效",
+      "meta": {}
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "Added new sound event:",
+      "translated_text": "添加了新的音效事件：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "entity.parrot.imitate.frostbite",
+      "translated_text": "entity.parrot.imitate.frostbite",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 7",
+      "translated_text": "修复了26.4快照7中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-80859](https://bugs.mojang.com/browse/MC-80859) - Starting to drag item stacks over other compatible stacks makes the latter invisible until their stack size increases",
+      "translated_text": "[MC-80859](https://bugs.mojang.com/browse/MC-80859) - 将物品堆拖动到其他兼容的物品堆上时，后者会暂时变得不可见，直到它们的堆大小增加",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-148140](https://bugs.mojang.com/browse/MC-148140) - The scroll bar in the stonecutter UI appears 2 pixels too low when at the bottom of its rail",
+      "translated_text": "[MC-148140](https://bugs.mojang.com/browse/MC-148140) - 在切石机界面中，当滚动条位于轨道底部时，显示位置低了2像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-165610](https://bugs.mojang.com/browse/MC-165610) - The scroll bar in the trading UI reaches the bottom too early",
+      "translated_text": "[MC-165610](https://bugs.mojang.com/browse/MC-165610) - 交易界面的滚动条会过早到达底部",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-185630](https://bugs.mojang.com/browse/MC-185630) - The bounding boxes of options in the enchanting table UI for clicking and hovering are inaccurate",
+      "translated_text": "[MC-185630](https://bugs.mojang.com/browse/MC-185630) - 在附魔台界面上，用于点击和悬停的选项边界框不精确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-235363](https://bugs.mojang.com/browse/MC-235363) - Stonecutter recipe hitboxes are misaligned in height",
+      "translated_text": "[MC-235363] - 切石机的制作配方显示区域在高度上存在对齐问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "[MC-264554](https://bugs.mojang.com/browse/MC-264554) - The button highlights of focused trades in the trading UI move to other trades when scrolling",
+      "translated_text": "[MC-264554] - 在交易界面中，高亮显示的道具在被滚动时，会转移到其他道具上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "[MC-270272](https://bugs.mojang.com/browse/MC-270272) - Any mouse button can be used to select options in the enchanting table UI",
+      "translated_text": "[MC-270272] - 在附魔台界面中，可以使用任意鼠标按钮来选择选项",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "[MC-270555](https://bugs.mojang.com/browse/MC-270555) - The outline of certain slots is obscured before the item is placed within the slot",
+      "translated_text": "[MC-270555] - 在物品放入插槽之前，某些插槽的边框会暂时被遮盖",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "[MC-280006](https://bugs.mojang.com/browse/MC-280006) - Experience orbs floating around a player no longer fall to the ground when that player leaves the server",
+      "translated_text": "[MC-280006] - 当玩家离开服务器时，漂浮在玩家周围的经验球不再掉落到地面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "[MC-297502](https://bugs.mojang.com/browse/MC-297502) - Any mouse button can be used to select options in the enchanting table, loom and stonecutter UIs",
+      "translated_text": "[MC-297502] - 在附魔台、织布机和切石机界面中，可以使用任意鼠标按钮来选择选项",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "[MC-297624](https://bugs.mojang.com/browse/MC-297624) - The stonecutter UI buttons are not keyboard-navigable, preventing the player from refilling the input by pressing Space",
+      "translated_text": "[MC-297624] - 切石机的用户界面按钮无法通过键盘导航，玩家无法通过按空格键来重新输入内容",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "[MC-298546](https://bugs.mojang.com/browse/MC-298546) - The loom UI buttons are not keyboard-navigable, preventing the player from refilling the inputs by pressing Space",
+      "translated_text": "[MC-298546] - 织布机的用户界面按钮无法通过键盘导航，玩家无法通过按空格键来重新输入内容",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "[MC-298547](https://bugs.mojang.com/browse/MC-298547) - The enchanting table UI buttons are not keyboard-navigable",
+      "translated_text": "[MC-298547] - 附魔台的用户界面按钮无法通过键盘导航",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "[MC-302022](https://bugs.mojang.com/browse/MC-302022) - Experience orbs desync after bouncing on lava",
+      "translated_text": "[MC-302022] - 经验值球在碰到熔岩后会失去同步",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "[MC-306817](https://bugs.mojang.com/browse/MC-306817) - The scroll position in the trading UI is not synced to the visual scroll bar when there's a large amount of trades",
+      "translated_text": "[MC-306817] - 当交易数量较多时，交易界面的滚动位置与可视滚动条不同步",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "[MC-306853](https://bugs.mojang.com/browse/MC-306853) - /time does not throw errors when the values are too high",
+      "translated_text": "[MC-306853](https://bugs.mojang.com/browse/MC-306853) - 当数值过高时，/time 不会抛出错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "[MC-307422](https://bugs.mojang.com/browse/MC-307422) - Changing the window size causes warnings in the game log",
+      "translated_text": "[MC-307422](https://bugs.mojang.com/browse/MC-307422) - 改变窗口大小会导致游戏日志中出现警告",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "li",
+      "source_text": "[MC-307991](https://bugs.mojang.com/browse/MC-307991) - The game prefers to use the software GPU (llvmpipe) with the Vulkan rendering backend rather than the actual GPU with the OpenGL one when the GPU in use does not support Vulkan",
+      "translated_text": "[MC-307991] - 当使用的 GPU 不支持 Vulkan 时，游戏更倾向于使用软件 GPU（llvmpipe）和 Vulkan 渲染后端，而不是实际的 OpenGL GPU",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "[MC-309586](https://bugs.mojang.com/browse/MC-309586) - The scroll position in the stonecutter UI resets when taking an item out of the result slot",
+      "translated_text": "[MC-309586] - 从结果格中取出物品时，切石机界面的滚动位置会重置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "[MC-311029](https://bugs.mojang.com/browse/MC-311029) - The equipment entity predicate doesn't support the saddle slot",
+      "translated_text": "[MC-311029] - 设备实体谓词不支持马鞍槽",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "[MC-311520](https://bugs.mojang.com/browse/MC-311520) - writeToTexture and copyBufferToTexture never check for GL errors, unlike the neighboring methods",
+      "translated_text": "[MC-311520] - 方法 `writeToTexture` 和 `copyBufferToTexture` 从不检查 GL 错误，这与邻近的方法不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "li",
+      "source_text": "[MC-311522](https://bugs.mojang.com/browse/MC-311522) - The source buffer overrun check in FrontendCommandEncoder#writeToTexture uses integer arithmetic",
+      "translated_text": "[MC-311522] - `FrontendCommandEncoder#writeToTexture` 中的源缓冲区溢出检查使用了整数运算",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "[MC-311856](https://bugs.mojang.com/browse/MC-311856) - Error when writing textures to the buffer with the OpenGL rendering backend",
+      "translated_text": "[MC-311856] - 使用 OpenGL 渲染后台写入纹理时出现错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "li",
+      "source_text": "[MC-311883](https://bugs.mojang.com/browse/MC-311883) - Mobs jitter and slide in crowds when they cannot reach the targeted player",
+      "translated_text": "[MC-311883] - 当怪物无法到达目标玩家时，它们会在人群中抖动或滑动",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "[MC-311954](https://bugs.mojang.com/browse/MC-311954) - The OpenGL rendering backend can't be used when running under XWayland",
+      "translated_text": "[MC-311954] - 在 XWayland 下运行时无法使用 OpenGL 渲染后台",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "li",
+      "source_text": "[MC-311974](https://bugs.mojang.com/browse/MC-311974) - The new entity interpolation method introduced in 26.3 causes observable stutters compared to prior versions",
+      "translated_text": "[MC-311974](https://bugs.mojang.com/browse/MC-311974) - 在 26.3 版本中引入的新实体插值方法与之前版本相比会导致明显的画面卡顿现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0139",
+      "type": "li",
+      "source_text": "[MC-312394](https://bugs.mojang.com/browse/MC-312394) - Drowned with tridents have a significantly reduced attack range",
+      "translated_text": "[MC-312394](https://bugs.mojang.com/browse/MC-312394) - 被三叉戟击中的玩家受到的攻击范围显著减小",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "[MC-312405](https://bugs.mojang.com/browse/MC-312405) - The texture of frostbites contains unused pixels on the top left",
+      "translated_text": "[MC-312405](https://bugs.mojang.com/browse/MC-312405) - 冰霜伤害的纹理在左上角包含未使用的像素",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "[MC-312430](https://bugs.mojang.com/browse/MC-312430) - Falling pointed blocks deal more damage than before",
+      "translated_text": "[MC-312430](https://bugs.mojang.com/browse/MC-312430) - 下落的尖刺方块造成的伤害比之前更大",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "li",
+      "source_text": "[MC-312491](https://bugs.mojang.com/browse/MC-312491) - Parrots don't imitate frostbites",
+      "translated_text": "[MC-312491](https://bugs.mojang.com/browse/MC-312491) - 鹦鹉不会模仿冰霜伤害的效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "[MC-312637](https://bugs.mojang.com/browse/MC-312637) - Sculk sensors aren't activated upon ice melting in the Nether",
+      "translated_text": "[MC-312637](https://bugs.mojang.com/browse/MC-312637) - 在下界中冰块融化时，Sculk 传感器不会被激活",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "[MC-312653](https://bugs.mojang.com/browse/MC-312653) - The below_name score is displayed above entities whose name tag is hidden",
+      "translated_text": "[MC-312653] - 当实体的名称标签被隐藏时，该实体的分数（below_name）会显示在其上方",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "li",
+      "source_text": "[MC-312658](https://bugs.mojang.com/browse/MC-312658) - Ores inside tuff blobs at heights 0-3 no longer generate as their deepslate variant",
+      "translated_text": "[MC-312658] - 位于高度0-3范围内的凝灰岩团块中的矿石不再生成为深板岩变体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "[MC-312667](https://bugs.mojang.com/browse/MC-312667) - The tooltips of the items in the statistics menu don't appear when they are focused with the keyboard",
+      "translated_text": "[MC-312667] - 当用键盘聚焦于物品时，统计菜单中的物品提示信息无法显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "[MC-312672](https://bugs.mojang.com/browse/MC-312672) - The narrator reads villager trade offers as \"button\" without providing any context",
+      "translated_text": "[MC-312672] - 叙述者在播放村民交易信息时将其称为“button”，而没有提供任何背景信息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "li",
+      "source_text": "[MC-312733](https://bugs.mojang.com/browse/MC-312733) - Snow golem attack range is significantly reduced",
+      "translated_text": "[MC-312733] - 雪傀儡的攻击范围显著减小",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "[MC-312768](https://bugs.mojang.com/browse/MC-312768) - Any mouse button can be used to drag the scroll bars of the stonecutter, loom, and villager trading menus",
+      "translated_text": "[MC-312768] - 任何鼠标按键都可以用于拖动切石机、织布机以及村民交易菜单的滚动条",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "[MC-312779](https://bugs.mojang.com/browse/MC-312779) - Heads and blocks worn by small armor stands are stretched",
+      "translated_text": "[MC-312779] - 小型护甲站立物所佩戴的头部和方块会出现拉伸现象",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "[MC-312781](https://bugs.mojang.com/browse/MC-312781) - Witches, withers, and llamas no longer attack targets outside of their attack radius",
+      "translated_text": "[MC-312781] - 女巫、凋灵和羊驼不会再攻击其攻击范围内的目标",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "li",
+      "source_text": "[MC-312785](https://bugs.mojang.com/browse/MC-312785) - Any mouse button can be used to select entries in the \"Experimental Feature Requirements\" screen",
+      "translated_text": "[MC-312785] - 可以使用任何鼠标按钮来选择“实验功能需求”界面中的条目",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "[MC-312803](https://bugs.mojang.com/browse/MC-312803) - Lightning removes the wax from a waxed copper golem, unlike waxed copper blocks",
+      "translated_text": "[MC-312803] - 闪电会消除蜡制铜像上的蜡，而蜡制铜块则不会出现这种情况",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "[MC-312823](https://bugs.mojang.com/browse/MC-312823) - Any mouse button can be used to select entries in the \"Add Realm\" screen",
+      "translated_text": "[MC-312823] - 可以使用任何鼠标按钮来选择“添加服务器”界面中的条目",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "[MC-312824](https://bugs.mojang.com/browse/MC-312824) - Any mouse button can be used to select entries in the \"Changes From Last Backup\" screen",
+      "translated_text": "[MC-312824] - 可以使用任何鼠标按钮来选择“上次备份后的更改”界面中的条目",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "[MC-312837](https://bugs.mojang.com/browse/MC-312837) - The twisting_vines block sound set is unused",
+      "translated_text": "[MC-312837](https://bugs.mojang.com/browse/MC-312837) - The twisting_vines 块的音效集未被使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "li",
+      "source_text": "[MC-312845](https://bugs.mojang.com/browse/MC-312845) - Item frames and glow item frames can be placed outside of the world border by placing them against blocks within the world border, unlike paintings",
+      "translated_text": "[MC-312845](https://bugs.mojang.com/browse/MC-312845) - 与绘画不同，物品框架（Item frames）和发光物品框架（Glow item frames）可以靠放在世界边界内的块上来放置在世界边界之外",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "[MC-312864](https://bugs.mojang.com/browse/MC-312864) - Semi-transparent text renders darker when the \"Improved Transparency\" option is enabled",
+      "translated_text": "[MC-312864](https://bugs.mojang.com/browse/MC-312864) - 启用“改进的透明度”（Improved Transparency）选项后，半透明文本的显示效果会变得更暗",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "[MC-312866](https://bugs.mojang.com/browse/MC-312866) - Any mouse button can be used to open the \"Terms of Service\" link on the \"Realms Terms of Service\" screen",
+      "translated_text": "[MC-312866](https://bugs.mojang.com/browse/MC-312866) - 可以使用任意鼠标按钮打开“Realms 条款和条件”（Realms Terms of Service）屏幕上的“服务条款”（Terms of Service）链接",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "li",
+      "source_text": "[MC-312893](https://bugs.mojang.com/browse/MC-312893) - Horses' gallopSoundCounter is not reset properly",
+      "translated_text": "[MC-312893](https://bugs.mojang.com/browse/MC-312893) - 马的奔跑声音计数器（Horses' gallopSoundCounter）没有正确重置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0161",
+      "type": "li",
+      "source_text": "[MC-312909](https://bugs.mojang.com/browse/MC-312909) - The campsite_pale_garden_2 abandoned camp structure never generates",
+      "translated_text": "[MC-312909] - ‘campsite_pale_garden_2’废弃营地的建筑结构永远不会生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0162",
+      "type": "li",
+      "source_text": "[MC-312912](https://bugs.mojang.com/browse/MC-312912) - The giant trees in the campsite_old_growth_pine_taiga_1 , campsite_old_growth_spruce_taiga_4 , and campsite_snowy_taiga_3 abandoned camp structures never generate",
+      "translated_text": "[MC-312912] - ‘campsite_old_growth_pine_taiga_1’、‘campsite_old_growth_spruce_taiga_4’和‘campsite_snowy_taiga_3’废弃营地中的巨树永远不会生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "[MC-312913](https://bugs.mojang.com/browse/MC-312913) - The trees in several abandoned camp tents don't generate",
+      "translated_text": "[MC-312913] - 几个废弃营地帐篷中的树木都不会生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "li",
+      "source_text": "[MC-312942](https://bugs.mojang.com/browse/MC-312942) - The sound previews of volume sliders cannot be heard when the \"UI\" volume slider is turned off",
+      "translated_text": "[MC-312942] - 当“UI”音量滑块关闭时，无法听到音量滑块的预览音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0165",
+      "type": "li",
+      "source_text": "[MC-312962](https://bugs.mojang.com/browse/MC-312962) - The Vulkan rendering backend leaks native memory on every render pass",
+      "translated_text": "[MC-312962] - Vulkan渲染后端在每次渲染过程中都会泄漏本地内存",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0166",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取更新快照",
+      "meta": {}
+    },
+    {
+      "id": "b0167",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版现在支持使用快照了。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0168",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的游戏世界，请务必备份数据，或者将测试版本运行在与主游戏世界不同的文件夹中。**",
+      "meta": {}
+    },
+    {
+      "id": "b0169",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/0870c02432ef2391ba7c586c3e113e98406aea20/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/0870c02432ef2391ba7c586c3e113e98406aea20/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告游戏问题：",
+      "meta": {}
+    },
+    {
+      "id": "b0172",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft问题追踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0173",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0174",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想交流，欢迎加入我们的[官方 Minecraft Discord 存在](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Minecraft 26.4 Snapshot 7 is here with a brand new music disc and a flurry of new blocks! These are the final gameplay features for the upcoming game drop, so grab your tools, turn up the music, and let's get to mining and crafting!\n\nHappy building!\n\nNew Features\n\nAdded Calcite Blockset\n\nAdded a new Music Disc with the track \"Flurry\" by Hyper Potions\n\nAdded a new decorative block to the game... somewhere\n\nCalcite\n\nAdded the Calcite Block Set\n\nCalcite now has a Pillar, Slab, Stair, and Wall variant\n\nCalcite Pillars, Slabs, Stairs, and Walls can also be crafted using a Stonecutter\n\nAdded the Polished Calcite Block Set\n\nPolished Calcite can be crafted from 2x2 Calcite Blocks\n\nPolished Calcite, Slabs, Stairs, and Walls can also be crafted using a Stonecutter\n\nAdded the Polished Calcite Bricks Block set\n\nPolished Calcite Bricks can be crafted from 2x2 Polished Calcite Blocks\n\nPolished Calcite Brick Slabs, Stairs, and Walls can also be crafted using a Stonecutter\n\nCalcite, Polished Calcite, and Polished Calcite Bricks belong to the Slow Bouncy Sulfur Cube archetype\n\nMusic and Sound\n\nAdded a new music disc\n\n\"Flurry\" by Hyper Potions\n\nHas a chance of being found in Igloo basement Chests\n\nHas a comparator output of 7 when played in a Jukebox\n\nChanges\n\nUpdated the Main Menu background panorama\n\nMinor Tweaks to Blocks, Items and Entities\n\nBeing on fire now counters the Freezing Effect similar to wearing leather armor\n\nWearing any piece of leather armor will prevent Zombies and Skeletons from converting into Frostbites or Strays\n\nStrays now spawn in the following biomes:\n\nDeep Frozen Ocean\n\nFrozen Ocean\n\nFrozen Peaks\n\nFrozen River\n\nJagged Peaks\n\nSnowy Slopes\n\n\"Graphics API\" Video Setting\n\n\"Default\" will now randomly pick either OpenGL or Vulkan on each startup\n\n**Developer's Note**: *As we've been defaulting to Vulkan for this snapshot series, we have had little testing on the OpenGL backend. After some recent big changes to our rendering code, we want to temporarily test both backends. This will be reverted in a future snapshot.*\n\nRealms\n\nThe \"Play\" buttons in the Realms menus are now purple\n\nUI\n\nHovering entries in lists, such as friends or worlds, now outlines the entry in gray\n\nNavigating to edit boxes now differs between keyboard and arrow key navigation\n\nWhen using the Tab key, the edit box will be focused and editable\n\nWhen using arrow keys, the edit box will be highlighted but not editable, similar to slider buttons\n\nPressing Enter or Space will make the box editable\n\nThe mouse cursor is now hidden while navigating the UI with the keyboard, and reappears when the mouse is moved\n\nAdded a tooltip to the recipe book button\n\nAccessibility\n\nGameplay screens, such as the Crafting Table, now support keyboard navigation and narration\n\n**Developer's Note**: *This is the first step towards making gameplay screens more accessible. As always, we'd love to hear your feedback, so please head on over to [the feedback site](https://aka.ms/MCKeyboardNavigationNarrationGameplayScreensJava).*\n\nGameplay Screen Keyboard Navigation\n\nGameplay screens can now be focused and used with the keyboard\n\nTab moves between groups of slots, and the arrow keys move between slots within a group\n\nThe Stonecutter recipes, Loom patterns, Enchanting Table options, and Villager and Wandering Trader trades are also navigated as a group\n\nThe following interactions can be used on slots:\n\nEnter/Space behaves as a left-click\n\nHolding Control while pressing Enter/Space behaves like a right-click\n\nHolding Shift while pressing Enter/Space behaves like Shift-clicking\n\nDouble-pressing Enter/Space collects matching items, like double-clicking\n\nMoving with the arrow keys while holding Enter/Space spreads the carried stack across slots, like holding left-click and dragging with the mouse\n\nThe hotbar keys and the Drop item key act on the focused slot\n\nThe Creative Inventory and the Recipe Book are not yet supported\n\nGameplay Screen Narration\n\nThe narrator now reads out slots in gameplay screens\n\nSlots are narrated with their contents, item tooltip, and name for special slots such as armor, fuel, and potion slots\n\nThe slot's position is narrated (e.g. \"3 out of 9\") in a group or as a column and row in a grid\n\nStonecutter recipes and Loom patterns are narrated with their column and row, and trades and Enchanting Table options with their position in the list\n\nWhen a group is focused, the narrator mentions which arrow keys move within it\n\nTechnical Changes\n\nThe Data Pack version is now 126.0\n\nThe Resource Pack version is now 102.0\n\nData Pack Version 126.0\n\nCommands\n\nThe effect command now accepts mob effect tags\n\nTime arguments now fail if the provided value in ticks is greater than 2147483647\n\nDebug Worlds\n\nCan now be modified as normal with block placement, breaking, and commands\n\nThe blocks will no longer update automatically, you must create a new debug world to see new blocks\n\nNow include one of each entity type\n\nEntity types that can be babies will have a baby version included above the adult version\n\nWill now be tick-frozen on load\n\nWill now be created in \"Normal\" difficulty\n\nWill now have the following game rules set to false :\n\nadvance_time\n\nadvance_weather (this was already the case, listing here for completeness)\n\nspawn_wandering_traders\n\ntnt_explodes\n\nTags\n\nRemoved unused #swimming and #flying Entity Type Tags\n\nBlock Sound Sets\n\nRemoved unused minecraft:twisting_vines block sound set\n\nResource Pack Version 102.0\n\nBlock Sprites\n\nRenamed Block Textures:\n\nRenamed block/icicle_down_base.png to block/icicle_base.png\n\nRenamed block/icicle_down_frustum.png to block/icicle_frustum.png\n\nRenamed block/icicle_down_middle.png to block/icicle_middle.png\n\nRenamed block/icicle_down_tip.png to block/icicle_tip.png\n\nRenamed block/icicle_down_tip_merge.png to block/icicle_tip_merge.png\n\nAdded new Block textures:\n\nblock/calcite_pillar_side.png\n\nblock/calcite_pillar_top.png\n\nblock/polished_calcite.png\n\nblock/polished_calcite_bricks.png\n\nblock/polished_calcite_slab_side.png\n\nItem Sprites\n\nAdded new Item texture:\n\nitem/music_disc_flurry.png\n\nSounds\n\nAdded new sound event:\n\nentity.parrot.imitate.frostbite\n\nFixed bugs in 26.4 Snapshot 7\n\n[MC-80859](https://bugs.mojang.com/browse/MC-80859) - Starting to drag item stacks over other compatible stacks makes the latter invisible until their stack size increases\n\n[MC-148140](https://bugs.mojang.com/browse/MC-148140) - The scroll bar in the stonecutter UI appears 2 pixels too low when at the bottom of its rail\n\n[MC-165610](https://bugs.mojang.com/browse/MC-165610) - The scroll bar in the trading UI reaches the bottom too early\n\n[MC-185630](https://bugs.mojang.com/browse/MC-185630) - The bounding boxes of options in the enchanting table UI for clicking and hovering are inaccurate\n\n[MC-235363](https://bugs.mojang.com/browse/MC-235363) - Stonecutter recipe hitboxes are misaligned in height\n\n[MC-264554](https://bugs.mojang.com/browse/MC-264554) - The button highlights of focused trades in the trading UI move to other trades when scrolling\n\n[MC-270272](https://bugs.mojang.com/browse/MC-270272) - Any mouse button can be used to select options in the enchanting table UI\n\n[MC-270555](https://bugs.mojang.com/browse/MC-270555) - The outline of certain slots is obscured before the item is placed within the slot\n\n[MC-280006](https://bugs.mojang.com/browse/MC-280006) - Experience orbs floating around a player no longer fall to the ground when that player leaves the server\n\n[MC-297502](https://bugs.mojang.com/browse/MC-297502) - Any mouse button can be used to select options in the enchanting table, loom and stonecutter UIs\n\n[MC-297624](https://bugs.mojang.com/browse/MC-297624) - The stonecutter UI buttons are not keyboard-navigable, preventing the player from refilling the input by pressing Space\n\n[MC-298546](https://bugs.mojang.com/browse/MC-298546) - The loom UI buttons are not keyboard-navigable, preventing the player from refilling the inputs by pressing Space\n\n[MC-298547](https://bugs.mojang.com/browse/MC-298547) - The enchanting table UI buttons are not keyboard-navigable\n\n[MC-302022](https://bugs.mojang.com/browse/MC-302022) - Experience orbs desync after bouncing on lava\n\n[MC-306817](https://bugs.mojang.com/browse/MC-306817) - The scroll position in the trading UI is not synced to the visual scroll bar when there's a large amount of trades\n\n[MC-306853](https://bugs.mojang.com/browse/MC-306853) - /time does not throw errors when the values are too high\n\n[MC-307422](https://bugs.mojang.com/browse/MC-307422) - Changing the window size causes warnings in the game log\n\n[MC-307991](https://bugs.mojang.com/browse/MC-307991) - The game prefers to use the software GPU (llvmpipe) with the Vulkan rendering backend rather than the actual GPU with the OpenGL one when the GPU in use does not support Vulkan\n\n[MC-309586](https://bugs.mojang.com/browse/MC-309586) - The scroll position in the stonecutter UI resets when taking an item out of the result slot\n\n[MC-311029](https://bugs.mojang.com/browse/MC-311029) - The equipment entity predicate doesn't support the saddle slot\n\n[MC-311520](https://bugs.mojang.com/browse/MC-311520) - writeToTexture and copyBufferToTexture never check for GL errors, unlike the neighboring methods\n\n[MC-311522](https://bugs.mojang.com/browse/MC-311522) - The source buffer overrun check in FrontendCommandEncoder#writeToTexture uses integer arithmetic\n\n[MC-311856](https://bugs.mojang.com/browse/MC-311856) - Error when writing textures to the buffer with the OpenGL rendering backend\n\n[MC-311883](https://bugs.mojang.com/browse/MC-311883) - Mobs jitter and slide in crowds when they cannot reach the targeted player\n\n[MC-311954](https://bugs.mojang.com/browse/MC-311954) - The OpenGL rendering backend can't be used when running under XWayland\n\n[MC-311974](https://bugs.mojang.com/browse/MC-311974) - The new entity interpolation method introduced in 26.3 causes observable stutters compared to prior versions\n\n[MC-312394](https://bugs.mojang.com/browse/MC-312394) - Drowned with tridents have a significantly reduced attack range\n\n[MC-312405](https://bugs.mojang.com/browse/MC-312405) - The texture of frostbites contains unused pixels on the top left\n\n[MC-312430](https://bugs.mojang.com/browse/MC-312430) - Falling pointed blocks deal more damage than before\n\n[MC-312491](https://bugs.mojang.com/browse/MC-312491) - Parrots don't imitate frostbites\n\n[MC-312637](https://bugs.mojang.com/browse/MC-312637) - Sculk sensors aren't activated upon ice melting in the Nether\n\n[MC-312653](https://bugs.mojang.com/browse/MC-312653) - The below_name score is displayed above entities whose name tag is hidden\n\n[MC-312658](https://bugs.mojang.com/browse/MC-312658) - Ores inside tuff blobs at heights 0-3 no longer generate as their deepslate variant\n\n[MC-312667](https://bugs.mojang.com/browse/MC-312667) - The tooltips of the items in the statistics menu don't appear when they are focused with the keyboard\n\n[MC-312672](https://bugs.mojang.com/browse/MC-312672) - The narrator reads villager trade offers as \"button\" without providing any context\n\n[MC-312733](https://bugs.mojang.com/browse/MC-312733) - Snow golem attack range is significantly reduced\n\n[MC-312768](https://bugs.mojang.com/browse/MC-312768) - Any mouse button can be used to drag the scroll bars of the stonecutter, loom, and villager trading menus\n\n[MC-312779](https://bugs.mojang.com/browse/MC-312779) - Heads and blocks worn by small armor stands are stretched\n\n[MC-312781](https://bugs.mojang.com/browse/MC-312781) - Witches, withers, and llamas no longer attack targets outside of their attack radius\n\n[MC-312785](https://bugs.mojang.com/browse/MC-312785) - Any mouse button can be used to select entries in the \"Experimental Feature Requirements\" screen\n\n[MC-312803](https://bugs.mojang.com/browse/MC-312803) - Lightning removes the wax from a waxed copper golem, unlike waxed copper blocks\n\n[MC-312823](https://bugs.mojang.com/browse/MC-312823) - Any mouse button can be used to select entries in the \"Add Realm\" screen\n\n[MC-312824](https://bugs.mojang.com/browse/MC-312824) - Any mouse button can be used to select entries in the \"Changes From Last Backup\" screen\n\n[MC-312837](https://bugs.mojang.com/browse/MC-312837) - The twisting_vines block sound set is unused\n\n[MC-312845](https://bugs.mojang.com/browse/MC-312845) - Item frames and glow item frames can be placed outside of the world border by placing them against blocks within the world border, unlike paintings\n\n[MC-312864](https://bugs.mojang.com/browse/MC-312864) - Semi-transparent text renders darker when the \"Improved Transparency\" option is enabled\n\n[MC-312866](https://bugs.mojang.com/browse/MC-312866) - Any mouse button can be used to open the \"Terms of Service\" link on the \"Realms Terms of Service\" screen\n\n[MC-312893](https://bugs.mojang.com/browse/MC-312893) - Horses' gallopSoundCounter is not reset properly\n\n[MC-312909](https://bugs.mojang.com/browse/MC-312909) - The campsite_pale_garden_2 abandoned camp structure never generates\n\n[MC-312912](https://bugs.mojang.com/browse/MC-312912) - The giant trees in the campsite_old_growth_pine_taiga_1 , campsite_old_growth_spruce_taiga_4 , and campsite_snowy_taiga_3 abandoned camp structures never generate\n\n[MC-312913](https://bugs.mojang.com/browse/MC-312913) - The trees in several abandoned camp tents don't generate\n\n[MC-312942](https://bugs.mojang.com/browse/MC-312942) - The sound previews of volume sliders cannot be heard when the \"UI\" volume slider is turned off\n\n[MC-312962](https://bugs.mojang.com/browse/MC-312962) - The Vulkan rendering backend leaks native memory on every render pass\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/0870c02432ef2391ba7c586c3e113e98406aea20/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "Minecraft 26.4 Snapshot 7 已经上线，带来了全新的音乐光盘和许多新的方块！这些是即将推出的游戏更新中的最终游戏功能，所以准备好你的工具，打开音乐，让我们开始采矿和制作吧！\n\n建筑愉快！\n\n新增功能\n\n新增了方解石方块集\n\n新增了一张音乐光盘，其中收录了 Hyper Potions 演唱的曲目“Flurry”\n\n游戏中新增了一种装饰性方块……不过具体位置暂时未知\n\n方解石\n\n新增了方解石方块集\n\n方解石现在有了柱子、板块、楼梯和墙壁三种形态\n\n方解石柱子、板块、楼梯和墙壁也可以使用切石机来制作\n\n添加了抛光方解石块集\n\n抛光方解石可以从2x2的方解石块制作而成\n\n抛光方解石、石板、楼梯和墙壁也可以使用切石机制作\n\n添加了抛光方解石砖块集\n\n抛光方解石砖可以从2x2的抛光方解石块制作而成\n\n抛光方解石砖石板、楼梯和墙壁也可以使用切石机制作\n\n方解石、抛光方解石和抛光方解石砖都属于“缓慢跳跃的硫方怪”原型\n\n音乐与音效\n\n添加了一张新的音乐磁盘\n\n歌曲 \"Flurry\" 由 Hyper Potions 创作\n\n有几率在冰屋地下的箱子里找到\n\n在唱片机中使用时会输出比较器的结果 7\n\n发生了变化\n\n更新了主菜单的背景画面\n\n对方块、物品和实体进行了小幅调整\n\n现在着火可以抵消冷冻效果，类似于穿着皮革盔甲\n\n穿着任何一件皮革盔甲都可以防止僵尸和骷髅变成霜冻状态或游荡状态\n\n游荡状态的角色现在会在以下生物群系中生成：\n\n极寒冰洋\n\n冰冻海洋\n\n冰冻山峰\n\n冰冻河流\n\n崎岖的山峰\n\n积雪的斜坡\n\n\\\\\n\n在列表中悬停时（例如好友或世界），对应的条目会以灰色轮廓显示\n\n使用键盘和箭头键导航时，进入编辑框的方式有所不同\n\n使用 Tab 键时，编辑框会变为可编辑状态\n\n使用箭头键时，编辑框会被高亮显示但无法编辑，与滑块按钮类似\n\n按下 Enter 或空格键后，编辑框将变为可编辑状态\n\n使用键盘导航 UI 时，鼠标光标会隐藏；当移动鼠标时，光标会重新出现\n\n为配方书按钮添加了工具提示\n\n辅助功能（可访问性优化）\n\n游戏玩法界面（如制图台）现在支持键盘导航和语音播报\n\n**开发者备注**：*这是让游戏画面更易使用的第一步。一如既往，我们很乐意听取您的反馈，请访问[反馈网站](https://aka.ms/MCKeyboardNavigationNarrationGameplayScreensJava)。\n\n游戏画面的键盘导航\n\n现在可以使用键盘聚焦和操作游戏画面\n\nTab 键在不同的物品槽组之间切换，箭头键在同一个槽组内的物品之间切换\n\n切石机配方、织布机图案、附魔台选项以及村民和流浪商人的交易也属于同一组可导航的选项\n\n可以在这些物品槽上执行以下操作：\n\n按 Enter/Space 键相当于左键点击\n\n按住 Control 键再按 Enter/Space 键相当于右键点击\n\n按住 Shift 键的同时按 Enter/Space 键的行为类似于使用 Shift 键点击\n\n双击 Enter/Space 键可以收集相同类型的物品，类似于双击操作\n\n按住 Enter/Space 键的同时使用箭头键移动，会将携带的物品堆分配到其他槽位中，类似于按住鼠标左键并拖动\n\n热键和物品掉落键作用于当前聚焦的槽位\n\n创意背包和食谱书目前还不支持\n\n游戏玩法画面的文字说明\n\n现在画面上会有文字提示用户的操作结果，例如告诉玩家选择的是哪个槽位\n\n对于特殊槽位（如护甲、燃料和药水槽位），系统会同时说明槽位的名称、内含物品以及物品的提示信息\n\n槽位的位置会通过文字提示出来（例如：‘第3个槽位（共9个）’），无论是作为一组显示还是作为网格中的行列显示\n\n切石机的制作配方和织布机的图案会以行列形式展示；交易和附魔台的相关选项则根据其在列表中的位置进行说明。\n\n当选中的群体被高亮显示时，旁白会说明哪些箭头键可用于在该群体内移动。\n\n技术性变更。\n\n数据包的版本现已更新为126.0。\n\n资源包的版本现已更新为102.0。\n\n数据包版本：126.0\n\n命令功能。\n\n现在，“effect”命令可以接受怪物效果标签作为参数。\n\n如果提供的时间值（以游戏刻为单位）超过2147483647，命令将无法正常执行。\n\n调试世界功能。\n\n现在可以通过放置方块、破坏方块和使用命令来正常修改它们\n\n这些方块将不再自动更新，你需要创建一个新的调试世界才能看到新的方块\n\n现在每种实体类型都会包含一个实例\n\n能够产下幼年的实体类型，在成年版本的上方会显示幼年版本\n\n加载游戏时这些实体将被设置为“冻结”状态\n\n这些实体现在将在“普通”难度模式下生成\n\n现在以下游戏规则将被设置为“关闭”状态：\n\nadvance_time\n\nadvance_weather（这个功能本来就已经存在了，这里只是为了完整性而列出）\n\nspawn_wandering_traders\n\ntnt_explodes\n\n标签\n\n移除了未使用的 #swimming 和 #flying 实体类型标签\n\n区块音效集\n\n移除了未使用的 minecraft:twisting_vines 匹配音效集\n\n资源包版本 102.0\n\n区块精灵\n\n更改了区块纹理的命名\n\n将 block/icicle_down_base.png 重命名为 block/icicle_base.png\n\n将 block/icicle_down_frustum.png 重命名为 block/icicle_frustum.png\n\n将 block/icicle_down_middle.png 重命名为 block/icicle_middle.png\n\n将 block/icicle_down_tip.png 重命名为 block/icicle_tip.png\n\n将 block/icicle_down_tip_merge.png 重命名为 block/icicle_tip_merge.png\n\n添加了新的方块纹理\n\nblock/calcite_pillar_side.png\n\nblock/calcite_pillar_top.png\n\nblock/polished_calcite.png\n\nblock/polished_calcite_bricks.png\n\nblock/polished_calcite_slab_side.png\n\n物品精灵（Item Sprites）\n\n添加了新的物品纹理：</text\n\nitem/music_disc_flurry.png\n\n音效\n\n添加了新的音效事件：</text\n\nentity.parrot.imitate.frostbite\n\n修复了26.4快照7中的漏洞\n\n[MC-80859](https://bugs.mojang.com/browse/MC-80859) - 将物品堆拖动到其他兼容的物品堆上时，后者会暂时变得不可见，直到它们的堆大小增加\n\n[MC-148140](https://bugs.mojang.com/browse/MC-148140) - 在切石机界面中，当滚动条位于轨道底部时，显示位置低了2像素\n\n[MC-165610](https://bugs.mojang.com/browse/MC-165610) - 交易界面的滚动条会过早到达底部\n\n[MC-185630](https://bugs.mojang.com/browse/MC-185630) - 在附魔台界面上，用于点击和悬停的选项边界框不精确\n\n[MC-235363] - 切石机的制作配方显示区域在高度上存在对齐问题\n\n[MC-264554] - 在交易界面中，高亮显示的道具在被滚动时，会转移到其他道具上\n\n[MC-270272] - 在附魔台界面中，可以使用任意鼠标按钮来选择选项\n\n[MC-270555] - 在物品放入插槽之前，某些插槽的边框会暂时被遮盖\n\n[MC-280006] - 当玩家离开服务器时，漂浮在玩家周围的经验球不再掉落到地面\n\n[MC-297502] - 在附魔台、织布机和切石机界面中，可以使用任意鼠标按钮来选择选项\n\n[MC-297624] - 切石机的用户界面按钮无法通过键盘导航，玩家无法通过按空格键来重新输入内容\n\n[MC-298546] - 织布机的用户界面按钮无法通过键盘导航，玩家无法通过按空格键来重新输入内容\n\n[MC-298547] - 附魔台的用户界面按钮无法通过键盘导航\n\n[MC-302022] - 经验值球在碰到熔岩后会失去同步\n\n[MC-306817] - 当交易数量较多时，交易界面的滚动位置与可视滚动条不同步\n\n[MC-306853](https://bugs.mojang.com/browse/MC-306853) - 当数值过高时，/time 不会抛出错误\n\n[MC-307422](https://bugs.mojang.com/browse/MC-307422) - 改变窗口大小会导致游戏日志中出现警告\n\n[MC-307991] - 当使用的 GPU 不支持 Vulkan 时，游戏更倾向于使用软件 GPU（llvmpipe）和 Vulkan 渲染后端，而不是实际的 OpenGL GPU\n\n[MC-309586] - 从结果格中取出物品时，切石机界面的滚动位置会重置\n\n[MC-311029] - 设备实体谓词不支持马鞍槽\n\n[MC-311520] - 方法 `writeToTexture` 和 `copyBufferToTexture` 从不检查 GL 错误，这与邻近的方法不同\n\n[MC-311522] - `FrontendCommandEncoder#writeToTexture` 中的源缓冲区溢出检查使用了整数运算\n\n[MC-311856] - 使用 OpenGL 渲染后台写入纹理时出现错误\n\n[MC-311883] - 当怪物无法到达目标玩家时，它们会在人群中抖动或滑动\n\n[MC-311954] - 在 XWayland 下运行时无法使用 OpenGL 渲染后台\n\n[MC-311974](https://bugs.mojang.com/browse/MC-311974) - 在 26.3 版本中引入的新实体插值方法与之前版本相比会导致明显的画面卡顿现象\n\n[MC-312394](https://bugs.mojang.com/browse/MC-312394) - 被三叉戟击中的玩家受到的攻击范围显著减小\n\n[MC-312405](https://bugs.mojang.com/browse/MC-312405) - 冰霜伤害的纹理在左上角包含未使用的像素\n\n[MC-312430](https://bugs.mojang.com/browse/MC-312430) - 下落的尖刺方块造成的伤害比之前更大\n\n[MC-312491](https://bugs.mojang.com/browse/MC-312491) - 鹦鹉不会模仿冰霜伤害的效果\n\n[MC-312637](https://bugs.mojang.com/browse/MC-312637) - 在下界中冰块融化时，Sculk 传感器不会被激活\n\n[MC-312653] - 当实体的名称标签被隐藏时，该实体的分数（below_name）会显示在其上方\n\n[MC-312658] - 位于高度0-3范围内的凝灰岩团块中的矿石不再生成为深板岩变体\n\n[MC-312667] - 当用键盘聚焦于物品时，统计菜单中的物品提示信息无法显示\n\n[MC-312672] - 叙述者在播放村民交易信息时将其称为“button”，而没有提供任何背景信息\n\n[MC-312733] - 雪傀儡的攻击范围显著减小\n\n[MC-312768] - 任何鼠标按键都可以用于拖动切石机、织布机以及村民交易菜单的滚动条\n\n[MC-312779] - 小型护甲站立物所佩戴的头部和方块会出现拉伸现象\n\n[MC-312781] - 女巫、凋灵和羊驼不会再攻击其攻击范围内的目标\n\n[MC-312785] - 可以使用任何鼠标按钮来选择“实验功能需求”界面中的条目\n\n[MC-312803] - 闪电会消除蜡制铜像上的蜡，而蜡制铜块则不会出现这种情况\n\n[MC-312823] - 可以使用任何鼠标按钮来选择“添加服务器”界面中的条目\n\n[MC-312824] - 可以使用任何鼠标按钮来选择“上次备份后的更改”界面中的条目\n\n[MC-312837](https://bugs.mojang.com/browse/MC-312837) - The twisting_vines 块的音效集未被使用\n\n[MC-312845](https://bugs.mojang.com/browse/MC-312845) - 与绘画不同，物品框架（Item frames）和发光物品框架（Glow item frames）可以靠放在世界边界内的块上来放置在世界边界之外\n\n[MC-312864](https://bugs.mojang.com/browse/MC-312864) - 启用“改进的透明度”（Improved Transparency）选项后，半透明文本的显示效果会变得更暗\n\n[MC-312866](https://bugs.mojang.com/browse/MC-312866) - 可以使用任意鼠标按钮打开“Realms 条款和条件”（Realms Terms of Service）屏幕上的“服务条款”（Terms of Service）链接\n\n[MC-312893](https://bugs.mojang.com/browse/MC-312893) - 马的奔跑声音计数器（Horses' gallopSoundCounter）没有正确重置\n\n[MC-312909] - ‘campsite_pale_garden_2’废弃营地的建筑结构永远不会生成\n\n[MC-312912] - ‘campsite_old_growth_pine_taiga_1’、‘campsite_old_growth_spruce_taiga_4’和‘campsite_snowy_taiga_3’废弃营地中的巨树永远不会生成\n\n[MC-312913] - 几个废弃营地帐篷中的树木都不会生成\n\n[MC-312942] - 当“UI”音量滑块关闭时，无法听到音量滑块的预览音效\n\n[MC-312962] - Vulkan渲染后端在每次渲染过程中都会泄漏本地内存\n\n获取更新快照\n\nMinecraft: Java版现在支持使用快照了。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n**测试版本可能会损坏你的游戏世界，请务必备份数据，或者将测试版本运行在与主游戏世界不同的文件夹中。**\n\n跨平台服务器JAR文件：\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/0870c02432ef2391ba7c586c3e113e98406aea20/server.jar)\n\n在这里报告游戏问题：\n\n[Minecraft问题追踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n对于任何反馈和建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想交流，欢迎加入我们的[官方 Minecraft Discord 存在](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

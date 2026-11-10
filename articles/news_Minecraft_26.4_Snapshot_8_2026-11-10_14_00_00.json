@@ -1,0 +1,1287 @@
+{
+  "title": "Minecraft 26.4 Snapshot 8",
+  "translated_title": "Minecraft 26.4 快照 8",
+  "release_date": "2026-11-10T14:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-8",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-8/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "Well, it seems like our Ender Dragon has forgotten a thing or two about flying! In 26.4 Snapshot 8, we've fixed several issues with the dragon's flight behavior to help get it back on track. We've also added language support for two new languages, alongside a handful of smaller tweaks.",
+      "translated_text": "看来我们的末影龙在飞行方面忘掉了一些东西！在26.4版本的第8个快照中，我们修复了与末影龙飞行行为相关的一些问题，帮助它恢复正常。我们还为两种新语言添加了语言支持，并进行了一些小调整。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "p",
+      "source_text": "Happy Dragon Fighting!",
+      "translated_text": "祝大家龙战愉快！",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "h2",
+      "source_text": "New Features",
+      "translated_text": "新增功能",
+      "meta": {}
+    },
+    {
+      "id": "b0004",
+      "type": "li",
+      "source_text": "Added Javanese and Chavacano, Zamboanga language support to the game",
+      "translated_text": "游戏中新增了对爪哇语和查瓦卡诺语（Zamboanga）的支持",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0005",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "变更内容",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "li",
+      "source_text": "Fixed some issues with the Ender Dragon battle that caused the dragon to not move properly",
+      "translated_text": "修复了末影龙战斗中导致龙无法正确移动的问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0007",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体进行了一些小调整",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "li",
+      "source_text": "Added Snow Layers and Snow Blocks next to the Snow Brick Set in the Creative Inventory",
+      "translated_text": "在创造模式的物品栏中，雪砖套装旁边新增了雪层和雪块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "All undead mobs will now be immune to the Freezing effect",
+      "translated_text": "现在所有亡灵怪物都将对冰冻效果免疫",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "The damage dealt by the Ice Ball has been reduced",
+      "translated_text": "冰球造成的伤害已经降低了",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "The Cold Sulfur Cube archetype will no longer float to match the behavior of other archetypes of similar properties",
+      "translated_text": "冰属性的硫方怪原型将不再像其他具有类似属性的原型那样漂浮",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术变更",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "li",
+      "source_text": "The Data Pack version is now 127.0",
+      "translated_text": "数据包版本现已更新为127.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 103.0",
+      "translated_text": "资源包版本现已更新为103.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Terrain vertex data in terrain.vsh is now fetched from a texel buffer instead of traditional vertex buffers",
+      "translated_text": "地形文件（terrain.vsh）中的地形顶点数据现在从纹理缓冲区读取，而不是传统的顶点缓冲区",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "The packing of vertex data for terrain chunk section mesh data has been changed",
+      "translated_text": "地形区块部分网格数据的顶点数据打包方式已更改",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "h3",
+      "source_text": "Network Protocol",
+      "translated_text": "网络协议",
+      "meta": {}
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "The entity position synchronization packet now includes full-precision head rotation",
+      "translated_text": "实体位置同步数据包现在包含全精度头部旋转信息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "h2",
+      "source_text": "Data Pack Versions 127.0",
+      "translated_text": "数据包版本127.0的相关说明",
+      "meta": {}
+    },
+    {
+      "id": "b0020",
+      "type": "h3",
+      "source_text": "Validation",
+      "translated_text": "验证流程",
+      "meta": {}
+    },
+    {
+      "id": "b0021",
+      "type": "li",
+      "source_text": "Most validation issues in following registries no longer prevent elements from being loaded:",
+      "translated_text": "以下注册表中的大多数验证问题不再阻止元素的加载：</text",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "minecraft:loot_table",
+      "translated_text": "minecraft:loot_table",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "li",
+      "source_text": "minecraft:predicate",
+      "translated_text": "minecraft:predicate",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "minecraft:item_modifier",
+      "translated_text": "minecraft:item_modifier",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "li",
+      "source_text": "minecraft:slot_source",
+      "translated_text": "minecraft:slot_source",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "minecraft:context_float_provider",
+      "translated_text": "minecraft:context_float_provider",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "minecraft:context_int_provider",
+      "translated_text": "minecraft:context_int_provider",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "li",
+      "source_text": "minecraft:villager_trade",
+      "translated_text": "minecraft:villager_trade",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "trigger fields in minecraft:advancement",
+      "translated_text": "minecraft:advancement 中的触发字段",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "li",
+      "source_text": "requirements fields on minecraft:enchantment_effect_component_type instances",
+      "translated_text": "minecraft:enchantment_effect_component_type 实例上的要求字段",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0031",
+      "type": "li",
+      "source_text": "The following issues are now considered errors that can prevent pack loading or cause command compilation failure:",
+      "translated_text": "以下问题现在被视为可能导致资源包加载失败或命令编译失败的错误：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "The validated element makes recursive calls to itself, either through tags or namespaced IDs",
+      "translated_text": "验证过的元素会通过标签或命名空间ID进行递归调用",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Any context values required by the validated element are missing from the context provided during execution",
+      "translated_text": "在执行过程中，验证过的元素所需的任何上下文值都缺失",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "For example, the modifier type minecraft:apply_bonus (which uses the tool context value) cannot be used in an item ... modify command which provides the minecraft:command_modifier context (which lacks the tool context value)",
+      "translated_text": "例如，修改器类型 `minecraft:apply_bonus`（使用工具上下文值）不能用于 `item ... modify` 命令中，因为该命令提供的上下文是 `minecraft:command_modifier`（缺少工具上下文值）",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Elements will only be validated if they don't have conditions or condition has all required context values",
+      "translated_text": "只有当元素没有任何条件，或者条件包含了所有必需的上下文值时，这些元素才会被验证",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "That means conditional elements can be used to avoid validation errors in loot elements used in multiple context",
+      "translated_text": "这意味着条件元素可以用来避免在多种上下文中使用的战利品元素出现验证错误",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Conditional elements:",
+      "translated_text": "条件元素：",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "condition field for cases in minecraft:number_dispatcher (both minecraft:context_float_provider and minecraft:context_int_provider kinds)",
+      "translated_text": "在 Minecraft 中用于判断条件的字段：number_dispatcher（属于 minecraft:context_float_provider 和 minecraft:context_int_provider 类型）",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "merchant_predicate condition field in minecraft:villager_trade",
+      "translated_text": "用于商人（merchant）交易的谓词条件字段",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "li",
+      "source_text": "condition field in loot pools, loot pool entries and loot functions",
+      "translated_text": "用于战利品池（loot pools）、战利品池条目（loot pool entries）和战利品函数（loot functions）的条件字段",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "Validation errors will now prevent command compilation, both in functions and from the console",
+      "translated_text": "现在，验证错误将阻止命令的编译，无论是在函数中还是在控制台中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "For example, compute entity @s float {type: \"minecraft:enchantment_level\",amount:{type:\"minecraft:linear\",base:0.15,per_level_above_first:0.15}} will now fail to compile due to use of minecraft:enchantment_level in a minecraft:command_compute_entity context that does not provide required information ( minecraft:enchantment_level )",
+      "translated_text": "例如，尝试编译 `compute entity @s float {type: \"minecraft:enchantment_level\", amount: {type: \"minecraft:linear\", base: 0.15, per_level_above_first: 0.15}}` 会失败，因为在 minecraft:commandCompute_entity 的上下文中使用了 minecraft:enchantment_level，但该上下文没有提供所需的信息（即 minecraft:enchantment_level）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "The minecraft:command context has been split into minecraft:command_predicate (used for predicates in commands, like /execute if predicate ) and minecraft:command_modifier (used for item modifiers, for example in /item ... modify functions)",
+      "translated_text": "Minecraft的命令上下文已被拆分为`minecraft:commandpredicate`（用于命令中的条件，例如 `/execute if predicate`）和`minecraft:commandmodifier`（用于物品修改器，例如在 `/item ... modify`函数中）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "To simplify the discovery of validation rules, a new report has been added: loot_context_requirements.json",
+      "translated_text": "为了简化验证规则的发现过程，新增了一个报告文件：`loot_context_requirements.json`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Values given as allowed for some context can be used by validated elements when run in this context",
+      "translated_text": "某些上下文中允许的数值可以在运行时被需要这些值的元素使用",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "The context used by command arguments can be found in the commands.json report in the context field of the following argument types:",
+      "translated_text": "命令参数所使用的上下文可以在`commands.json`报告的相应参数类型的`context`字段中找到",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "minecraft:context_float_provider",
+      "translated_text": "`minecraft:context_float_provider`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "minecraft:context_int_provider",
+      "translated_text": "`minecraft:context_int_provider`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "li",
+      "source_text": "minecraft:loot_modifier",
+      "translated_text": "`minecraft:loot_modifier`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "minecraft:loot_predicate",
+      "translated_text": "`minecraft:loot_predicate`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "minecraft:loot_table",
+      "translated_text": "`minecraft:loot_table`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "li",
+      "source_text": "minecraft:slot_source",
+      "translated_text": "`minecraft:slot_source`",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0053",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "The command report format has been changed:",
+      "translated_text": "命令报告的格式已经更改：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "li",
+      "source_text": "Argument information is now under the field argument instead of being merged into the parent node",
+      "translated_text": "参数信息现在位于“argument”字段中，而不是合并到父节点中",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "Information about suggestions is now available",
+      "translated_text": "关于建议的信息现已提供",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "h4",
+      "source_text": "Added pattern argument",
+      "translated_text": "添加了模式参数",
+      "meta": {}
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "Added command argument type for matching regular expression patterns",
+      "translated_text": "添加了用于匹配正则表达式模式的命令参数类型",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "This argument was added to improve support for commands added by server-side mods and plugins",
+      "translated_text": "添加此参数是为了更好地支持服务器端模组和插件添加的命令",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h3",
+      "source_text": "Tags",
+      "translated_text": "标签",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "h4",
+      "source_text": "Block Tags",
+      "translated_text": "方块标签",
+      "meta": {}
+    },
+    {
+      "id": "b0062",
+      "type": "li",
+      "source_text": "Added #triggers_ambient_ice_block_sounds - all blocks that trigger Ice to play its ambient sound",
+      "translated_text": "添加了#triggers_ambient_ice_block_sounds - 所有触发“Ice”方块播放环境声音的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0063",
+      "type": "li",
+      "source_text": "Added #triggers_ambient_ice_crystal_sounds - all blocks that trigger Ice Crystals to play their ambient sound",
+      "translated_text": "添加了 #triggers_ambient_ice_crystal_sounds – 使所有能够触发冰晶效果的方块都能播放其环境音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0064",
+      "type": "h2",
+      "source_text": "Resource Pack Versions 103.0",
+      "translated_text": "资源包版本 103.0",
+      "meta": {}
+    },
+    {
+      "id": "b0065",
+      "type": "h3",
+      "source_text": "UI Sprites",
+      "translated_text": "用户界面精灵（UI Sprites）",
+      "meta": {}
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "Added a new UI texture:",
+      "translated_text": "添加了一种新的用户界面纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "friends/tab_focused.png",
+      "translated_text": "friends/tab_focused.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效（Sounds）",
+      "meta": {}
+    },
+    {
+      "id": "b0069",
+      "type": "li",
+      "source_text": "Added new sound events:",
+      "translated_text": "添加了新的音效事件",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0070",
+      "type": "li",
+      "source_text": "entity.frostbite.throw",
+      "translated_text": "entity.frostbite.throw",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0071",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器与后处理效果（Shaders & Post-process Effects）",
+      "meta": {}
+    },
+    {
+      "id": "b0072",
+      "type": "li",
+      "source_text": "terrain.vsh is refactored to decode new vertex data packing",
+      "translated_text": "terrain.vsh 已重构，以支持新的顶点数据打包格式",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0073",
+      "type": "h4",
+      "source_text": "Order-Independent Transparency shaders",
+      "translated_text": "与绘制顺序无关的透明度着色器",
+      "meta": {}
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "OIT shaders were converted to rely on subpasses",
+      "translated_text": "OIT着色器已转换为依赖子批次（subpasses）进行渲染",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "Changed core/oit_composite.fsh , core/oit_depth_bounds_cull.fsh , include/oit_depth_sample.glsl , include/oit_sample.glsl",
+      "translated_text": "修改了core/oit_composite.fsh、core/oit_depth_bounds_cull.fsh、include/oit_depth_sample.glsl和include/oit_sample.glsl文件",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "Added core/blit_depth_bounds.fsh shader to blit depth bounds in a subpass context",
+      "translated_text": "新增了core/blit_depth_bounds.fsh着色器，用于在子批次环境中绘制深度边界",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "h4",
+      "source_text": "Boat Water Mask Shaders",
+      "translated_text": "船用水面遮罩着色器",
+      "meta": {}
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "The way water mask is handled was changed to support subpasses in OIT",
+      "translated_text": "水面遮罩的处理方式已更改，以支持OIT（Optimized Image Transport）中的子批次渲染",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "It is now rendered to a separate target that is sampled during terrain rendering instead of being rendered to the terrain depth buffer",
+      "translated_text": "现在水面遮罩会被渲染到单独的目标缓冲区中，在地形渲染过程中对该缓冲区进行采样，而不是直接绘制到地形深度缓冲区",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "Changed core/rendertype_water_mask.fsh and core/terrain.fsh",
+      "translated_text": "修改了core/rendertype_water_mask.fsh和core/terrain.fsh文件",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "Removed core/blit_depth.fsh",
+      "translated_text": "移除了core/blit_depth.fsh文件",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "This approach is used both when OIT is on and off",
+      "translated_text": "无论OIT是否启用，都会使用这种处理方式",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 8",
+      "translated_text": "修复了 26.4 快照 8 中的漏洞",
+      "meta": {}
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "[MC-164558](https://bugs.mojang.com/browse/MC-164558) - Mobs ridden by players very rarely receive vertical knockback when attacked",
+      "translated_text": "[MC-164558](https://bugs.mojang.com/browse/MC-164558) - 被玩家骑乘的怪物在被攻击时极少会受到垂直方向的冲击",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "[MC-197201](https://bugs.mojang.com/browse/MC-197201) - Ender dragons no longer dive toward the player",
+      "translated_text": "[MC-197201](https://bugs.mojang.com/browse/MC-197201) - 末影龙不再向玩家俯冲",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "[MC-271336](https://bugs.mojang.com/browse/MC-271336) - Ender dragons dive to the exit portal incorrectly",
+      "translated_text": "[MC-271336](https://bugs.mojang.com/browse/MC-271336) - 末影龙会错误地飞向出口传送门",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "[MC-271337](https://bugs.mojang.com/browse/MC-271337) - Ender dragons frequently get stuck flying back and forth between two points",
+      "translated_text": "[MC-271337](https://bugs.mojang.com/browse/MC-271337) - 末影龙经常在两个点之间来回飞行而无法离开",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "[MC-272431](https://bugs.mojang.com/browse/MC-272431) - The vertical velocity of ender dragons when flying is incorrect, causing erratic behavior",
+      "translated_text": "[MC-272431](https://bugs.mojang.com/browse/MC-272431) - 末影龙飞行时的垂直速度不正确，导致行为异常",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "[MC-276058](https://bugs.mojang.com/browse/MC-276058) - The motion of some rideable entities stops when getting launched from wind charges",
+      "translated_text": "[MC-276058](https://bugs.mojang.com/browse/MC-276058) - 某些可骑乘实体的运动在从风属性攻击中弹出后停止",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "[MC-311382](https://bugs.mojang.com/browse/MC-311382) - The \"Free trial\" and \"Try for free\" buttons do not use high contrast button textures when the \"High Contrast\" resource pack is enabled",
+      "translated_text": "[MC-311382] - 当启用“高对比度”资源包时，“免费试用”和“免费尝试”按钮未使用高对比度按钮纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "[MC-311422](https://bugs.mojang.com/browse/MC-311422) - The gui/realms/minigames.png texture contains a redstone torch with its old texture",
+      "translated_text": "[MC-311422] - gui/realms/minigames.png 纹理中使用的红石火把仍为旧版本纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "[MC-312077](https://bugs.mojang.com/browse/MC-312077) - Some Realms progress screen strings are improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312077] - 部分领域的进度界面字符串的大小写不正确，与其他类似字符串不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "[MC-312364](https://bugs.mojang.com/browse/MC-312364) - The freezing particle has incorrect rotation interpolation for the first tick",
+      "translated_text": "[MC-312364] - 冰冻粒子在第一个游戏刻(tick)时的旋转插值效果有误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "[MC-312399](https://bugs.mojang.com/browse/MC-312399) - Entity textures are not reloaded without relaunching the game",
+      "translated_text": "[MC-312399] - 实体纹理不会在游戏重新启动的情况下自动更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "[MC-312425](https://bugs.mojang.com/browse/MC-312425) - Removed data component types present in the hidden_components field of a tooltip_display component log a deserialization warning",
+      "translated_text": "[MC-312425](https://bugs.mojang.com/browse/MC-312425) - 删除了 tooltip_display 组件的 hidden_components 字段中存在的数据组件类型，以避免反序列化警告",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "[MC-312586](https://bugs.mojang.com/browse/MC-312586) - Tabs in the friends and other players menus don't render with a white outline when open and selected",
+      "translated_text": "[MC-312586] - 在“好友”和其他玩家菜单中，打开并选中标签页时不会出现白色边框",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "[MC-312591](https://bugs.mojang.com/browse/MC-312591) - Players who aren't friends are narrated as friends when hovering over them in the other players menu",
+      "translated_text": "[MC-312591] - 在“其他玩家”菜单中，将非好友的玩家显示为好友",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "[MC-312674](https://bugs.mojang.com/browse/MC-312674) - The search boxes in the language, resource pack, data pack, game rule, and single biome screens are narrated without a name",
+      "translated_text": "[MC-312674] - 语言、资源包、数据包、游戏规则和单一生物群落屏幕中的搜索框在显示时没有名称",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "[MC-312762](https://bugs.mojang.com/browse/MC-312762) - The closed caption for frostbites throwing ice balls is inconsistent with other mobs that throw projectiles",
+      "translated_text": "[MC-312762] - 冻伤怪物投掷冰球时的字幕与其他投射物怪物的字幕不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "li",
+      "source_text": "[MC-312796](https://bugs.mojang.com/browse/MC-312796) - The third person camera can display the suffocation overlay when angling your camera in specific ways against blocks",
+      "translated_text": "[MC-312796] - 当以特定角度将第三人称摄像机对准方块时，可能会出现窒息效果。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0101",
+      "type": "li",
+      "source_text": "[MC-312806](https://bugs.mojang.com/browse/MC-312806) - The narrator doesn't read the title or message on the confirmation screen for uninviting players from Realms",
+      "translated_text": "[MC-312806] - 在将玩家从 Realms 中移除的确认界面中，旁白不会读取相关的标题或信息。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "[MC-312833](https://bugs.mojang.com/browse/MC-312833) - Growing trees next to logs that aren't part of them causes their leaves to decay",
+      "translated_text": "[MC-312833] - 在非树木的木头上种植树木会导致树木的叶子枯萎。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "[MC-312858](https://bugs.mojang.com/browse/MC-312858) - The block.ice.ambient sound event is controlled by the \"Blocks\" sound category instead of \"Ambient/Environment\"",
+      "translated_text": "[MC-312858] ice.ambient 音效事件的分类应属于 ‘Blocks’ 而不是 ‘Ambient/Environment’。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "li",
+      "source_text": "[MC-312878](https://bugs.mojang.com/browse/MC-312878) - The sound played when throwing ice balls is pitched incorrectly when thrown by frostbites",
+      "translated_text": "[MC-312878] 当由冻伤（frostbite）角色投掷冰球时，所播放的音效的音调不正确。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "[MC-312944](https://bugs.mojang.com/browse/MC-312944) - When the player swims on the water surface, the water fog is rendered incorrectly",
+      "translated_text": "[MC-312944] - 当玩家在水面上游泳时，水雾的渲染不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "[MC-312952](https://bugs.mojang.com/browse/MC-312952) - The game crashes when generating canyons when the noise settings' min_y field is set to a greater value than the dimension's min_y field",
+      "translated_text": "[MC-312952] - 当将噪声设置中的 `min_y` 字段设置得大于世界的 `min_y` 字段时，游戏在生成峡谷时会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "[MC-312955](https://bugs.mojang.com/browse/MC-312955) - GUI textures are not reloaded without relaunching the game",
+      "translated_text": "[MC-312955] - 不重新启动游戏，GUI 纹理不会被更新",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "li",
+      "source_text": "[MC-312960](https://bugs.mojang.com/browse/MC-312960) - The snow block isn't grouped alongside snow bricks in the \"Building Blocks\" tab in the Creative mode inventory",
+      "translated_text": "[MC-312960] - 在创造模式的库存中，雪块不会与雪砖归为一组",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "[MC-312972](https://bugs.mojang.com/browse/MC-312972) - Skeletons can still receive the Freezing effect",
+      "translated_text": "[MC-312972] - 骨髅仍然会受到冻结效果的影响",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "[MC-312981](https://bugs.mojang.com/browse/MC-312981) - Sulfur cubes with the cold archetype can create frosted ice on flowing water",
+      "translated_text": "[MC-312981] - 带有‘冷’属性的硫方怪可以在流动的水面上生成霜冻冰",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "[MC-312990](https://bugs.mojang.com/browse/MC-312990) - The bedrock ceiling is exposed in some ravines in the Nether",
+      "translated_text": "[MC-312990] - 在下界的某些沟壑中，基岩天花板会暴露出来",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "li",
+      "source_text": "[MC-313046](https://bugs.mojang.com/browse/MC-313046) - Item tooltips in inventories now appear too low or too high",
+      "translated_text": "[MC-313046] - 贮物栏中的物品提示信息现在显示得过低或过高",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "[MC-313052](https://bugs.mojang.com/browse/MC-313052) - The game crashes when pressing an arrow key after pressing a mouse button other than left-click over an entry in the items tab of the statistics menu",
+      "translated_text": "[MC-313052] - 在统计菜单的物品标签页中，点击鼠标按钮（非左键）后紧接着按箭头键会导致游戏崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "[MC-313053](https://bugs.mojang.com/browse/MC-313053) - Failed /effect commands report applying zero effects instead of specifying the appropriate value",
+      "translated_text": "[MC-313053] - ‘/effect’命令执行失败，报告显示未应用任何效果，而不是显示正确的值",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "li",
+      "source_text": "[MC-313055](https://bugs.mojang.com/browse/MC-313055) - The last column of entities in Debug Mode worlds is duplicated",
+      "translated_text": "[MC-313055] - 调试模式下世界的实体列表中的最后一列出现了重复的内容",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "[MC-313057](https://bugs.mojang.com/browse/MC-313057) - The \"Bounce\" and \"flurry\" music discs have unused, un-deprecated music disc description translation keys",
+      "translated_text": "[MC-313057](https://bugs.mojang.com/browse/MC-313057) - \"Bounce\" 和 \"flurry\" 音乐光盘有未使用的、未过时的音乐光盘描述翻译键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "[MC-313060](https://bugs.mojang.com/browse/MC-313060) - The name of the \"flurry\" music disc is capitalized inconsistently",
+      "translated_text": "[MC-313060](https://bugs.mojang.com/browse/MC-313060) - \"flurry\" 音乐光盘的名称大小写不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "[MC-313065](https://bugs.mojang.com/browse/MC-313065) - The outer edges of inventory slots are no longer selectable",
+      "translated_text": "[MC-313065](https://bugs.mojang.com/browse/MC-313065) - 货物栏的边缘不再可点击",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "li",
+      "source_text": "[MC-313071](https://bugs.mojang.com/browse/MC-313071) - The mouse cursor flickers while moving it on the screen and holding Enter/Space at the same time",
+      "translated_text": "[MC-313071](https://bugs.mojang.com/browse/MC-313071) - 在屏幕上移动鼠标的同时按 Enter/Space 键时，鼠标光标会闪烁",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "[MC-313079](https://bugs.mojang.com/browse/MC-313079) - The \"FOV Effects\" option doesn't affect the death screen zoom",
+      "translated_text": "[MC-313079](https://bugs.mojang.com/browse/MC-313079) - \"视野效果\"（FOV Effects）选项不会影响死亡屏幕的缩放",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "[MC-313080](https://bugs.mojang.com/browse/MC-313080) - The \"Other Players\" tutorial toast ignores the \"Notification Time\" setting",
+      "translated_text": "[MC-313080](https://bugs.mojang.com/browse/MC-313080) - \"其他玩家\"（Other Players）教程的提示信息忽略了 \"通知时间\"（Notification Time）设置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "[MC-313081](https://bugs.mojang.com/browse/MC-313081) - Typing in the search box of the language menu deselects the selected language",
+      "translated_text": "[MC-313081](https://bugs.mojang.com/browse/MC-313081) - 在语言菜单的搜索框中输入内容会取消所选语言的选中状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "li",
+      "source_text": "[MC-313087](https://bugs.mojang.com/browse/MC-313087) - The eyebrows of breezes are no longer emissive",
+      "translated_text": "[MC-313087] - 'Breezes'（气流）的眉毛部分不再发光",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "[MC-313088](https://bugs.mojang.com/browse/MC-313088) - Taking an item from an anvil using keyboard navigation incorrectly focuses the text box",
+      "translated_text": "[MC-313088] - 使用键盘导航从铁砧中取物品时，文本框会错误地获得焦点",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "[MC-313091](https://bugs.mojang.com/browse/MC-313091) - Minecarts no longer take fall damage with the \"Minecart Improvements\" experiment disabled",
+      "translated_text": "[MC-313091] - 关闭“Minecart Improvements”实验后，矿车不再受到坠落伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "li",
+      "source_text": "[MC-313103](https://bugs.mojang.com/browse/MC-313103) - The additional vertical gap applied under item names in their tooltips is misplaced when the item name wraps",
+      "translated_text": "[MC-313103] - 当物品名称换行时，工具提示中物品名称下方的额外垂直间隙位置不正确",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0127",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0128",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版现已提供快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0129",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会导致你的世界损坏，因此请备份数据或将其放在与主世界不同的文件夹中运行。**",
+      "meta": {}
+    },
+    {
+      "id": "b0130",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器JAR文件",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/5c4d729eca710d0a83b2d54a2cc94216b568385c/server.jar)",
+      "translated_text": "[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/5c4d729eca710d0a83b2d54a2cc94216b568385c/server.jar",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "在这里报告错误：",
+      "meta": {}
+    },
+    {
+      "id": "b0133",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0134",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想要提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "Well, it seems like our Ender Dragon has forgotten a thing or two about flying! In 26.4 Snapshot 8, we've fixed several issues with the dragon's flight behavior to help get it back on track. We've also added language support for two new languages, alongside a handful of smaller tweaks.\n\nHappy Dragon Fighting!\n\nNew Features\n\nAdded Javanese and Chavacano, Zamboanga language support to the game\n\nChanges\n\nFixed some issues with the Ender Dragon battle that caused the dragon to not move properly\n\nMinor Tweaks to Blocks, Items and Entities\n\nAdded Snow Layers and Snow Blocks next to the Snow Brick Set in the Creative Inventory\n\nAll undead mobs will now be immune to the Freezing effect\n\nThe damage dealt by the Ice Ball has been reduced\n\nThe Cold Sulfur Cube archetype will no longer float to match the behavior of other archetypes of similar properties\n\nTechnical Changes\n\nThe Data Pack version is now 127.0\n\nThe Resource Pack version is now 103.0\n\nTerrain vertex data in terrain.vsh is now fetched from a texel buffer instead of traditional vertex buffers\n\nThe packing of vertex data for terrain chunk section mesh data has been changed\n\nNetwork Protocol\n\nThe entity position synchronization packet now includes full-precision head rotation\n\nData Pack Versions 127.0\n\nValidation\n\nMost validation issues in following registries no longer prevent elements from being loaded:\n\nminecraft:loot_table\n\nminecraft:predicate\n\nminecraft:item_modifier\n\nminecraft:slot_source\n\nminecraft:context_float_provider\n\nminecraft:context_int_provider\n\nminecraft:villager_trade\n\ntrigger fields in minecraft:advancement\n\nrequirements fields on minecraft:enchantment_effect_component_type instances\n\nThe following issues are now considered errors that can prevent pack loading or cause command compilation failure:\n\nThe validated element makes recursive calls to itself, either through tags or namespaced IDs\n\nAny context values required by the validated element are missing from the context provided during execution\n\nFor example, the modifier type minecraft:apply_bonus (which uses the tool context value) cannot be used in an item ... modify command which provides the minecraft:command_modifier context (which lacks the tool context value)\n\nElements will only be validated if they don't have conditions or condition has all required context values\n\nThat means conditional elements can be used to avoid validation errors in loot elements used in multiple context\n\nConditional elements:\n\ncondition field for cases in minecraft:number_dispatcher (both minecraft:context_float_provider and minecraft:context_int_provider kinds)\n\nmerchant_predicate condition field in minecraft:villager_trade\n\ncondition field in loot pools, loot pool entries and loot functions\n\nValidation errors will now prevent command compilation, both in functions and from the console\n\nFor example, compute entity @s float {type: \"minecraft:enchantment_level\",amount:{type:\"minecraft:linear\",base:0.15,per_level_above_first:0.15}} will now fail to compile due to use of minecraft:enchantment_level in a minecraft:command_compute_entity context that does not provide required information ( minecraft:enchantment_level )\n\nThe minecraft:command context has been split into minecraft:command_predicate (used for predicates in commands, like /execute if predicate ) and minecraft:command_modifier (used for item modifiers, for example in /item ... modify functions)\n\nTo simplify the discovery of validation rules, a new report has been added: loot_context_requirements.json\n\nValues given as allowed for some context can be used by validated elements when run in this context\n\nThe context used by command arguments can be found in the commands.json report in the context field of the following argument types:\n\nminecraft:context_float_provider\n\nminecraft:context_int_provider\n\nminecraft:loot_modifier\n\nminecraft:loot_predicate\n\nminecraft:loot_table\n\nminecraft:slot_source\n\nCommands\n\nThe command report format has been changed:\n\nArgument information is now under the field argument instead of being merged into the parent node\n\nInformation about suggestions is now available\n\nAdded pattern argument\n\nAdded command argument type for matching regular expression patterns\n\nThis argument was added to improve support for commands added by server-side mods and plugins\n\nTags\n\nBlock Tags\n\nAdded #triggers_ambient_ice_block_sounds - all blocks that trigger Ice to play its ambient sound\n\nAdded #triggers_ambient_ice_crystal_sounds - all blocks that trigger Ice Crystals to play their ambient sound\n\nResource Pack Versions 103.0\n\nUI Sprites\n\nAdded a new UI texture:\n\nfriends/tab_focused.png\n\nSounds\n\nAdded new sound events:\n\nentity.frostbite.throw\n\nShaders & Post-process Effects\n\nterrain.vsh is refactored to decode new vertex data packing\n\nOrder-Independent Transparency shaders\n\nOIT shaders were converted to rely on subpasses\n\nChanged core/oit_composite.fsh , core/oit_depth_bounds_cull.fsh , include/oit_depth_sample.glsl , include/oit_sample.glsl\n\nAdded core/blit_depth_bounds.fsh shader to blit depth bounds in a subpass context\n\nBoat Water Mask Shaders\n\nThe way water mask is handled was changed to support subpasses in OIT\n\nIt is now rendered to a separate target that is sampled during terrain rendering instead of being rendered to the terrain depth buffer\n\nChanged core/rendertype_water_mask.fsh and core/terrain.fsh\n\nRemoved core/blit_depth.fsh\n\nThis approach is used both when OIT is on and off\n\nFixed bugs in 26.4 Snapshot 8\n\n[MC-164558](https://bugs.mojang.com/browse/MC-164558) - Mobs ridden by players very rarely receive vertical knockback when attacked\n\n[MC-197201](https://bugs.mojang.com/browse/MC-197201) - Ender dragons no longer dive toward the player\n\n[MC-271336](https://bugs.mojang.com/browse/MC-271336) - Ender dragons dive to the exit portal incorrectly\n\n[MC-271337](https://bugs.mojang.com/browse/MC-271337) - Ender dragons frequently get stuck flying back and forth between two points\n\n[MC-272431](https://bugs.mojang.com/browse/MC-272431) - The vertical velocity of ender dragons when flying is incorrect, causing erratic behavior\n\n[MC-276058](https://bugs.mojang.com/browse/MC-276058) - The motion of some rideable entities stops when getting launched from wind charges\n\n[MC-311382](https://bugs.mojang.com/browse/MC-311382) - The \"Free trial\" and \"Try for free\" buttons do not use high contrast button textures when the \"High Contrast\" resource pack is enabled\n\n[MC-311422](https://bugs.mojang.com/browse/MC-311422) - The gui/realms/minigames.png texture contains a redstone torch with its old texture\n\n[MC-312077](https://bugs.mojang.com/browse/MC-312077) - Some Realms progress screen strings are improperly capitalized, unlike similar strings\n\n[MC-312364](https://bugs.mojang.com/browse/MC-312364) - The freezing particle has incorrect rotation interpolation for the first tick\n\n[MC-312399](https://bugs.mojang.com/browse/MC-312399) - Entity textures are not reloaded without relaunching the game\n\n[MC-312425](https://bugs.mojang.com/browse/MC-312425) - Removed data component types present in the hidden_components field of a tooltip_display component log a deserialization warning\n\n[MC-312586](https://bugs.mojang.com/browse/MC-312586) - Tabs in the friends and other players menus don't render with a white outline when open and selected\n\n[MC-312591](https://bugs.mojang.com/browse/MC-312591) - Players who aren't friends are narrated as friends when hovering over them in the other players menu\n\n[MC-312674](https://bugs.mojang.com/browse/MC-312674) - The search boxes in the language, resource pack, data pack, game rule, and single biome screens are narrated without a name\n\n[MC-312762](https://bugs.mojang.com/browse/MC-312762) - The closed caption for frostbites throwing ice balls is inconsistent with other mobs that throw projectiles\n\n[MC-312796](https://bugs.mojang.com/browse/MC-312796) - The third person camera can display the suffocation overlay when angling your camera in specific ways against blocks\n\n[MC-312806](https://bugs.mojang.com/browse/MC-312806) - The narrator doesn't read the title or message on the confirmation screen for uninviting players from Realms\n\n[MC-312833](https://bugs.mojang.com/browse/MC-312833) - Growing trees next to logs that aren't part of them causes their leaves to decay\n\n[MC-312858](https://bugs.mojang.com/browse/MC-312858) - The block.ice.ambient sound event is controlled by the \"Blocks\" sound category instead of \"Ambient/Environment\"\n\n[MC-312878](https://bugs.mojang.com/browse/MC-312878) - The sound played when throwing ice balls is pitched incorrectly when thrown by frostbites\n\n[MC-312944](https://bugs.mojang.com/browse/MC-312944) - When the player swims on the water surface, the water fog is rendered incorrectly\n\n[MC-312952](https://bugs.mojang.com/browse/MC-312952) - The game crashes when generating canyons when the noise settings' min_y field is set to a greater value than the dimension's min_y field\n\n[MC-312955](https://bugs.mojang.com/browse/MC-312955) - GUI textures are not reloaded without relaunching the game\n\n[MC-312960](https://bugs.mojang.com/browse/MC-312960) - The snow block isn't grouped alongside snow bricks in the \"Building Blocks\" tab in the Creative mode inventory\n\n[MC-312972](https://bugs.mojang.com/browse/MC-312972) - Skeletons can still receive the Freezing effect\n\n[MC-312981](https://bugs.mojang.com/browse/MC-312981) - Sulfur cubes with the cold archetype can create frosted ice on flowing water\n\n[MC-312990](https://bugs.mojang.com/browse/MC-312990) - The bedrock ceiling is exposed in some ravines in the Nether\n\n[MC-313046](https://bugs.mojang.com/browse/MC-313046) - Item tooltips in inventories now appear too low or too high\n\n[MC-313052](https://bugs.mojang.com/browse/MC-313052) - The game crashes when pressing an arrow key after pressing a mouse button other than left-click over an entry in the items tab of the statistics menu\n\n[MC-313053](https://bugs.mojang.com/browse/MC-313053) - Failed /effect commands report applying zero effects instead of specifying the appropriate value\n\n[MC-313055](https://bugs.mojang.com/browse/MC-313055) - The last column of entities in Debug Mode worlds is duplicated\n\n[MC-313057](https://bugs.mojang.com/browse/MC-313057) - The \"Bounce\" and \"flurry\" music discs have unused, un-deprecated music disc description translation keys\n\n[MC-313060](https://bugs.mojang.com/browse/MC-313060) - The name of the \"flurry\" music disc is capitalized inconsistently\n\n[MC-313065](https://bugs.mojang.com/browse/MC-313065) - The outer edges of inventory slots are no longer selectable\n\n[MC-313071](https://bugs.mojang.com/browse/MC-313071) - The mouse cursor flickers while moving it on the screen and holding Enter/Space at the same time\n\n[MC-313079](https://bugs.mojang.com/browse/MC-313079) - The \"FOV Effects\" option doesn't affect the death screen zoom\n\n[MC-313080](https://bugs.mojang.com/browse/MC-313080) - The \"Other Players\" tutorial toast ignores the \"Notification Time\" setting\n\n[MC-313081](https://bugs.mojang.com/browse/MC-313081) - Typing in the search box of the language menu deselects the selected language\n\n[MC-313087](https://bugs.mojang.com/browse/MC-313087) - The eyebrows of breezes are no longer emissive\n\n[MC-313088](https://bugs.mojang.com/browse/MC-313088) - Taking an item from an anvil using keyboard navigation incorrectly focuses the text box\n\n[MC-313091](https://bugs.mojang.com/browse/MC-313091) - Minecarts no longer take fall damage with the \"Minecart Improvements\" experiment disabled\n\n[MC-313103](https://bugs.mojang.com/browse/MC-313103) - The additional vertical gap applied under item names in their tooltips is misplaced when the item name wraps\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/5c4d729eca710d0a83b2d54a2cc94216b568385c/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "看来我们的末影龙在飞行方面忘掉了一些东西！在26.4版本的第8个快照中，我们修复了与末影龙飞行行为相关的一些问题，帮助它恢复正常。我们还为两种新语言添加了语言支持，并进行了一些小调整。\n\n祝大家龙战愉快！\n\n新增功能\n\n游戏中新增了对爪哇语和查瓦卡诺语（Zamboanga）的支持\n\n变更内容\n\n修复了末影龙战斗中导致龙无法正确移动的问题\n\n对方块、物品和实体进行了一些小调整\n\n在创造模式的物品栏中，雪砖套装旁边新增了雪层和雪块\n\n现在所有亡灵怪物都将对冰冻效果免疫\n\n冰球造成的伤害已经降低了\n\n冰属性的硫方怪原型将不再像其他具有类似属性的原型那样漂浮\n\n技术变更\n\n数据包版本现已更新为127.0\n\n资源包版本现已更新为103.0\n\n地形文件（terrain.vsh）中的地形顶点数据现在从纹理缓冲区读取，而不是传统的顶点缓冲区\n\n地形区块部分网格数据的顶点数据打包方式已更改\n\n网络协议\n\n实体位置同步数据包现在包含全精度头部旋转信息\n\n数据包版本127.0的相关说明\n\n验证流程\n\n以下注册表中的大多数验证问题不再阻止元素的加载：</text\n\nminecraft:loot_table\n\nminecraft:predicate\n\nminecraft:item_modifier\n\nminecraft:slot_source\n\nminecraft:context_float_provider\n\nminecraft:context_int_provider\n\nminecraft:villager_trade\n\nminecraft:advancement 中的触发字段\n\nminecraft:enchantment_effect_component_type 实例上的要求字段\n\n以下问题现在被视为可能导致资源包加载失败或命令编译失败的错误：\n\n验证过的元素会通过标签或命名空间ID进行递归调用\n\n在执行过程中，验证过的元素所需的任何上下文值都缺失\n\n例如，修改器类型 `minecraft:apply_bonus`（使用工具上下文值）不能用于 `item ... modify` 命令中，因为该命令提供的上下文是 `minecraft:command_modifier`（缺少工具上下文值）\n\n只有当元素没有任何条件，或者条件包含了所有必需的上下文值时，这些元素才会被验证\n\n这意味着条件元素可以用来避免在多种上下文中使用的战利品元素出现验证错误\n\n条件元素：\n\n在 Minecraft 中用于判断条件的字段：number_dispatcher（属于 minecraft:context_float_provider 和 minecraft:context_int_provider 类型）\n\n用于商人（merchant）交易的谓词条件字段\n\n用于战利品池（loot pools）、战利品池条目（loot pool entries）和战利品函数（loot functions）的条件字段\n\n现在，验证错误将阻止命令的编译，无论是在函数中还是在控制台中\n\n例如，尝试编译 `compute entity @s float {type: \"minecraft:enchantment_level\", amount: {type: \"minecraft:linear\", base: 0.15, per_level_above_first: 0.15}}` 会失败，因为在 minecraft:commandCompute_entity 的上下文中使用了 minecraft:enchantment_level，但该上下文没有提供所需的信息（即 minecraft:enchantment_level）\n\nMinecraft的命令上下文已被拆分为`minecraft:commandpredicate`（用于命令中的条件，例如 `/execute if predicate`）和`minecraft:commandmodifier`（用于物品修改器，例如在 `/item ... modify`函数中）\n\n为了简化验证规则的发现过程，新增了一个报告文件：`loot_context_requirements.json`\n\n某些上下文中允许的数值可以在运行时被需要这些值的元素使用\n\n命令参数所使用的上下文可以在`commands.json`报告的相应参数类型的`context`字段中找到\n\n`minecraft:context_float_provider`\n\n`minecraft:context_int_provider`\n\n`minecraft:loot_modifier`\n\n`minecraft:loot_predicate`\n\n`minecraft:loot_table`\n\n`minecraft:slot_source`\n\n命令\n\n命令报告的格式已经更改：\n\n参数信息现在位于“argument”字段中，而不是合并到父节点中\n\n关于建议的信息现已提供\n\n添加了模式参数\n\n添加了用于匹配正则表达式模式的命令参数类型\n\n添加此参数是为了更好地支持服务器端模组和插件添加的命令\n\n标签\n\n方块标签\n\n添加了#triggers_ambient_ice_block_sounds - 所有触发“Ice”方块播放环境声音的方块\n\n添加了 #triggers_ambient_ice_crystal_sounds – 使所有能够触发冰晶效果的方块都能播放其环境音效\n\n资源包版本 103.0\n\n用户界面精灵（UI Sprites）\n\n添加了一种新的用户界面纹理\n\nfriends/tab_focused.png\n\n音效（Sounds）\n\n添加了新的音效事件\n\nentity.frostbite.throw\n\n着色器与后处理效果（Shaders & Post-process Effects）\n\nterrain.vsh 已重构，以支持新的顶点数据打包格式\n\n与绘制顺序无关的透明度着色器\n\nOIT着色器已转换为依赖子批次（subpasses）进行渲染\n\n修改了core/oit_composite.fsh、core/oit_depth_bounds_cull.fsh、include/oit_depth_sample.glsl和include/oit_sample.glsl文件\n\n新增了core/blit_depth_bounds.fsh着色器，用于在子批次环境中绘制深度边界\n\n船用水面遮罩着色器\n\n水面遮罩的处理方式已更改，以支持OIT（Optimized Image Transport）中的子批次渲染\n\n现在水面遮罩会被渲染到单独的目标缓冲区中，在地形渲染过程中对该缓冲区进行采样，而不是直接绘制到地形深度缓冲区\n\n修改了core/rendertype_water_mask.fsh和core/terrain.fsh文件\n\n移除了core/blit_depth.fsh文件\n\n无论OIT是否启用，都会使用这种处理方式\n\n修复了 26.4 快照 8 中的漏洞\n\n[MC-164558](https://bugs.mojang.com/browse/MC-164558) - 被玩家骑乘的怪物在被攻击时极少会受到垂直方向的冲击\n\n[MC-197201](https://bugs.mojang.com/browse/MC-197201) - 末影龙不再向玩家俯冲\n\n[MC-271336](https://bugs.mojang.com/browse/MC-271336) - 末影龙会错误地飞向出口传送门\n\n[MC-271337](https://bugs.mojang.com/browse/MC-271337) - 末影龙经常在两个点之间来回飞行而无法离开\n\n[MC-272431](https://bugs.mojang.com/browse/MC-272431) - 末影龙飞行时的垂直速度不正确，导致行为异常\n\n[MC-276058](https://bugs.mojang.com/browse/MC-276058) - 某些可骑乘实体的运动在从风属性攻击中弹出后停止\n\n[MC-311382] - 当启用“高对比度”资源包时，“免费试用”和“免费尝试”按钮未使用高对比度按钮纹理\n\n[MC-311422] - gui/realms/minigames.png 纹理中使用的红石火把仍为旧版本纹理\n\n[MC-312077] - 部分领域的进度界面字符串的大小写不正确，与其他类似字符串不一致\n\n[MC-312364] - 冰冻粒子在第一个游戏刻(tick)时的旋转插值效果有误\n\n[MC-312399] - 实体纹理不会在游戏重新启动的情况下自动更新\n\n[MC-312425](https://bugs.mojang.com/browse/MC-312425) - 删除了 tooltip_display 组件的 hidden_components 字段中存在的数据组件类型，以避免反序列化警告\n\n[MC-312586] - 在“好友”和其他玩家菜单中，打开并选中标签页时不会出现白色边框\n\n[MC-312591] - 在“其他玩家”菜单中，将非好友的玩家显示为好友\n\n[MC-312674] - 语言、资源包、数据包、游戏规则和单一生物群落屏幕中的搜索框在显示时没有名称\n\n[MC-312762] - 冻伤怪物投掷冰球时的字幕与其他投射物怪物的字幕不一致\n\n[MC-312796] - 当以特定角度将第三人称摄像机对准方块时，可能会出现窒息效果。\n\n[MC-312806] - 在将玩家从 Realms 中移除的确认界面中，旁白不会读取相关的标题或信息。\n\n[MC-312833] - 在非树木的木头上种植树木会导致树木的叶子枯萎。\n\n[MC-312858] ice.ambient 音效事件的分类应属于 ‘Blocks’ 而不是 ‘Ambient/Environment’。\n\n[MC-312878] 当由冻伤（frostbite）角色投掷冰球时，所播放的音效的音调不正确。\n\n[MC-312944] - 当玩家在水面上游泳时，水雾的渲染不正确\n\n[MC-312952] - 当将噪声设置中的 `min_y` 字段设置得大于世界的 `min_y` 字段时，游戏在生成峡谷时会崩溃\n\n[MC-312955] - 不重新启动游戏，GUI 纹理不会被更新\n\n[MC-312960] - 在创造模式的库存中，雪块不会与雪砖归为一组\n\n[MC-312972] - 骨髅仍然会受到冻结效果的影响\n\n[MC-312981] - 带有‘冷’属性的硫方怪可以在流动的水面上生成霜冻冰\n\n[MC-312990] - 在下界的某些沟壑中，基岩天花板会暴露出来\n\n[MC-313046] - 贮物栏中的物品提示信息现在显示得过低或过高\n\n[MC-313052] - 在统计菜单的物品标签页中，点击鼠标按钮（非左键）后紧接着按箭头键会导致游戏崩溃\n\n[MC-313053] - ‘/effect’命令执行失败，报告显示未应用任何效果，而不是显示正确的值\n\n[MC-313055] - 调试模式下世界的实体列表中的最后一列出现了重复的内容\n\n[MC-313057](https://bugs.mojang.com/browse/MC-313057) - \"Bounce\" 和 \"flurry\" 音乐光盘有未使用的、未过时的音乐光盘描述翻译键\n\n[MC-313060](https://bugs.mojang.com/browse/MC-313060) - \"flurry\" 音乐光盘的名称大小写不一致\n\n[MC-313065](https://bugs.mojang.com/browse/MC-313065) - 货物栏的边缘不再可点击\n\n[MC-313071](https://bugs.mojang.com/browse/MC-313071) - 在屏幕上移动鼠标的同时按 Enter/Space 键时，鼠标光标会闪烁\n\n[MC-313079](https://bugs.mojang.com/browse/MC-313079) - \"视野效果\"（FOV Effects）选项不会影响死亡屏幕的缩放\n\n[MC-313080](https://bugs.mojang.com/browse/MC-313080) - \"其他玩家\"（Other Players）教程的提示信息忽略了 \"通知时间\"（Notification Time）设置\n\n[MC-313081](https://bugs.mojang.com/browse/MC-313081) - 在语言菜单的搜索框中输入内容会取消所选语言的选中状态\n\n[MC-313087] - 'Breezes'（气流）的眉毛部分不再发光\n\n[MC-313088] - 使用键盘导航从铁砧中取物品时，文本框会错误地获得焦点\n\n[MC-313091] - 关闭“Minecart Improvements”实验后，矿车不再受到坠落伤害\n\n[MC-313103] - 当物品名称换行时，工具提示中物品名称下方的额外垂直间隙位置不正确\n\n获取快照\n\nMinecraft: Java版现已提供快照功能。要安装快照，请打开[Minecraft启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“安装”选项卡中启用快照功能。\n\n**测试版本可能会导致你的世界损坏，因此请备份数据或将其放在与主世界不同的文件夹中运行。**\n\n跨平台服务器JAR文件\n\n[Minecraft服务器JAR文件](https://piston-data.mojang.com/v1/objects/5c4d729eca710d0a83b2d54a2cc94216b568385c/server.jar\n\n在这里报告错误：\n\n[Minecraft问题跟踪器](https://bugs.mojang.com/projects/MC/summary)！\n\n想要提供反馈吗？\n\n如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果您想聊天，欢迎加入我们的[官方 Minecraft Discord 频道](https://discordapp.com/invite/minecraft)。",
+  "source": "minecraft_api"
+}

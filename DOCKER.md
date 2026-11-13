@@ -137,7 +137,9 @@ docker run -d \
 ## 自动词表：手动生成、挂载使用
 
 `glossary.auto.json`（词条）和 `glossary.auto.index.json`（溯源索引）由
-`tools/sync_glossary.py` 从 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary) 生成。
+`tools/sync_glossary.py` 生成，默认取 [misode/mcmeta](https://github.com/misode/mcmeta)
+`assets` 分支里对应**最新快照**的游戏语言文件（每次快照当天更新）；
+`--source cfpa` 可改用 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary)（以正式版为基准，较旧）。
 
 **程序和容器在任何时候都不会联网更新它**：镜像构建不生成，`scheduler.py` 每 10 分钟起的
 `main.py` 只读取挂载进来的文件。网络不通只会影响你手动执行同步的那一次。
@@ -146,7 +148,8 @@ docker run -d \
 
 ```bash
 python tools/sync_glossary.py
-# 输出：glossary.auto.json（约 100 KB）+ glossary.auto.index.json（约 146 KB）
+# 数据源: https://github.com/misode/mcmeta (26.4-snapshot-8)
+# 输出：glossary.auto.json（约 100 KB）+ glossary.auto.index.json（约 150 KB）
 ```
 
 两个文件以只读方式挂载进容器（`docker-compose.yml` 与上面的 `docker run` 都已包含）。

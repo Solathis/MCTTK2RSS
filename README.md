@@ -304,13 +304,30 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 ### 同步官方术语表
 
 ```bash
-python tools/sync_glossary.py                       # 下载 Vanilla/latest.tsv，生成词表层 + 溯源索引
-python tools/sync_glossary.py --stats               # 只看统计，不写文件
-python tools/sync_glossary.py --tsv logs/latest.tsv # 用本地 TSV
-python tools/sync_glossary.py --no-index            # 不写 glossary.auto.index.json
+python tools/sync_glossary.py                          # 默认：mcmeta 最新快照
+python tools/sync_glossary.py --source cfpa            # 用 CFPAOrg 稳定版 TSV
+python tools/sync_glossary.py --source both            # 两者合并，快照优先
+python tools/sync_glossary.py --stats                  # 只看统计，不写文件
+python tools/sync_glossary.py --lang en.json zh.json   # 离线：用本地语言文件
+python tools/sync_glossary.py --tsv logs/latest.tsv    # 离线：用本地 CFPA TSV
+python tools/sync_glossary.py --no-index               # 不写 glossary.auto.index.json
 ```
 
-脚本不做"把 TSV 拍平"这种傻事，而是：
+**数据源怎么选**：
+
+| 源 | 取自 | 新鲜度 | 适用 |
+|---|---|---|---|
+| `mcmeta`（默认） | [misode/mcmeta](https://github.com/misode/mcmeta) 的 `assets` 分支，即每次快照的游戏资源 | 快照当天更新 | 跟进新内容 |
+| `cfpa` | [CFPAOrg/Glossary](https://github.com/CFPAOrg/Glossary) 的 `Vanilla/latest.tsv` | 以正式版为基准 | 追求稳定 |
+
+实测差异：`mcmeta` 当时是 `26.4-snapshot-8`，CFPA 的 `latest.tsv` 只到 `26.3`，
+于是 `Frostbite`（新生物，官译**冻尸**）整个缺失 —— 新内容术语只有前者能覆盖。
+两条源都跑过：mcmeta 8760 行 → 2199 强制 + 318 提示 + 47 严格提示，比 CFPA 多 23 个强制词条
+（`冰球` `冰晶` `脆冰` `方解石柱` `冰冻之箭`…）。
+
+快照译名可能随后续快照调整，追求稳定时可以 `--source cfpa`，或用 `--source both` 兼顾。
+
+脚本不做"把语言文件拍平"这种傻事，而是：
 
 1. **过滤**：丢掉整句游戏内提示语（含 `%s` / `§` / 句号）、未汉化条目（`Fern → Fern`），
    以及 `subtitles` / `options` / `gui` / `commands` 等命名空间（那些是 UI 文案和整句）
@@ -319,13 +336,14 @@ python tools/sync_glossary.py --no-index            # 不写 glossary.auto.index
    | 层 | 规模 | 注入条件 | 例 |
    |---|---|---|---|
    | `terms`（强制） | ~2200 | 命中即注入 | `Sulfur Cube → 硫方怪` |
-   | `soft` | ~300 | 整段独立出现，或原文大小写与词条完全一致 | `Sulfur → 硫黄` |
+   | `soft` | ~300 | 整段独立出现，或原文大小写与词条完全一致 | `Frostbite → 冻尸` |
    | `soft_strict` | ~45 | 仅整段独立出现 | `Speed → 迅捷`（句中 `speed` 是"速度"） |
 
 3. **记录歧义**：同一英文有多个官方译名时写入 `ambiguous`，提示词会附带"另有官方译名：…，按语境选择"
-4. **独立溯源索引**：`glossary.auto.index.json` 记下每个术语来自哪个 TSV 键
+4. **独立溯源索引**：`glossary.auto.index.json` 记下每个术语来自哪个语言文件键
    （如 `Speed ← effect.minecraft.speed`），用来解释"为什么它被分到这一层"、
    排查误注入。它**只给人看**：运行时 `_read_glossary_file` 不读它，更不进提示词，所以是零 token 成本。
+   文件头还记了 `source` 与 `source_version`，一眼能看出词表对应哪个游戏版本。
 
 ### 成本
 

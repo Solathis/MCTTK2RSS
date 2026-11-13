@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
-"""tools/sync_glossary.py — 把 CFPAOrg 术语表(TSV)转换成自动词表层 glossary.auto.json
+"""tools/sync_glossary.py — 把官方术语表转换成自动词表层 glossary.auto.json
 
-为什么不直接把 TSV 拍平成 glossary 的 terms：
-  * TSV 约 8557 行，其中约 3000 行是整句游戏内提示语（含 %s / § / 句号），
+数据源（默认 mcmeta 最新快照，见 --source）：
+  mcmeta  https://github.com/misode/mcmeta —— 每次快照当天更新的游戏资源镜像，
+          直接给出 assets/minecraft/lang/{en_us,zh_cn}.json。默认使用。
+  cfpa    https://github.com/CFPAOrg/Glossary —— 以正式版为基准的 TSV，
+          稳定但落后于快照（实测 26.3 vs 快照 26.4-snapshot-8，
+          因此缺 Frostbite → 冻尸 这类新内容）。
+
+为什么不直接把语言文件拍平成 glossary 的 terms：
+  * 约 8600 行里，约 3000 行是整句游戏内提示语（含 %s / § / 句号），
     新闻正文几乎不会原样出现，塞进词表只占体积；
   * 其余行里有大量 UI 通用词（Done / No / All / Air），散文里命中后会污染译文；
   * 同一英文可能有多个官方译名（Speed → 速度 / 迅捷），必须保留歧义信息。
@@ -14,15 +21,18 @@
                  只在"整段独立出现"时注入
 另有 ambiguous 记录同英文多译名，供提示词附带说明。
 
-溯源信息（术语 → TSV 原始键）单独写到 glossary.auto.index.json：
+溯源信息（术语 → 语言文件原始键）单独写到 glossary.auto.index.json：
 运行时不会加载，也不进提示词，只用于人工复核/调试。
 
 手写 glossary.json 永远优先于本文件（见 scraper.load_glossary 的合并规则）。
 
 用法:
-  python tools/sync_glossary.py                     # 下载官方 TSV 并生成 glossary.auto.json
-  python tools/sync_glossary.py --tsv logs/latest.tsv
-  python tools/sync_glossary.py --stats             # 只打印统计，不写文件
+  python tools/sync_glossary.py                          # 默认：mcmeta 最新快照
+  python tools/sync_glossary.py --source cfpa            # 用 CFPA 稳定版 TSV
+  python tools/sync_glossary.py --source both            # 两者合并，快照优先
+  python tools/sync_glossary.py --lang en.json zh.json   # 用本地语言文件（离线）
+  python tools/sync_glossary.py --tsv logs/latest.tsv    # 用本地 CFPA TSV（离线）
+  python tools/sync_glossary.py --stats                  # 只打印统计，不写文件
 """
 
 from __future__ import annotations
@@ -36,8 +46,13 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-DEFAULT_URL = "https://raw.githubusercontent.com/CFPAOrg/Glossary/main/Vanilla/latest.tsv"
-SOURCE_PAGE = "https://github.com/CFPAOrg/Glossary/blob/main/Vanilla/latest.tsv"
+CFPA_TSV_URL = "https://raw.githubusercontent.com/CFPAOrg/Glossary/main/Vanilla/latest.tsv"
+CFPA_SOURCE_PAGE = "https://github.com/CFPAOrg/Glossary"
+MCMETA_BASE = "https://raw.githubusercontent.com/misode/mcmeta/assets"
+MCMETA_LANG_URL = MCMETA_BASE + "/assets/minecraft/lang/{lang}.json"
+MCMETA_VERSION_URL = MCMETA_BASE + "/version.json"
+MCMETA_SOURCE_PAGE = "https://github.com/misode/mcmeta"
+
 DEFAULT_OUT = "glossary.auto.json"
 DEFAULT_INDEX_OUT = "glossary.auto.index.json"
 
@@ -79,7 +94,7 @@ SENTENCE_END = (".", "!", "?", ":", ",", ";")
 
 
 def parse_tsv(text: str) -> list[dict]:
-    """解析 TSV 文本，返回 [{key, en_us, zh_cn}, ...]"""
+    """解析 CFPA 格式 TSV，返回 [{key, en_us, zh_cn}, ...]"""
     reader = csv.DictReader(io.StringIO(text), delimiter="\t")
     rows = []
     for row in reader:
@@ -89,6 +104,32 @@ def parse_tsv(text: str) -> list[dict]:
             continue
         rows.append({"key": (row.get("key") or "").strip(), "en_us": en, "zh_cn": zh})
     return rows
+
+
+def rows_from_lang(en_us: dict, zh_cn: dict) -> list[dict]:
+    """把 mcmeta 的 en_us.json / zh_cn.json 转成统一的行结构"""
+    rows = []
+    for key, en in en_us.items():
+        zh = zh_cn.get(key)
+        if not isinstance(en, str) or not isinstance(zh, str):
+            continue
+        en, zh = en.strip(), zh.strip()
+        if en and zh:
+            rows.append({"key": key, "en_us": en, "zh_cn": zh})
+    return rows
+
+
+def merge_rows(fresh: list[dict], older: list[dict]) -> list[dict]:
+    """按 key 合并两份行数据，fresh（更新的快照）优先"""
+    seen = set()
+    merged = []
+    for row in [*fresh, *older]:
+        key = row["key"]
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(row)
+    return merged
 
 
 def namespace_of(key: str) -> str:
@@ -114,10 +155,15 @@ def _priority(key: str) -> tuple:
     return (rank, key)
 
 
-def build_auto(rows: list[dict]) -> tuple[dict, dict, dict]:
-    """从 TSV 行构建自动词表层，返回 (auto_glossary, index, stats)
+def build_auto(rows: list[dict], source: str = "", version: str = "") -> tuple[dict, dict, dict]:
+    """从行数据构建自动词表层，返回 (auto_glossary, index, stats)
 
-    index 是溯源索引（术语 → TSV 键），只给人看、不进 prompt，
+    Args:
+        rows: [{"key": ..., "en_us": ..., "zh_cn": ...}, ...]
+        source: 数据源地址，写进产出文件便于复核
+        version: 游戏版本号（如 26.4-snapshot-8），便于判断词表新不新
+
+    index 是溯源索引（术语 → 语言文件原始键），只给人看、不进 prompt，
     所以单独落盘为 glossary.auto.index.json，不混进词表层。
     """
     kept: dict[str, list[tuple[str, str, str]]] = {}   # 小写英文 -> [(key, 原形, 中文)]
@@ -164,9 +210,10 @@ def build_auto(rows: list[dict]) -> tuple[dict, dict, dict]:
 
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     auto = {
-        "_comment": "由 tools/sync_glossary.py 从 CFPAOrg 术语表自动生成，请勿手改；"
+        "_comment": "由 tools/sync_glossary.py 自动生成，请勿手改；"
                     "手写词条放在 glossary.json（优先级更高）。",
-        "source": SOURCE_PAGE,
+        "source": source,
+        "source_version": version,
         "generated_at": now,
         "tier_policy": {
             "hard": "多词专有名词，命中即强制使用译名",
@@ -179,9 +226,10 @@ def build_auto(rows: list[dict]) -> tuple[dict, dict, dict]:
         "ambiguous": dict(sorted(ambiguous.items())),
     }
     index = {
-        "_comment": "溯源索引：术语 → CFPAOrg TSV 的原始键。仅供人工复核/调试，"
+        "_comment": "溯源索引：术语 → 语言文件原始键。仅供人工复核/调试，"
                     "运行时不会加载，也不进提示词。",
-        "source": SOURCE_PAGE,
+        "source": source,
+        "source_version": version,
         "generated_at": now,
         "sources": dict(sorted(sources.items())),
     }
@@ -193,17 +241,52 @@ def build_auto(rows: list[dict]) -> tuple[dict, dict, dict]:
     return auto, index, stats
 
 
-def fetch_tsv(url: str, timeout: int = 60) -> str:
+def fetch_text(url: str, timeout: int = 60) -> str:
     from urllib.request import urlopen
 
     with urlopen(url, timeout=timeout) as resp:  # noqa: S310 - 固定 HTTPS 源
         return resp.read().decode("utf-8")
 
 
+def fetch_json(url: str, timeout: int = 60) -> dict:
+    try:
+        return json.loads(fetch_text(url, timeout))
+    except ValueError:            # 非 JSON 响应（代理拦截页等）
+        return {}
+
+
+def load_mcmeta(en_path: str | None = None, zh_path: str | None = None,
+                timeout: int = 60) -> tuple[list[dict], str, str]:
+    """读 mcmeta 的游戏语言文件（本地路径优先，否则联网拉最新快照）"""
+    if en_path and zh_path:
+        en_us = json.loads(Path(en_path).read_text(encoding="utf-8"))
+        zh_cn = json.loads(Path(zh_path).read_text(encoding="utf-8"))
+        return rows_from_lang(en_us, zh_cn), str(Path(en_path).parent), "本地文件"
+
+    en_us = fetch_json(MCMETA_LANG_URL.format(lang="en_us"), timeout)
+    zh_cn = fetch_json(MCMETA_LANG_URL.format(lang="zh_cn"), timeout)
+    if not en_us or not zh_cn:
+        raise RuntimeError("mcmeta 语言文件下载失败，请检查网络或改用 --source cfpa")
+    version = str(fetch_json(MCMETA_VERSION_URL, timeout).get("id", ""))
+    return rows_from_lang(en_us, zh_cn), MCMETA_SOURCE_PAGE, version
+
+
+def load_cfpa(tsv_path: str | None = None,
+              timeout: int = 60) -> tuple[list[dict], str, str]:
+    """读 CFPAOrg 术语表（本地 TSV 优先，否则联网拉 latest.tsv）"""
+    text = (Path(tsv_path).read_text(encoding="utf-8") if tsv_path
+            else fetch_text(CFPA_TSV_URL, timeout))
+    return parse_tsv(text), CFPA_SOURCE_PAGE, "latest.tsv"
+
+
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="从 CFPAOrg 术语表生成 glossary.auto.json")
-    ap.add_argument("--tsv", help="本地 TSV 路径（默认从官方仓库下载）")
-    ap.add_argument("--url", default=DEFAULT_URL, help="TSV 下载地址")
+    ap = argparse.ArgumentParser(description="生成 glossary.auto.json（官方译名自动词表层）")
+    ap.add_argument("--source", choices=["mcmeta", "cfpa", "both"], default="mcmeta",
+                    help="数据源：mcmeta 最新快照（默认）/ cfpa 稳定版 / both 合并")
+    ap.add_argument("--tsv", help="本地 CFPA 格式 TSV（指定后忽略 --source）")
+    ap.add_argument("--lang", nargs=2, metavar=("EN_JSON", "ZH_JSON"),
+                    help="本地 mcmeta 格式语言文件（指定后忽略 --source）")
+    ap.add_argument("--timeout", type=int, default=60, help="下载超时秒数（默认 60）")
     ap.add_argument("--out", default=DEFAULT_OUT, help="词表输出文件（默认 glossary.auto.json）")
     ap.add_argument("--index-out", default=DEFAULT_INDEX_OUT,
                     help="溯源索引输出文件（默认 glossary.auto.index.json）")
@@ -211,9 +294,26 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--stats", action="store_true", help="只打印统计，不写文件")
     args = ap.parse_args(argv)
 
-    text = Path(args.tsv).read_text(encoding="utf-8") if args.tsv else fetch_tsv(args.url)
-    rows = parse_tsv(text)
-    auto, index, stats = build_auto(rows)
+    try:
+        if args.lang:
+            rows, source, version = load_mcmeta(*args.lang, timeout=args.timeout)
+        elif args.tsv:
+            rows, source, version = load_cfpa(args.tsv, timeout=args.timeout)
+        elif args.source == "cfpa":
+            rows, source, version = load_cfpa(timeout=args.timeout)
+        elif args.source == "both":
+            fresh, fresh_src, version = load_mcmeta(timeout=args.timeout)
+            older, older_src, _ = load_cfpa(timeout=args.timeout)
+            rows = merge_rows(fresh, older)
+            source = f"{fresh_src} + {older_src}"
+        else:
+            rows, source, version = load_mcmeta(timeout=args.timeout)
+    except (OSError, RuntimeError, ValueError) as e:
+        print(f"[词表] 数据源获取失败: {e}")
+        return 1
+
+    print(f"数据源: {source}" + (f" ({version})" if version else ""))
+    auto, index, stats = build_auto(rows, source=source, version=version)
     for name, value in stats.items():
         print(f"  {name}: {value}")
 

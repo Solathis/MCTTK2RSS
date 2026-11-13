@@ -19,7 +19,14 @@ from scraper import (
     select_relevant_terms,
     translate_blocks,
 )
-from tools.sync_glossary import build_auto, is_term_like, namespace_of, parse_tsv
+from tools.sync_glossary import (
+    build_auto,
+    is_term_like,
+    merge_rows,
+    namespace_of,
+    parse_tsv,
+    rows_from_lang,
+)
 
 # ── tools/sync_glossary.py ───────────────────────────
 
@@ -104,16 +111,61 @@ class TestBuildAuto:
 
     def test_no_sources_in_term_layer(self, rows):
         """溯源信息不能混进词表层：它只属于索引文件"""
-        auto, index, _ = build_auto(rows)
+        auto, index, _ = build_auto(rows, source="https://example.com/lang", version="26.4-snapshot-8")
         assert "sources" not in auto
         assert index["sources"]["Sulfur"] == "block.minecraft.sulfur"
-        assert index["source"].startswith("https://github.com/CFPAOrg/Glossary")
+        assert index["source"] == "https://example.com/lang"
+        assert index["source_version"] == "26.4-snapshot-8"
+        assert auto["source_version"] == "26.4-snapshot-8"
 
     def test_index_counts_all_layers(self, rows):
         _, index, stats = build_auto(rows)
         assert stats["index"] == len(index["sources"])
         for name in ("Sulfur Cube", "Sulfur", "Speed"):
             assert name in index["sources"]
+
+
+# ── 数据源：mcmeta 语言文件 ──────────────────────────
+
+class TestLangSource:
+    EN = {
+        "entity.minecraft.frostbite": "Frostbite",
+        "item.minecraft.frostbite_spawn_egg": "Frostbite Spawn Egg",
+        "block.minecraft.air": "Air",
+        "gui.done": "Done",
+        "item.minecraft.untranslated_thing": "Untranslated Thing",
+    }
+    ZH = {
+        "entity.minecraft.frostbite": "冻尸",
+        "item.minecraft.frostbite_spawn_egg": "冻尸刷怪蛋",
+        "block.minecraft.air": "空气",
+        "gui.done": "完成",
+        "item.minecraft.untranslated_thing": "Untranslated Thing",   # 未汉化
+    }
+
+    def test_rows_from_lang(self):
+        rows = rows_from_lang(self.EN, self.ZH)
+        assert {"key": "entity.minecraft.frostbite", "en_us": "Frostbite", "zh_cn": "冻尸"} in rows
+        assert len(rows) == 5
+
+    def test_rows_from_lang_skips_missing_or_nonstring(self):
+        rows = rows_from_lang({"a": "A", "b": "B"}, {"a": "甲"})
+        assert rows == [{"key": "a", "en_us": "A", "zh_cn": "甲"}]
+        assert rows_from_lang({"a": {"nested": 1}}, {"a": "甲"}) == []
+
+    def test_builds_tiers_from_lang(self):
+        auto, index, stats = build_auto(rows_from_lang(self.EN, self.ZH), source="local", version="9.9")
+        assert auto["terms"]["Frostbite Spawn Egg"] == "冻尸刷怪蛋"
+        assert auto["soft"]["Frostbite"] == "冻尸"
+        assert "Done" not in auto["soft"]          # gui.* 不在白名单
+        assert stats["dropped_untranslated"] == 1  # Untranslated → Untranslated
+        assert index["sources"]["Frostbite"] == "entity.minecraft.frostbite"
+
+    def test_merge_rows_prefers_fresh(self):
+        fresh = [{"key": "k1", "en_us": "A", "zh_cn": "新"}]
+        older = [{"key": "k1", "en_us": "A", "zh_cn": "旧"}, {"key": "k2", "en_us": "B", "zh_cn": "乙"}]
+        merged = merge_rows(fresh, older)
+        assert {m["key"]: m["zh_cn"] for m in merged} == {"k1": "新", "k2": "乙"}
 
 
 # ── 合并（手写覆盖层优先）─────────────────────────────

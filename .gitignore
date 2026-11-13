@@ -46,6 +46,9 @@ venv/
 # 根目录下的调试文件不提交
 debug*.*
 test*.*
+# 自动生成的词汇表层与溯源索引（tools/sync_glossary.py 产出），手写词表 glossary.json 仍然入库
+glossary.auto.json
+glossary.auto.index.json
 glossary_*.json
 
 # 测试文件夹下的调试文件*需要*提交

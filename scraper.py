@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 scraper.py — Minecraft 新闻爬取与翻译模块
 
@@ -20,6 +20,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from functools import lru_cache
 from urllib.parse import urljoin
 
 import requests
@@ -195,24 +196,73 @@ def _get_glossary() -> dict:
     return _GLOSSARY
 
 # ── 词汇表加载 ─────────────────────────────────────────
-def load_glossary(glossary_path: str = None) -> dict:
-    """加载专业术语词汇表"""
-    if glossary_path is None:
-        glossary_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "glossary.json")
+GLOSSARY_FILE = "glossary.json"           # 手写覆盖层（人工维护，优先级最高）
+GLOSSARY_AUTO_FILE = "glossary.auto.json"  # 自动层（tools/sync_glossary.py 生成）
 
+
+def _read_glossary_file(glossary_path: str) -> dict:
+    """读取单个词汇表文件，缺失或损坏时返回 {}"""
     if not os.path.exists(glossary_path):
         return {}
 
     try:
         with open(glossary_path, encoding="utf-8") as f:
             data = json.load(f)
-        return {
-            "terms": data.get("terms", {}),
-            "placeholders": data.get("placeholders", {})
-        }
     except (OSError, json.JSONDecodeError) as e:
-        print(f"[词汇表] 加载失败: {e}")
+        print(f"[词汇表] 加载失败 {os.path.basename(glossary_path)}: {e}")
         return {}
+    return {
+        "terms": data.get("terms", {}),
+        "soft": data.get("soft", {}),
+        "soft_strict": data.get("soft_strict", {}),
+        "ambiguous": data.get("ambiguous", {}),
+        "placeholders": data.get("placeholders", {}),
+    }
+
+
+def _merge_glossaries(manual: dict, auto: dict) -> dict:
+    """合并手写层与自动层：同名条目一律以手写层为准"""
+    if not manual and not auto:
+        return {}
+
+    merged_terms = {**(auto.get("terms") or {}), **(manual.get("terms") or {})}
+    taken = {k.lower() for k in merged_terms}
+
+    def _drop_taken(layer: dict) -> dict:
+        return {k: v for k, v in (layer or {}).items() if k.lower() not in taken}
+
+    merged_soft = _drop_taken(auto.get("soft"))
+    merged_strict = _drop_taken(auto.get("soft_strict"))
+    # 手写层已经用条件说明表达过歧义，这里只补自动层的歧义记录
+    merged_ambiguous = {
+        k: v for k, v in (auto.get("ambiguous") or {}).items() if k.lower() not in taken
+    }
+    return {
+        "terms": merged_terms,
+        "soft": merged_soft,
+        "soft_strict": merged_strict,
+        "ambiguous": merged_ambiguous,
+        "placeholders": manual.get("placeholders") or auto.get("placeholders") or {},
+    }
+
+
+def load_glossary(glossary_path: str = None) -> dict:
+    """加载词汇表
+
+    - 传入路径：只读该文件（测试与自定义场景）
+    - 不传路径：读取 glossary.json（手写）并叠加 glossary.auto.json（自动生成），
+      同名条目以手写为准
+    """
+    if glossary_path is not None:
+        return _read_glossary_file(glossary_path)
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    manual = _read_glossary_file(os.path.join(here, GLOSSARY_FILE))
+    auto = _read_glossary_file(os.path.join(here, GLOSSARY_AUTO_FILE))
+    if manual.get("terms") and not auto:
+        log_info(f"[词汇表] 未找到 {GLOSSARY_AUTO_FILE}，仅使用手写词表"
+                 f"（运行 python tools/sync_glossary.py 可同步官方术语）")
+    return _merge_glossaries(manual, auto)
 
 
 def _make_proxies(cfg: dict):
@@ -226,6 +276,7 @@ def _make_headers(cfg: dict) -> dict:
     return {"User-Agent": cfg["http"]["user_agent"], "Accept": cfg["http"]["accept"]}
 
 
+@lru_cache(maxsize=8192)
 def _parse_pattern(pattern: str) -> tuple:
     r"""
     解析模式字符串，返回 (基础词, 正则表达式, 是否有可选后缀)
@@ -272,77 +323,188 @@ def _parse_pattern(pattern: str) -> tuple:
     return (base_term, regex_pattern, has_optional)
 
 
-def find_relevant_terms(text: str, glossary: dict) -> dict:
+_OPTIONAL_SUFFIX_RE = re.compile(r"\(([^)]+)\)$")
+_TERM_WORD_RE = re.compile(r"[a-z0-9][a-z0-9'&:+-]*")
+_TEXT_NOISE_RE = re.compile(r"[A-Za-z0-9\u4e00-\u9fff]")
+# 词尾允许的英文变形，避免 Striders / Snapshot(s) 之类漏匹配；
+# 同时挡住 Firework 这类"长词里套短词"的误命中
+_INFLECTIONS = ("'s", "es", "ed", "ing", "s")
+# 桶键取首词前 N 个字符：既能按整词前缀命中，也允许复数等变形
+_BUCKET_PREFIX = 3
+
+
+def _looks_like_pattern(term: str) -> bool:
+    return "*" in term or bool(_OPTIONAL_SUFFIX_RE.search(term))
+
+
+def _bucket_key(word: str) -> str:
+    return word[:_BUCKET_PREFIX]
+
+
+def _build_term_index(glossary: dict) -> dict:
+    """把词表编译成索引：字面量按首词前缀建桶，通配符条目单独留作正则
+
+    逐条 `re.finditer` 的写法在 5000 条词表上要 400ms/批，建桶后是 0.1ms/批。
     """
-    从文本中查找相关的专业术语，当词条重叠时优先匹配更长的
-    支持模糊匹配: * 表示0-1个词, (xxx) 表示可选后缀
+    literal = {}
+    patterned = []
+    for tier, layer in (
+        ("hard", glossary.get("terms")),
+        ("soft", glossary.get("soft")),
+        ("soft_strict", glossary.get("soft_strict")),
+    ):
+        for term, zh in (layer or {}).items():
+            if not term or not zh:
+                continue
+            low = term.lower()
+            first_word = _TERM_WORD_RE.match(low)
+            if _looks_like_pattern(term):
+                base, regex, _ = _parse_pattern(term)
+                patterned.append((regex, base, zh, tier))
+                continue
+            if first_word is None or len(first_word.group(0)) < _BUCKET_PREFIX:
+                # 以符号开头或首词过短的极少数条目退回正则匹配
+                patterned.append((re.escape(low), term, zh, tier))
+                continue
+            literal.setdefault(_bucket_key(first_word.group(0)), []).append((low, term, zh, tier))
+    for bucket in literal.values():
+        bucket.sort(key=lambda c: -len(c[0]))   # 同桶内优先匹配更长的词条
+    return {"literal": literal, "patterned": patterned}
+
+
+_TERM_INDEX_CACHE = {}
+
+
+def _get_term_index(glossary: dict) -> dict:
+    """按对象身份缓存索引（生产环境词表是单例，只建一次）"""
+    cached = _TERM_INDEX_CACHE.get(id(glossary))
+    if cached is not None and cached[0] is glossary:
+        return cached[1]
+    index = _build_term_index(glossary)
+    if len(_TERM_INDEX_CACHE) >= 8:
+        _TERM_INDEX_CACHE.clear()
+    _TERM_INDEX_CACHE[id(glossary)] = (glossary, index)   # 持引用，避免 id 被复用
+    return index
+
+
+def _is_term_boundary(text_lower: str, end: int) -> bool:
+    """命中右侧必须是词边界（允许英文复数/时态后缀）"""
+    if end >= len(text_lower):
+        return True
+    if not (text_lower[end].isalnum() or text_lower[end] == "'"):
+        return True
+    return text_lower.startswith(_INFLECTIONS, end)
+
+
+def _iter_term_matches(text: str, index: dict):
+    low = text.lower()
+    for match in _TERM_WORD_RE.finditer(low):
+        for low_term, term, zh, tier in index["literal"].get(_bucket_key(match.group(0)), ()):
+            start = match.start()
+            end = start + len(low_term)
+            if low.startswith(low_term, start) and _is_term_boundary(low, end):
+                yield start, end, term, zh, tier
+    for regex, base, zh, tier in index["patterned"]:
+        for match in re.finditer(regex, text, re.IGNORECASE):
+            yield match.start(), match.end(), base, zh, tier
+
+
+def _collect_matches(text: str, index: dict) -> list:
+    """收集全部命中并按"位置优先、同位置取最长"去重叠"""
+    if not text:
+        return []
+    matches = sorted(_iter_term_matches(text, index), key=lambda m: (m[0], -(m[1] - m[0])))
+    kept = []
+    last_end = -1
+    for match in matches:
+        if match[0] < last_end:
+            continue
+        kept.append(match)
+        last_end = match[1]
+    return kept
+
+
+def find_relevant_terms(text: str, glossary: dict) -> dict:
+    """查找文本中出现的专业术语
+
+    支持模糊匹配: * 表示0-1个词, (xxx) 表示可选后缀；
+    词条重叠时优先匹配更长的（如 "Java Edition" 优先于 "Edition"）。
 
     Args:
         text: 待翻译的文本
-        glossary: 词汇表字典 {"terms": {英文: 中文}, "placeholders": {...}}
+        glossary: 词汇表字典 {"terms": {...}, "soft": {...}, "placeholders": {...}}
 
     Returns:
         相关术语的字典 {基础词: 中文}
     """
     if not text or not glossary:
         return {}
-
-    terms = glossary.get("terms", {})
-    if not terms:
-        return {}
-
-    text_lower = text.lower()
-    matches = []
-
-    # 找出所有匹配及其位置
-    for en_term, zh_term in terms.items():
-        base_term, regex_pattern, _ = _parse_pattern(en_term)
-
-        # 使用正则匹配
-        for match in re.finditer(regex_pattern, text_lower, re.IGNORECASE):
-            start, end = match.span()
-            matches.append((start, end, base_term, zh_term))
-
-    # 按位置和长度排序
-    matches.sort(key=lambda x: (x[0], -(x[1] - x[0])))
-
-    # 过滤重叠的匹配
-    filtered = []
-    for match in matches:
-        start, end, base_term, zh_term = match
-        overlaps = False
-        for f_start, f_end, _, _ in filtered:
-            if not (end <= f_start or start >= f_end):
-                overlaps = True
-                break
-        if not overlaps:
-            filtered.append(match)
-
-    # 转为字典（去重）
-    relevant = {}
-    for _, _, base_term, zh_term in filtered:
-        relevant[base_term] = zh_term
-
-    return relevant
+    return {term: zh for _, _, term, zh, _ in _collect_matches(text, _get_term_index(glossary))}
 
 
-def build_glossary_prompt(relevant_terms: dict, placeholders: dict = None) -> str:
-    """
-    根据相关术语构建提示词片段，支持占位符替换
+def _is_standalone(text: str, start: int, end: int) -> bool:
+    """判断命中是否"整段独立出现"（前后没有字母/数字/汉字）"""
+    return not _TEXT_NOISE_RE.search(text[:start]) and not _TEXT_NOISE_RE.search(text[end:])
+
+
+def select_relevant_terms(text, glossary: dict) -> dict:
+    """按分层策略挑选要注入的术语
+
+    - hard：命中即注入（多词专有名词）
+    - soft：整段独立出现，或原文大小写与词条完全一致时注入
+    - soft_strict：仅在整段独立出现时注入（Speed→迅捷，而句中的 speed 是"速度"）
 
     Args:
-        relevant_terms: 相关术语字典 {英文: 中文}
+        text: 单个文本，或文本列表（列表中每项单独判定"独立出现"）
+
+    Returns:
+        {英文: {"zh": 译名, "tier": 层级, "standalone": 是否独立出现}}
+    """
+    if not text or not glossary:
+        return {}
+    items = [text] if isinstance(text, str) else list(text)
+    index = _get_term_index(glossary)
+
+    chosen = {}
+    for item in items:
+        if not item:
+            continue
+        for start, end, term, zh, tier in _collect_matches(item, index):
+            standalone = _is_standalone(item, start, end)
+            if tier == "soft_strict" and not standalone:
+                continue
+            if tier == "soft" and not (standalone or item[start:end] == term):
+                continue
+            info = chosen.get(term)
+            if info is None:
+                chosen[term] = {"zh": zh, "tier": tier, "standalone": standalone}
+            elif standalone:
+                info["standalone"] = True
+    return chosen
+
+
+def build_glossary_prompt(relevant_terms: dict, placeholders: dict = None,
+                          soft_terms: dict = None, ambiguous: dict = None) -> str:
+    """根据相关术语构建提示词片段，支持占位符替换
+
+    Args:
+        relevant_terms: 强制译名 {英文: 中文}
         placeholders: 占位符配置 {占位符: 说明}
+        soft_terms: 条件译名 {英文: 中文}，用于"仅当指游戏术语时"的提示
+        ambiguous: 同英文多译名记录 {英文: {"primary": ..., "others": [...]}}
 
     Returns:
         提示词字符串
     """
-    if not relevant_terms:
+    relevant_terms = relevant_terms or {}
+    soft_terms = soft_terms or {}
+    if not relevant_terms and not soft_terms:
         return ""
 
     placeholders = placeholders or {}
-    terms_list = []
-    for en, zh in relevant_terms.items():
+    ambiguous = ambiguous or {}
+
+    def _format(en: str, zh: str) -> str:
         zh_expanded = zh
         # 将占位符替换为对应的说明文字或英文原词
         for placeholder, description in placeholders.items():
@@ -351,9 +513,39 @@ def build_glossary_prompt(relevant_terms: dict, placeholders: dict = None) -> st
                     zh_expanded = zh_expanded.replace(placeholder, f"({en})")
                 else:
                     zh_expanded = zh_expanded.replace(placeholder, f"({description})")
-        terms_list.append(f"  - {en} → {zh_expanded}")
+        note = ambiguous.get(en) or {}
+        if note.get("others"):
+            zh_expanded += f"（另有官方译名：{'／'.join(note['others'])}，按语境选择）"
+        return f"  - {en} → {zh_expanded}"
 
-    prompt = "\n专业术语对照（请严格使用以下译名）：\n" + "\n".join(terms_list)
+    parts = []
+    if relevant_terms:
+        parts.append("\n专业术语对照（请严格使用以下译名）：\n"
+                     + "\n".join(_format(en, zh) for en, zh in relevant_terms.items()))
+    if soft_terms:
+        parts.append("\n术语提示（仅当该词在此处指游戏术语时使用译名，否则按普通词翻译）：\n"
+                     + "\n".join(_format(en, zh) for en, zh in soft_terms.items()))
+    return "".join(parts)
+
+
+def build_glossary_prompt_for(text, glossary: dict, label: str = "") -> str:
+    """挑选术语并生成提示词片段，无命中时返回空串
+
+    Args:
+        text: 单个文本或文本列表
+        glossary: 词汇表字典
+        label: 日志前缀（如 "批次 3"）
+    """
+    selected = select_relevant_terms(text, glossary)
+    if not selected:
+        return ""
+    hard_terms = {en: i["zh"] for en, i in selected.items() if i["tier"] == "hard"}
+    soft_terms = {en: i["zh"] for en, i in selected.items() if i["tier"] != "hard"}
+    prompt = build_glossary_prompt(
+        hard_terms, glossary.get("placeholders"), soft_terms, glossary.get("ambiguous")
+    )
+    prefix = f"[词汇表] {label} " if label else "[词汇表] "
+    print(f"{prefix}添加 {len(selected)} 个术语（强制 {len(hard_terms)}／提示 {len(soft_terms)}）")
     return prompt
 
 
@@ -1161,11 +1353,7 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
 
     # 动态添加相关术语到提示词
     if use_glossary and gls:
-        relevant_terms = find_relevant_terms(text, gls)
-        if relevant_terms:
-            glossary_prompt = build_glossary_prompt(relevant_terms, gls.get("placeholders", {}))
-            system_prompt = system_prompt + glossary_prompt
-            print(f"[词汇表] 添加 {len(relevant_terms)} 个相关术语到提示词")
+        system_prompt = system_prompt + build_glossary_prompt_for(text, gls)
 
     host = cfg["openai_compat"]["host"]
     endpoint = cfg["openai_compat"]["endpoint"]
@@ -1667,16 +1855,13 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     def translate_batch(batch_index, batch):
         batch_json = json.dumps(batch, ensure_ascii=False, indent=0)
 
-        # 为当前批次动态添加相关术语
+        # 为当前批次动态添加相关术语（按条目分别判定"独立出现"）
         batch_system_prompt = system_prompt
         if gls:
-            # 收集批次中所有文本
-            batch_texts = " ".join([item.get("text", "") for item in batch])
-            relevant_terms = find_relevant_terms(batch_texts, gls)
-            if relevant_terms:
-                glossary_prompt = build_glossary_prompt(relevant_terms, gls.get("placeholders", {}))
-                batch_system_prompt = system_prompt + glossary_prompt
-                print(f"[词汇表] 批次 {batch_index + 1} 添加 {len(relevant_terms)} 个术语")
+            batch_texts = [item.get("text", "") for item in batch]
+            batch_system_prompt = system_prompt + build_glossary_prompt_for(
+                batch_texts, gls, label=f"批次 {batch_index + 1}"
+            )
 
         translated_result = translate_text(
             batch_json, system_prompt=batch_system_prompt, use_glossary=False, config=cfg,

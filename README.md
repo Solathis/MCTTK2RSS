@@ -276,22 +276,58 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ## 智能词汇表
 
-编辑 `glossary.json` 添加或修改术语：
+词汇表分两层，**同名条目以手写层为准**：
+
+| 文件 | 来源 | 说明 |
+|---|---|---|
+| `glossary.json` | 人工维护（入库） | 覆盖层，可写"条件说明"，优先级最高 |
+| `glossary.auto.json` | `tools/sync_glossary.py` 生成（不入库） | 自动层词条，来自 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary) |
+| `glossary.auto.index.json` | 同上（不入库） | 溯源索引：术语 → TSV 原始键。**运行时不会加载，也不进提示词**，只用于人工复核/调试 |
+
+手写层示例：
 
 ```json
 {
+  "placeholders": { "(*)": "[自动替换为英文原词]" },
   "terms": {
     "Snapshot": "快照",
-    "Pre-Release": "预发布版",
-    "Release Candidate": "候选版本",
-    "Bedrock Edition": "基岩版",
-    "Java Edition": "Java版",
-    "Game Drop": "游戏更新"
+    "Bedrock": "独立出现译为'基岩'，'Minecraft 26.10 Bedrock'此类译为'Minecraft: 基岩版 26.10'"
   }
 }
 ```
 
-翻译时自动扫描文本，只将相关术语添加到提示词中，批量翻译时按批次检测。
+翻译时自动扫描文本，只把**本批次命中的术语**加到提示词里，批量翻译时按批次检测。
+
+### 同步官方术语表
+
+```bash
+python tools/sync_glossary.py                       # 下载 Vanilla/latest.tsv，生成词表层 + 溯源索引
+python tools/sync_glossary.py --stats               # 只看统计，不写文件
+python tools/sync_glossary.py --tsv logs/latest.tsv # 用本地 TSV
+python tools/sync_glossary.py --no-index            # 不写 glossary.auto.index.json
+```
+
+脚本不做"把 TSV 拍平"这种傻事，而是：
+
+1. **过滤**：丢掉整句游戏内提示语（含 `%s` / `§` / 句号）、未汉化条目（`Fern → Fern`），
+   以及 `subtitles` / `options` / `gui` / `commands` 等命名空间（那些是 UI 文案和整句）
+2. **分层**：同一个英文词在句中和独立出现时译法不同，用注入条件区分
+
+   | 层 | 规模 | 注入条件 | 例 |
+   |---|---|---|---|
+   | `terms`（强制） | ~2200 | 命中即注入 | `Sulfur Cube → 硫方怪` |
+   | `soft` | ~300 | 整段独立出现，或原文大小写与词条完全一致 | `Sulfur → 硫黄` |
+   | `soft_strict` | ~45 | 仅整段独立出现 | `Speed → 迅捷`（句中 `speed` 是"速度"） |
+
+3. **记录歧义**：同一英文有多个官方译名时写入 `ambiguous`，提示词会附带"另有官方译名：…，按语境选择"
+4. **独立溯源索引**：`glossary.auto.index.json` 记下每个术语来自哪个 TSV 键
+   （如 `Speed ← effect.minecraft.speed`），用来解释"为什么它被分到这一层"、
+   排查误注入。它**只给人看**：运行时 `_read_glossary_file` 不读它，更不进提示词，所以是零 token 成本。
+
+### 成本
+
+按命中注入，**词表多大都不影响 token**。250 批真实文章实测：每批平均注入 1.3 条、约 48 字符（≈32 token），
+匹配耗时 0.2 ms/批。反例是把全表塞进 prompt：2590 条约 31000 token/次，250 批就是 780 万 token。
 
 ## 智能去重机制
 

@@ -12,7 +12,7 @@
 - **版本清单补齐**：额外读取 Mojang Piston 版本清单，避免因 API `sortType=Recent` 排序不可靠而漏掉 Java 版本日志
 - **Cloudflare 绕过**：使用 `curl_cffi` 模拟真实浏览器，绕过 Feedback 网站的 Cloudflare 防护
 - **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译与 JSON Schema 结构化输出
-- **智能词汇表**：动态检测专业术语，自动添加译名对照到提示词（`glossary.json`）
+- **智能词汇表**：动态检测专业术语，只把命中项加进提示词；手写 `glossary.json` 与自动层 `glossary.auto.json` 合并，术语按"强制 / 条件"分层注入
 - **三层去重**：连续去重 + 大段重复检测 + 长文本去重，避免内容重复
 - **格式转换**：自动生成 BBCode（MCBBS）和 Markdown 格式
 - **模块系统**：通过 `modules_config.json` 配置帖子头部/尾部模板，按新闻类型自动匹配
@@ -35,10 +35,13 @@ MCTTK/
 ├── init_state.py        # 初始化状态工具（测试用）
 ├── config.sample.json   # 配置模板（复制为 config.json 后修改）
 ├── config.json          # 本地配置（不入库，.gitignore 已忽略）
-├── glossary.json        # 专业术语词汇表
+├── glossary.json        # 手写术语覆盖层（入库）
+├── glossary.auto.json   # 自动词表层（tools/sync_glossary.py 生成，不入库）
+├── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
 ├── modules_config.json  # 帖子模板模块配置
 ├── pyproject.toml       # 项目配置（依赖声明、Ruff 规则、pytest 路径）
 ├── requirements.txt     # pip 依赖（Docker 构建用）
+├── tools/               # 辅助脚本（sync_glossary.py：同步官方术语表）
 ├── tests/               # 单元测试（pytest）
 ├── .env                 # 本地环境变量（不提交）
 ├── output/              # 输出目录（自动生成，不提交）

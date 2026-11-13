@@ -208,8 +208,12 @@ GLOSSARY_AUTO_FILE = "glossary.auto.json"  # 自动层（tools/sync_glossary.py 
 
 
 def _read_glossary_file(glossary_path: str) -> dict:
-    """读取单个词汇表文件，缺失或损坏时返回 {}"""
-    if not os.path.exists(glossary_path):
+    """读取单个词汇表文件，缺失或损坏时返回 {}
+
+    用 isfile 而不是 exists：docker-compose 挂载一个不存在的文件时，
+    会在容器内建出同名目录，这种情况要当成"没有这个词表"，而不是读取失败。
+    """
+    if not os.path.isfile(glossary_path):
         return {}
 
     try:

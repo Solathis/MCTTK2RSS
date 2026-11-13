@@ -46,6 +46,8 @@ docker run -d \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
+  -v $(pwd)/glossary.auto.json:/app/glossary.auto.json:ro \
+  -v $(pwd)/glossary.auto.index.json:/app/glossary.auto.index.json:ro \
   -e OPENAI_API_KEY=你的密钥 \
   -e MCBBS_USERNAME=用户名 \
   -e MCBBS_PASSWORD=密码 \
@@ -68,6 +70,8 @@ docker run -d \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
+  -v $(pwd)/glossary.auto.json:/app/glossary.auto.json:ro \
+  -v $(pwd)/glossary.auto.index.json:/app/glossary.auto.index.json:ro \
   -e OPENAI_API_KEY=你的密钥 \
   -e MCBBS_USERNAME=用户名 \
   -e MCBBS_PASSWORD=密码 \
@@ -117,6 +121,8 @@ docker run -d \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/modules_config.json:/app/modules_config.json:ro \
   -v $(pwd)/glossary.json:/app/glossary.json:ro \
+  -v $(pwd)/glossary.auto.json:/app/glossary.auto.json:ro \
+  -v $(pwd)/glossary.auto.index.json:/app/glossary.auto.index.json:ro \
   -e OPENAI_API_KEY=你的密钥 \
   -e MCBBS_USERNAME=用户名 \
   -e MCBBS_PASSWORD=密码 \
@@ -124,6 +130,32 @@ docker run -d \
 ```
 
 > 离线部署时，`config.json`、`modules_config.json`、`glossary.json` 仍需手动放到目标机器上，通过 `-v` 挂载进容器。
+> 自动词表同样手动生成后再挂载，见下一节。
+
+---
+
+## 自动词表：手动生成、挂载使用
+
+`glossary.auto.json`（词条）和 `glossary.auto.index.json`（溯源索引）由
+`tools/sync_glossary.py` 从 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary) 生成。
+
+**程序和容器在任何时候都不会联网更新它**：镜像构建不生成，`scheduler.py` 每 10 分钟起的
+`main.py` 只读取挂载进来的文件。网络不通只会影响你手动执行同步的那一次。
+
+首次部署前，在宿主机执行一次：
+
+```bash
+python tools/sync_glossary.py
+# 输出：glossary.auto.json（约 100 KB）+ glossary.auto.index.json（约 146 KB）
+```
+
+两个文件以只读方式挂载进容器（`docker-compose.yml` 与上面的 `docker run` 都已包含）。
+之后想更新词表，重新执行上面的命令即可 —— **不用重建镜像、也不用重启容器**：
+调度器每次都是拉新进程跑 `main.py`，下一次运行就会读到新文件。
+
+没有这两个文件也能正常跑：程序会退回只用 `glossary.json`，并在日志里提示一次
+（`[词汇表] 未找到 glossary.auto.json，仅使用手写词表`）。
+注意 Docker 对不存在的挂载文件会建成同名空目录，程序已按"词表缺失"处理，不会报错。
 
 ---
 
@@ -163,6 +195,8 @@ docker stats mcttk-scraper
 - `output/` 目录通过 volume 挂载到宿主机，数据持久化
 - `logs/` 目录通过 volume 挂载到宿主机，日志持久化（按日期轮转，单文件最大 5MB，保留 5 个备份）
 - `config.json` 等配置文件以只读方式挂载，修改宿主机文件后重启容器即可生效
+- 自动词表（`glossary.auto.json` / `glossary.auto.index.json`）以只读方式挂载，
+  **构建和运行期都不会联网更新**；宿主机重新跑 `tools/sync_glossary.py` 后，下一次调度即生效
 - 内存限制 512MB，预留 256MB；每次运行后自动垃圾回收
 - `restart: unless-stopped`：容器异常退出或系统重启后自动拉起
 
@@ -173,3 +207,4 @@ docker stats mcttk-scraper
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
 - 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，可配合 `logrotate` 等工具管理宿主机日志
+- 自动词表缺失不影响运行，只是译名覆盖范围退回到手写 `glossary.json`

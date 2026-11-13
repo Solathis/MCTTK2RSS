@@ -156,6 +156,19 @@ class TestMergeGlossaries:
     def test_missing_file_returns_empty(self, tmp_path):
         assert _read_glossary_file(str(tmp_path / "nope.json")) == {}
 
+    def test_directory_path_returns_empty(self, tmp_path):
+        """docker-compose 挂载不存在的文件时会建同名目录，要当成"没有词表\""""
+        mounted = tmp_path / "glossary.auto.json"
+        mounted.mkdir()
+        assert _read_glossary_file(str(mounted)) == {}
+
+    def test_glossary_without_auto_layer_still_works(self, tmp_path):
+        """只有手写词表时，加载与匹配都要正常（容器未挂载自动层的情况）"""
+        manual = tmp_path / "glossary.json"
+        manual.write_text(json.dumps({"terms": {"Sulfur": "硫黄"}}, ensure_ascii=False), encoding="utf-8")
+        loaded = _read_glossary_file(str(manual))
+        assert find_relevant_terms("Sulfur block", loaded) == {"Sulfur": "硫黄"}
+
 
 # ── 快速匹配 ────────────────────────────────────────
 

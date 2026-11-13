@@ -11,6 +11,10 @@ services:
       - ./config.json:/app/config.json:ro
       - ./modules_config.json:/app/modules_config.json:ro
       - ./glossary.json:/app/glossary.json:ro
+      # 自动词表：宿主机手动 `python tools/sync_glossary.py` 生成后挂载，
+      # 程序运行/容器启动都不会联网更新它（文件缺失时退回只用 glossary.json）
+      - ./glossary.auto.json:/app/glossary.auto.json:ro
+      - ./glossary.auto.index.json:/app/glossary.auto.index.json:ro
       - ./main.py:/app/main.py
       - ./scraper.py:/app/scraper.py
       - ./converter.py:/app/converter.py

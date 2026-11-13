@@ -99,6 +99,14 @@ class TestConfigStructure:
             assert key in c, f"concurrency 缺少键: {key}"
             assert isinstance(c[key], int) and c[key] > 0
 
+    def test_glossary_structure(self, config):
+        if "glossary" not in config:
+            return
+        g = config["glossary"]
+        assert isinstance(g.get("verify", True), bool)
+        assert isinstance(g.get("verify_max_rounds", 1), int) and g["verify_max_rounds"] >= 0
+        assert isinstance(g.get("verify_max_items", 20), int) and g["verify_max_items"] > 0
+
     def test_news_types_structure(self, config):
         if "news_types" not in config:
             return

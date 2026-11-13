@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 scraper.py — Minecraft 新闻爬取与翻译模块
 
@@ -133,6 +133,13 @@ DEFAULT_CONFIG = {
         "translation_workers": 3,
         "batch_max_chars": 1000,
         "batch_max_items": 10
+    },
+    "glossary": {
+        # 译名一致性校验：翻译完成后检查"强制层"译名是否真的出现在译文里，
+        # 缺失的条目做定点重译。轮数固定，不会无限重试。
+        "verify": True,
+        "verify_max_rounds": 1,
+        "verify_max_items": 20,
     }
 }
 
@@ -547,6 +554,125 @@ def build_glossary_prompt_for(text, glossary: dict, label: str = "") -> str:
     prefix = f"[词汇表] {label} " if label else "[词汇表] "
     print(f"{prefix}添加 {len(selected)} 个术语（强制 {len(hard_terms)}／提示 {len(soft_terms)}）")
     return prompt
+
+
+# ── 译名一致性校验（方案 C）──────────────────────────
+#
+# 只校验"强制层"(hard) 且译名是纯中文短词的条目：
+#   * 提示层(soft) 本来就是"看语境"，模型不用它是对的，校验会误判
+#   * "Minecraft: 基岩版"、"混沌立方(*)"这类值没法做包含判断
+# 收敛性由三点保证，不依赖重试纪律：
+#   1. 判定是纯本地子串包含，同一输入永远同一结论，不存在 A/B 振荡
+#   2. 轮数固定（默认 1 轮），代码里是 for 不是 while
+#   3. 只重译仍未通过的条目，且新译文"通过校验才替换"，结果单调不变差
+
+_VERIFIABLE_ZH_RE = re.compile(r"[\u4e00-\u9fff]{2,12}")
+_PLACEHOLDER_MARKS = ("(*)", "(~)", "(-)")
+
+
+def _verification_core(zh: str) -> str | None:
+    """取出可用于包含判断的译名；说明性/带占位符/含 ASCII 的值返回 None"""
+    if not zh:
+        return None
+    core = zh.strip()
+    if any(mark in core for mark in _PLACEHOLDER_MARKS):
+        return None
+    # 纯中文短词才校验：排除 "只有是状态效果时译为…" 这类说明和 "Minecraft: 基岩版"
+    return core if _VERIFIABLE_ZH_RE.fullmatch(core) else None
+
+
+def select_verifiable_terms(text, glossary: dict) -> dict:
+    """挑出"承诺必用且校验得动"的译名 {英文: 中文}"""
+    if not text or not glossary:
+        return {}
+    ambiguous = glossary.get("ambiguous") or {}
+    verifiable = {}
+    for en, info in select_relevant_terms(text, glossary).items():
+        if info["tier"] != "hard" or en in ambiguous:
+            continue
+        core = _verification_core(info["zh"])
+        if core:
+            verifiable[en] = core
+    return verifiable
+
+
+def find_missing_terms(source: str, translated: str, glossary: dict) -> dict:
+    """返回译文中缺失的官方译名 {英文: 译名}"""
+    if not source or not translated:
+        return {}
+    return {
+        en: zh
+        for en, zh in select_verifiable_terms(source, glossary).items()
+        if zh not in translated
+    }
+
+
+def repair_glossary_misses(items, translations: dict, glossary: dict, run_batch,
+                           prompts: dict, max_rounds: int = 1, max_items: int = 20) -> dict:
+    """校验并对未使用官方译名的条目做定点重译（有界、单调）
+
+    Args:
+        items: [{"id": "t0000", "text": ...}, ...]
+        translations: {translate_idx: 译文}
+        glossary: 词汇表
+        run_batch: (batch_items, system_prompt) -> {translate_idx: 译文}
+        prompts: 配置里的 prompts 段（取 translate_blocks_system）
+        max_rounds: 最多重译轮数（0 表示只校验不重译）
+        max_items: 每轮最多重译多少条
+
+    Returns:
+        更新后的 translations（原地修改并返回）
+    """
+    if not items or not glossary or max_rounds <= 0:
+        return translations
+
+    total_repaired = 0
+    for round_no in range(max_rounds):
+        misses = {}
+        for idx, item in enumerate(items):
+            missing = find_missing_terms(item["text"], translations.get(idx, ""), glossary)
+            if missing:
+                misses[idx] = missing
+        if not misses:
+            break
+
+        batch, notes = [], []
+        for idx, missing in list(misses.items())[:max_items]:
+            item = items[idx]
+            batch.append(item)
+            notes.append(
+                f"  - {item['id']}: " + "；".join(f"{en} 必须译为「{zh}」" for en, zh in missing.items())
+            )
+        repair_prompt = prompts["translate_blocks_system"] + (
+            "\n以下条目漏用了指定译名，请重新翻译。必须让「」里的中文原样出现在译文中：\n"
+            + "\n".join(notes)
+        )
+        fixed = run_batch(batch, repair_prompt) or {}
+
+        applied = 0
+        for item in batch:
+            idx = int(str(item["id"])[1:])
+            new_text = fixed.get(idx)
+            if not new_text:
+                continue
+            if find_missing_terms(item["text"], new_text, glossary):
+                continue   # 重译仍不合规 → 丢弃，保留旧译文，绝不来回横跳
+            translations[idx] = new_text
+            applied += 1
+
+        total_repaired += applied
+        print(f"[词汇表校验] 第 {round_no + 1} 轮: {len(misses)} 项译名缺失，"
+              f"重译 {len(batch)} 项，修复 {applied} 项")
+        if applied == 0:
+            break   # 模型不配合，再试也是白烧 token
+
+    remaining = sum(
+        1 for idx, item in enumerate(items)
+        if translations.get(idx) and find_missing_terms(item["text"], translations[idx], glossary)
+    )
+    if remaining:
+        print(f"[词汇表校验] 仍有 {remaining} 项未使用官方译名（已重译 {total_repaired} 项），放行并保留原译")
+    return translations
 
 
 # ── 工具函数 ─────────────────────────────────────────
@@ -1796,6 +1922,55 @@ def _chunk_items_for_translation(items, max_chars=1000, max_items=10):
     return batches
 
 
+def _parse_batch_translation(translated_result: str, batch: list) -> dict:
+    """解析一批翻译返回 → {translate_idx: 译文}
+
+    兼容 {"translations": [...]}、裸数组、纯文本按行对齐三种形态。
+    """
+    batch_translations = {}
+    # 兼容 {"translations": [...]} 与裸数组两种返回结构
+    items = _extract_translation_items(_parse_json_response(translated_result))
+    if items:
+        for obj in items:
+            if not isinstance(obj, dict) or "id" not in obj:
+                continue
+            tid = str(obj["id"])
+            if not tid.startswith("t"):
+                continue
+            # 兼容 API 返回 translated_text 或 text 两种字段名
+            value = _clean_translation_value(
+                obj.get("translated_text") or obj.get("text") or ""
+            )
+            if not value:
+                continue
+            with contextlib.suppress(ValueError):
+                batch_translations[int(tid[1:])] = value
+    else:
+        # 回退：模型完全没按 JSON 返回时，按行与输入顺序对齐。
+        # 仅在"行数与条目数完全一致"且"返回内容不含 JSON 片段"时采用，
+        # 否则模型的解释性文字会被当成译文写进最终结果。
+        lines = [
+            line.strip() for line in (translated_result or "").splitlines() if line.strip()
+        ]
+        looks_like_json = "{" in translated_result or "[" in translated_result
+        if not looks_like_json and len(lines) == len(batch):
+            for item, line in zip(batch, lines, strict=True):
+                tid = str(item["id"])
+                if tid.startswith("t"):
+                    with contextlib.suppress(ValueError):
+                        batch_translations[int(tid[1:])] = _clean_translation_value(line)
+        else:
+            reason = "含 JSON 片段但无法解析" if looks_like_json else \
+                f"行数({len(lines)})与条目数({len(batch)})不符"
+            print(f"[翻译] 返回非标准 JSON（{reason}），已忽略该批返回")
+
+    # 解析不出任何译文时必须显式告警：否则返回格式一变，整批译文会被静默丢弃
+    if batch and not batch_translations:
+        print(f"[翻译] 警告: 未能解析出任何译文（期望 {len(batch)} 项），"
+              f"返回内容前 200 字符: {translated_result[:200]!r}")
+    return batch_translations
+
+
 def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     """批量翻译内容块"""
     if not blocks:
@@ -1852,9 +2027,18 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         "additionalProperties": False
     }
 
-    def translate_batch(batch_index, batch):
-        batch_json = json.dumps(batch, ensure_ascii=False, indent=0)
+    def run_batch(batch, batch_system_prompt):
+        """发一批给模型并解析返回，失败返回 {}"""
+        translated_result = translate_text(
+            json.dumps(batch, ensure_ascii=False, indent=0),
+            system_prompt=batch_system_prompt, use_glossary=False, config=cfg,
+            response_schema=blocks_schema
+        )
+        if not translated_result:
+            return {}
+        return _parse_batch_translation(translated_result, batch)
 
+    def translate_batch(batch_index, batch):
         # 为当前批次动态添加相关术语（按条目分别判定"独立出现"）
         batch_system_prompt = system_prompt
         if gls:
@@ -1863,59 +2047,12 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                 batch_texts, gls, label=f"批次 {batch_index + 1}"
             )
 
-        translated_result = translate_text(
-            batch_json, system_prompt=batch_system_prompt, use_glossary=False, config=cfg,
-            response_schema=blocks_schema
-        )
-        if not translated_result:
-            print(f"[翻译] 批次 {batch_index + 1} 失败，跳过")
-            return {}
-
-        batch_translations = {}
-        # 兼容 {"translations": [...]} 与裸数组两种返回结构
-        items = _extract_translation_items(_parse_json_response(translated_result))
-        if items:
-            for obj in items:
-                if not isinstance(obj, dict) or "id" not in obj:
-                    continue
-                tid = str(obj["id"])
-                if not tid.startswith("t"):
-                    continue
-                # 兼容 API 返回 translated_text 或 text 两种字段名
-                value = _clean_translation_value(
-                    obj.get("translated_text") or obj.get("text") or ""
-                )
-                if not value:
-                    continue
-                with contextlib.suppress(ValueError):
-                    batch_translations[int(tid[1:])] = value
-        else:
-            # 回退：模型完全没按 JSON 返回时，按行与输入顺序对齐。
-            # 仅在"行数与条目数完全一致"且"返回内容不含 JSON 片段"时采用，
-            # 否则模型的解释性文字会被当成译文写进最终结果。
-            lines = [
-                line.strip() for line in (translated_result or "").splitlines() if line.strip()
-            ]
-            looks_like_json = "{" in translated_result or "[" in translated_result
-            if not looks_like_json and len(lines) == len(batch):
-                for item, line in zip(batch, lines, strict=True):
-                    tid = str(item["id"])
-                    if tid.startswith("t"):
-                        with contextlib.suppress(ValueError):
-                            batch_translations[int(tid[1:])] = _clean_translation_value(line)
-            else:
-                reason = "含 JSON 片段但无法解析" if looks_like_json else \
-                    f"行数({len(lines)})与条目数({len(batch)})不符"
-                print(f"[翻译] 批次 {batch_index + 1} 返回非标准 JSON（{reason}），已忽略该批返回")
-
-        # 解析不出任何译文时必须显式告警：否则返回格式一变，整批译文会被静默丢弃
-        if batch and not batch_translations:
-            print(f"[翻译] 警告: 批次 {batch_index + 1} 未能解析出任何译文"
-                  f"（期望 {len(batch)} 项），返回内容前 200 字符: {translated_result[:200]!r}")
-        else:
+        batch_translations = run_batch(batch, batch_system_prompt)
+        if batch_translations:
             print(f"[翻译] 批次 {batch_index + 1}/{len(batches)} 完成: "
                   f"{len(batch_translations)}/{len(batch)} 项")
-
+        else:
+            print(f"[翻译] 批次 {batch_index + 1} 失败，跳过")
         return batch_translations
 
     if max_workers <= 1:
@@ -1929,6 +2066,19 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                     translate_idx_to_translation.update(future.result())
                 except Exception as e:
                     print(f"[翻译] 批次异常: {e}")
+
+    # 译名一致性校验：主翻译跑完后串行补一轮（轮数固定，见 repair_glossary_misses）
+    gls_cfg = cfg.get("glossary") or {}
+    if gls and gls_cfg.get("verify", True) and translate_idx_to_translation:
+        translate_idx_to_translation = repair_glossary_misses(
+            items_to_translate,
+            translate_idx_to_translation,
+            gls,
+            run_batch,
+            cfg["prompts"],
+            max_rounds=int(gls_cfg.get("verify_max_rounds", 1)),
+            max_items=int(gls_cfg.get("verify_max_items", 20)),
+        )
 
     translated_count = 0
     for translate_idx, block_idx in block_index_map.items():

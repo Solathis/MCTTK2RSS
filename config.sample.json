@@ -61,6 +61,11 @@
     "batch_max_chars": 1000,
     "batch_max_items": 10
   },
+  "glossary": {
+    "verify": true,
+    "verify_max_rounds": 1,
+    "verify_max_items": 20
+  },
   "news_types": {
     "java_release": true,
     "java_snapshot": true,

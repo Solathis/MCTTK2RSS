@@ -125,7 +125,7 @@ DEFAULT_CONFIG = {
     },
     "output": { "save_dir": "output" },
     "retry": {
-        "translation": { "max_retries": 3, "wait_for_input": False },
+        "translation": { "max_retries": 3, "parse_retries": 2, "wait_for_input": False },
         "download":    { "max_retries": 3, "wait_for_input": False },
         "max_article_attempts": 3
     },
@@ -1375,6 +1375,53 @@ def _extract_translation_items(parsed_result):
     return []
 
 
+def _iter_json_objects(raw: str):
+    """扫描文本里"括号闭合完整"的 JSON 对象，用于从截断的返回里抢救数据
+
+    用栈记录每个 `{` 的位置，遇到 `}` 就吐出对应的完整片段；被截断的外层对象
+    不会闭合，自然就不会被吐出。
+    """
+    stack = []
+    in_string = False
+    escaped = False
+    for index, char in enumerate(raw):
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            stack.append(index)
+        elif char == "}" and stack:
+            start = stack.pop()
+            yield raw[start:index + 1]
+
+
+def _salvage_translation_items(raw: str) -> list[dict]:
+    """从被截断/损坏的返回里抢救出完整条目
+
+    典型场景：模型输出撞上 max_tokens 或连接中断，返回的 JSON 尾部被切掉。
+    整体 json.loads 必然失败，但前面若干个 {"id": ..., "translated_text": ...}
+    是完整的，捞出来就能少重发半个批次。
+    """
+    if not raw or "{" not in raw:
+        return []
+    salvaged = []
+    for chunk in _iter_json_objects(raw):
+        if '"id"' not in chunk:
+            continue
+        with contextlib.suppress(json.JSONDecodeError):
+            obj = json.loads(chunk)
+            if isinstance(obj, dict) and "id" in obj:
+                salvaged.append(obj)
+    return salvaged
+
+
 # 记录服务端拒绝过的 response_format（host, model, 类型），
 # 避免同一个模型在本次运行里每次调用都白白撞一次 400。
 _REJECTED_RESPONSE_FORMATS = set()
@@ -1547,7 +1594,11 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
                 continue
             response.raise_for_status()
             result = response.json()
-            content = result["choices"][0]["message"]["content"]
+            choice = result["choices"][0]
+            content = choice["message"]["content"]
+            if choice.get("finish_reason") == "length":
+                # 输出被 max_tokens 截断：调用方会靠拆分重试补救，这里只做提示
+                print(f"[翻译] 警告: 输出被 max_tokens={max_tokens} 截断（finish_reason=length）")
             return content
         except requests.exceptions.Timeout:
             print(f"[翻译] 请求超时（{timeout}秒）")
@@ -1926,14 +1977,25 @@ def _chunk_items_for_translation(items, max_chars=1000, max_items=10):
     return batches
 
 
-def _parse_batch_translation(translated_result: str, batch: list) -> dict:
+def _parse_batch_translation(translated_result: str, batch: list,
+                             allow_line_fallback: bool = True) -> dict:
     """解析一批翻译返回 → {translate_idx: 译文}
 
     兼容 {"translations": [...]}、裸数组、纯文本按行对齐三种形态。
+
+    Args:
+        allow_line_fallback: 是否允许"纯文本按行对齐"回退。拆分重试时必须关掉：
+            单条批次里模型的一段解释也会是"1 行 = 1 项"，会被当成译文写进结果。
     """
     batch_translations = {}
     # 兼容 {"translations": [...]} 与裸数组两种返回结构
     items = _extract_translation_items(_parse_json_response(translated_result))
+    if not items:
+        # 整体解析失败时先尝试从截断的 JSON 里抢救完整条目
+        salvaged = _salvage_translation_items(translated_result)
+        if salvaged:
+            print(f"[翻译] 返回不完整，已从残缺 JSON 抢救出 {len(salvaged)}/{len(batch)} 项")
+            items = salvaged
     if items:
         for obj in items:
             if not isinstance(obj, dict) or "id" not in obj:
@@ -1957,7 +2019,7 @@ def _parse_batch_translation(translated_result: str, batch: list) -> dict:
             line.strip() for line in (translated_result or "").splitlines() if line.strip()
         ]
         looks_like_json = "{" in translated_result or "[" in translated_result
-        if not looks_like_json and len(lines) == len(batch):
+        if allow_line_fallback and not looks_like_json and len(lines) == len(batch):
             for item, line in zip(batch, lines, strict=True):
                 tid = str(item["id"])
                 if tid.startswith("t"):
@@ -1973,6 +2035,14 @@ def _parse_batch_translation(translated_result: str, batch: list) -> dict:
         print(f"[翻译] 警告: 未能解析出任何译文（期望 {len(batch)} 项），"
               f"返回内容前 200 字符: {translated_result[:200]!r}")
     return batch_translations
+
+
+def _item_translate_idx(item: dict) -> int:
+    """从 {"id": "t0007"} 取出 7；取不到返回 -1"""
+    tid = str((item or {}).get("id") or "")
+    if tid.startswith("t") and tid[1:].isdigit():
+        return int(tid[1:])
+    return -1
 
 
 def translate_blocks(blocks: list, config=None, glossary=None) -> list:
@@ -2006,6 +2076,8 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     max_workers = int(cfg.get("concurrency", {}).get("translation_workers", 3))
     batch_max_chars = int(cfg.get("concurrency", {}).get("batch_max_chars", 1000))
     batch_max_items = int(cfg.get("concurrency", {}).get("batch_max_items", 10))
+    # 返回被截断时允许拆几层重试（0 = 不重试，退回"整批丢弃"的旧行为）
+    parse_retries = int(cfg.get("retry", {}).get("translation", {}).get("parse_retries", 2))
     batches = _chunk_items_for_translation(items_to_translate, max_chars=batch_max_chars, max_items=batch_max_items)
     system_prompt = cfg["prompts"]["translate_blocks_system"]
     translate_idx_to_translation = {}
@@ -2031,7 +2103,7 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         "additionalProperties": False
     }
 
-    def run_batch(batch, batch_system_prompt):
+    def run_batch(batch, batch_system_prompt, allow_line_fallback=True):
         """发一批给模型并解析返回，失败返回 {}"""
         translated_result = translate_text(
             json.dumps(batch, ensure_ascii=False, indent=0),
@@ -2040,18 +2112,51 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         )
         if not translated_result:
             return {}
-        return _parse_batch_translation(translated_result, batch)
+        return _parse_batch_translation(translated_result, batch, allow_line_fallback)
 
-    def translate_batch(batch_index, batch):
-        # 为当前批次动态添加相关术语（按条目分别判定"独立出现"）
+    def send_with_glossary(batch, label, allow_line_fallback=True):
+        """按当前批次内容拼上术语提示后发送"""
         batch_system_prompt = system_prompt
         if gls:
             batch_texts = [item.get("text", "") for item in batch]
             batch_system_prompt = system_prompt + build_glossary_prompt_for(
-                batch_texts, gls, label=f"批次 {batch_index + 1}"
+                batch_texts, gls, label=label
             )
+        return run_batch(batch, batch_system_prompt, allow_line_fallback)
 
-        batch_translations = run_batch(batch, batch_system_prompt)
+    def translate_items(batch, label, depth=0):
+        """翻译一批；有条目没解析出来就拆分重试（有界）
+
+        模型返回被截断（撞 max_tokens、连接中断）时，整体 JSON 解析必然失败。
+        这里先用 _parse_batch_translation 抢救出完整条目，只把缺的那几条
+        对半拆分重试：批次越小越不容易再被截断，也避免整批重发浪费 token。
+        递归深度受 retry.translation.parse_retries 限制，最多 1+2+4 次请求。
+        拆分出来的重试不接受"按行对齐"回退 —— 单条批次的模型解释性文字
+        也会满足"1 行 = 1 项"，那样等于把垃圾写进译文。
+        """
+        if not batch:
+            return {}
+        got = send_with_glossary(batch, label, allow_line_fallback=(depth == 0))
+        missing = [item for item in batch if _item_translate_idx(item) not in got]
+        if not missing:
+            return got
+        if depth >= parse_retries:
+            print(f"[翻译] {label} 仍有 {len(missing)}/{len(batch)} 项未取到译文，放弃")
+            return got
+
+        if len(missing) > 1:
+            mid = len(missing) // 2
+            print(f"[翻译] {label} 只解析出 {len(batch) - len(missing)}/{len(batch)} 项，"
+                  f"拆分重试（{len(missing[:mid])}+{len(missing[mid:])} 项）")
+            got.update(translate_items(missing[:mid], f"{label}.{depth + 1}a", depth + 1))
+            got.update(translate_items(missing[mid:], f"{label}.{depth + 1}b", depth + 1))
+        else:
+            print(f"[翻译] {label} 缺 1 项，单条重试")
+            got.update(translate_items(missing, f"{label}.{depth + 1}", depth + 1))
+        return got
+
+    def translate_batch(batch_index, batch):
+        batch_translations = translate_items(batch, f"批次 {batch_index + 1}")
         if batch_translations:
             print(f"[翻译] 批次 {batch_index + 1}/{len(batches)} 完成: "
                   f"{len(batch_translations)}/{len(batch)} 项")
@@ -2073,12 +2178,17 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
 
     # 译名一致性校验：主翻译跑完后串行补一轮（轮数固定，见 repair_glossary_misses）
     gls_cfg = cfg.get("glossary") or {}
+
+    def run_repair_batch(batch, batch_system_prompt):
+        # 补译只认结构化结果：按行对齐的回退会把解释性文字当成译文
+        return run_batch(batch, batch_system_prompt, allow_line_fallback=False)
+
     if gls and gls_cfg.get("verify", True) and translate_idx_to_translation:
         translate_idx_to_translation = repair_glossary_misses(
             items_to_translate,
             translate_idx_to_translation,
             gls,
-            run_batch,
+            run_repair_batch,
             cfg["prompts"],
             max_rounds=int(gls_cfg.get("verify_max_rounds", 1)),
             max_items=int(gls_cfg.get("verify_max_items", 20)),

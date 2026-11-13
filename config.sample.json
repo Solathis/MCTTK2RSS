@@ -48,6 +48,7 @@
   "retry": {
     "translation": {
       "max_retries": 3,
+      "parse_retries": 2,
       "wait_for_input": false
     },
     "download": {

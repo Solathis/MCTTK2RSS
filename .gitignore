@@ -52,6 +52,11 @@ build/
 venv/
 .venv/
 
+# 本地 Agent 协作规范：AGENTS.md / CLAUDE.md 才入库，
+# .local 后缀是个人本地 overlay，只留本机
+AGENTS.local.md
+CLAUDE.local.md
+
 # 根目录下的调试文件不提交
 debug*.*
 test*.*

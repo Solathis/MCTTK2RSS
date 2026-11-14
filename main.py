@@ -198,10 +198,14 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
         (new_news, state, posted_urls) 或 None（首次运行/无新内容时）
     """
     api_items = [n for n in all_news if n.get('_source') == 'minecraft_api']
+    manifest_items = [n for n in all_news if n.get('_source') == 'version_manifest']
     feedback_items = [n for n in all_news if n.get('_source') == 'feedback']
-    filtered_api = filter_news_by_types(api_items, config)
+    # 版本清单候选和 API 候选一起过类型过滤：manifest 来源在发现阶段已带
+    # _version_type，不走标题关键词猜测。漏掉这一类会让「版本清单补齐 Java
+    # 版本日志」整条链路空转（候选只出现在来源统计里，永远进不了待处理列表）。
+    filtered_api = filter_news_by_types(api_items + manifest_items, config)
     filtered = filtered_api + feedback_items
-    log_debug("[主] 参与状态比对的候选: %d 条（API %d + feedback %d）",
+    log_debug("[主] 参与状态比对的候选: %d 条（API+Manifest %d + feedback %d）",
               len(filtered), len(filtered_api), len(feedback_items))
 
     state = load_state(state_file)

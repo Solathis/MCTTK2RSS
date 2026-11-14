@@ -122,7 +122,7 @@ jobs:
         run: |
           set -euo pipefail
           IMG="${GHCR_IMAGE}:${VERSION}"
-          TAR="mcttk-${GITHUB_REF_NAME}.tar.gz"
+          TAR="mcttk-${GITHUB_REF_NAME}.tar"
           # 刚推送的镜像偶发要等一下才能拉，这里重试几次
           for i in 1 2 3 4 5; do
             if docker pull "$IMG"; then
@@ -132,13 +132,10 @@ jobs:
             sleep 10
           done
           docker image inspect "$IMG" > /dev/null
-          if command -v pigz >/dev/null 2>&1; then
-            docker save "$IMG" | pigz -9 > "$TAR"
-          else
-            docker save "$IMG" | gzip -9 > "$TAR"
-          fi
-          sha256sum "$TAR" > "${TAR}.sha256"
-          cat "${TAR}.sha256"
+          # 刻意不压缩：部分内网/私有云平台与国产容器引擎的「导入镜像」只收未压缩 tar，
+          # .tar.gz 会直接报错（docker load 本身能读压缩包，但这些平台不是走 docker load）。
+          # 校验和不再单独上传：GitHub 会给每个 Release 附件自动生成 SHA256 digest。
+          docker save -o "$TAR" "$IMG"
           ls -lh "$TAR"
 
       - name: 创建 Release 并上传附件
@@ -151,5 +148,4 @@ jobs:
           prerelease: ${{ contains(github.ref_name, '-') }}
           fail_on_unmatched_files: true
           files: |
-            mcttk-${{ github.ref_name }}.tar.gz
-            mcttk-${{ github.ref_name }}.tar.gz.sha256
+            mcttk-${{ github.ref_name }}.tar

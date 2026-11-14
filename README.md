@@ -585,7 +585,8 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
 
 1. 复用 `ci.yml` 跑 Ruff + pytest 作为门禁（不通过就不发布）
 2. 构建镜像并推送到 `ghcr.io/jiubook/mcttk`，标签为 `1.0.0`、`1.0`、`latest`
-3. 生成离线包 `mcttk-v1.0.0.tar.gz`（附 `.sha256`）
+3. 生成离线包 `mcttk-v1.0.0.tar`（未压缩，兼容只收未压缩包的导入界面；校验和取 GitHub
+   为附件自动生成的 SHA256 digest，不再单独上传 `.sha256`）
 4. 创建 GitHub Release，自动生成变更说明并挂上离线包
 
 ```bash

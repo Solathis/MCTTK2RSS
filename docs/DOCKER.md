@@ -137,14 +137,20 @@ docker compose -f docker-compose.release.yml up -d
 
 适合无法访问 Docker Hub、GHCR 或 GitHub 的内网环境。
 
-**最省事的方式：直接用 Release 里的离线包**——每次发版都由 CI 自动生成并附上校验和，不用自己构建：
+**最省事的方式：直接用 Release 里的离线包**——每次发版都由 CI 自动生成，不用自己构建：
 
 ```bash
-# 把 1.0.0 换成要的版本，文件名为 mcttk-v<版本>.tar.gz
-wget https://github.com/jiubook/MCTTK/releases/download/v1.0.0/mcttk-v1.0.0.tar.gz
-wget https://github.com/jiubook/MCTTK/releases/download/v1.0.0/mcttk-v1.0.0.tar.gz.sha256
-sha256sum -c mcttk-v1.0.0.tar.gz.sha256
+# 把 1.0.0 换成要的版本，文件名为 mcttk-v<版本>.tar
+wget https://github.com/jiubook/MCTTK/releases/download/v1.0.0/mcttk-v1.0.0.tar
 ```
+
+离线包是**未压缩**的 tar，下载体积比压缩包大不少（v0.1.0 的 `.tar.gz` 是 249 MiB，解压后约 600 MB 量级）。
+这样做是为了兼容那些「导入镜像」界面只收未压缩包的内网/私有云平台；如果你的环境就是本机
+`docker load`，也可以下载后自己 `gzip` 一遍再往内网传，省带宽。
+
+校验和不用再单独下载文件：GitHub 会给每个 Release 附件自动算 SHA256 digest，Release 页面每个附件
+旁边就能看到，也可以用 `gh release view v1.0.0` 或 Releases API 的 `assets[].digest` 取，
+拿到后跟 `sha256sum mcttk-v1.0.0.tar` 的输出比对即可。
 
 下载完直接跳到下面的「传输到目标机器」。后续小节是自己从源码构建并导出的做法。
 
@@ -169,7 +175,7 @@ docker save mcttk | gzip > mcttk.tar.gz   # 保存为 mcttk.tar.gz
 
 ```bash
 # Release 离线包
-scp mcttk-v1.0.0.tar.gz user@server:/path/to/deploy/
+scp mcttk-v1.0.0.tar user@server:/path/to/deploy/
 # 或自行导出的包
 scp mcttk.tar user@server:/path/to/deploy/
 ```
@@ -177,12 +183,15 @@ scp mcttk.tar user@server:/path/to/deploy/
 ### 在目标机器上加载并运行
 
 ```bash
-# Release 下载的包是 .tar.gz
-gunzip -c mcttk-v1.0.0.tar.gz | docker load
+# Release 下载的包（未压缩 tar）
+docker load -i mcttk-v1.0.0.tar
 
 # 自行导出的包
-docker load < mcttk.tar
+docker load -i mcttk.tar
 ```
+
+> 统一用 `docker load -i`，不要用 `<` 重定向或 `gunzip ... | docker load` 这类管道：
+> PowerShell 里 `<` 是语法错误、管道又是文本流，会把二进制包传坏（Linux 上不要紧，但没必要分两套写法）。
 
 加载后的镜像名取决于包的来源：
 
@@ -256,7 +265,8 @@ git push origin v1.0.0
 
 1. **测试门禁** — 复用 `.github/workflows/ci.yml`（Ruff + pytest），不通过就不发布
 2. **构建推送镜像** — `ghcr.io/jiubook/mcttk`，标签 `1.0.0` / `1.0` / `latest`（预发布不覆盖 `latest`）
-3. **生成离线包** — 从 GHCR 拉回镜像 `docker save` 成 `mcttk-v1.0.0.tar.gz` 并附 `.sha256`
+3. **生成离线包** — 从 GHCR 拉回镜像 `docker save` 成**未压缩**的 `mcttk-v1.0.0.tar`
+   （兼容只收未压缩包的导入界面；校验和由 GitHub 为附件自动生成 SHA256 digest，不再单独上传 `.sha256`）
 4. **建 Release** — 自动生成变更说明，挂上离线包
 
 补充说明：

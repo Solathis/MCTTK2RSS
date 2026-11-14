@@ -10,11 +10,11 @@
 """
 import argparse
 import json
-import logging
 import re
 from datetime import datetime
 from pathlib import Path
 
+from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
 from utils import CONFIG_DIR, MODULE_TYPE_MAP
 
 # ── 工具函数 ─────────────────────────────────────────
@@ -111,17 +111,17 @@ def _parse_date(date_str: str) -> str:
         dt = dt.astimezone(TZ_CN)
         return f"{dt.year}/{dt.month}/{dt.day} {dt.hour:02d}:{dt.minute:02d}:{dt.second:02d}"
     except Exception:  # noqa: BLE001
-        logging.debug("_parse_date: fromisoformat 失败，尝试下一格式", exc_info=True)
+        log_debug("_parse_date: fromisoformat 失败，尝试下一格式", exc_info=True)
     try:
         dt = datetime.strptime(date_str.strip(), "%d %B %Y")
         return f"{dt.year}/{dt.month}/{dt.day} 00:00:00"
     except Exception:  # noqa: BLE001
-        logging.debug("_parse_date: strptime %%d %%B %%Y 失败，尝试下一格式", exc_info=True)
+        log_debug("_parse_date: strptime %%d %%B %%Y 失败，尝试下一格式", exc_info=True)
     try:
         dt = datetime.strptime(date_str.strip(), "%B %d, %Y")
         return f"{dt.year}/{dt.month}/{dt.day} 00:00:00"
     except Exception:  # noqa: BLE001
-        logging.debug("_parse_date: 所有格式均失败，原样返回 %r", date_str, exc_info=True)
+        log_debug("_parse_date: 所有格式均失败，原样返回 %r", date_str, exc_info=True)
     return date_str
 
 
@@ -649,18 +649,19 @@ def convert_json_file(json_path: str, output_prefix: str = None, modules_config:
 
     conv = J2MMConverter(modules_config)
     stem = output_prefix or Path(json_path).stem
+    blocks = data.get("blocks") or []
 
     bbcode_content = conv.convert_to_bbcode(data)
     bbcode_path = f'{stem}.txt'
     with open(bbcode_path, 'w', encoding='utf-8') as f:
         f.write(bbcode_content)
-    print(f"[转换] BBCode: {bbcode_path}")
+    log_debug("[转换] BBCode: %s（%d 块 → %d 字符）", bbcode_path, len(blocks), len(bbcode_content))
 
     md_content = conv.convert_to_markdown(data)
     md_path = f'{stem}.md'
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(md_content)
-    print(f"[转换] Markdown: {md_path}")
+    log_debug("[转换] Markdown: %s（%d 字符）", md_path, len(md_content))
 
     return bbcode_path, md_path
 
@@ -682,7 +683,7 @@ def _load_modules(path):
 def _save(content, path):
     with open(path, 'w', encoding='utf-8') as f:
         f.write(content)
-    print(f'[OK] {path}')
+    log_info(f'[OK] {path}')
 
 
 def main():
@@ -708,7 +709,7 @@ def main():
         conv = J2MMConverter(modules)
         json_files = list(in_dir.glob('*.json'))
         if not json_files:
-            print(f'未找到 JSON 文件: {in_dir}')
+            log_warning(f'未找到 JSON 文件: {in_dir}')
             return
         ok = 0
         for jf in json_files:
@@ -721,8 +722,8 @@ def main():
                     _save(conv.convert_to_markdown(data), str(out_dir / f'{stem}.md'))
                 ok += 1
             except Exception as e:
-                print(f'[错误] {jf.name}: {e}')
-        print(f'\n完成：{ok}/{len(json_files)}')
+                log_error(f'[错误] {jf.name}: {e}')
+        log_info(f'\n完成：{ok}/{len(json_files)}')
     elif args.input:
         modules = _load_modules(args.modules)
         data = _load_json(args.input)
@@ -737,4 +738,5 @@ def main():
 
 
 if __name__ == '__main__':
+    setup_logging()
     main()

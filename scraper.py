@@ -16,7 +16,6 @@ import hashlib
 import json
 import os
 import re
-import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -31,7 +30,7 @@ from utils import CONFIG_DIR, GLOSSARY_DIR
 
 # 导入日志模块
 try:
-    from log_setup import get_logger, log_debug, log_error, log_info, log_warning
+    from log_setup import get_logger, human_size, log_debug, log_error, log_info, log_warning
     logger = get_logger()
 except ImportError:
     # 如果日志模块不可用，使用简单的 print 替代
@@ -41,6 +40,8 @@ except ImportError:
     def log_error(msg, exc_info=False): print(f"[ERROR] {msg}")
     def log_debug(msg): print(f"[DEBUG] {msg}")
     def log_warning(msg): print(f"[WARNING] {msg}")
+    def human_size(num_bytes):
+        return f"{num_bytes} B" if num_bytes is not None else "-"
 
 # 尝试导入 curl_cffi（用于 Feedback 网站爬取，绕过 Cloudflare）
 try:
@@ -49,6 +50,11 @@ try:
 except ImportError:
     CURL_CFFI_AVAILABLE = False
     cffi_requests = None
+
+
+def _elapsed(start_monotonic: float) -> str:
+    """把 time.monotonic() 起点换算成 '1.2s' 文本，用于日志耗时。"""
+    return f"{time.monotonic() - start_monotonic:.1f}s"
 
 # 禁用 SSL 警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -171,9 +177,9 @@ def load_config(config_path: str = None) -> dict:
                 user_config = json.load(f)
             config = _deep_merge(config, user_config)
         except (OSError, json.JSONDecodeError) as e:
-            print(f"[配置] 加载失败，使用默认配置: {e}")
+            log_error(f"[配置] 加载失败，使用默认配置: {e}")
     else:
-        print(f"[配置] 配置文件不存在: {config_path}")
+        log_info(f"[配置] 配置文件不存在: {config_path}")
 
     # 环境变量覆盖 API Key
     env_var = config.get("openai_compat", {}).get("api_key_env", "OPENAI_API_KEY")
@@ -222,7 +228,7 @@ def _read_glossary_file(glossary_path: str) -> dict:
         with open(glossary_path, encoding="utf-8") as f:
             data = json.load(f)
     except (OSError, json.JSONDecodeError) as e:
-        print(f"[词汇表] 加载失败 {os.path.basename(glossary_path)}: {e}")
+        log_error(f"[词汇表] 加载失败 {os.path.basename(glossary_path)}: {e}")
         return {}
     return {
         "terms": data.get("terms", {}),
@@ -558,7 +564,7 @@ def build_glossary_prompt_for(text, glossary: dict, label: str = "") -> str:
         hard_terms, glossary.get("placeholders"), soft_terms, glossary.get("ambiguous")
     )
     prefix = f"[词汇表] {label} " if label else "[词汇表] "
-    print(f"{prefix}添加 {len(selected)} 个术语（强制 {len(hard_terms)}／提示 {len(soft_terms)}）")
+    log_debug(f"{prefix}添加 {len(selected)} 个术语（强制 {len(hard_terms)}／提示 {len(soft_terms)}）")
     return prompt
 
 
@@ -667,7 +673,7 @@ def repair_glossary_misses(items, translations: dict, glossary: dict, run_batch,
             applied += 1
 
         total_repaired += applied
-        print(f"[词汇表校验] 第 {round_no + 1} 轮: {len(misses)} 项译名缺失，"
+        log_info(f"[词汇表校验] 第 {round_no + 1} 轮: {len(misses)} 项译名缺失，"
               f"重译 {len(batch)} 项，修复 {applied} 项")
         if applied == 0:
             break   # 模型不配合，再试也是白烧 token
@@ -677,7 +683,7 @@ def repair_glossary_misses(items, translations: dict, glossary: dict, run_batch,
         if translations.get(idx) and find_missing_terms(item["text"], translations[idx], glossary)
     )
     if remaining:
-        print(f"[词汇表校验] 仍有 {remaining} 项未使用官方译名（已重译 {total_repaired} 项），放行并保留原译")
+        log_info(f"[词汇表校验] 仍有 {remaining} 项未使用官方译名（已重译 {total_repaired} 项），放行并保留原译")
     return translations
 
 
@@ -1275,10 +1281,12 @@ def convert_feedback_html_to_blocks(html_content, base_url=""):
 
 def process_feedback_news(news_item: dict, config: dict) -> dict:
     """完整处理单篇 Feedback 文章"""
+    article_started = time.monotonic()
+    log_info("[Feedback] 开始处理文章: %s", news_item.get('title', ''))
     scraper = FeedbackScraper(config)
     article_content = scraper.fetch_article_content(news_item['url'])
     if not article_content:
-        log_error("[Feedback] 无法获取文章内容")
+        log_error("[Feedback] 无法获取文章内容: %s", news_item.get('url', ''))
         return None
 
     title_to_translate = article_content['title']
@@ -1288,13 +1296,17 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
         config=config,
     ) or ""
     if translated_title:
-        log_info(f"  原标题: {title_to_translate}")
-        log_info(f"  译标题: {translated_title}")
+        log_info("[翻译] 标题: 原文「%s」→ 译文「%s」", title_to_translate, translated_title)
+    else:
+        log_warning("[翻译] 标题翻译失败，将使用原文: %s", title_to_translate)
 
     feedback_base_url = config.get('feedback_site', {}).get('base_url', 'https://feedback.minecraft.net')
     full_url = urljoin(feedback_base_url, news_item['url'])
     blocks = convert_feedback_html_to_blocks(article_content['content'], base_url=full_url)
+    log_info("[Feedback] 正文解析: %d 个内容块（发布日期 %s）",
+             len(blocks), article_content.get("posted_date") or "-")
     translate_blocks(blocks, config=config)
+    log_info("[Feedback] 单篇处理完成，用时 %s", _elapsed(article_started))
 
     return {
         "title": title_to_translate,
@@ -1545,13 +1557,13 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
     proxies = _make_proxies(cfg)
 
     if not api_key or "********" in api_key:
-        print("[翻译] 错误: 未配置 API Key")
+        log_error("[翻译] 错误: 未配置 API Key")
         return None
     if not host or "example" in host:
-        print("[翻译] 错误: 未配置 API Host")
+        log_error("[翻译] 错误: 未配置 API Host")
         return None
     if not model or "your-" in model:
-        print("[翻译] 错误: 未配置 Model")
+        log_error("[翻译] 错误: 未配置 Model")
         return None
 
     api_url = f"https://{host}{endpoint}"
@@ -1582,7 +1594,10 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
 
         try:
             if retry_count > 0:
-                print(f"[翻译] 第 {retry_count} 次重试...")
+                log_warning(f"[翻译] 第 {retry_count} 次重试（共 {max_retries} 次）...")
+            log_debug("[翻译] 请求: model=%s host=%s 输入 %d 字符 提示词 %d 字符",
+                      model, host, len(text), len(system_prompt))
+            call_started = time.monotonic()
             response = requests.post(
                 api_url, json=payload, headers=headers,
                 timeout=timeout, verify=verify_ssl, proxies=proxies
@@ -1590,29 +1605,33 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
             # 服务端不支持该结构化输出方式时立即降级，不占用重试次数
             if current_format and _is_response_format_rejected(response):
                 _REJECTED_RESPONSE_FORMATS.add((host, model, current_format["type"]))
-                print(f"[翻译] 服务端不支持 response_format={current_format['type']}，"
-                      f"降级重试: {_short_error(response)}")
+                log_warning("[翻译] 服务端不支持 response_format=%s，降级重试: %s",
+                            current_format['type'], _short_error(response))
                 format_index += 1
                 continue
             response.raise_for_status()
             result = response.json()
             choice = result["choices"][0]
             content = choice["message"]["content"]
+            usage = result.get("usage") or {}
+            log_info("[翻译] API 调用完成: 输入 %d 字符 → 输出 %d 字符，用时 %s，tokens %s→%s",
+                     len(text), len(content or ""), _elapsed(call_started),
+                     usage.get("prompt_tokens", "-"), usage.get("completion_tokens", "-"))
             if choice.get("finish_reason") == "length":
                 # 输出被 max_tokens 截断：调用方会靠拆分重试补救，这里只做提示
-                print(f"[翻译] 警告: 输出被 max_tokens={max_tokens} 截断（finish_reason=length）")
+                log_warning(f"[翻译] 警告: 输出被 max_tokens={max_tokens} 截断（finish_reason=length）")
             return content
         except requests.exceptions.Timeout:
-            print(f"[翻译] 请求超时（{timeout}秒）")
+            log_warning("[翻译] 请求超时（%s 秒，用时 %s）", timeout, _elapsed(call_started))
         except requests.exceptions.ConnectionError as e:
-            print(f"[翻译] 连接失败: {e}")
+            log_error("[翻译] 连接失败: %s", e)
         except requests.exceptions.HTTPError as e:
-            print(f"[翻译] HTTP 错误: {e} | 响应: {_short_error(getattr(e, 'response', None))}")
+            log_error("[翻译] HTTP 错误: %s | 响应: %s", e, _short_error(getattr(e, 'response', None)))
         except (KeyError, IndexError) as e:
-            print(f"[翻译] 响应格式错误: {e}")
+            log_error("[翻译] 响应格式错误: %s", e)
             return None
         except json.JSONDecodeError as e:
-            print(f"[翻译] JSON 解析失败: {e}")
+            log_error("[翻译] JSON 解析失败: %s", e)
             return None
 
         retry_count += 1
@@ -1620,9 +1639,9 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
             time.sleep(retry_count * 2)
 
     if format_index >= len(format_candidates):
-        print("[翻译] 服务端拒绝了所有结构化输出方式，跳过")
+        log_error("[翻译] 服务端拒绝了所有结构化输出方式（json_schema/json_object/纯提示词），跳过")
     else:
-        print(f"[翻译] 已重试 {max_retries} 次，跳过")
+        log_error("[翻译] 已重试 %d 次仍失败，跳过本次翻译（输入 %d 字符）", max_retries, len(text))
     return None
 
 
@@ -1641,7 +1660,9 @@ def get_latest_news_list(page_size=None, config=None):
     proxies = _make_proxies(cfg)
 
     try:
-        print(f"[API] 正在获取新闻列表 (pageSize={params['pageSize']})...")
+        log_debug("[API] 请求新闻列表: %s (pageSize=%s, sortType=%s, category=%s)",
+                  api_url, params["pageSize"], params["sortType"], params["category"])
+        call_started = time.monotonic()
         response = requests.get(
             api_url, params=params, headers=headers,
             timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
@@ -1651,7 +1672,8 @@ def get_latest_news_list(page_size=None, config=None):
         items = result.get("result", {}).get("results", [])
 
         if not items:
-            print("[API] 未返回任何新闻")
+            log_warning("[API] 新闻列表为空（HTTP %s，用时 %s）",
+                        response.status_code, _elapsed(call_started))
             return []
 
         news_list = []
@@ -1674,11 +1696,15 @@ def get_latest_news_list(page_size=None, config=None):
                 "url": news_url
             })
 
-        print(f"[API] 获取 {len(news_list)} 条新闻")
+        log_info("[API] 获取新闻列表成功: %d 条（HTTP %s，原始 %d 条，去重 %d 条，用时 %s）",
+                 len(news_list), response.status_code, len(items),
+                 len(items) - len(news_list), _elapsed(call_started))
+        for news in news_list:
+            log_debug("[API]   - %s | %s", news.get("release_date") or "-", news["title"])
         return news_list
 
     except Exception as e:
-        print(f"[API] 获取失败: {e}")
+        log_error("[API] 获取新闻列表失败: %s（URL: %s）", e, api_url, exc_info=True)
         return []
 
 
@@ -1732,7 +1758,8 @@ def get_java_news_from_manifest(config=None):
     max_versions = max(int(vm_cfg.get("max_versions", 5)), 1)
 
     try:
-        print(f"[Manifest] 正在获取版本清单 (最多 {max_versions} 条)...")
+        log_debug("[Manifest] 请求版本清单: %s（最多取 %d 个版本）", manifest_url, max_versions)
+        call_started = time.monotonic()
         response = requests.get(
             manifest_url, headers=_make_headers(cfg),
             timeout=int(cfg["http"].get("timeout", 120)),
@@ -1741,7 +1768,7 @@ def get_java_news_from_manifest(config=None):
         response.raise_for_status()
         versions = response.json().get("versions", [])
     except Exception as e:
-        print(f"[Manifest] 获取失败: {e}")
+        log_error("[Manifest] 版本清单获取失败: %s", e, exc_info=True)
         return []
 
     news_list = []
@@ -1768,7 +1795,10 @@ def get_java_news_from_manifest(config=None):
             "_version_type": news_type,
         })
 
-    print(f"[Manifest] 获取 {len(news_list)} 条 Java 版本候选")
+    log_info("[Manifest] 版本清单 %d 个版本 → %d 条 Java 版本候选（最多取 %d 条，用时 %s）",
+             len(versions), len(news_list), max_versions, _elapsed(call_started))
+    for news in news_list:
+        log_debug("[Manifest]   - [%s] %s", news.get("_version_type"), news["url"])
     return news_list
 
 
@@ -1789,7 +1819,8 @@ def parse_article_page(article_url, config=None):
     proxies = _make_proxies(cfg)
 
     try:
-        print(f"[解析] 获取文章: {article_url}")
+        log_debug("[解析] 请求文章页面: %s", article_url)
+        call_started = time.monotonic()
         response = requests.get(
             article_url, headers=headers,
             timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
@@ -1912,7 +1943,7 @@ def parse_article_page(article_url, config=None):
 
         # 移除重复序列
         if indices_to_remove:
-            print(f"[去重] 检测到大段重复，移除 {len(indices_to_remove)} 个block")
+            log_info(f"[去重] 检测到大段重复，移除 {len(indices_to_remove)} 个block")
             deduplicated = [block for idx, block in enumerate(deduplicated) if idx not in indices_to_remove]
 
         # 第三步：去除长文本的非连续重复（可能是容器级重复导致的单个block重复）
@@ -1935,7 +1966,7 @@ def parse_article_page(article_url, config=None):
                     first_idx = seen_long_texts[text_key]
                     # 如果两次出现间隔较近（<15个block），认为是异常重复，跳过
                     if idx - first_idx < 15:
-                        print(f"[去重] 跳过长文本重复 (间隔{idx - first_idx}): {source_text[:50]}...")
+                        log_warning(f"[去重] 跳过长文本重复 (间隔{idx - first_idx}): {source_text[:50]}...")
                         continue
                 else:
                     seen_long_texts[text_key] = idx
@@ -1947,7 +1978,14 @@ def parse_article_page(article_url, config=None):
         for i, block in enumerate(deduplicated):
             block["id"] = f"b{i+1:04d}"
 
-        print(f"[解析] 提取 {len(deduplicated)} 个内容块")
+        type_counts = {}
+        for block in deduplicated:
+            block_type = block.get("type") or "?"
+            type_counts[block_type] = type_counts.get(block_type, 0) + 1
+        detail = "，".join(f"{k} {v}" for k, v in sorted(type_counts.items(), key=lambda kv: -kv[1]))
+        log_info("[解析] 成功: 「%s」共 %d 个内容块（%s），发布日期 %s，用时 %s",
+                 title or "(无标题)", len(deduplicated), detail or "空",
+                 release_date or "-", _elapsed(call_started))
         return {
             "title": title,
             "release_date": release_date,
@@ -1956,7 +1994,7 @@ def parse_article_page(article_url, config=None):
         }
 
     except Exception as e:
-        print(f"[解析] 失败: {e}")
+        log_error("[解析] 文章解析失败: %s（URL: %s）", e, article_url, exc_info=True)
         return None
 
 
@@ -1996,7 +2034,7 @@ def _parse_batch_translation(translated_result: str, batch: list,
         # 整体解析失败时先尝试从截断的 JSON 里抢救完整条目
         salvaged = _salvage_translation_items(translated_result)
         if salvaged:
-            print(f"[翻译] 返回不完整，已从残缺 JSON 抢救出 {len(salvaged)}/{len(batch)} 项")
+            log_warning(f"[翻译] 返回不完整，已从残缺 JSON 抢救出 {len(salvaged)}/{len(batch)} 项")
             items = salvaged
     if items:
         for obj in items:
@@ -2030,11 +2068,11 @@ def _parse_batch_translation(translated_result: str, batch: list,
         else:
             reason = "含 JSON 片段但无法解析" if looks_like_json else \
                 f"行数({len(lines)})与条目数({len(batch)})不符"
-            print(f"[翻译] 返回非标准 JSON（{reason}），已忽略该批返回")
+            log_info(f"[翻译] 返回非标准 JSON（{reason}），已忽略该批返回")
 
     # 解析不出任何译文时必须显式告警：否则返回格式一变，整批译文会被静默丢弃
     if batch and not batch_translations:
-        print(f"[翻译] 警告: 未能解析出任何译文（期望 {len(batch)} 项），"
+        log_warning(f"[翻译] 警告: 未能解析出任何译文（期望 {len(batch)} 项），"
               f"返回内容前 200 字符: {translated_result[:200]!r}")
     return batch_translations
 
@@ -2071,10 +2109,10 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         block_index_map[translate_idx] = block_idx
 
     if not items_to_translate:
-        print("[翻译] 无需翻译")
+        log_info("[翻译] 无需翻译（%d 个内容块里没有可译文本）", len(blocks))
         return blocks
 
-    print(f"[翻译] 开始翻译 {len(items_to_translate)} 个文本块")
+    translate_started = time.monotonic()
     max_workers = int(cfg.get("concurrency", {}).get("translation_workers", 3))
     batch_max_chars = int(cfg.get("concurrency", {}).get("batch_max_chars", 1000))
     batch_max_items = int(cfg.get("concurrency", {}).get("batch_max_items", 10))
@@ -2083,6 +2121,9 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     batches = _chunk_items_for_translation(items_to_translate, max_chars=batch_max_chars, max_items=batch_max_items)
     system_prompt = cfg["prompts"]["translate_blocks_system"]
     translate_idx_to_translation = {}
+    log_info("[翻译] 开始翻译 %d 个文本块（%d 批次，并发 %d，每批 ≤%d 字 / ≤%d 项）",
+             len(items_to_translate), len(batches), max(1, max_workers),
+             batch_max_chars, batch_max_items)
 
     # blocks 翻译的 JSON Schema（结构固定，可适配任意批次）
     blocks_schema = {
@@ -2143,27 +2184,30 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         if not missing:
             return got
         if depth >= parse_retries:
-            print(f"[翻译] {label} 仍有 {len(missing)}/{len(batch)} 项未取到译文，放弃")
+            log_error(f"[翻译] {label} 仍有 {len(missing)}/{len(batch)} 项未取到译文，放弃")
             return got
 
         if len(missing) > 1:
             mid = len(missing) // 2
-            print(f"[翻译] {label} 只解析出 {len(batch) - len(missing)}/{len(batch)} 项，"
-                  f"拆分重试（{len(missing[:mid])}+{len(missing[mid:])} 项）")
+            log_warning(f"[翻译] {label} 只解析出 {len(batch) - len(missing)}/{len(batch)} 项，"
+                        f"拆分重试（{len(missing[:mid])}+{len(missing[mid:])} 项）")
             got.update(translate_items(missing[:mid], f"{label}.{depth + 1}a", depth + 1))
             got.update(translate_items(missing[mid:], f"{label}.{depth + 1}b", depth + 1))
         else:
-            print(f"[翻译] {label} 缺 1 项，单条重试")
+            log_warning(f"[翻译] {label} 缺 1 项，单条重试")
             got.update(translate_items(missing, f"{label}.{depth + 1}", depth + 1))
         return got
 
     def translate_batch(batch_index, batch):
+        batch_started = time.monotonic()
         batch_translations = translate_items(batch, f"批次 {batch_index + 1}")
         if batch_translations:
-            print(f"[翻译] 批次 {batch_index + 1}/{len(batches)} 完成: "
-                  f"{len(batch_translations)}/{len(batch)} 项")
+            log_info("[翻译] 批次 %d/%d 完成: %d/%d 项，用时 %s",
+                     batch_index + 1, len(batches), len(batch_translations), len(batch),
+                     _elapsed(batch_started))
         else:
-            print(f"[翻译] 批次 {batch_index + 1} 失败，跳过")
+            log_error("[翻译] 批次 %d/%d 失败，跳过（%d 项）",
+                      batch_index + 1, len(batches), len(batch))
         return batch_translations
 
     if max_workers <= 1:
@@ -2176,7 +2220,7 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
                 try:
                     translate_idx_to_translation.update(future.result())
                 except Exception as e:
-                    print(f"[翻译] 批次异常: {e}")
+                    log_error(f"[翻译] 批次异常: {e}")
 
     # 译名一致性校验：主翻译跑完后串行补一轮（轮数固定，见 repair_glossary_misses）
     gls_cfg = cfg.get("glossary") or {}
@@ -2197,12 +2241,25 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
         )
 
     translated_count = 0
+    source_chars = 0
+    translated_chars = 0
     for translate_idx, block_idx in block_index_map.items():
+        source_chars += len(items_to_translate[translate_idx]["text"])
         if translate_idx in translate_idx_to_translation:
-            blocks[block_idx]["translated_text"] = translate_idx_to_translation[translate_idx]
+            translation = translate_idx_to_translation[translate_idx]
+            blocks[block_idx]["translated_text"] = translation
             translated_count += 1
+            translated_chars += len(translation or "")
 
-    print(f"[翻译] 完成: {translated_count}/{len(items_to_translate)}")
+    missing = len(items_to_translate) - translated_count
+    if missing:
+        log_warning("[翻译] 正文完成: %d/%d 块成功，%d 块保留原文（原文 %d 字符 → 译文 %d 字符，%d 批次，用时 %s）",
+                    translated_count, len(items_to_translate), missing,
+                    source_chars, translated_chars, len(batches), _elapsed(translate_started))
+    else:
+        log_info("[翻译] 正文完成: %d/%d 块全部成功（原文 %d 字符 → 译文 %d 字符，%d 批次，用时 %s）",
+                 translated_count, len(items_to_translate),
+                 source_chars, translated_chars, len(batches), _elapsed(translate_started))
     return blocks
 
 
@@ -2235,10 +2292,12 @@ def download_header_image(image_url, save_path, config=None):
     headers = _make_headers(cfg)
     proxies = _make_proxies(cfg)
     max_retries = int(cfg.get("retry", {}).get("download", {}).get("max_retries", 3))
+    download_started = time.monotonic()
     for attempt in range(max_retries + 1):
         try:
             if attempt > 0:
-                print(f"[下载] 第 {attempt} 次重试...")
+                log_warning("[下载] 头图第 %d/%d 次重试...", attempt, max_retries)
+            log_debug("[下载] 头图请求: %s", image_url)
             response = requests.get(
                 image_url, headers=headers,
                 timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"],
@@ -2249,12 +2308,15 @@ def download_header_image(image_url, save_path, config=None):
                 for chunk in response.iter_content(chunk_size=8192):
                     if chunk:
                         f.write(chunk)
-            print(f"[下载] 头图保存: {save_path}")
+            log_info("[下载] 头图已保存: %s（%s，用时 %s）",
+                     save_path, human_size(os.path.getsize(save_path)), _elapsed(download_started))
             return True
         except Exception as e:
-            print(f"[下载] 失败: {e}")
+            log_warning("[下载] 头图下载失败（第 %d/%d 次）: %s",
+                        attempt + 1, max_retries + 1, e)
             if attempt < max_retries:
                 time.sleep(attempt * 2 + 2)
+    log_error("[下载] 头图下载放弃（共尝试 %d 次）: %s", max_retries + 1, image_url)
     return False
 
 
@@ -2318,9 +2380,10 @@ def save_article_json(data: dict, save_dir: str = None, config=None) -> str:
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"[保存] JSON: {file_path}")
+        log_info("[保存] JSON 已写入: %s（%s，%d 块）",
+                 file_path, human_size(os.path.getsize(file_path)), len(data.get("blocks") or []))
     except OSError as e:
-        print(f"[保存] 写入失败: {e}")
+        log_error("[保存] JSON 写入失败: %s（目标: %s）", e, file_path, exc_info=True)
         return None
 
     return file_path
@@ -2340,14 +2403,14 @@ def process_article(news_item: dict, config=None) -> dict:
         完整的文章数据字典，失败返回 None
     """
     cfg = config or _get_cfg()
+    article_started = time.monotonic()
 
-    print(f"\n[处理] {news_item['title']}")
-    sys.stdout.flush()
+    log_info("[处理] 开始处理文章: %s", news_item.get('title', ''))
 
     # 解析
     article_data = parse_article_page(news_item['url'], config=cfg)
     if not article_data:
-        print("[处理] 解析失败")
+        log_error("[处理] 文章页面解析失败，跳过: %s", news_item.get('url', ''))
         return None
 
     # 翻译标题
@@ -2359,8 +2422,9 @@ def process_article(news_item: dict, config=None) -> dict:
     ) or ""
 
     if translated_title:
-        print(f"  原标题: {title_to_translate}")
-        print(f"  译标题: {translated_title}")
+        log_info("[翻译] 标题: 原文「%s」→ 译文「%s」", title_to_translate, translated_title)
+    else:
+        log_warning("[翻译] 标题翻译失败，将使用原文: %s", title_to_translate)
 
     # 翻译内容
     blocks = article_data.get("blocks", [])
@@ -2368,6 +2432,8 @@ def process_article(news_item: dict, config=None) -> dict:
 
     source_content = blocks_to_plaintext(blocks, field="source_text")
     translated_content = blocks_to_plaintext(blocks, field="translated_text")
+    log_info("[处理] 单篇处理完成: 原文 %d 字符 / 译文 %d 字符，用时 %s",
+             len(source_content), len(translated_content), _elapsed(article_started))
 
     return {
         "title": title_to_translate,

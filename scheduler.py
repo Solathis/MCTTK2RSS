@@ -2,8 +2,8 @@
 """Docker 定时调度器 — 周期性运行 main.py，并把调度事件写进同一份日志。
 
 环境变量：
-  MCTTK_INTERVAL     两轮之间的间隔秒数（默认 600 = 10 分钟）
-  MCTTK_RUN_TIMEOUT  单轮 main.py 的超时秒数（默认 900 = 15 分钟）
+  MCTTK_INTERVAL     两轮之间的间隔秒数（默认 3600 = 1 小时）
+  MCTTK_RUN_TIMEOUT  单轮 main.py 的超时秒数（默认 3600 = 1 小时）
 """
 
 import gc
@@ -14,8 +14,8 @@ import time
 
 from log_setup import log_error, log_info, log_section, log_warning, setup_logging
 
-INTERVAL = max(int(os.environ.get("MCTTK_INTERVAL") or 600), 10)
-RUN_TIMEOUT = max(int(os.environ.get("MCTTK_RUN_TIMEOUT") or 900), 60)
+INTERVAL = max(int(os.environ.get("MCTTK_INTERVAL") or 3600), 10)
+RUN_TIMEOUT = max(int(os.environ.get("MCTTK_RUN_TIMEOUT") or 3600), 60)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 

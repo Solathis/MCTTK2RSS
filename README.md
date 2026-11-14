@@ -32,7 +32,7 @@ MCTTK/
 ├── poster.py                  # MCBBS 发帖模块（含验证码识别）
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
 ├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
-├── scheduler.py               # 定时调度器（默认每 10 分钟运行一次）
+├── scheduler.py               # 定时调度器（默认每小时运行一次）
 ├── init_state.py              # 初始化状态工具（测试用）
 ├── config/                    # 配置目录
 │   ├── config.sample.json     # 配置模板（复制为 config/config.json 后修改）
@@ -228,7 +228,7 @@ python main.py --no-json
 |---|---|---|
 | `MCTTK_LOG_LEVEL` | `INFO` | 日志级别；排查问题时设 `DEBUG`（多出请求头、逐条新闻、分批明细） |
 | `MCTTK_LOG_DIR` | `logs` | 日志目录 |
-| `MCTTK_LOG_KEEP_DAYS` | `14` | 保留天数，启动时清理超期文件；`0` 表示永久保留 |
+| `MCTTK_LOG_KEEP_DAYS` | `90` | 保留天数，启动时清理超期文件；`0` 表示永久保留 |
 | `MCTTK_LOG_CONSOLE` | `1` | 是否同时输出到控制台 |
 | `MCTTK_LOG_CAPTURE` | `1` | 是否把 `print()` / stderr 一并写进日志文件 |
 
@@ -236,8 +236,8 @@ Docker 默认入口 `scheduler.py` 另有：
 
 | 环境变量 | 默认值 | 说明 |
 |---|---|---|
-| `MCTTK_INTERVAL` | `600` | 两轮之间间隔秒数（10 分钟） |
-| `MCTTK_RUN_TIMEOUT` | `900` | 单轮 `main.py` 超时秒数，超时会记录错误并进入下一轮 |
+| `MCTTK_INTERVAL` | `3600` | 两轮之间间隔秒数（1 小时） |
+| `MCTTK_RUN_TIMEOUT` | `3600` | 单轮 `main.py` 超时秒数（1 小时），超时会记录错误并进入下一轮 |
 
 排查历史问题直接看 `logs/` 目录即可；常见过滤：
 

@@ -16,7 +16,6 @@ import argparse
 import contextlib
 import glob
 import json
-import logging
 import os
 import re
 import sys
@@ -24,6 +23,7 @@ import time
 
 import requests
 
+from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
 from utils import CONFIG_DIR, MODULE_TYPE_MAP
 
 # ── 配置 ─────────────────────────────────────────────
@@ -73,7 +73,7 @@ def load_poster_config(config_path: str = None) -> dict:
                 if key in mcbbs and mcbbs[key]:
                     cfg[key] = mcbbs[key]
         except Exception as e:
-            print(f"[配置] 读取 mcbbs 配置失败: {e}")
+            log_warning(f"[配置] 读取 mcbbs 配置失败: {e}")
 
     # 环境变量覆盖
     env_map = {
@@ -155,7 +155,7 @@ def _init_ocr():
         import ddddocr
         return ddddocr.DdddOcr(show_ad=False)
     except Exception:  # noqa: BLE001
-        logging.debug("ddddocr 初始化失败，将跳过 OCR 识别", exc_info=True)
+        log_debug("ddddocr 初始化失败，将跳过 OCR 识别", exc_info=True)
         return None
 
 
@@ -178,7 +178,7 @@ def _preprocess_captcha(img_bytes: bytes) -> list:
         sharp.save(buf2, format="PNG")
         candidates.append(buf2.getvalue())
     except Exception:  # noqa: BLE001
-        logging.debug("验证码图片预处理失败，使用原始图片", exc_info=True)
+        log_debug("验证码图片预处理失败，使用原始图片", exc_info=True)
     return candidates
 
 
@@ -192,10 +192,10 @@ def _ocr_recognize(ocr, img_bytes: bytes) -> str:
             raw = re.sub(r'[^a-zA-Z0-9]', '', ocr.classification(img_data).strip())
             if 3 <= len(raw) <= 8:
                 tag = "原始" if idx == 0 else f"预处理#{idx}"
-                print(f"    OCR ({tag}): {raw}")
+                log_debug(f"    OCR ({tag}): {raw}")
                 return raw
         except Exception:  # noqa: BLE001
-            logging.debug("OCR 识别单张图片失败", exc_info=True)
+            log_debug("OCR 识别单张图片失败", exc_info=True)
     return ""
 
 
@@ -227,7 +227,7 @@ def _submit_captcha_login(session, base_url, r_cap, idhash, auth_token,
         f"{base_url}/member.php?mod=logging&action=login"
         f"&auth={quote(auth_token, safe='')}&referer={base_url}/&cookietime=1"
     )
-    print(f"    提交: {seccode_field}={answer}, password={'(set)' if password else '(EMPTY!)'}")
+    log_debug(f"    提交: {seccode_field}={answer}, password={'(set)' if password else '(EMPTY!)'}")
     session.headers.update({"Referer": referer_url})
     r_post = session.post(
         f"{base_url}/member.php?mod=logging&action=login"
@@ -243,15 +243,15 @@ def _submit_captcha_login(session, base_url, r_cap, idhash, auth_token,
     if err_match:
         err_msg = re.sub(r'<[^>]+>', '', err_match.group(1)).strip()[:200]
         if "安全问题" not in err_msg:
-            print(f"    ✗ 登录被拒: {err_msg}")
+            log_warning(f"    ✗ 登录被拒: {err_msg}")
     else:
-        print(f"    ✗ 未知登录结果（HTTP {r_post.status_code}，长度 {len(r_post.text)}）")
+        log_warning(f"    ✗ 未知登录结果（HTTP {r_post.status_code}，长度 {len(r_post.text)}）")
     return False
 
 
 def _login_with_captcha(session, base_url, username, password, captcha_answer, r):
     from urllib.parse import quote, unquote
-    print("    ⚠ 需要验证码")
+    log_warning("    ⚠ 需要验证码")
     auth_m = re.search(r"auth=([A-Za-z0-9%/+]+)", r.text)
     if not auth_m:
         raise RuntimeError("无法提取 auth token")
@@ -283,25 +283,25 @@ def _login_with_captcha(session, base_url, username, password, captcha_answer, r
 
         with open("captcha.png", "wb") as f:
             f.write(r_img.content)
-        print(f"    验证码已保存: captcha.png ({len(r_img.content)} bytes)")
+        log_debug(f"    验证码已保存: captcha.png ({len(r_img.content)} bytes)")
 
         answer = _ocr_recognize(ocr, r_img.content)
         if not answer:
             if captcha_answer:
                 answer = captcha_answer
-                print(f"    OCR 失败，使用手动验证码: {answer}")
+                log_warning(f"    OCR 失败，使用手动验证码: {answer}")
             else:
-                print(f"    OCR 失败，无手动验证码，跳过第{attempt}次")
+                log_warning(f"    OCR 失败，无手动验证码，跳过第{attempt}次")
                 time.sleep(1)
                 continue
 
         if _submit_captcha_login(session, base_url, r_cap, idhash, auth_token,
                                  username, password, answer):
-            print(f"    ✓ 验证码登录成功！（第{attempt}次）")
+            log_info(f"    ✓ 验证码登录成功！（第{attempt}次）")
             return _verify_login(session, base_url)
 
         if attempt < 5:
-            print(f"    重新获取登录页（第{attempt+1}次尝试）...")
+            log_debug(f"    重新获取登录页（第{attempt+1}次尝试）...")
             r_cap = session.get(
                 f"{base_url}/member.php?mod=logging&action=login"
                 f"&auth={auth_token}&referer={base_url}/&cookietime=1"
@@ -356,7 +356,7 @@ class MCBBSPoster:
         if not self.username or not self.password:
             raise RuntimeError("未配置 MCBBS 账号密码")
 
-        print(f"[*] 登录 MCBBS: {self.username}")
+        log_info(f"[*] 登录 MCBBS: {self.username}")
         self.session = _make_session()
 
         r = self.session.get(f"{self.base_url}/member.php?mod=logging&action=login")
@@ -377,7 +377,7 @@ class MCBBSPoster:
 
         if "欢迎您回来" in r.text:
             self.formhash = _verify_login(self.session, self.base_url)
-            print("    ✓ 登录成功！")
+            log_info("    ✓ 登录成功！")
             return True
 
         if "验证码" in r.text:
@@ -426,7 +426,7 @@ class MCBBSPoster:
                 return aid
 
             if attempt < 3:
-                print(f"    ⚠ 第{attempt}次上传失败，2秒后重试...")
+                log_warning(f"    ⚠ 第{attempt}次上传失败，2秒后重试...")
                 time.sleep(2)
 
         raise RuntimeError(f"上传失败: {aid[:200]}")
@@ -448,7 +448,7 @@ class MCBBSPoster:
             }
             mime_type = mime_map.get(ext, "application/octet-stream")
 
-        print(f"    上传文件: {filename}")
+        log_info(f"    上传文件: {filename}")
 
         # Discuz swfupload 服务端校验文件扩展名
         # 上传时改扩展名为 .txt 绕过限制（内容不变，用户下载后改名即可）
@@ -460,10 +460,10 @@ class MCBBSPoster:
         if ext not in allowed_exts:
             upload_filename = os.path.splitext(filename)[0] + ".txt"
             mime_type = "text/plain"
-            print(f"    (扩展名 {ext} 不被允许，上传时改用 {upload_filename})")
+            log_info(f"    (扩展名 {ext} 不被允许，上传时改用 {upload_filename})")
 
         aid = self._upload(file_path, upload_filename, mime_type)
-        print(f"    ✓ 文件上传成功！aid={aid}")
+        log_info(f"    ✓ 文件上传成功！aid={aid}")
         return aid
 
     def upload_image(self, image_path: str) -> str:
@@ -471,7 +471,7 @@ class MCBBSPoster:
         if not self.session:
             raise RuntimeError("未登录，请先调用 login()")
 
-        print(f"    上传图片: {os.path.basename(image_path)}")
+        log_info(f"    上传图片: {os.path.basename(image_path)}")
         ext = os.path.splitext(image_path)[1].lower()
         mime_map = {
             ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
@@ -480,7 +480,7 @@ class MCBBSPoster:
         mime = mime_map.get(ext, "image/jpeg")
         filename = os.path.basename(image_path)
         aid = self._upload(image_path, filename, mime, extra_data={"type": "image"})
-        print(f"    ✓ 上传成功！aid={aid}")
+        log_info(f"    ✓ 上传成功！aid={aid}")
         return aid
 
     def post_thread(self, title: str, message: str,
@@ -489,8 +489,8 @@ class MCBBSPoster:
         if not self.session:
             raise RuntimeError("未登录，请先调用 login()")
 
-        print(f"    标题: {title}")
-        print(f"    正文长度: {len(message)} 字符")
+        log_info(f"    标题: {title}")
+        log_info(f"    正文长度: {len(message)} 字符")
 
         newthread_url = (
             f"{self.base_url}/forum.php?mod=post&action=newthread&fid={self.forum_fid}"
@@ -538,20 +538,20 @@ class MCBBSPoster:
             relative_url = js_match.group(1)
             full_url = f"{self.base_url}/{relative_url.lstrip('./')}"
             if "需要审核" in r.text:
-                print(f"    ✓ 发帖成功（需审核）: {full_url}")
+                log_info(f"    ✓ 发帖成功（需审核）: {full_url}")
             else:
-                print(f"    ✓ 发帖成功: {full_url}")
+                log_info(f"    ✓ 发帖成功: {full_url}")
             return full_url
 
         for source in (r.headers.get("Location", ""), r.url):
             tid_match = re.search(r"thread-(\d+)-1-1", source)
             if tid_match:
                 full_url = f"{self.base_url}/thread-{tid_match.group(1)}-1-1.html"
-                print(f"    ✓ 发帖成功: {full_url}")
+                log_info(f"    ✓ 发帖成功: {full_url}")
                 return full_url
 
         if "需要审核" in r.text or "通过审核" in r.text:
-            print("    ✓ 发帖成功（需审核）")
+            log_info("    ✓ 发帖成功（需审核）")
             return "(需审核)"
 
         err = re.search(r'id="messagetext"[^>]*>(.*?)</div>', r.text, re.S)
@@ -597,7 +597,7 @@ class MCBBSPoster:
                     message = insert_image_bbcode(message, aid)
                     attachment_ids.append(aid)
                 except Exception as e:
-                    print(f"    ⚠ 图片上传失败，继续无图发帖: {e}")
+                    log_warning(f"    ⚠ 图片上传失败，继续无图发帖: {e}")
 
         # 上传 JSON 附件并追加到正文末尾
         if attach_json and os.path.exists(json_path):
@@ -606,7 +606,7 @@ class MCBBSPoster:
                 message += f"\n\n[attach]{json_aid}[/attach]"
                 attachment_ids.append(json_aid)
             except Exception as e:
-                print(f"    ⚠ JSON 附件上传失败，跳过: {e}")
+                log_warning(f"    ⚠ JSON 附件上传失败，跳过: {e}")
 
         # 检测分类（同时检测英文和中文标题，避免关键词丢失）
         original_title = meta.get("title", "").strip()
@@ -621,9 +621,9 @@ class MCBBSPoster:
         sortid = self.sortid_map.get(module_type)
         if sortid:
             cat_name = _CATEGORY_GROUP.get(module_type, "未知")
-            print(f"    分类: {cat_name} (sortid={sortid})")
+            log_info(f"    分类: {cat_name} (sortid={sortid})")
         else:
-            print(f"    ⚠ 警告: 未找到分类 {module_type} 的 sortid 配置")
+            log_warning(f"    ⚠ 警告: 未找到分类 {module_type} 的 sortid 配置")
 
         return self.post_thread(title, message, attachment_ids=attachment_ids, sortid=sortid)
 
@@ -662,12 +662,12 @@ def main():
     state_file = os.path.join(news_dir, ".posted.json")
 
     if not config["username"] or not config["password"]:
-        print("[!] 未配置 MCBBS 账号密码！请设置 config.json 中的 mcbbs 部分")
+        log_error("[!] 未配置 MCBBS 账号密码！请设置 config.json 中的 mcbbs 部分")
         sys.exit(1)
 
     # 扫描新闻文件
     if not os.path.isdir(news_dir):
-        print(f"[!] 新闻目录不存在: {news_dir}")
+        log_error(f"[!] 新闻目录不存在: {news_dir}")
         sys.exit(1)
 
     all_news = []
@@ -677,10 +677,10 @@ def main():
         if os.path.exists(json_path):
             all_news.append((stem, txt_path, json_path))
         else:
-            print(f"    ⚠ 跳过 {stem}: 找不到 .json")
+            log_warning(f"    ⚠ 跳过 {stem}: 找不到 .json")
 
     if not all_news:
-        print("[!] 没有找到新闻文件")
+        log_info("[!] 没有找到新闻文件")
         sys.exit(0)
 
     posted = load_posted(state_file)
@@ -690,10 +690,10 @@ def main():
         pending = [(s, t, j) for s, t, j in all_news if s not in posted]
 
     if not pending:
-        print("[!] 没有需要发布的新闻")
+        log_info("[!] 没有需要发布的新闻")
         sys.exit(0)
 
-    print(f"[*] 待发布: {len(pending)} 个")
+    log_info(f"[*] 待发布: {len(pending)} 个")
 
     if args.dry_run:
         for stem, txt_path, json_path in pending:
@@ -705,25 +705,25 @@ def main():
             img_path = find_image(news_dir, stem)
             module_type = detect_module_type(message, title)
             cat = _CATEGORY_GROUP.get(module_type, "未分类") if module_type else "未分类"
-            print(f"\n  文件: {stem}")
-            print(f"  标题: {title}")
-            print(f"  分类: {cat}")
-            print(f"  图片: {'✓ ' + os.path.basename(img_path) if img_path else '✗ 无'}")
-        print(f"\n[Dry Run] 共 {len(pending)} 个待发布")
+            log_info(f"\n  文件: {stem}")
+            log_info(f"  标题: {title}")
+            log_info(f"  分类: {cat}")
+            log_info(f"  图片: {'✓ ' + os.path.basename(img_path) if img_path else '✗ 无'}")
+        log_info(f"\n[Dry Run] 共 {len(pending)} 个待发布")
         sys.exit(0)
 
     poster = MCBBSPoster(config)
     try:
         poster.login()
     except Exception as e:
-        print(f"\n[!] 登录失败: {e}", file=sys.stderr)
+        log_error(f"[!] 登录失败: {e}")
         sys.exit(1)
 
     success = 0
     failed = 0
     for stem, txt_path, json_path in pending:
         try:
-            print(f"\n[*] 发布: {stem}")
+            log_info(f"\n[*] 发布: {stem}")
             poster.post_news_file(stem, txt_path, json_path, news_dir,
                                  no_image=args.no_image, attach_json=not args.no_json)
             posted.add(stem)
@@ -731,15 +731,16 @@ def main():
             success += 1
             time.sleep(2)
         except Exception as e:
-            print(f"    ✗ 发布失败: {e}")
+            log_error(f"    ✗ 发布失败: {e}")
             failed += 1
 
-    print(f"\n{'=' * 50}")
-    print(f"  完成！成功: {success}, 失败: {failed}")
-    print(f"{'=' * 50}")
+    log_info(f"\n{'=' * 50}")
+    log_info(f"  完成！成功: {success}, 失败: {failed}")
+    log_info(f"{'=' * 50}")
     if failed > 0:
         sys.exit(1)
 
 
 if __name__ == "__main__":
+    setup_logging()
     main()

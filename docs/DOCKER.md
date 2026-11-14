@@ -300,11 +300,57 @@ docker stats mcttk-scraper
 
 ---
 
+## 日志与排查
+
+`logs/` 目录挂载在宿主机上，每轮运行都会写 `logs/mcttk_YYYY-MM-DD.log`，
+内容比 `docker logs` 完整得多（`print()` 与 stderr 也会落盘）：
+
+- 每个来源（官方 API / Java 版本清单 / Feedback）拿到多少条、去重与类型过滤结果
+- 每篇文章的解析块数、标题原文与译文、翻译成功/失败块数、字符数、耗时
+- 保存的 JSON / 头图 / BBCode / Markdown 的路径与大小
+- 发帖是否成功、**帖子地址**、失败原因（附异常堆栈）
+- 每轮结束的一行汇总：来源条数 / 新增 / 翻译篇数 / 发帖成功失败 / 总用时
+
+常用排查命令：
+
+```bash
+# 最近几轮的汇总（有没有新内容、发没发出去）
+grep "\[汇总\]" logs/mcttk_*.log | tail -5
+
+# 确认官方 API 是"确实没新内容"还是"请求失败"
+grep -E "来源 minecraft_api|获取新闻列表失败" logs/mcttk_*.log | tail -10
+
+# 发帖结果与帖子地址
+grep -E "发帖成功|发帖失败|帖子地址" logs/mcttk_*.log
+
+# 所有错误（翻译失败、登录失败、未捕获异常）
+grep "\[ERROR\]" logs/mcttk_*.log
+
+# 跟随当天日志
+tail -f "logs/mcttk_$(date +%F).log"
+```
+
+日志与调度相关环境变量（写进 `.env` 即可，`docker-compose` 已透传）：
+
+| 变量 | 默认值 | 说明 |
+|---|---|---|
+| `MCTTK_LOG_LEVEL` | `INFO` | 改成 `DEBUG` 可看到请求头、逐条新闻列表、分批明细 |
+| `MCTTK_LOG_KEEP_DAYS` | `14` | 日志保留天数，`0` 表示永久保留；启动时清理超期文件 |
+| `MCTTK_LOG_CONSOLE` | `1` | 是否同时输出到 `docker logs` |
+| `MCTTK_LOG_CAPTURE` | `1` | 是否把 `print()` / stderr 一并写进日志文件 |
+| `MCTTK_INTERVAL` | `600` | 调度间隔秒数（10 分钟） |
+| `MCTTK_RUN_TIMEOUT` | `900` | 单轮 `main.py` 超时秒数，超时记 ERROR 后进入下一轮 |
+
+> 如果发现单轮耗时明显偏长（比如一轮跑掉几十分钟），把 `MCTTK_LOG_LEVEL=DEBUG` 打开跑一轮，
+> 日志里能看到每个请求的耗时与重试痕迹，用来判断是卡在 Feedback API、头图下载还是翻译调用。
+
+---
+
 ## 工作机制
 
-- 容器启动后由 `scheduler.py` 每 10 分钟自动运行一次 `main.py`
+- 容器启动后由 `scheduler.py` 按 `MCTTK_INTERVAL`（默认 600 秒）自动运行 `main.py`
 - `output/` 目录通过 volume 挂载到宿主机，数据持久化
-- `logs/` 目录通过 volume 挂载到宿主机，日志持久化（按日期轮转，单文件最大 5MB，保留 5 个备份）
+- `logs/` 目录通过 volume 挂载到宿主机，日志持久化（每天一个文件，默认保留 14 天）
 - `config/` 与 `glossary/` 以只读方式挂载，修改宿主机文件后重启容器即可生效
 - 自动词表（`glossary/glossary.auto.json` / `glossary/glossary.auto.index.json`）以只读方式挂载，
   **构建和运行期都不会联网更新**；宿主机重新跑 `tools/sync_glossary.py` 后，下一次调度即生效
@@ -317,5 +363,6 @@ docker stats mcttk-scraper
 - 状态文件 `output/.state.json` 和 `output/.posted.json` 持久化保存在宿主机
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
-- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，可配合 `logrotate` 等工具管理宿主机日志
+- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，默认保留 14 天
+  （`MCTTK_LOG_KEEP_DAYS` 可调，`0` 表示永久保留）
 - 自动词表缺失不影响运行，只是译名覆盖范围退回到手写 `glossary/glossary.json`

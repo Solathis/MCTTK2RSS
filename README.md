@@ -31,8 +31,8 @@ MCTTK/
 ├── converter.py               # JSON → BBCode/Markdown 转换器
 ├── poster.py                  # MCBBS 发帖模块（含验证码识别）
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
-├── log_setup.py               # 日志配置（按日期轮转）
-├── scheduler.py               # 定时调度器（每 10 分钟运行一次）
+├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
+├── scheduler.py               # 定时调度器（默认每 10 分钟运行一次）
 ├── init_state.py              # 初始化状态工具（测试用）
 ├── config/                    # 配置目录
 │   ├── config.sample.json     # 配置模板（复制为 config/config.json 后修改）
@@ -57,6 +57,7 @@ MCTTK/
 │   ├── news_*.md              # Markdown 格式
 │   └── news_*.jpg             # 文章头图
 ├── logs/                      # 运行日志（自动生成，不提交）
+│   └── mcttk_YYYY-MM-DD.log   # 每天一个文件，见上文「日志」章节
 ├── pyproject.toml             # 项目配置（依赖声明、Ruff 规则、pytest 路径）
 ├── requirements.txt           # pip 依赖（Docker 构建用）
 ├── Dockerfile                 # 镜像构建
@@ -179,6 +180,72 @@ python main.py --no-image
 # 发布时跳过 JSON 附件
 python main.py --no-json
 ```
+
+## 日志
+
+日志按天写入 `logs/mcttk_YYYY-MM-DD.log`，同时打印到控制台（容器里就是 `docker logs`）。
+除 `logging` 记录的消息外，`print()` 与标准错误也会同步进同一份文件（标记为
+`[STDOUT]` / `[STDERR]`），所以容器 stdout 里出现过的内容不会只留在 `docker logs` 里。
+
+每次运行都会记录下面这些内容：
+
+| 阶段 | 记录内容 |
+|---|---|
+| 运行 | 模式、输出目录、状态文件、翻译模型、启用类型、Feedback 栏目、MCBBS 开关、日志文件路径 |
+| 采集 | 每个来源（官方 API / Java 版本清单 / Feedback）拿到多少条、去重与类型过滤结果、耗时 |
+| 状态 | 候选 / 已处理 / 本次待处理条数，首次运行的标记情况 |
+| 解析 | 文章标题、内容块数量与类型分布、发布日期、耗时 |
+| 翻译 | 标题原文与译文、正文可译块数、成功/失败块数、原文字符 → 译文字符、批次数、每次 API 调用的耗时与 token 用量 |
+| 保存 | JSON / 头图 / BBCode / Markdown 的完整路径与文件大小 |
+| 发布 | 登录结果、每篇发帖结果、**帖子地址**、耗时；失败时附异常堆栈 |
+| 汇总 | 每轮结束一行：来源条数 / 新增条数 / 翻译篇数 / 发帖成功失败 / 总用时 |
+
+日志示例（节选）：
+
+```text
+2026-11-14 20:01:09 [INFO] ================== MCTTK 运行开始 ==================
+2026-11-14 20:01:09 [INFO] [配置] 模式: full | 输出目录: output | 状态文件: output/.state.json
+2026-11-14 20:01:10 [INFO] [主] 来源 minecraft_api: 新并入 3 条（原始 5 条，用时 1.2s）
+2026-11-14 20:01:10 [INFO] [主] 来源 version_manifest: 新并入 1 条（原始 1 条，用时 0.6s）
+2026-11-14 20:01:12 [INFO] [主] 来源 feedback: 6 条（基岩正式版更新日志 3 条，基岩测试版更新日志 3 条，用时 1.8s）
+2026-11-14 20:01:12 [INFO] [主] 状态检查: 候选 10 条，已处理 9 条，本次待处理 1 条
+2026-11-14 20:01:12 [INFO] ================== [1/1] Minecraft Beta & Preview - 26.70.24 ==================
+2026-11-14 20:01:12 [INFO] [主] 来源: feedback | 类型: feedback | 链接: https://feedback.minecraft.net/...
+2026-11-14 20:01:15 [INFO] [翻译] 标题: 原文「Minecraft Beta & Preview - 26.70.24」→ 译文「Minecraft 基岩版 测试版 - 26.70.24」
+2026-11-14 20:02:31 [INFO] [翻译] 正文完成: 58/61 块成功，3 块保留原文（原文 18342 字符 → 译文 16210 字符，6 批次，用时 76.4s）
+2026-11-14 20:02:31 [INFO] [主] 翻译覆盖: 58/61 块（95%），原文 18342 字符 → 译文 16210 字符
+2026-11-14 20:02:31 [INFO] [保存] JSON 已写入: output/news_xxx.json（60.8 KB，61 块）
+2026-11-14 20:02:33 [INFO] [主] 头图已保存: output/news_xxx.jpg（127.3 KB，用时 1.9s）
+2026-11-14 20:02:33 [INFO] [主] 已生成 BBCode: output/news_xxx.txt（28.4 KB）
+2026-11-14 20:02:33 [INFO] [主] 已生成 Markdown: output/news_xxx.md（26.4 KB）
+2026-11-14 20:02:41 [INFO] [发布] ✓ 发帖成功: https://www.mcbbs.co/thread-123456-1-1.html（用时 7.8s）
+2026-11-14 20:02:44 [INFO] [汇总] 模式=full | 来源 10 条 | 新增 1 条 | 翻译完成 1 篇 | 发帖成功 1 | 发帖失败 0 | 总用时 95.3s
+```
+
+### 调整日志行为
+
+| 环境变量 | 默认值 | 说明 |
+|---|---|---|
+| `MCTTK_LOG_LEVEL` | `INFO` | 日志级别；排查问题时设 `DEBUG`（多出请求头、逐条新闻、分批明细） |
+| `MCTTK_LOG_DIR` | `logs` | 日志目录 |
+| `MCTTK_LOG_KEEP_DAYS` | `14` | 保留天数，启动时清理超期文件；`0` 表示永久保留 |
+| `MCTTK_LOG_CONSOLE` | `1` | 是否同时输出到控制台 |
+| `MCTTK_LOG_CAPTURE` | `1` | 是否把 `print()` / stderr 一并写进日志文件 |
+
+Docker 默认入口 `scheduler.py` 另有：
+
+| 环境变量 | 默认值 | 说明 |
+|---|---|---|
+| `MCTTK_INTERVAL` | `600` | 两轮之间间隔秒数（10 分钟） |
+| `MCTTK_RUN_TIMEOUT` | `900` | 单轮 `main.py` 超时秒数，超时会记录错误并进入下一轮 |
+
+排查历史问题直接看 `logs/` 目录即可；常见过滤：
+
+```bash
+grep -E "\[汇总\]|发帖成功|发帖失败|ERROR" logs/mcttk_*.log
+grep "来源 minecraft_api" logs/mcttk_*.log    # 确认官方 API 是否有返回
+```
+
 
 ## 新闻来源
 
@@ -631,6 +698,8 @@ git push origin v1.0.0
 - **配置文件不入库**：仓库只保留 `config/config.sample.json` 模板，`config/config.json` 已被 `.gitignore` 忽略；
   首次使用请复制模板。API Key、MCBBS 密码等敏感信息建议放在 `.env`（同样被忽略）
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
+- **日志**：每轮运行的来源条数、翻译量、保存的文件、发帖地址都会写进 `logs/mcttk_YYYY-MM-DD.log`
+  （`print()` 与 stderr 也一并落盘）。容器重建后 `docker logs` 会清空，排查历史问题请以该目录为准
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件
 
 ## 许可证

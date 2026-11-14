@@ -15,7 +15,7 @@ main.py — MCTTK 新闻自动爬取 + 翻译 + 转换 + 发布 编排器
   python main.py --post-only        # 只发布 output 目录中未发布的文件
 
 配置：
-  统一使用 config.json（同目录下）
+  统一使用 config/config.json
   环境变量覆盖：OPENAI_API_KEY, MCBBS_USERNAME, MCBBS_PASSWORD 等
 """
 
@@ -40,12 +40,9 @@ from scraper import (
     process_feedback_news,
     save_article_json,
 )
-from utils import load_dotenv
+from utils import CONFIG_DIR, load_dotenv
 
-# 项目根目录
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# 项目根目录
+# 项目根目录（源码所在目录；配置统一放 config/，路径由 utils.CONFIG_DIR 给出）
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 load_dotenv(PROJECT_DIR)
@@ -53,7 +50,7 @@ load_dotenv(PROJECT_DIR)
 
 def load_main_config() -> dict:
     """加载统一配置"""
-    config_path = os.path.join(PROJECT_DIR, "config.json")
+    config_path = os.path.join(CONFIG_DIR, "config.json")
     return load_config(config_path)
 
 
@@ -282,7 +279,7 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False) -> list:
             print(f"     {news['url']}")
         return []
 
-    modules_cfg_path = os.path.join(PROJECT_DIR, "modules_config.json")
+    modules_cfg_path = os.path.join(CONFIG_DIR, "modules_config.json")
     modules_cfg = None
     if os.path.exists(modules_cfg_path):
         with open(modules_cfg_path, encoding="utf-8") as f:

@@ -4,8 +4,9 @@ from pathlib import Path
 
 import pytest
 
-CONFIG_PATH = Path(__file__).parent.parent / "config.json"
-SAMPLE_PATH = Path(__file__).parent.parent / "config.sample.json"
+CONFIG_DIR = Path(__file__).parent.parent / "config"
+CONFIG_PATH = CONFIG_DIR / "config.json"
+SAMPLE_PATH = CONFIG_DIR / "config.sample.json"
 
 
 def _active_config_path() -> Path:

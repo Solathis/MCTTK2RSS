@@ -15,13 +15,13 @@ import time
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_DIR)
 
-from utils import load_dotenv  # noqa: E402
+from utils import CONFIG_DIR, load_dotenv  # noqa: E402
 
 load_dotenv(PROJECT_DIR)
 
 from scraper import FeedbackScraper, classify_news_type, get_latest_news_list, load_config  # noqa: E402
 
-CONFIG_PATH = os.path.join(PROJECT_DIR, "config.json")
+CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 config = load_config(CONFIG_PATH)
 save_dir = config["output"]["save_dir"]
 os.makedirs(save_dir, exist_ok=True)

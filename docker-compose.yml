@@ -8,14 +8,14 @@ services:
     volumes:
       - ./output:/app/output
       - ./logs:/app/logs
-      - ./config.json:/app/config.json:ro
-      - ./modules_config.json:/app/modules_config.json:ro
-      - ./glossary.json:/app/glossary.json:ro
-      # 自动词表：宿主机手动 `python tools/sync_glossary.py` 生成后挂载，
-      # 程序运行/容器启动都不会联网更新它（文件缺失时退回只用 glossary.json）
-      - ./glossary.auto.json:/app/glossary.auto.json:ro
-      - ./glossary.auto.index.json:/app/glossary.auto.index.json:ro
+      # 配置整目录只读挂载（config.json / modules_config.json）
+      - ./config:/app/config:ro
+      # 词表整目录只读挂载：自动词表缺失时不会在容器里被误建成同名目录
+      # 自动词表由宿主机手动 `python tools/sync_glossary.py` 生成，
+      # 程序运行/容器启动都不会联网更新它（缺失时退回只用 glossary.json）
+      - ./glossary:/app/glossary:ro
       - ./main.py:/app/main.py
+      - ./log_setup.py:/app/log_setup.py
       - ./scraper.py:/app/scraper.py
       - ./converter.py:/app/converter.py
       - ./poster.py:/app/poster.py

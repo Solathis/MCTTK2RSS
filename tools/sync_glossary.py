@@ -31,7 +31,7 @@
   python tools/sync_glossary.py --source cfpa            # 用 CFPA 稳定版 TSV
   python tools/sync_glossary.py --source both            # 两者合并，快照优先
   python tools/sync_glossary.py --lang en.json zh.json   # 用本地语言文件（离线）
-  python tools/sync_glossary.py --tsv logs/latest.tsv    # 用本地 CFPA TSV（离线）
+  python tools/sync_glossary.py --tsv data/raw/latest.tsv  # 用本地 CFPA TSV（离线）
   python tools/sync_glossary.py --stats                  # 只打印统计，不写文件
 """
 
@@ -53,8 +53,8 @@ MCMETA_LANG_URL = MCMETA_BASE + "/assets/minecraft/lang/{lang}.json"
 MCMETA_VERSION_URL = MCMETA_BASE + "/version.json"
 MCMETA_SOURCE_PAGE = "https://github.com/misode/mcmeta"
 
-DEFAULT_OUT = "glossary.auto.json"
-DEFAULT_INDEX_OUT = "glossary.auto.index.json"
+DEFAULT_OUT = "glossary/glossary.auto.json"
+DEFAULT_INDEX_OUT = "glossary/glossary.auto.index.json"
 
 # 只收"游戏世界名词"相关的命名空间。subtitles/commands/options/gui/death
 # 等命名空间放的是整句或 UI 文案，注入到新闻正文里有害无益。
@@ -287,9 +287,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--lang", nargs=2, metavar=("EN_JSON", "ZH_JSON"),
                     help="本地 mcmeta 格式语言文件（指定后忽略 --source）")
     ap.add_argument("--timeout", type=int, default=60, help="下载超时秒数（默认 60）")
-    ap.add_argument("--out", default=DEFAULT_OUT, help="词表输出文件（默认 glossary.auto.json）")
+    ap.add_argument("--out", default=DEFAULT_OUT, help=f"词表输出文件（默认 {DEFAULT_OUT}）")
     ap.add_argument("--index-out", default=DEFAULT_INDEX_OUT,
-                    help="溯源索引输出文件（默认 glossary.auto.index.json）")
+                    help=f"溯源索引输出文件（默认 {DEFAULT_INDEX_OUT}）")
     ap.add_argument("--no-index", action="store_true", help="不写溯源索引")
     ap.add_argument("--stats", action="store_true", help="只打印统计，不写文件")
     args = ap.parse_args(argv)
@@ -321,11 +321,13 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(auto, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"已写入 {out} ({out.stat().st_size / 1024:.0f} KB)")
 
     if not args.no_index:
         index_out = Path(args.index_out)
+        index_out.parent.mkdir(parents=True, exist_ok=True)
         index_out.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"已写入 {index_out} ({index_out.stat().st_size / 1024:.0f} KB)")
     return 0

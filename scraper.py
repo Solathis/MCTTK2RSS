@@ -8,7 +8,7 @@ scraper.py — Minecraft 新闻爬取与翻译模块
   - 调用 AI API 翻译为简体中文
   - 保存为 JSON（不自动转换 BBCode/Markdown，由 main.py 调用 converter 处理）
 
-配置：统一由 config.json 加载
+配置：统一由 config/config.json 加载
 """
 
 import contextlib
@@ -26,6 +26,8 @@ from urllib.parse import urljoin
 import requests
 import urllib3
 from bs4 import BeautifulSoup, NavigableString, Tag
+
+from utils import CONFIG_DIR, GLOSSARY_DIR
 
 # 导入日志模块
 try:
@@ -160,7 +162,7 @@ def _deep_merge(a: dict, b: dict) -> dict:
 def load_config(config_path: str = None) -> dict:
     """加载统一配置文件"""
     if config_path is None:
-        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        config_path = os.path.join(CONFIG_DIR, "config.json")
 
     config = dict(DEFAULT_CONFIG)
     if os.path.exists(config_path):
@@ -267,7 +269,7 @@ def load_glossary(glossary_path: str = None) -> dict:
     if glossary_path is not None:
         return _read_glossary_file(glossary_path)
 
-    here = os.path.dirname(os.path.abspath(__file__))
+    here = GLOSSARY_DIR
     manual = _read_glossary_file(os.path.join(here, GLOSSARY_FILE))
     auto = _read_glossary_file(os.path.join(here, GLOSSARY_AUTO_FILE))
     if manual.get("terms") and not auto:

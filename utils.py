@@ -4,6 +4,13 @@
 import os
 import re
 
+# ── 项目路径 ───────────────────────────────────────────
+# 源码与入口脚本留在根目录；配置放 config/，词表放 glossary/。
+# 各模块统一从这里取路径，避免各自 os.path.dirname(__file__) 走样。
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+CONFIG_DIR = os.path.join(PROJECT_ROOT, "config")
+GLOSSARY_DIR = os.path.join(PROJECT_ROOT, "glossary")
+
 MODULE_TYPE_MAP = {
     'module_java_snapshot_header': 'java_snapshot',
     'module_java_snapshot_footer': 'java_snapshot',
@@ -27,7 +34,7 @@ MODULE_TYPE_MAP = {
 def load_dotenv(project_dir: str = None) -> None:
     """加载同目录下的 .env 文件到环境变量（已存在的变量不覆盖）"""
     if project_dir is None:
-        project_dir = os.path.dirname(os.path.abspath(__file__))
+        project_dir = PROJECT_ROOT
     env_path = os.path.join(project_dir, ".env")
     if not os.path.exists(env_path):
         return

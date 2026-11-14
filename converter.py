@@ -15,7 +15,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from utils import MODULE_TYPE_MAP
+from utils import CONFIG_DIR, MODULE_TYPE_MAP
 
 # ── 工具函数 ─────────────────────────────────────────
 
@@ -696,7 +696,7 @@ def main():
     args = parser.parse_args()
 
     if not args.modules:
-        default_cfg = Path(__file__).parent / 'modules_config.json'
+        default_cfg = Path(CONFIG_DIR) / 'modules_config.json'
         if default_cfg.exists():
             args.modules = str(default_cfg)
 

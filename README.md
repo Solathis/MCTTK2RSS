@@ -12,10 +12,10 @@
 - **版本清单补齐**：额外读取 Mojang Piston 版本清单，避免因 API `sortType=Recent` 排序不可靠而漏掉 Java 版本日志
 - **Cloudflare 绕过**：使用 `curl_cffi` 模拟真实浏览器，绕过 Feedback 网站的 Cloudflare 防护
 - **AI 翻译**：调用 OpenAI 兼容 API 翻译为简体中文，支持并发批量翻译与 JSON Schema 结构化输出
-- **智能词汇表**：动态检测专业术语，只把命中项加进提示词；手写 `glossary.json` 与自动层 `glossary.auto.json` 合并，术语按"强制 / 条件"分层注入
+- **智能词汇表**：动态检测专业术语，只把命中项加进提示词；手写 `glossary/glossary.json` 与自动层 `glossary/glossary.auto.json` 合并，术语按"强制 / 条件"分层注入
 - **三层去重**：连续去重 + 大段重复检测 + 长文本去重，避免内容重复
 - **格式转换**：自动生成 BBCode（MCBBS）和 Markdown 格式
-- **模块系统**：通过 `modules_config.json` 配置帖子头部/尾部模板，按新闻类型自动匹配
+- **模块系统**：通过 `config/modules_config.json` 配置帖子头部/尾部模板，按新闻类型自动匹配
 - **自动发布**：登录 MCBBS 论坛自动发帖，支持图片上传和 JSON 附件
 - **类型过滤**：通过配置控制只发布指定类型的新闻
 - **安全去重**：基于 URL 的状态追踪，不会重复爬取或发布
@@ -26,31 +26,42 @@
 
 ```
 MCTTK/
-├── main.py              # 编排器：串联爬取→翻译→转换→发布
-├── scraper.py           # 爬取与翻译模块（含 Feedback 爬虫）
-├── converter.py         # JSON → BBCode/Markdown 转换器
-├── poster.py            # MCBBS 发帖模块（含验证码识别）
-├── utils.py             # 公共工具：MODULE_TYPE_MAP、classify_article_type、load_dotenv
-├── scheduler.py         # 定时调度器（每 10 分钟运行一次）
-├── init_state.py        # 初始化状态工具（测试用）
-├── config.sample.json   # 配置模板（复制为 config.json 后修改）
-├── config.json          # 本地配置（不入库，.gitignore 已忽略）
-├── glossary.json        # 手写术语覆盖层（入库）
-├── glossary.auto.json   # 自动词表层（tools/sync_glossary.py 生成，不入库）
-├── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
-├── modules_config.json  # 帖子模板模块配置
-├── pyproject.toml       # 项目配置（依赖声明、Ruff 规则、pytest 路径）
-├── requirements.txt     # pip 依赖（Docker 构建用）
-├── tools/               # 辅助脚本（sync_glossary.py：同步官方术语表）
-├── tests/               # 单元测试（pytest）
-├── .env                 # 本地环境变量（不提交）
-├── output/              # 输出目录（自动生成，不提交）
-│   ├── .state.json      # 处理状态（URL 级别去重）
-│   ├── .posted.json     # MCBBS 发布状态
-│   ├── news_*.json      # 翻译后的文章数据
-│   ├── news_*.txt       # BBCode 格式（用于 MCBBS）
-│   ├── news_*.md        # Markdown 格式
-│   └── news_*.jpg       # 文章头图
+├── main.py                    # 编排器：串联爬取→翻译→转换→发布
+├── scraper.py                 # 爬取与翻译模块（含 Feedback 爬虫）
+├── converter.py               # JSON → BBCode/Markdown 转换器
+├── poster.py                  # MCBBS 发帖模块（含验证码识别）
+├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
+├── log_setup.py               # 日志配置（按日期轮转）
+├── scheduler.py               # 定时调度器（每 10 分钟运行一次）
+├── init_state.py              # 初始化状态工具（测试用）
+├── config/                    # 配置目录
+│   ├── config.sample.json     # 配置模板（复制为 config/config.json 后修改）
+│   ├── config.json            # 本地配置（不入库，.gitignore 已忽略）
+│   └── modules_config.json    # 帖子模板模块配置
+├── glossary/                  # 词表目录
+│   ├── glossary.json          # 手写术语覆盖层（入库）
+│   ├── glossary.auto.json     # 自动词表层（tools/sync_glossary.py 生成，不入库）
+│   └── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
+├── tools/                     # 辅助脚本（sync_glossary.py：同步官方术语表）
+├── tests/                     # 单元测试（pytest）
+├── docs/                      # 文档
+│   ├── DOCKER.md              # Docker 部署说明
+│   └── archive/               # 历史评审与 PR 记录
+├── data/                      # 本地原始数据（不入库）：latest.tsv、mcmeta 语言文件
+├── archive/                   # 历史归档（不入库）：上一代项目、实验脚本、本地备份
+├── output/                    # 输出目录（自动生成，不提交）
+│   ├── .state.json            # 处理状态（URL 级别去重）
+│   ├── .posted.json           # MCBBS 发布状态
+│   ├── news_*.json            # 翻译后的文章数据
+│   ├── news_*.txt             # BBCode 格式（用于 MCBBS）
+│   ├── news_*.md              # Markdown 格式
+│   └── news_*.jpg             # 文章头图
+├── logs/                      # 运行日志（自动生成，不提交）
+├── pyproject.toml             # 项目配置（依赖声明、Ruff 规则、pytest 路径）
+├── requirements.txt           # pip 依赖（Docker 构建用）
+├── Dockerfile                 # 镜像构建
+├── docker-compose.yml         # 容器编排
+├── .env                       # 本地环境变量（不提交）
 └── README.md
 ```
 
@@ -88,13 +99,13 @@ pip install curl_cffi        # Feedback 爬虫
 
 ### 2. 配置
 
-先复制配置模板（`config.json` 已被 `.gitignore` 忽略，不会提交到仓库）：
+先复制配置模板（`config/config.json` 已被 `.gitignore` 忽略，不会提交到仓库）：
 
 ```bash
-cp config.sample.json config.json   # Windows PowerShell: Copy-Item config.sample.json config.json
+cp config/config.sample.json config/config.json   # Windows PowerShell: Copy-Item config/config.sample.json config/config.json
 ```
 
-然后编辑 `config.json`，至少配置 AI 翻译接口：
+然后编辑 `config/config.json`，至少配置 AI 翻译接口：
 
 ```json
 {
@@ -202,7 +213,7 @@ python main.py --no-json
 
 ### Feedback 网站
 
-从 `https://feedback.minecraft.net` 爬取更新日志，在 `config.json` 的 `feedback_site` 中配置：
+从 `https://feedback.minecraft.net` 爬取更新日志，在 `config/config.json` 的 `feedback_site` 中配置：
 
 > **默认走 Zendesk Help Center 公开 API**（`use_api`，默认 `true`）。页面和 RSS 会触发 Cloudflare
 > 挑战（`403` + `cf-mitigated: challenge`），而官方 JSON API 可稳定访问，且列表接口已包含正文，
@@ -239,7 +250,7 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ## 新闻类型过滤
 
-在 `config.json` 的 `news_types` 中控制只处理哪些类型的官方 API 新闻：
+在 `config/config.json` 的 `news_types` 中控制只处理哪些类型的官方 API 新闻：
 
 ```json
 {
@@ -267,7 +278,7 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ## 模块系统
 
-`modules_config.json` 定义帖子的头部/尾部模板，按新闻类型自动匹配插入。
+`config/modules_config.json` 定义帖子的头部/尾部模板，按新闻类型自动匹配插入。
 
 - `default_modules`：内置模板（Java 快照、预发布、RC、正式版；基岩测试版、正式版；时评；普通资讯）
 - `custom_modules`：自定义模板，始终插入（位于内容与尾部之间）
@@ -283,9 +294,9 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 | 文件 | 来源 | 说明 |
 |---|---|---|
-| `glossary.json` | 人工维护（入库） | 覆盖层，可写"条件说明"，优先级最高 |
-| `glossary.auto.json` | `tools/sync_glossary.py` 生成（不入库） | 自动层词条，来自 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary) |
-| `glossary.auto.index.json` | 同上（不入库） | 溯源索引：术语 → TSV 原始键。**运行时不会加载，也不进提示词**，只用于人工复核/调试 |
+| `glossary/glossary.json` | 人工维护（入库） | 覆盖层，可写"条件说明"，优先级最高 |
+| `glossary/glossary.auto.json` | `tools/sync_glossary.py` 生成（不入库） | 自动层词条，来自 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary) |
+| `glossary/glossary.auto.index.json` | 同上（不入库） | 溯源索引：术语 → TSV 原始键。**运行时不会加载，也不进提示词**，只用于人工复核/调试 |
 
 手写层示例：
 
@@ -309,8 +320,8 @@ python tools/sync_glossary.py --source cfpa            # 用 CFPAOrg 稳定版 T
 python tools/sync_glossary.py --source both            # 两者合并，快照优先
 python tools/sync_glossary.py --stats                  # 只看统计，不写文件
 python tools/sync_glossary.py --lang en.json zh.json   # 离线：用本地语言文件
-python tools/sync_glossary.py --tsv logs/latest.tsv    # 离线：用本地 CFPA TSV
-python tools/sync_glossary.py --no-index               # 不写 glossary.auto.index.json
+python tools/sync_glossary.py --tsv data/raw/latest.tsv   # 离线：用本地 CFPA TSV
+python tools/sync_glossary.py --no-index               # 不写 glossary/glossary.auto.index.json
 ```
 
 **数据源怎么选**：
@@ -340,7 +351,7 @@ python tools/sync_glossary.py --no-index               # 不写 glossary.auto.in
    | `soft_strict` | ~45 | 仅整段独立出现 | `Speed → 迅捷`（句中 `speed` 是"速度"） |
 
 3. **记录歧义**：同一英文有多个官方译名时写入 `ambiguous`，提示词会附带"另有官方译名：…，按语境选择"
-4. **独立溯源索引**：`glossary.auto.index.json` 记下每个术语来自哪个语言文件键
+4. **独立溯源索引**：`glossary/glossary.auto.index.json` 记下每个术语来自哪个语言文件键
    （如 `Speed ← effect.minecraft.speed`），用来解释"为什么它被分到这一层"、
    排查误注入。它**只给人看**：运行时 `_read_glossary_file` 不读它，更不进提示词，所以是零 token 成本。
    文件头还记了 `source` 与 `source_version`，一眼能看出词表对应哪个游戏版本。
@@ -496,7 +507,7 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
 
 ## 配置参考
 
-完整的 `config.json` 结构：
+完整的 `config/config.json` 结构：
 
 ```json
 {
@@ -600,7 +611,7 @@ Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也�
   这是站点的机器人防护，硬碰没有意义。抓取默认走 Zendesk Help Center 公开 API
   （见上文 [Feedback 网站](#feedback-网站)）：列表接口一次带回标题、链接与正文，
   失败时才回退页面解析。若机房 IP 连 API 都被挑战，请降低频率或改用代理，而不是加大重试
-- **配置文件不入库**：仓库只保留 `config.sample.json` 模板，`config.json` 已被 `.gitignore` 忽略；
+- **配置文件不入库**：仓库只保留 `config/config.sample.json` 模板，`config/config.json` 已被 `.gitignore` 忽略；
   首次使用请复制模板。API Key、MCBBS 密码等敏感信息建议放在 `.env`（同样被忽略）
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件

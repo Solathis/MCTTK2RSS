@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-GLOSSARY_PATH = Path(__file__).parent.parent / "glossary.json"
+GLOSSARY_PATH = Path(__file__).parent.parent / "glossary" / "glossary.json"
 
 
 @pytest.fixture(scope="module")

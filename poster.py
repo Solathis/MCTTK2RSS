@@ -24,11 +24,9 @@ import time
 
 import requests
 
-from utils import MODULE_TYPE_MAP
+from utils import CONFIG_DIR, MODULE_TYPE_MAP
 
 # ── 配置 ─────────────────────────────────────────────
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 _CATEGORY_GROUP = {
     'java_snapshot': 'Java资讯',
@@ -55,7 +53,7 @@ IMG_INSERT_BEFORE = "[align=center][size=5][b]NEWS[/b]"
 def load_poster_config(config_path: str = None) -> dict:
     """从统一 config.json 中提取 mcbbs 相关配置"""
     if config_path is None:
-        config_path = os.path.join(SCRIPT_DIR, "config.json")
+        config_path = os.path.join(CONFIG_DIR, "config.json")
 
     cfg = {
         "base_url": "https://www.mcbbs.co",

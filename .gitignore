@@ -11,14 +11,19 @@ output/*.json
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪
 
-# 配置文件：本地配置不入库（模板见 config.sample.json），备份文件同样不入库
-config.json
+# 配置文件：本地配置不入库（模板见 config/config.sample.json），备份文件同样不入库
+# config/modules_config.json 与 config/config.sample.json 仍然入库
+config/config.json
 config*.bak
 
 # 日志文件
 logs/
 
-old/
+# 历史归档：上一代项目、实验脚本、本地备份，只留在本地
+/archive/
+
+# 本地原始数据：官方术语表 TSV、语言文件快照等，体积大且可重新下载
+/data/
 
 # 验证码临时文件
 captcha.png
@@ -31,6 +36,10 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+
+# 测试缓存
+.pytest_cache/
+.pytest_tmp/
 
 # IDE
 .vscode/
@@ -46,9 +55,11 @@ venv/
 # 根目录下的调试文件不提交
 debug*.*
 test*.*
-# 自动生成的词汇表层与溯源索引（tools/sync_glossary.py 产出），手写词表 glossary.json 仍然入库
-glossary.auto.json
-glossary.auto.index.json
+
+# 自动生成的词汇表层与溯源索引（tools/sync_glossary.py 产出），
+# 手写的 glossary/glossary.json 仍然入库
+glossary/glossary.auto.json
+glossary/glossary.auto.index.json
 glossary_*.json
 
 # 测试文件夹下的调试文件*需要*提交

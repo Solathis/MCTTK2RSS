@@ -76,11 +76,76 @@ docker run -d \
 
 ---
 
-## 方式三：离线 tar 包部署
+## 方式三：直接拉取官方发布镜像（推荐）
 
-适合无法访问 Docker Hub 或 GitHub 的内网环境。
+每推送一个版本 tag，GitHub Actions 会自动构建镜像推到 GHCR（`ghcr.io/jiubook/mcttk`），
+服务器上既不用构建、也不用上传代码。
 
-### 导出镜像
+> 首次发布后，GHCR 上的包默认是**私有**的。要让 `docker pull` 免登录可拉，
+> 到仓库首页 → Packages → 该镜像 → Package settings → Change visibility 改为 Public。
+
+### 拉取并运行
+
+```bash
+docker pull ghcr.io/jiubook/mcttk:1.0.0
+
+docker run -d \
+  --name mcttk-scraper \
+  --restart unless-stopped \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
+  -v $(pwd)/config:/app/config:ro \
+  -v $(pwd)/glossary:/app/glossary:ro \
+  -e OPENAI_API_KEY=你的密钥 \
+  -e MCBBS_USERNAME=用户名 \
+  -e MCBBS_PASSWORD=密码 \
+  ghcr.io/jiubook/mcttk:1.0.0
+```
+
+### 使用 docker-compose（推荐）
+
+仓库里的 `docker-compose.release.yml` 已经去掉 `.py` 挂载，代码全部来自镜像：
+
+```bash
+# 指定版本部署
+MCTTK_VERSION=1.0.0 docker compose -f docker-compose.release.yml up -d
+
+# 跟随 latest
+docker compose -f docker-compose.release.yml up -d
+```
+
+升级版本：改 `MCTTK_VERSION` 后重新 `up -d` 即可（必要时先 `docker compose pull`）。
+
+可用标签：
+
+| 标签 | 含义 |
+|---|---|
+| `1.0.0` | 精确版本，生产环境建议用这个 |
+| `1.0` | 跟随 `1.0.x` 里的最新一次发布 |
+| `latest` | 最新正式版 |
+
+预发布版本（如 `v1.0.0-rc1`）只产出它自己的精确标签，**不会**覆盖 `1.0` 和 `latest`。
+
+> 国内拉取 `ghcr.io` 可能很慢或不通，这种情况直接用下面的离线包方案。
+
+---
+
+## 方式四：离线 tar 包部署
+
+适合无法访问 Docker Hub、GHCR 或 GitHub 的内网环境。
+
+**最省事的方式：直接用 Release 里的离线包**——每次发版都由 CI 自动生成并附上校验和，不用自己构建：
+
+```bash
+# 把 1.0.0 换成要的版本，文件名为 mcttk-v<版本>.tar.gz
+wget https://github.com/jiubook/MCTTK/releases/download/v1.0.0/mcttk-v1.0.0.tar.gz
+wget https://github.com/jiubook/MCTTK/releases/download/v1.0.0/mcttk-v1.0.0.tar.gz.sha256
+sha256sum -c mcttk-v1.0.0.tar.gz.sha256
+```
+
+下载完直接跳到下面的「传输到目标机器」。后续小节是自己从源码构建并导出的做法。
+
+### 自行导出镜像
 
 在有网络的机器上构建并导出：
 
@@ -100,13 +165,30 @@ docker save mcttk | gzip > mcttk.tar.gz   # 保存为 mcttk.tar.gz
 ### 传输到目标机器
 
 ```bash
+# Release 离线包
+scp mcttk-v1.0.0.tar.gz user@server:/path/to/deploy/
+# 或自行导出的包
 scp mcttk.tar user@server:/path/to/deploy/
 ```
 
 ### 在目标机器上加载并运行
 
 ```bash
+# Release 下载的包是 .tar.gz
+gunzip -c mcttk-v1.0.0.tar.gz | docker load
+
+# 自行导出的包
 docker load < mcttk.tar
+```
+
+加载后的镜像名取决于包的来源：
+
+| 包来源 | 加载后的镜像名 |
+|---|---|
+| Release 离线包 | `ghcr.io/jiubook/mcttk:1.0.0` |
+| 自行导出 | `mcttk`（即 `docker build -t` 时给的名字） |
+
+```bash
 docker run -d \
   --name mcttk-scraper \
   --restart unless-stopped \
@@ -117,8 +199,12 @@ docker run -d \
   -e OPENAI_API_KEY=你的密钥 \
   -e MCBBS_USERNAME=用户名 \
   -e MCBBS_PASSWORD=密码 \
-  mcttk
+  ghcr.io/jiubook/mcttk:1.0.0
 ```
+
+> 用 Release 离线包时，把最后一行换成上表对应的镜像名即可；`docker-compose.release.yml`
+> 里写的就是 `image: ghcr.io/jiubook/mcttk:${MCTTK_VERSION:-latest}`，`docker load` 之后
+> 指定同样的 `MCTTK_VERSION` 就能直接 compose 启动。
 
 > 离线部署时，`config/`（`config.json`、`modules_config.json`）与 `glossary/glossary.json`
 > 仍需手动放到目标机器上，通过 `-v` 挂载进容器。
@@ -151,6 +237,33 @@ python tools/sync_glossary.py
 没有这两个文件也能正常跑：程序会退回只用 `glossary/glossary.json`，并在日志里提示一次
 （`[词汇表] 未找到 glossary.auto.json，仅使用手写词表`）。
 因为挂载的是整个 `glossary/` 目录，不会再出现"Docker 把缺失的挂载文件建成同名空目录"的老问题。
+
+---
+
+## 发布新版本（维护者）
+
+打一个 `v主.次.修订` 形式的 tag 并推送，`.github/workflows/release.yml` 会自动跑完整条链路：
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+流水线做的事：
+
+1. **测试门禁** — 复用 `.github/workflows/ci.yml`（Ruff + pytest），不通过就不发布
+2. **构建推送镜像** — `ghcr.io/jiubook/mcttk`，标签 `1.0.0` / `1.0` / `latest`（预发布不覆盖 `latest`）
+3. **生成离线包** — 从 GHCR 拉回镜像 `docker save` 成 `mcttk-v1.0.0.tar.gz` 并附 `.sha256`
+4. **建 Release** — 自动生成变更说明，挂上离线包
+
+补充说明：
+
+- 只认 `v1.0.0`、`v1.0.0-rc1` 这类写法；`v1.0` 这种不完整版本号不会触发布
+- 发布失败想在同一个 tag 上重来，直接在 Actions 页面点 **Re-run all jobs**；
+  要换 tag 内容就 `git push --delete origin v1.0.0` 后重新打
+- `pyproject.toml` 的 `version` 与 tag 不一致时只在日志里给一条 warning，不会中断发布
+  （镜像版本始终以 tag 为准），但建议顺手同步
+- 镜像目前只出 `linux/amd64`；需要 ARM 的话在 `release.yml` 的 `platforms` 里加 `linux/arm64`
 
 ---
 

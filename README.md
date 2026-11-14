@@ -60,7 +60,8 @@ MCTTK/
 ├── pyproject.toml             # 项目配置（依赖声明、Ruff 规则、pytest 路径）
 ├── requirements.txt           # pip 依赖（Docker 构建用）
 ├── Dockerfile                 # 镜像构建
-├── docker-compose.yml         # 容器编排
+├── docker-compose.yml         # 容器编排（本地构建）
+├── docker-compose.release.yml # 容器编排（直接拉取发布镜像）
 ├── .env                       # 本地环境变量（不提交）
 └── README.md
 ```
@@ -504,6 +505,22 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
 | `MCBBS_CAPTCHA_ANSWER` | 验证码备用答案（未启用） |
 
 Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也可手动触发。
+
+### 发布版本（打 tag 自动出镜像 + Release）
+
+推送一个 `v主.次.修订` 形式的 tag，`.github/workflows/release.yml` 会自动：
+
+1. 复用 `ci.yml` 跑 Ruff + pytest 作为门禁（不通过就不发布）
+2. 构建镜像并推送到 `ghcr.io/jiubook/mcttk`，标签为 `1.0.0`、`1.0`、`latest`
+3. 生成离线包 `mcttk-v1.0.0.tar.gz`（附 `.sha256`）
+4. 创建 GitHub Release，自动生成变更说明并挂上离线包
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+服务器部署与离线部署的完整说明见 [docs/DOCKER.md](docs/DOCKER.md)。
 
 ## 配置参考
 

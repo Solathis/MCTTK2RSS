@@ -1,0 +1,29 @@
+version: '3.8'
+
+# 直接用 GitHub Release 里发布的官方镜像（GHCR），不在本地构建代码。
+#
+# 用法：
+#   MCTTK_VERSION=1.0.0 docker compose -f docker-compose.release.yml up -d
+#   不指定 MCTTK_VERSION 时用 latest
+#
+# 与 docker-compose.yml 的区别：这里不再把 .py 文件挂载进容器，
+# 代码来自镜像本身，升级只要改 MCTTK_VERSION 后 up -d 即可。
+
+services:
+  mcttk:
+    image: ghcr.io/jiubook/mcttk:${MCTTK_VERSION:-latest}
+    container_name: mcttk-scraper
+    restart: unless-stopped
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+      # 配置整目录只读挂载（config.json / modules_config.json）
+      - ./config:/app/config:ro
+      # 词表整目录只读挂载：自动词表缺失时不会在容器里被误建成同名目录
+      - ./glossary:/app/glossary:ro
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MCBBS_USERNAME=${MCBBS_USERNAME}
+      - MCBBS_PASSWORD=${MCBBS_PASSWORD}
+    mem_limit: 512m
+    mem_reservation: 256m

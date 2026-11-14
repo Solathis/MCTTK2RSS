@@ -5,6 +5,8 @@ on:
     branches: [main]
   push:
     branches: [main, ruffcheck]
+  # 允许被 release.yml 复用为发布前的门禁，lint/test 步骤只在这一处维护
+  workflow_call:
 
 jobs:
   lint-and-test:

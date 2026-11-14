@@ -31,5 +31,7 @@ services:
       - MCTTK_LOG_KEEP_DAYS=${MCTTK_LOG_KEEP_DAYS:-90}
       - MCTTK_INTERVAL=${MCTTK_INTERVAL:-3600}
       - MCTTK_RUN_TIMEOUT=${MCTTK_RUN_TIMEOUT:-3600}
+      # 容器时区：镜像默认 UTC；北京时间用 TZ=Asia/Shanghai
+      - TZ=${TZ:-UTC}
     mem_limit: 512m
     mem_reservation: 256m

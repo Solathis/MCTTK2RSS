@@ -338,8 +338,15 @@ tail -f "logs/mcttk_$(date +%F).log"
 | `MCTTK_LOG_KEEP_DAYS` | `90` | 日志保留天数，`0` 表示永久保留；启动时清理超期文件 |
 | `MCTTK_LOG_CONSOLE` | `1` | 是否同时输出到 `docker logs` |
 | `MCTTK_LOG_CAPTURE` | `1` | 是否把 `print()` / stderr 一并写进日志文件 |
-| `MCTTK_INTERVAL` | `3600` | 调度间隔秒数（1 小时） |
+| `MCTTK_INTERVAL` | `3600` | 调度间隔秒数（1 小时），同时作为本地时间的对齐网格 |
 | `MCTTK_RUN_TIMEOUT` | `3600` | 单轮 `main.py` 超时秒数（1 小时），超时记 ERROR 后进入下一轮 |
+| `TZ` | `UTC` | 容器时区，决定"整点"按哪个时区算；北京时间用 `Asia/Shanghai` |
+
+> 调度按**本地时间对齐**：以当天 00:00 为网格起点，每轮跑完后等到下一个
+> `MCTTK_INTERVAL` 的整数倍时刻（`3600` → 整点，`600` → 每 10 分钟），
+> 不会随单轮耗时逐轮漂移；容器启动后的第一轮仍是立即执行。
+> `UTC` 与北京时间相差整小时，"整点"在两种时区下是同一批时刻。
+> 日志里每轮都会记 `[调度] 下一轮 2026-11-15 03:00:00（本地时间；UTC 2026-11-14 19:00:00）`。
 
 > 如果发现单轮耗时明显偏长（比如一轮跑掉几十分钟），把 `MCTTK_LOG_LEVEL=DEBUG` 打开跑一轮，
 > 日志里能看到每个请求的耗时与重试痕迹，用来判断是卡在 Feedback API、头图下载还是翻译调用。
@@ -348,7 +355,8 @@ tail -f "logs/mcttk_$(date +%F).log"
 
 ## 工作机制
 
-- 容器启动后由 `scheduler.py` 按 `MCTTK_INTERVAL`（默认 3600 秒 = 1 小时）自动运行 `main.py`
+- 容器启动后由 `scheduler.py` 按 `MCTTK_INTERVAL`（默认 3600 秒 = 1 小时）自动运行 `main.py`，
+  并对齐到本地时间整点（启动后第一轮立即执行）
 - `output/` 目录通过 volume 挂载到宿主机，数据持久化
 - `logs/` 目录通过 volume 挂载到宿主机，日志持久化（每天一个文件，默认保留 90 天）
 - `config/` 与 `glossary/` 以只读方式挂载，修改宿主机文件后重启容器即可生效

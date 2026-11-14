@@ -81,8 +81,11 @@ docker run -d \
 每推送一个版本 tag，GitHub Actions 会自动构建镜像推到 GHCR（`ghcr.io/jiubook/mcttk`），
 服务器上既不用构建、也不用上传代码。
 
-> 首次发布后，GHCR 上的包默认是**私有**的。要让 `docker pull` 免登录可拉，
-> 到仓库首页 → Packages → 该镜像 → Package settings → Change visibility 改为 Public。
+> 本仓库是 public，GHCR 上的包也会继承为 public，`docker pull` 不需要登录（已实测匿名可拉）。
+> 万一哪天拉取提示 `unauthorized`：要么先 `docker login ghcr.io`，要么到仓库首页 →
+> Packages → 该镜像 → Package settings → Change visibility 改成 Public。
+>
+> 现成版本看 [Releases](https://github.com/jiubook/MCTTK/releases)。
 
 ### 拉取并运行
 

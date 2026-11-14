@@ -13,7 +13,7 @@ log_setup.py — 统一日志配置模块
   MCTTK_LOG_DIR        日志目录（默认 logs）
   MCTTK_LOG_LEVEL      日志级别 DEBUG/INFO/WARNING/ERROR（默认 INFO）
   MCTTK_LOG_CONSOLE    是否输出到控制台 1/0（默认 1）
-  MCTTK_LOG_KEEP_DAYS  日志保留天数（默认 14；0 表示不清理）
+  MCTTK_LOG_KEEP_DAYS  日志保留天数（默认 90；0 表示不清理）
   MCTTK_LOG_CAPTURE    是否把 stdout/stderr 一并写入日志 1/0（默认 1）
 
 用法：
@@ -32,7 +32,7 @@ from datetime import datetime, timedelta
 
 LOGGER_NAME = "mcttk"
 DEFAULT_LOG_DIR = "logs"
-DEFAULT_KEEP_DAYS = 14
+DEFAULT_KEEP_DAYS = 90
 DEFAULT_LEVEL = logging.INFO
 
 FILE_FORMAT = "%(asctime)s [%(levelname)s] %(message)s"
@@ -311,7 +311,7 @@ def setup_logging(
         log_level: 日志级别，默认环境变量 MCTTK_LOG_LEVEL 或 INFO
         console_output: 是否同时输出到控制台，默认环境变量 MCTTK_LOG_CONSOLE 或 True
         capture_streams: 是否把 stdout/stderr 同步到日志文件，默认 MCTTK_LOG_CAPTURE 或 True
-        days_to_keep: 日志保留天数，默认 MCTTK_LOG_KEEP_DAYS 或 14
+        days_to_keep: 日志保留天数，默认 MCTTK_LOG_KEEP_DAYS 或 90
 
     Returns:
         配置好的 logger 实例

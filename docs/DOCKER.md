@@ -7,7 +7,7 @@
 | `Dockerfile` | `COPY` 本地文件 | 本地开发调试、打包当前工作目录 |
 | `Dockerfile.git` | 构建时从 GitHub `docker` 分支 `git clone` | 服务器部署，无需上传代码 |
 
-两者运行的都是 `scheduler.py`（每 10 分钟执行一次 `main.py`），功能完全相同。
+两者运行的都是 `scheduler.py`（默认每小时执行一次 `main.py`），功能完全相同。
 
 ---
 
@@ -222,7 +222,7 @@ docker run -d \
 `assets` 分支里对应**最新快照**的游戏语言文件（每次快照当天更新）；
 `--source cfpa` 可改用 [CFPAOrg 官方术语表](https://github.com/CFPAOrg/Glossary)（以正式版为基准，较旧）。
 
-**程序和容器在任何时候都不会联网更新它**：镜像构建不生成，`scheduler.py` 每 10 分钟起的
+**程序和容器在任何时候都不会联网更新它**：镜像构建不生成，`scheduler.py` 每小时起的
 `main.py` 只读取挂载进来的文件。网络不通只会影响你手动执行同步的那一次。
 
 首次部署前，在宿主机执行一次：
@@ -335,11 +335,18 @@ tail -f "logs/mcttk_$(date +%F).log"
 | 变量 | 默认值 | 说明 |
 |---|---|---|
 | `MCTTK_LOG_LEVEL` | `INFO` | 改成 `DEBUG` 可看到请求头、逐条新闻列表、分批明细 |
-| `MCTTK_LOG_KEEP_DAYS` | `14` | 日志保留天数，`0` 表示永久保留；启动时清理超期文件 |
+| `MCTTK_LOG_KEEP_DAYS` | `90` | 日志保留天数，`0` 表示永久保留；启动时清理超期文件 |
 | `MCTTK_LOG_CONSOLE` | `1` | 是否同时输出到 `docker logs` |
 | `MCTTK_LOG_CAPTURE` | `1` | 是否把 `print()` / stderr 一并写进日志文件 |
-| `MCTTK_INTERVAL` | `600` | 调度间隔秒数（10 分钟） |
-| `MCTTK_RUN_TIMEOUT` | `900` | 单轮 `main.py` 超时秒数，超时记 ERROR 后进入下一轮 |
+| `MCTTK_INTERVAL` | `3600` | 调度间隔秒数（1 小时），同时作为本地时间的对齐网格 |
+| `MCTTK_RUN_TIMEOUT` | `3600` | 单轮 `main.py` 超时秒数（1 小时），超时记 ERROR 后进入下一轮 |
+| `TZ` | `UTC` | 容器时区，决定"整点"按哪个时区算；北京时间用 `Asia/Shanghai` |
+
+> 调度按**本地时间对齐**：以当天 00:00 为网格起点，每轮跑完后等到下一个
+> `MCTTK_INTERVAL` 的整数倍时刻（`3600` → 整点，`600` → 每 10 分钟），
+> 不会随单轮耗时逐轮漂移；容器启动后的第一轮仍是立即执行。
+> `UTC` 与北京时间相差整小时，"整点"在两种时区下是同一批时刻。
+> 日志里每轮都会记 `[调度] 下一轮 2026-11-15 03:00:00（本地时间；UTC 2026-11-14 19:00:00）`。
 
 > 如果发现单轮耗时明显偏长（比如一轮跑掉几十分钟），把 `MCTTK_LOG_LEVEL=DEBUG` 打开跑一轮，
 > 日志里能看到每个请求的耗时与重试痕迹，用来判断是卡在 Feedback API、头图下载还是翻译调用。
@@ -348,9 +355,10 @@ tail -f "logs/mcttk_$(date +%F).log"
 
 ## 工作机制
 
-- 容器启动后由 `scheduler.py` 按 `MCTTK_INTERVAL`（默认 600 秒）自动运行 `main.py`
+- 容器启动后由 `scheduler.py` 按 `MCTTK_INTERVAL`（默认 3600 秒 = 1 小时）自动运行 `main.py`，
+  并对齐到本地时间整点（启动后第一轮立即执行）
 - `output/` 目录通过 volume 挂载到宿主机，数据持久化
-- `logs/` 目录通过 volume 挂载到宿主机，日志持久化（每天一个文件，默认保留 14 天）
+- `logs/` 目录通过 volume 挂载到宿主机，日志持久化（每天一个文件，默认保留 90 天）
 - `config/` 与 `glossary/` 以只读方式挂载，修改宿主机文件后重启容器即可生效
 - 自动词表（`glossary/glossary.auto.json` / `glossary/glossary.auto.index.json`）以只读方式挂载，
   **构建和运行期都不会联网更新**；宿主机重新跑 `tools/sync_glossary.py` 后，下一次调度即生效
@@ -363,6 +371,6 @@ tail -f "logs/mcttk_$(date +%F).log"
 - 状态文件 `output/.state.json` 和 `output/.posted.json` 持久化保存在宿主机
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
-- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，默认保留 14 天
+- 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，默认保留 90 天
   （`MCTTK_LOG_KEEP_DAYS` 可调，`0` 表示永久保留）
 - 自动词表缺失不影响运行，只是译名覆盖范围退回到手写 `glossary/glossary.json`

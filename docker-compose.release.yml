@@ -27,8 +27,10 @@ services:
       - MCBBS_PASSWORD=${MCBBS_PASSWORD}
       # 日志与调度（可选，未设置时用代码里的默认值）
       - MCTTK_LOG_LEVEL=${MCTTK_LOG_LEVEL:-INFO}
-      - MCTTK_LOG_KEEP_DAYS=${MCTTK_LOG_KEEP_DAYS:-14}
-      - MCTTK_INTERVAL=${MCTTK_INTERVAL:-600}
-      - MCTTK_RUN_TIMEOUT=${MCTTK_RUN_TIMEOUT:-900}
+      - MCTTK_LOG_KEEP_DAYS=${MCTTK_LOG_KEEP_DAYS:-90}
+      - MCTTK_INTERVAL=${MCTTK_INTERVAL:-3600}
+      - MCTTK_RUN_TIMEOUT=${MCTTK_RUN_TIMEOUT:-3600}
+      # 容器时区：镜像默认 UTC；北京时间用 TZ=Asia/Shanghai
+      - TZ=${TZ:-UTC}
     mem_limit: 512m
     mem_reservation: 256m

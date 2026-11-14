@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
 init_state.py — 初始化 output/.state.json 和 output/.posted.json
-用途：测试前将除一条外的所有新闻标记为"已处理"，避免全量翻译
+
+用途：测试前把当前所有来源的新闻标记为"已处理"，只保留选中的一条，避免全量翻译。
+
+采集直接复用 main._fetch_all_news()，与主流程保持同一口径（官方 API / Java 版本
+清单 / Feedback 三个来源，按 URL 去重）——否则工具看不到 manifest 候选，标记
+出来的状态会和线上实际会处理的内容不一致。
 
 用法：
   python init_state.py
@@ -11,61 +16,41 @@ import json
 import os
 import sys
 import time
+from collections import Counter
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, PROJECT_DIR)
 
+from log_setup import setup_logging  # noqa: E402
+from main import _fetch_all_news, _news_type_of  # noqa: E402
+from scraper import load_config  # noqa: E402
 from utils import CONFIG_DIR, load_dotenv  # noqa: E402
 
 load_dotenv(PROJECT_DIR)
-
-from scraper import FeedbackScraper, classify_news_type, get_latest_news_list, load_config  # noqa: E402
 
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 config = load_config(CONFIG_PATH)
 save_dir = config["output"]["save_dir"]
 os.makedirs(save_dir, exist_ok=True)
 
-all_news = []
+# 采集过程的日志只写文件，不打断下面的交互式列表
+setup_logging(console_output=False, capture_streams=False)
 
-# ── 1. Minecraft 官方 API ──
-print("正在获取 Minecraft 官方 API 新闻...")
-api_news = get_latest_news_list(page_size=config.get("minecraft_api", {}).get("pageSize", 10))
-for n in api_news:
-    n["_source"] = "minecraft_api"
-all_news.extend(api_news)
-print(f"  API: {len(api_news)} 条")
-
-# ── 2. Feedback ──
-feedback_config = config.get("feedback_site", {})
-if feedback_config.get("enabled", False):
-    print("正在获取 Feedback 新闻...")
-    try:
-        scraper = FeedbackScraper(config)
-        sections = scraper.get_latest_articles()
-        for section_name, section_data in sections.items():
-            for article in section_data["articles"]:
-                article["_source"] = "feedback"
-                article["section"] = section_name
-                if article["url"].startswith("/"):
-                    article["url"] = feedback_config.get("base_url", "https://feedback.minecraft.net") + article["url"]
-                all_news.append(article)
-        fb_count = sum(len(v["articles"]) for v in sections.values())
-        print(f"  Feedback: {fb_count} 条")
-    except Exception as e:
-        print(f"  Feedback 获取失败（跳过）: {e}")
+print("正在采集新闻（官方 API / Java 版本清单 / Feedback）...")
+all_news = _fetch_all_news(config)
 
 if not all_news:
     print("未获取到任何新闻，退出")
     sys.exit(1)
 
+source_counts = Counter(news.get("_source", "?") for news in all_news)
+detail = "，".join(f"{source} {count} 条" for source, count in source_counts.items())
+print(f"共 {len(all_news)} 条（{detail}）\n")
+
 # ── 列出所有新闻 ──
-print(f"\n共 {len(all_news)} 条新闻：")
-for i, n in enumerate(all_news):
-    source = n.get("_source", "?")
-    ntype = classify_news_type(n["title"]) if source == "minecraft_api" else "feedback"
-    print(f"  {i+1:2d}. [{source}][{ntype}] {n['title']}")
-    print(f"       {n['url']}")
+for i, news in enumerate(all_news):
+    print(f"  {i+1:2d}. [{news.get('_source', '?')}][{_news_type_of(news)}] {news['title']}")
+    print(f"       {news['url']}")
 
 # ── 选择保留的新闻 ──
 print()

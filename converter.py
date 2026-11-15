@@ -11,6 +11,7 @@
 import argparse
 import json
 import re
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 
@@ -52,16 +53,16 @@ def _md_images_to_bbcode(text: str) -> str:
     return text.strip()
 
 
-def _md_links_to_bbcode(text: str) -> str:
-    """把 Markdown 链接 [文字](URL) 转成 BBCode [url=URL]文字[/url]。
+def _rewrite_md_links(text: str, render_link: Callable[[str, str], str]) -> str:
+    """按配对扫描 Markdown 链接 ``[文字](URL)``，把每个链接交给 render_link 格式化。
 
+    BBCode 与 HTML 两种产物只有最终格式不同，扫描逻辑必须共用一份：
     链接文字允许含嵌套方括号（如 ``[9月30日：生物及更多内容！[预览版/测试版]](url)``），
     URL 允许含括号（如 ``https://en.wikipedia.org/wiki/A_(b)``）；
     因此不能用简单的正则匹配，需要按括号配对扫描。
     """
     if not text:
         return text
-    text = _md_images_to_bbcode(text)
     out = []
     i = 0
     n = len(text)
@@ -70,7 +71,7 @@ def _md_links_to_bbcode(text: str) -> str:
             out.append(text[i])
             i += 1
             continue
-        # 图片语法已在上一步转成 BBCode，这里跳过 ![ 避免被当成链接
+        # 图片语法已在上一步转成相应标记，这里跳过 ![ 避免被当成链接
         if i > 0 and text[i - 1] == '!':
             out.append(text[i])
             i += 1
@@ -85,7 +86,7 @@ def _md_links_to_bbcode(text: str) -> str:
             out.append(text[i:text_end + 1])
             i = text_end + 1
             continue
-        # URL：圆括号需配对（标题行等可含换行，BBCode 里压成空格）
+        # URL：圆括号需配对（标题行等可含换行，各方言里压成空格）
         url_end = _find_closing_bracket(text, text_end + 1, '(', ')')
         if url_end < 0:
             out.append(text[i:text_end + 1])
@@ -94,11 +95,25 @@ def _md_links_to_bbcode(text: str) -> str:
         label = text[i + 1:text_end].replace('\n', ' ')
         url = text[text_end + 2:url_end].replace('\n', ' ')
         if label and url:
-            out.append(f'[url={url}]{label}[/url]')
+            out.append(render_link(label, url))
         else:
             out.append(text[i:url_end + 1])
         i = url_end + 1
     return ''.join(out)
+
+
+def _md_links_to_bbcode(text: str) -> str:
+    """把 Markdown 链接 [文字](URL) 转成 BBCode [url=URL]文字[/url]。
+
+    必须先于链接转换执行图片转换：否则 ![alt](url) 会被当成 [alt](url) 链接处理，
+    结果变成 ![url=url]alt[/url] 这种坏标签。
+    """
+    if not text:
+        return text
+    return _rewrite_md_links(
+        _md_images_to_bbcode(text),
+        lambda label, url: f'[url={url}]{label}[/url]',
+    )
 
 
 def _parse_date(date_str: str) -> str:

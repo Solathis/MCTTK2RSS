@@ -7,6 +7,8 @@ output/*.png
 output/*.gif
 output/*.webp
 output/*.json
+# 专栏 HTML 产物与 tools/preview_bili_html.py 生成的预览页
+output/*.html
 
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪
@@ -15,6 +17,8 @@ output/*.json
 # config/modules_config.json 与 config/config.sample.json 仍然入库
 config/config.json
 config*.bak
+# B站登录 cookie（SESSDATA 等价于账号密码），绝不入库
+config/bili_cookies.json
 
 # 日志文件
 logs/

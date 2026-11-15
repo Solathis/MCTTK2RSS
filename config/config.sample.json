@@ -135,5 +135,36 @@
       "normal": 16
     },
     "attach_json": true
+  },
+  "bilibili": {
+    "enabled": false,
+    "cookie_file": "config/bili_cookies.json",
+    "category_id": 26,
+    "candidate_categories": [26, 4, 15, 6],
+    "tags": ["Minecraft", "我的世界", "更新日志"],
+    "original": false,
+    "reprint": true,
+    "renderer": "html",
+    "template_id": 1,
+    "ai_declare": true,
+    "publish_types": [
+      "java_snapshot",
+      "java_prerelease",
+      "java_rc",
+      "java_release",
+      "bedrock_beta",
+      "bedrock_release"
+    ],
+    "exclude_sources": ["feedback"],
+    "submit": "draft",
+    "title_suffix": " [AI翻译]",
+    "max_title_chars": 80,
+    "summary_max_chars": 100,
+    "attach_cover": true,
+    "rehost_images": true,
+    "max_inline_images": 20,
+    "ai_notice": "",
+    "interval_seconds": 20,
+    "max_per_run": 3
   }
 }

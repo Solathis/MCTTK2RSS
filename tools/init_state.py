@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-init_state.py — 初始化 output/.state.json 和 output/.posted.json
+tools/init_state.py — 初始化 output/.state.json 和 output/.posted.json
 
 用途：测试前把当前所有来源的新闻标记为"已处理"，只保留选中的一条，避免全量翻译。
+属于手动执行的一次性工具，所以和 sync_glossary.py / bili_login.py 一起放在 tools/。
 
 采集直接复用 main._fetch_all_news()，与主流程保持同一口径（官方 API / Java 版本
 清单 / Feedback 三个来源，按 URL 去重）——否则工具看不到 manifest 候选，标记
 出来的状态会和线上实际会处理的内容不一致。
 
 用法：
-  python init_state.py
+  uv run python tools/init_state.py
 """
 
 import json
@@ -17,16 +18,17 @@ import os
 import sys
 import time
 from collections import Counter
+from pathlib import Path
 
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, PROJECT_DIR)
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_DIR))
 
 from log_setup import setup_logging  # noqa: E402
 from main import _fetch_all_news, _news_type_of  # noqa: E402
 from scraper import load_config  # noqa: E402
 from utils import CONFIG_DIR, load_dotenv  # noqa: E402
 
-load_dotenv(PROJECT_DIR)
+load_dotenv(str(PROJECT_DIR))
 
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 config = load_config(CONFIG_PATH)

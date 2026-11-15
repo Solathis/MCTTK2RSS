@@ -128,6 +128,40 @@ class TestConfigStructure:
         assert isinstance(mcbbs["base_url"], str)
         assert mcbbs["base_url"].startswith("https://")
 
+    def test_bilibili_structure(self, config):
+        """本地 config.json 允许只写想改的键（其余由 DEFAULT_CONFIG 补齐），
+
+        所以这里只校验「出现了的键」类型是否对；键的完整性由
+        test_bilibili_defaults_match_poster_module 对模板做全量校验。
+        """
+        if "bilibili" not in config:
+            return
+        bili = config["bilibili"]
+        if "enabled" in bili:
+            assert isinstance(bili["enabled"], bool)
+        if "cookie_file" in bili:
+            assert isinstance(bili["cookie_file"], str)
+        if "category_id" in bili:
+            assert isinstance(bili["category_id"], int) and bili["category_id"] > 0
+        if "submit" in bili:
+            assert bili["submit"] in ("draft", "publish"), f"submit 只能是 draft/publish: {bili['submit']}"
+        if "max_title_chars" in bili:
+            assert isinstance(bili["max_title_chars"], int) and bili["max_title_chars"] > 0
+
+    def test_bilibili_defaults_match_poster_module(self):
+        """配置模板与 DEFAULT_CONFIG 里的 bilibili 键必须与 bili.poster 默认值一致。
+
+        三处各写一遍不可避免（模块间不能反向 import），所以用测试钉住；
+        否则新增一个配置项只改一处，另一个入口就会静默用错默认值。
+        """
+        from bili.poster import DEFAULT_BILI_CONFIG
+        from scraper import DEFAULT_CONFIG
+
+        expected = set(DEFAULT_BILI_CONFIG)
+        assert set(DEFAULT_CONFIG["bilibili"]) == expected
+        sample = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        assert set(sample["bilibili"]) == expected
+
     def test_feedback_site_structure(self, config):
         if "feedback_site" not in config:
             return

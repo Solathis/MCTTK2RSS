@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""converter.py — JSON 到 BBCode/Markdown 转换器（原 J2MM）
+"""converter.py — JSON 到 BBCode/Markdown/专栏产物的转换器（原 J2MM）
 
 用法:
   python converter.py <input.json> [选项]
@@ -7,6 +7,10 @@
 
 也可作为模块导入:
   from converter import J2MMConverter
+
+专栏（B站）有两种正文形态，各自一个渲染器（都在 bili/ 包里）：HTML 字符串（老 form
+接口，bili/html.py）与 eva3 段落数组（新版编辑器接口，bili/opus.py）。本模块只负责把
+模块 / 标题 / 元信息 / 正文拼成整篇，按调用方要的形态各拼一遍。
 """
 import argparse
 import json
@@ -14,24 +18,13 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from bili import is_signature_link
+from bili.html import BiliHTMLRenderer, escape_html, markdown_to_html
+from bili.opus import BiliOpusRenderer, OpusDocument, markdown_to_paragraphs
 from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
-from utils import CONFIG_DIR, MODULE_TYPE_MAP
+from utils import CONFIG_DIR, MODULE_TYPE_MAP, rewrite_md_links
 
 # ── 工具函数 ─────────────────────────────────────────
-
-def _find_closing_bracket(text: str, open_pos: int, opener: str, closer: str) -> int:
-    """返回与 text[open_pos] 处 opener 匹配的 closer 下标；找不到返回 -1。"""
-    depth = 0
-    for i in range(open_pos, len(text)):
-        ch = text[i]
-        if ch == opener:
-            depth += 1
-        elif ch == closer:
-            depth -= 1
-            if depth == 0:
-                return i
-    return -1
-
 
 def _md_images_to_bbcode(text: str) -> str:
     """把内嵌在正文里的 Markdown 图片 ![alt](url) 转成 BBCode [img]url[/img]。
@@ -55,50 +48,15 @@ def _md_images_to_bbcode(text: str) -> str:
 def _md_links_to_bbcode(text: str) -> str:
     """把 Markdown 链接 [文字](URL) 转成 BBCode [url=URL]文字[/url]。
 
-    链接文字允许含嵌套方括号（如 ``[9月30日：生物及更多内容！[预览版/测试版]](url)``），
-    URL 允许含括号（如 ``https://en.wikipedia.org/wiki/A_(b)``）；
-    因此不能用简单的正则匹配，需要按括号配对扫描。
+    必须先于链接转换执行图片转换：否则 ![alt](url) 会被当成 [alt](url) 链接处理，
+    结果变成 ![url=url]alt[/url] 这种坏标签。
     """
     if not text:
         return text
-    text = _md_images_to_bbcode(text)
-    out = []
-    i = 0
-    n = len(text)
-    while i < n:
-        if text[i] != '[':
-            out.append(text[i])
-            i += 1
-            continue
-        # 图片语法已在上一步转成 BBCode，这里跳过 ![ 避免被当成链接
-        if i > 0 and text[i - 1] == '!':
-            out.append(text[i])
-            i += 1
-            continue
-        # 链接文字：方括号需配对，例如 [a[b]c]
-        text_end = _find_closing_bracket(text, i, '[', ']')
-        if text_end < 0:
-            out.append(text[i:])
-            break
-        if text_end + 1 >= n or text[text_end + 1] != '(':
-            # 不是 Markdown 链接，原样保留
-            out.append(text[i:text_end + 1])
-            i = text_end + 1
-            continue
-        # URL：圆括号需配对（标题行等可含换行，BBCode 里压成空格）
-        url_end = _find_closing_bracket(text, text_end + 1, '(', ')')
-        if url_end < 0:
-            out.append(text[i:text_end + 1])
-            i = text_end + 1
-            continue
-        label = text[i + 1:text_end].replace('\n', ' ')
-        url = text[text_end + 2:url_end].replace('\n', ' ')
-        if label and url:
-            out.append(f'[url={url}]{label}[/url]')
-        else:
-            out.append(text[i:url_end + 1])
-        i = url_end + 1
-    return ''.join(out)
+    return rewrite_md_links(
+        _md_images_to_bbcode(text),
+        lambda label, url: f'[url={url}]{label}[/url]',
+    )
 
 
 def _parse_date(date_str: str) -> str:
@@ -299,6 +257,58 @@ def _bbcode_to_markdown(bbcode: str) -> str:
     text = re.sub(r'((?:^[ \t]*>.*(?:\n|$))+)(?=[ \t]*(?:[-*+] |\d+\. ))', r'\1\n', text, flags=re.MULTILINE)
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
+
+
+_PLATFORMS = ('all', 'mcbbs', 'bilibili')
+
+
+def _module_platform(module: dict) -> str:
+    """模块适用的发布平台：all / mcbbs / bilibili。
+
+    缺省视为 mcbbs——仓库里已有的模板都是 MCBBS 版面（表格、彩色、站内图标），
+    默认放给专栏会带出「本帖来自www.mcbbs.co」这类内容；要两边共用得显式写 "all"。
+    """
+    value = str(module.get('platform') or '').strip().lower()
+    return value if value in _PLATFORMS else 'mcbbs'
+
+
+def _module_text(module: dict) -> str:
+    """取模块正文喂给专栏渲染器。
+
+    老配置里模块可能只写 `content`、只写 `bbcode_content`，或两者都写；专栏这两条路径
+    都只认 BBCode，取不到就跳过这个模块——直接索引 `m['content']` 会让「只写
+    bbcode_content（或只写 markdown_content）」的模块整篇转换 KeyError。
+    `markdown_content` 只服务 Markdown 产物（没有等价的 Markdown→BBCode 反解），
+    所以它不参与专栏渲染，只在 Markdown 路径里用。
+    """
+    return module.get('bbcode_content') or module.get('content') or ''
+
+
+def _strip_hidden_bbcode(bbcode: str) -> str:
+    """删掉 [size=0px] 隐藏文本（Discuz 专用，如「本帖来自www.mcbbs.co」）。
+
+    专栏与段模型都没有隐藏样式，留着就会真的显示出来，所以两个渲染器都先过这一步。
+    """
+    return re.sub(r'\[size=0px\].*?\[/size\]', '', bbcode, flags=re.DOTALL | re.IGNORECASE)
+
+
+def _bbcode_to_html(bbcode: str) -> str:
+    """把模块内容（BBCode）转成专栏 HTML。
+
+    模块是表格 + 彩色 + 浮动拼出来的版面，专栏没有等价物，但 [b]/[url]/[list]
+    这些语义标签要保住——否则署名与协议里的仓库/协议地址会退化成纯文本，读者没法点。
+    做法是先走 _bbcode_to_markdown 把版面压平（这套转换已有测试覆盖），再转 HTML。
+    """
+    if not bbcode:
+        return ''
+    return markdown_to_html(_bbcode_to_markdown(_strip_hidden_bbcode(bbcode)))
+
+
+def _bbcode_to_opus(bbcode: str, doc: OpusDocument) -> None:
+    """把模块内容（BBCode）转成段落，追加到文档末尾（规则与 _bbcode_to_html 一致）。"""
+    if not bbcode:
+        return
+    markdown_to_paragraphs(_bbcode_to_markdown(_strip_hidden_bbcode(bbcode)), doc)
 
 
 # ── BBCode 渲染器 ───────────────────────────────────
@@ -530,6 +540,8 @@ class J2MMConverter:
         self.modules_config = modules_config or {'default_modules': [], 'custom_modules': []}
         self._bb = BBCodeRenderer()
         self._md = MarkdownRenderer()
+        self._bili = BiliHTMLRenderer()
+        self._opu = BiliOpusRenderer()
 
     def convert_to_bbcode(self, json_data: dict) -> str:
         blocks = json_data.get('blocks', [])
@@ -622,15 +634,114 @@ class J2MMConverter:
 
         return '\n\n'.join(p for p in parts if p)
 
-    def _get_modules(self, position: str, article_type: str = 'normal') -> list[dict]:
+    def convert_to_bili_html(self, json_data: dict) -> str:
+        """转为 B站专栏富文本 HTML。
+
+        结构与 BBCode/Markdown 对齐：模块 → 标题 → 元信息引用块 → 正文 → 模块。
+        模块按 platform 过滤：只取 shared（all）与 bilibili 专用的，MCBBS 版面的
+        表格/彩色模板不会漏到专栏里。
+        """
+        blocks = json_data.get('blocks', [])
+        parts = []
+        article_type = _detect_article_type(json_data.get('title', ''))
+
+        for m in self._get_modules('start', article_type, platform='bilibili'):
+            parts.append(_bbcode_to_html(_module_text(m)))
+
+        title_cn = json_data.get('translated_title', '')
+        title_en = json_data.get('title', '')
+        if title_cn or title_en:
+            parts.append(f'<h1>{escape_html(title_cn or title_en)}</h1>')
+        if title_cn and title_en and title_en != title_cn:
+            parts.append(f'<p><em>{escape_html(title_en)}</em></p>')
+
+        meta_lines = []
+        if json_data.get('release_date'):
+            meta_lines.append(f'时间：{escape_html(_parse_date(json_data["release_date"]))}')
+        if json_data.get('author'):
+            meta_lines.append(f'作者：{escape_html(json_data["author"])}')
+        if json_data.get('url'):
+            url = escape_html(json_data['url'])
+            # 与段模型同一条策略：只有署名地址保留超链接，其余外链降级成纯文本
+            if is_signature_link(json_data['url']):
+                meta_lines.append(f'原文：<a href="{url}">{url}</a>')
+            else:
+                meta_lines.append(f'原文：{url}')
+        if json_data.get('description'):
+            meta_lines.append(f'简介：{escape_html(json_data["description"])}')
+        if meta_lines:
+            parts.append('<blockquote>' + ''.join(f'<p>{line}</p>' for line in meta_lines) + '</blockquote>')
+
+        if blocks:
+            parts.append(self._bili.render(blocks))
+
+        for position in ('custom', 'end'):
+            for m in self._get_modules(position, article_type, platform='bilibili'):
+                parts.append(_bbcode_to_html(_module_text(m)))
+
+        return '\n'.join(p for p in parts if p)
+
+    def convert_to_bili_opus(self, json_data: dict) -> list[dict]:
+        """转为 B站专栏 eva3 段落数组（新版编辑器 draft/add 的正文）。
+
+        结构与 convert_to_bili_html 逐段对齐：模块 → 标题 → 元信息引用框 → 正文 → 模块，
+        模块同样按 platform 过滤。两套渲染器只有段落边界必须一致，元素怎么写成标签 /
+        怎么写成段落各管各的。
+        """
+        blocks = json_data.get('blocks', [])
+        article_type = _detect_article_type(json_data.get('title', ''))
+        doc = OpusDocument()
+
+        for m in self._get_modules('start', article_type, platform='bilibili'):
+            _bbcode_to_opus(_module_text(m), doc)
+
+        title_cn = json_data.get('translated_title', '')
+        title_en = json_data.get('title', '')
+        if title_cn or title_en:
+            doc.heading(title_cn or title_en)
+        if title_cn and title_en and title_en != title_cn:
+            # HTML 版这里是 <p><em>英文标题</em>；段模型没有斜体，改用灰色弱化
+            doc.text(title_en, muted=True)
+
+        meta_lines = []
+        if json_data.get('release_date'):
+            meta_lines.append(f'时间：{_parse_date(json_data["release_date"])}')
+        if json_data.get('author'):
+            meta_lines.append(f'作者：{json_data["author"]}')
+        if json_data.get('url'):
+            # 与 HTML 版一致：原文地址自己也是可点的链接（inline_nodes 认 Markdown 链接）
+            meta_lines.append(f'原文：[{json_data["url"]}]({json_data["url"]})')
+        if json_data.get('description'):
+            meta_lines.append(f'简介：{json_data["description"]}')
+        doc.quote_block(meta_lines)
+
+        if blocks:
+            self._opu.render(blocks, doc)
+
+        for position in ('custom', 'end'):
+            for m in self._get_modules(position, article_type, platform='bilibili'):
+                _bbcode_to_opus(_module_text(m), doc)
+
+        return doc.paragraphs
+
+    def _get_modules(self, position: str, article_type: str = 'normal', platform: str = 'mcbbs') -> list[dict]:
+        """按位置 / 文章类型 / 平台筛选模块。
+
+        platform 缺省的模块按 mcbbs 处理：老配置里的模板都是 MCBBS 版面，
+        不能让它们自动漏到专栏；想要两边共用就显式写 "platform": "all"。
+        """
         cfg = self.modules_config
         if position == 'custom':
-            return [m for m in cfg.get('custom_modules', []) if m.get('enabled')]
+            return [
+                m for m in cfg.get('custom_modules', [])
+                if m.get('enabled') and _module_platform(m) in ('all', platform)
+            ]
         modules = []
         for m in cfg.get('default_modules', []):
             if m.get('position') != position:
                 continue
-            if m.get('enabled') or MODULE_TYPE_MAP.get(m.get('id', '')) == article_type:
+            matched = m.get('enabled') or MODULE_TYPE_MAP.get(m.get('id', '')) == article_type
+            if matched and _module_platform(m) in ('all', platform):
                 modules.append(m)
         return sorted(modules, key=lambda m: m.get('order', 9999))
 
@@ -664,6 +775,54 @@ def convert_json_file(json_path: str, output_prefix: str = None, modules_config:
     log_debug("[转换] Markdown: %s（%d 字符）", md_path, len(md_content))
 
     return bbcode_path, md_path
+
+
+def convert_bili_html_file(json_path: str, output_prefix: str = None, modules_config: dict = None) -> str:
+    """
+    将单个 JSON 文件转换为 B站专栏 HTML (.html)
+
+    与 convert_json_file 分开而不是合并成多返回值：后者的 (bbcode_path, md_path)
+    会被 main 解包后继续往下传，改签名会波及调用方与测试，收益不足以抵消风险。
+
+    Returns:
+        html_path
+    """
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+
+    conv = J2MMConverter(modules_config)
+    stem = output_prefix or Path(json_path).stem
+    content = conv.convert_to_bili_html(data)
+    html_path = f'{stem}.html'
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    log_debug("[转换] 专栏 HTML: %s（%d 块 → %d 字符）", html_path, len(data.get("blocks") or []), len(content))
+
+    return html_path
+
+
+def convert_bili_opus_file(json_path: str, output_prefix: str = None, modules_config: dict = None) -> str:
+    """
+    将单个 JSON 文件转换为 eva3 段落产物 (.opus.json)
+
+    产物是派生物，结构固定为 {"paragraphs": [...]}，发帖阶段直接塞进 opus.content。
+    与 .html 分开两个文件而不是二选一覆盖：两种 renderer 切换时不必重跑转换。
+
+    Returns:
+        opus_path
+    """
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+
+    conv = J2MMConverter(modules_config)
+    stem = output_prefix or Path(json_path).stem
+    paragraphs = conv.convert_to_bili_opus(data)
+    opus_path = f'{stem}.opus.json'
+    with open(opus_path, 'w', encoding='utf-8') as f:
+        json.dump({"paragraphs": paragraphs}, f, ensure_ascii=False, indent=1)
+    log_debug("[转换] 段模型: %s（%d 块 → %d 段）", opus_path, len(data.get("blocks") or []), len(paragraphs))
+
+    return opus_path
 
 
 # ── CLI 入口 ─────────────────────────────────────────

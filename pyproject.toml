@@ -1,6 +1,6 @@
 [project]
 name = "mcttk"
-version = "0.1.0"
+version = "0.3.0"
 requires-python = ">=3.13"
 dependencies = [
     "requests>=2.31",
@@ -11,6 +11,8 @@ dependencies = [
 [project.optional-dependencies]
 captcha = ["ddddocr>=1.4", "Pillow>=10.0"]
 feedback = ["curl_cffi>=0.7"]
+# 扫码登录 B站取 cookie（tools/bili_login.py）；纯 Python、无编译依赖
+login = ["qrcode>=7.4"]
 
 [tool.ruff]
 line-length = 120

@@ -28,12 +28,15 @@
 MCTTK/
 ├── main.py                    # 编排器：串联爬取→翻译→转换→发布
 ├── scraper.py                 # 爬取与翻译模块（含 Feedback 爬虫）
-├── converter.py               # JSON → BBCode/Markdown 转换器
+├── converter.py               # JSON → BBCode/Markdown/专栏产物 转换器
 ├── poster.py                  # MCBBS 发帖模块（含验证码识别）
+├── bili/                     # B站专栏（包）：投稿器 + 两套正文渲染器
+│   ├── poster.py              # 创作中心 web 接口投稿（cookie 会话 + 图片重托管）
+│   ├── html.py                # 渲染器①：老接口的 HTML 正文（真机验证过的路径）
+│   └── opus.py                # 渲染器②：新版编辑器的 eva3 段落正文
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
 ├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
 ├── scheduler.py               # 定时调度器（默认每小时运行一次）
-├── init_state.py              # 初始化状态工具（测试用）
 ├── config/                    # 配置目录
 │   ├── config.sample.json     # 配置模板（复制为 config/config.json 后修改）
 │   ├── config.json            # 本地配置（不入库，.gitignore 已忽略）
@@ -42,7 +45,7 @@ MCTTK/
 │   ├── glossary.json          # 手写术语覆盖层（入库）
 │   ├── glossary.auto.json     # 自动词表层（tools/sync_glossary.py 生成，不入库）
 │   └── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
-├── tools/                     # 辅助脚本（sync_glossary.py：同步官方术语表）
+├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；bili_login.py 扫码取 cookie；preview_bili_html.py 预览专栏排版；init_state.py 初始化测试状态）
 ├── tests/                     # 单元测试（pytest）
 ├── docs/                      # 文档
 │   ├── DOCKER.md              # Docker 部署说明
@@ -52,9 +55,12 @@ MCTTK/
 ├── output/                    # 输出目录（自动生成，不提交）
 │   ├── .state.json            # 处理状态（URL 级别去重）
 │   ├── .posted.json           # MCBBS 发布状态
+│   ├── .posted_bili.json      # B站专栏投稿状态
 │   ├── news_*.json            # 翻译后的文章数据
 │   ├── news_*.txt             # BBCode 格式（用于 MCBBS）
 │   ├── news_*.md              # Markdown 格式
+│   ├── news_*.html            # 专栏 HTML 正文（renderer=html 时生成）
+│   ├── news_*.opus.json       # 专栏段模型正文（renderer=opus 时生成）
 │   └── news_*.jpg             # 文章头图
 ├── logs/                      # 运行日志（自动生成，不提交）
 │   └── mcttk_YYYY-MM-DD.log   # 每天一个文件，见上文「日志」章节
@@ -145,6 +151,59 @@ cp config/config.sample.json config/config.json   # Windows PowerShell: Copy-Ite
 }
 ```
 
+如果需要发布到 B站专栏，先用扫码工具拿登录 cookie（不用手动开 F12 复制）：
+
+```bash
+uv sync --extra login            # 首次：装二维码渲染依赖（qrcode）
+uv run python tools/bili_login.py
+```
+
+终端会打印二维码，用 B站 App 扫码确认后，`SESSDATA` / `bili_jct` 会写进
+`config/bili_cookies.json`（已 gitignore，不入库；也可改用环境变量）。重复运行会覆盖旧值，
+cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `config.json` 里打开：
+
+```json
+{
+  "bilibili": {
+    "enabled": true,
+    "renderer": "opus",
+    "submit": "draft",
+    "publish_types": ["java_snapshot", "java_release", "bedrock_release"],
+    "exclude_sources": ["feedback"]
+  }
+}
+```
+
+`renderer` 选正文模型：`"html"`（默认，老接口收 HTML 字符串，只存草稿/提交审核两态）或
+`"opus"`（新版编辑器的段模型，能写封面、摘要与「AI 辅助创作」声明）。`submit: "draft"`
+只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成 `"publish"` 自动发布
+（opus 模式下会先存草稿再按草稿号发布，发布失败草稿仍在）。
+
+**凭据来源**（按优先级）：环境变量 `BILI_SESSDATA` / `BILI_JCT` → `bilibili.cookie_file`
+（默认 `config/bili_cookies.json`）。环境变量是空串时按「没设置」处理、回落到 cookie 文件，
+所以 Docker Compose 里留空 `BILI_SESSDATA=` 不会把文件里的值覆盖掉。两处都没有 cookie 时
+专栏整段跳过（日志一条 WARNING，不计入失败），其余流程照常跑。
+
+**首次启用会先做基线**：`output/.posted_bili.json` 不存在（或内容为空）时，第一次运行把
+`output` 里已有的 `news_*.json` 全部记为「已投稿」，**一篇都不投**，之后只投新翻译的文章。
+升级到带专栏的版本时不用手动清理历史。要补投历史：删掉（或清空成 `[]`）
+`output/.posted_bili.json`，再用 `--post-only --publish bilibili --bili-backfill` 跑
+（`--bili-backfill` 就是「这次明确要补投，别做基线」的开关，同样受 `max_per_run` 限制，
+一次投不完就多跑几次）。
+
+**投放范围**（`publish_types` / `exclude_sources`）在投稿前按文章元数据过滤：
+
+- `publish_types`：允许投专栏的文章类型，取值同抓取阶段的分类
+  （`java_snapshot` / `java_prerelease` / `java_rc` / `java_release` / `bedrock_beta` / `bedrock_release`）。
+  模板默认是**版本发布类全放**，于是官方 API 的「快讯」（类型落到 `other`）和时评不会进专栏。
+- `exclude_sources`：不投专栏的来源，默认排除 `feedback`（论坛式的更新日志搬运）。
+  目前能区分的是 `minecraft_api` 与 `feedback`：版本清单（Piston manifest）补出来的文章
+  抓取阶段同样记成 `minecraft_api`，要按版本类型排除请用 `publish_types`。
+- 两项**留空或删掉即不过滤**（老配置行为不变）；被跳过的文章会在日志里逐条写明原因。
+
+`bilibili.max_per_run`（默认 3）对全流程和 `--post-only` 都生效：单次运行最多投这么多篇，
+剩下的下次运行再投（全流程只投当批新文章，补投用 `--post-only`）。
+
 也可以通过 `.env` 文件或环境变量传入敏感信息（优先级高于 config.json）：
 
 ```
@@ -162,7 +221,7 @@ MCBBS_CAPTCHA_ANSWER 仅作占位，未来添加安全回答验证时使用
 ### 3. 运行
 
 ```bash
-# 全流程：爬取 → 翻译 → 转换 → 发布
+# 全流程：爬取 → 翻译 → 转换 → 发布（各平台是否发布由 enabled 决定）
 python main.py
 
 # 仅检测新新闻（不实际处理）
@@ -174,10 +233,18 @@ python main.py --scrape-only
 # 只发布 output 目录中已翻译但未发布的文件
 python main.py --post-only
 
-# 发布时跳过图片上传
-python main.py --no-image
+# 只投 B站专栏，不碰 MCBBS
+python main.py --publish bilibili
 
-# 发布时跳过 JSON 附件
+# 把 B站专栏里积压的历史文章补投出去（跳过首次基线，配合 --post-only）
+python main.py --post-only --publish bilibili --bili-backfill
+
+# 只投 MCBBS / 完全不发布
+python main.py --publish mcbbs
+python main.py --publish none
+
+# 发布时跳过图片上传 / JSON 附件（只对 MCBBS 生效）
+python main.py --no-image
 python main.py --no-json
 ```
 
@@ -191,7 +258,7 @@ python main.py --no-json
 
 | 阶段 | 记录内容 |
 |---|---|
-| 运行 | 模式、输出目录、状态文件、翻译模型、启用类型、Feedback 栏目、MCBBS 开关、日志文件路径 |
+| 运行 | 模式、输出目录、状态文件、翻译模型、启用类型、Feedback 栏目、MCBBS 开关、B站专栏开关（含 cookie 是否就位）、日志文件路径 |
 | 采集 | 每个来源（官方 API / Java 版本清单 / Feedback）拿到多少条、去重与类型过滤结果、耗时 |
 | 状态 | 候选 / 已处理 / 本次待处理条数，首次运行的标记情况 |
 | 解析 | 文章标题、内容块数量与类型分布、发布日期、耗时 |
@@ -359,8 +426,23 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 - `position`：`"start"` 插入头部，`"end"` 插入尾部
 - `enabled`：`true` 表示对所有类型生效，`false` 表示仅对匹配类型生效
 - `order`：排序权重，数字越小越靠前
+- `platform`：模块适用的发布平台，`"all"`（两边共用）/ `"mcbbs"` / `"bilibili"`。**缺省按 `"mcbbs"` 处理**，避免 MCBBS 版面的表格模板漏到专栏
 
 每个模块支持 `content`（BBCode）、`bbcode_content`、`markdown_content` 字段，转换时自动选择对应格式。
+
+### 平台差异
+
+- 当前共用（`"platform": "all"`）：开头署名、各类型开头说明、结尾开源协议。
+- MCBBS 独占：结尾的「实用链接 / 如何游玩 / 想了解更多资讯」等模块，里面全是 MCBBS 站内链接。
+- 专栏独占：`module_bili_footer`（外部来源与更新条目追踪），B站 读者不关心 MCBBS 版块，所以单独写了一份官方站点链接。
+  该模块**已默认开启**：超链接降级成 `文字（URL）` 之后，这组来源在正文里既看得到名字也看得到地址
+  （原先因为 B站 剥链接、只剩名字而暂时关掉，见 [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.2、§9.7）。
+  内容里因此不再写 `[url]`，直接用「名称：地址」的纯文本，两种正文模型渲染出来一致。
+
+渲染专栏正文时，模块里的 BBCode 会被降级：粗体、列表保留（`[b]`→`<strong>`、`[list]`→`<ul>`），
+链接只有项目署名还保留成 `<a>` / link 节点，其余一律降级成 `文字（URL）`；
+表格/彩色/浮动/图标和 `[size=0px]` 隐藏文本会被丢弃——专栏没有这些等价物，留着只会显示成脏标签或
+把「本帖来自www.mcbbs.co」这类隐藏文字曝光出来。
 
 ## 智能词汇表
 
@@ -516,6 +598,52 @@ python converter.py news.json --markdown-only
   - `post_thread(title, message)` — 发帖
   - `post_news_file(stem, txt, json, dir)` — 发布单个新闻文件（含图片和 JSON 附件）
 
+### bili/poster.py
+
+- `BilibiliPoster` — 专栏投稿器（cookie 会话，走创作中心 web 接口）
+  - `check_login()` — 校验 `SESSDATA` / `bili_jct` 是否还能用（顺带缓存 WBI 签名用的键）
+  - `upload_image(data)` — 上传图片到 B站图床（封面走 `upcover`）
+  - `rehost_images(html)` — 把正文外链图重托管到 B站 CDN，失败的直接从正文移除
+  - `save_draft(title, content)` — 存草稿（分区无权限时按候选表回退）
+  - `publish(title, content)` — 存草稿并按 `submit` 决定是否提交审核
+  - `save_opus_draft(title, paragraphs)` — eva3 存草稿（封面 / 摘要 / AI 声明一起写入）
+  - `publish_opus(draft, title, paragraphs)` — 按草稿号发布（`create/opus`）
+  - `upload_bfs_image(data)` / `rehost_opus_images(paragraphs)` — 段模型正文图片上传（带宽高体积）
+  - `post_news_file(stem, json, content_path, cover_path)` — 单篇完整投稿，按 `renderer` 分派
+- `load_cookies(cfg)` — 取登录凭据：环境变量优先于 `config/bili_cookies.json`
+- `build_opus_draft_arg(...)` / `build_opus_publish_payload(...)` — 两个请求体的纯函数构造器
+
+### bili/html.py / bili/opus.py
+
+专栏有两套互斥的正文形态，各一个渲染器（纯函数，不联网）：
+
+| 模块 | 产出 | 用于 |
+| --- | --- | --- |
+| `bili/html.py` | HTML 字符串（`p/h1/ul/figure/a/strong`） | 老接口 `creative/draft/addupdate`，已真机投稿验证 |
+| `bili/opus.py` | `opus.content.paragraphs` 段数组 | 新版编辑器 `dynamic/feed/article/draft/add`（存草稿）+ `dynamic/feed/create/opus`（发布），两条都已真机验证 |
+
+两者都由 `converter.J2MMConverter` 组装：`convert_to_bili_html()` / `convert_to_bili_opus()`。
+头尾模块同样先按 `platform` 过滤、再压成 Markdown 交给各自渲染器，所以两边的段落边界一致
+（同一篇的引用块、列表、双语降级位置完全相同，只有承载格式不同）。
+
+**超链接策略**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链一律降级成纯文本
+`文字（URL）`（地址留在正文里可复制，文字就是地址时只留一次）。原因是 B站 图文里点外链
+先进「离开 B站」的拦截页（实测），正文十几个外链等于十几个提示页。策略写在
+`bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`，两套渲染器共用。
+
+**原文刷灰**：段模型的原文对照（引用框、列表项第二行、英文原标题）用 `color` 写成
+`#c9ccd0` 的灰色（编辑器取色板里的 `--Ga3`），译文保持默认色；HTML 版没有颜色能力
+（内联样式会被编辑器剥掉）。
+灰度常量是 `bili/opus.py::ORIGINAL_COLOR`。
+
+投稿前先看排版（近似样式，正式排版由专栏编辑器决定）：
+
+```bash
+uv run python tools/preview_bili_html.py                 # 默认 HTML 渲染器
+uv run python tools/preview_bili_html.py --renderer opus  # 看段模型渲染出来是什么样
+uv run python tools/preview_bili_html.py --no-modules     # 不带头尾模块，只看正文
+```
+
 也可独立使用：
 
 ```bash
@@ -526,12 +654,12 @@ python poster.py --no-image               # 跳过图片上传
 python poster.py --no-json                # 跳过 JSON 附件
 ```
 
-### init_state.py
+### tools/init_state.py
 
 测试辅助工具。运行后列出所有当前新闻，选择保留一条不标记为已处理，其余全部标记为已处理，避免测试时触发全量翻译。
 
 ```bash
-python init_state.py
+uv run python tools/init_state.py
 ```
 
 ## 处理流程
@@ -558,12 +686,14 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
                   ↓
           转换 BBCode (output/news_*.txt)
           转换 Markdown (output/news_*.md)
+          转换专栏正文 (news_*.html | news_*.opus.json)   ← 仅 bilibili.enabled 时按 renderer 生成
                   ↓
           下载头图 (output/news_*.jpg)
                   ↓
-          登录 MCBBS → 上传图片 → 上传 JSON → 发帖
-                  ↓
-          记录已发布状态 (.posted.json)
+          ┌───────────────┴───────────────┐
+          ↓                               ↓
+  登录 MCBBS → 上传图片/JSON → 发帖   登录 B站 → 图片重托管 → 存草稿/投稿
+  记录 .posted.json                   记录 .posted_bili.json
 ```
 
 ## GitHub Actions 部署
@@ -576,6 +706,8 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
 | `MCBBS_USERNAME` | MCBBS 论坛用户名 |
 | `MCBBS_PASSWORD` | MCBBS 论坛密码 |
 | `MCBBS_CAPTCHA_ANSWER` | 验证码备用答案（未启用） |
+| `BILI_SESSDATA` | B站登录 cookie（启用专栏发布时需要） |
+| `BILI_JCT` | B站 csrf 令牌，与 `BILI_SESSDATA` 同一登录会话 |
 
 Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也可手动触发。
 
@@ -660,6 +792,37 @@ git push origin v1.0.0
     "attach_json": true,
     "sortid_map": {}
   },
+  "bilibili": {
+    "enabled": false,
+    "cookie_file": "config/bili_cookies.json",
+    "category_id": 26,
+    "candidate_categories": [26, 4, 15, 6],
+    "tags": ["Minecraft", "我的世界", "更新日志"],
+    "original": false,
+    "reprint": true,
+    "renderer": "html",
+    "template_id": 1,
+    "ai_declare": true,
+    "publish_types": [
+      "java_snapshot",
+      "java_prerelease",
+      "java_rc",
+      "java_release",
+      "bedrock_beta",
+      "bedrock_release"
+    ],
+    "exclude_sources": ["feedback"],
+    "submit": "draft",
+    "title_suffix": " [AI翻译]",
+    "max_title_chars": 80,
+    "summary_max_chars": 100,
+    "attach_cover": true,
+    "rehost_images": true,
+    "max_inline_images": 20,
+    "ai_notice": "",
+    "interval_seconds": 20,
+    "max_per_run": 3
+  },
   "output": {
     "save_dir": "output"
   },
@@ -681,6 +844,24 @@ git push origin v1.0.0
 - **首次运行**：程序会自动将当前所有新闻标记为已处理，下次运行才开始处理真正的新新闻，避免刷屏
 - **API Key**：支持通过环境变量 `OPENAI_API_KEY` 传入，优先级高于 config.json
 - **MCBBS 账号**：支持通过环境变量 `MCBBS_USERNAME` / `MCBBS_PASSWORD` 传入
+- **B站专栏**：`bilibili.enabled` 默认关闭。凭据是浏览器登录后的 cookie（`SESSDATA` + `bili_jct`），
+  放 `.env` 或 `config/bili_cookies.json`（两者都不入库），日志里不会打印。`submit: "draft"` 只存草稿、
+  需人工在编辑器发布，改成 `"publish"` 才会自动提交审核（提交后进入审核队列，通过前链接打不开）。
+  正文图片会先重托管到 B站 CDN——残留外链会被整篇拒绝，所以上传失败的图会被直接丢弃
+- **专栏正文模型**：`bilibili.renderer` 决定用哪套正文。`"html"`（默认）是老接口的 HTML 正文
+  + cv 专栏草稿；`"opus"` 是新版编辑器的段模型，能写封面、摘要与「AI 辅助创作」声明
+  （`bilibili.ai_declare`），发布走 `POST /x/dynamic/feed/create/opus`。两种模型的接口都已在
+  真机验证过，字段与踩过的坑见
+  [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.5、§9.6、§10。
+  想先看排版再决定：`uv run python tools/preview_bili_html.py --renderer opus`。
+  注意 opus 模型没有标签字段（`bilibili.tags` 只在 html 模型下生效），分区与封面在发布时会
+  被编辑器界面上的值覆盖——自动投稿不打开编辑器就不会有这个问题
+- **专栏投放范围**：`bilibili.publish_types`（默认版本发布类）与 `bilibili.exclude_sources`
+  （默认排除 `feedback`）在投稿前过滤，官方 API 的快讯、时评与论坛式更新日志不会进专栏。
+  两项留空即不过滤，被跳过的文章会在日志里逐条说明原因
+- **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
+  `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
+  改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；
@@ -707,7 +888,9 @@ git push origin v1.0.0
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
 - **日志**：每轮运行的来源条数、翻译量、保存的文件、发帖地址都会写进 `logs/mcttk_YYYY-MM-DD.log`
   （`print()` 与 stderr 也一并落盘）。容器重建后 `docker logs` 会清空，排查历史问题请以该目录为准
-- **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件
+- **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json`
+  后会重新发布所有已翻译文件；删除 `output/.posted_bili.json` 后会先把现有文章重新记为
+  「已投稿」做基线（一篇都不投），要真补投就用 `--post-only --bili-backfill`
 
 ## 许可证
 

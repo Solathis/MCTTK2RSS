@@ -1,0 +1,493 @@
+﻿# B站专栏自动发布 — 调研与决策记录（2026-11-15）
+
+本文件是「给 MCTTK 增加 B站专栏发帖能力」的调研结论与决策留痕，供后续实现与 PR review 对照。
+**代码尚未改动**；本文只记录事实、取舍和待实测项。
+
+---
+
+## 1. 结论
+
+可行，但它和 MCBBS 发帖**不是同一类问题**，不能复用 `poster.py`：
+
+1. 专栏正文只吃**富文本 HTML**（`<p>/<h1>/<strong>/<figure><img>`），BBCode 的
+   `[attachimg]/[quote]/[color]/[table]` 没有等价物；
+2. 正文图片**必须是 B站 CDN 地址**，留着外链会被整篇拒绝（社区实现反馈 `code 37130`）；
+3. 认证是**登录 cookie**（`SESSDATA` + `bili_jct`），不是账号密码；
+4. 投稿成功后进入**审核队列**（`state=-2`），URL 在审核通过前 404。
+
+因此需要新增：HTML 渲染器 + 独立发帖模块 + 编排器多平台化。估算 3~4 个工作日，**不需要新增硬依赖**。
+
+---
+
+## 2. 现状链路（改动前）
+
+| 环节 | 位置 | 现状 |
+| --- | --- | --- |
+| 抓取→翻译→落盘 | `main.run_scrape` → `_process_single_article` | 产 `.json` + `.txt`(BBCode) + `.md`(Markdown)，返回 `(stem, bbcode_path, json_path)` |
+| 转换 | `converter.convert_json_file` | 返回 `(bbcode_path, md_path)`，被上面解包后再传给 `run_post` |
+| 发布 | `main.run_post` / `run_post_only` | 只认 `config["mcbbs"]["enabled"]`，`result` 形状被 `tests/test_logging.py` 精确断言 |
+| 发帖 | `poster.MCBBSPoster.post_news_file` | 读 `.txt` + `.json` + 同名图片，上传附件后发帖 |
+| 状态 | `.state.json`（URL 级）、`.posted.json`（stem 级） | 单平台语义 |
+
+改动边界（最小改动原则）：**不改** `convert_json_file` 返回签名、**不改** `run_post` 返回形状、
+**不改** `.posted.json` 语义（B站另开状态文件）。
+
+---
+
+## 3. 三条路线
+
+| 路线 | 做法 | 前提 | 工作量 | 主要风险 | 结论 |
+| --- | --- | --- | --- | --- | --- |
+| **A. 创作中心 web API + cookie** | `api.bilibili.com/x/article/creative/*`，草稿→提交两步；图片走 `upcover` | 自己的 B站账号 cookie | 3~4 天 | `412` 风控、cookie 过期、`37130` 外链图、审核不通过 | **采用** |
+| B. 官方开放平台 | `member.bilibili.com/arcopen/fn/article/add`，HMAC-SHA256 签名 + OAuth access_token | 开发者入驻 + 应用 + 权限白名单 | A 的 2~3 倍 | 个人项目基本拿不到白名单 | 备选，不实现 |
+| C. 浏览器自动化 | Playwright/Selenium 驱动编辑器 | Chromium 二进制 | 中 | 镜像暴涨、选择器频繁失效 | 否决 |
+
+---
+
+## 4. 接口事实
+
+### 4.1 已核实（社区可工作实现 + 官方开放平台文档交叉印证）
+
+| 步骤 | 请求 | 关键字段 / 返回 |
+| --- | --- | --- |
+| 登录校验 | `GET https://api.bilibili.com/x/web-interface/nav` | `data.isLogin`、`data.mid`、`data.uname` |
+| 存草稿 | `POST https://api.bilibili.com/x/article/creative/draft/addupdate` | form：`title, content(HTML), csrf, tid, category, list_id=0, reprint, original, media_id=0, spoiler=0, save=0, pgc_id=0`；返回 `data.aid`（草稿 id） |
+| 上传图片 | `POST https://api.bilibili.com/x/article/creative/article/upcover` | multipart：`binary`(文件) + `csrf`；返回 `data.url`（B站 CDN） |
+| 提交投稿 | `POST https://api.bilibili.com/x/article/creative/article/submit` | 同草稿字段 + `aid`；返回 `data.aid`（**cv id，与草稿 aid 不同**）+ `data.state` |
+
+要点：
+- 写操作必须带 `csrf`，值等于 `bili_jct` cookie；请求头需 `Referer/Origin: https://member.bilibili.com/`。
+- `category` 才是真正决定分区的字段，`tid` 必须与之一致，否则会静默落到别的分区。
+- 提交返回的 `aid` 才是 cv 号；拿草稿 aid 拼 `read/cv<aid>` 是 404 的常见原因。
+
+### 4.2 `state` 语义
+
+| state | 含义 | 处理 |
+| --- | --- | --- |
+| `0` / `1` | 已发布 | 记成功 |
+| `-2` | 待审核 | **既不是成功也不是失败**：记入已发（防重投），日志写「已投稿·待审核」 |
+| `-1` | 未通过（审核拒绝） | 记失败 |
+| `-3` / `-4` | 锁定 / 已删除 | 记失败 |
+
+### 4.3 已知错误码 / 现象
+
+| 现象 | 含义 | 处理策略 |
+| --- | --- | --- |
+| HTTP `412` | 风控拦截（submit 常见，草稿往往已存成功） | **不重试**，保留草稿并给出编辑器链接 |
+| `-111` | csrf 校验失败 = cookie 失效 | 提示更新 `SESSDATA`/`bili_jct` |
+| `-17` | 该账号无权投稿到该分区 | 按候选分区表回退 |
+| `37106` | 草稿数达上限（999） | 报错并提示手动清理草稿 |
+| `37130` | 正文残留外链图片，整篇被拒 | 上传失败的图**丢弃**，绝不保留外链 |
+
+> `37130` / `37106` / `-17` 的语义来自社区实现的经验记录，需在实测中确认；确认前代码按「保守处理 + 明确日志」实现。
+
+### 4.4 专栏 HTML 白名单（据社区分析）
+
+| 富文本 | HTML | 备注 |
+| --- | --- | --- |
+| 标题 | `<h1>` | **只支持一级标题** |
+| 段落 | `<p>` | |
+| 粗体 / 斜体 | `<strong>` / `<em>` | |
+| 引用 | `<blockquote><p>` | 可嵌套 |
+| 列表 | `<ul>/<ol><li>` | |
+| 图片 | `<figure><img src>` | 必须是站内 CDN |
+| 链接 | `<a>` | **仅站内链接**，外链可能被过滤（待实测） |
+| 字号 / 颜色 / 对齐 | `<span class="font-size-x">` 等 | 编辑器样式类，内联 `style` 会被剥离 |
+| 分割线 | `<figure><img>` | 专栏没有真正的 `<hr>` |
+
+---
+
+## 5. 内容映射（MCTTK blocks → 专栏 HTML）
+
+| 来源 | 输出 | 说明 |
+| --- | --- | --- |
+| `p` | `<p>译文</p>` + `<blockquote><p>原文</p></blockquote>` | 双语策略，见 §6 |
+| `h1`,`h2` | `<h1>` | 专栏只有一级标题 |
+| `h3`,`h4` | `<p><strong>` | 避免满屏大标题 |
+| `li`（含嵌套） | `<li>` 嵌套在 `<ul>` 内 | |
+| `blockquote/quote` | `<blockquote><p>` | 原文另起一个引用块 |
+| `pre/code` | `<pre><code>` | 白名单待实测，退路 `<p><code>` |
+| `img` | `<figure><img src="B站URL">` | 先重托管 |
+| 内联 `[b]/[i]/[url]` | `<strong>/<em>/<a>` | `[size]/[color]/[align]/[font]` 丢弃 |
+| `[hr]` / `---` | 丢弃 | 专栏无真分割线 |
+| 模块（`modules_config.json`） | 纯文本段落 | 模块是表格+彩色排版，专栏无等价物，先降级为文字 |
+
+所有文本先 `html.escape`：抓回来的内容是**数据**，不转义会把页面结构写坏。
+
+图片重托管流程（发帖阶段）：
+`blocks[].meta.src` → 只允许 `https` 且公网地址、不跟随重定向（SSRF 防护）→ 按 `config.http`
+的 `proxies/verify_ssl/timeout` 下载 → webp 用 Pillow 转 PNG（未安装 Pillow 则跳过该图）→
+`upcover` → 替换 URL。单图失败丢图不丢文，逐张记日志。
+
+---
+
+## 6. 决策记录（2026-11-15 维护者拍板）
+
+| 决策 | 选择 | 理由 |
+| --- | --- | --- |
+| 发布方式 | **配置项**，`submit: "draft" \| "publish"`，默认 `draft` | 风控与审核都不可控，草稿留了人工兜底；要全自动时改一行配置 |
+| 正文双语 | **译文 + 原文放引用块** | 保留现有「双语对照」产品特征；专栏没有灰色小字样式，引用块是最接近的视觉降级 |
+| 实施顺序 | 分阶段，先「调研归档 + HTML 渲染器」（离线可验收） | 渲染器是纯函数，可先评审；网络与发帖部分等实测后再动 |
+
+其余默认值（后续实现时写入配置模板）：分区 `26 数码`（候选 `[26, 4, 15, 6]`）、
+篇间隔 20 秒、单次最多 3 篇、`original=true`、`reprint=true`、`summary` 取译文首 100 字。
+
+---
+
+## 7. 待实测清单（需维护者用自己账号执行）
+
+用一篇**已存草稿**即可验证，全部在 `member.bilibili.com` 编辑器里肉眼确认：
+
+1. `<pre><code>` 是否被保留（退路：降级 `<p><code>`）。
+2. `<a href>` 外链是否被过滤/降级为纯文本（退路：外链输出成「文字（URL）」）。
+3. 标题与正文的字数上限（决定截断策略）。
+4. `category_id` 权限：目标分区是否可投（`-17`）。
+5. `submit` 的 `412` 概率与触发频率（决定是否需要更长间隔 / 只发草稿）。
+
+> 这 5 项确认前，代码按「保守实现 + 明确日志」落地，不猜测白名单行为。
+
+---
+
+## 8. 安全红线
+
+- `SESSDATA` 等价于账号密码：只放本地 `config/bili_cookies.json`（`.gitignore`）或
+  `BILI_SESSDATA` / `BILI_JCT` 环境变量；日志只打 `abcd***`；绝不入库、绝不进 PR。
+- 真实投稿只在维护者明确授权、且在草稿确认排版后执行；自动化验证一律走 fake session 或 `draft`。
+
+---
+
+## 9. 实测发现（2026-11-15 真机投稿后）
+
+真机发了一篇草稿（aid=374174，分区 26，7 张图重托管成功），暴露三件事。
+
+### 9.1 `tid` 是卡片模板 id，不是分区
+
+创作中心编辑器的真实 payload 是 `tid: store.template.id`、`category: store.category`。
+我们此前把分区 id 同时塞进 `tid`，草稿的 `template_id` 会被写成非法值。
+探针验证（用后即删）：
+
+| 请求 | 读回 |
+| --- | --- |
+| `category=26` + `tid=1` | category 26 / template 1 |
+| `category=4` + `tid=1` | category 4 / template 1 |
+
+已修：`bili.poster.DEFAULT_TEMPLATE_ID = 1`，`category` 单独传。
+
+### 9.2 B站 会去掉站外超链接
+
+`module_bili_footer` 的四条来源链接在发布态只剩纯文本，因此该模块当时被 `enabled: false`
+（内容保留）。
+
+→ 已恢复（见 §9.7）：现在我们自己先把外链降级成 `文字（URL）`，来源列表既有名字也有地址，
+模块重新开启；内容里的 `[url]` 改成了「名称：地址」的纯文本，两种正文模型渲染一致。
+
+### 9.3 AI 创作声明：只能走新版编辑器接口，暂不实现
+
+- 声明字段是 `opus.attachments.is_aigc`（1=已声明），由新版编辑器（eva3）写入；
+  老接口 `x/article/creative/draft/addupdate` 不接受该字段——实测 5 种写法
+  （`is_aigc`/`opus_is_aigc`/`attachments`/`is_ai_generated`/`ai_declare`）全部返回 `47015`。
+- 新版接口：`POST /x/dynamic/feed/article/draft/add`，需要 WBI 签名
+  （`wts` + `w_rid`，mixin-key 由 `nav.wbi_img` 推出），body 为 `{"arg": {...}}`，
+  正文是结构化 `opus.content.paragraphs`（`para_type` 1 普通/2 图/4 引用/6 列表/9 标题，
+  `node_type` 1 文字/4 链接）。
+- 关键约束：新接口**不认 HTML `content`**。实测传入 `content` + 空 `paragraphs` 时，
+  正文被清空（content 长度 11 → 0），标题也要靠 `opus.title` 才留得住。
+  也就是说老接口（HTML 正文）与新接口（段落正文）**互斥**，不能混着用。
+- 编辑器保存会把 HTML 正文一一转成段落（我们那篇 132 个段落 = 54 段 + 58 引用 + 8 标题
+  + 7 图 + 5 列表，与 HTML 标签数完全一致），可作为实现段落渲染器的对照样本。
+- 编辑器保存还会**用界面上的分区覆盖草稿分区**（实测被写成 15），并且会覆盖 `is_aigc`
+  （勾选后曾变回空）。所以「投完草稿再进编辑器点保存」会改动已有字段。
+
+结论：要做自动声明，必须整体切到段落模型（还需先抓到发布/提交环节的新接口）。
+本次不做，留作独立特性；当前投稿后 `is_aigc` 需要人工在编辑器勾选。
+→ 后续：段落渲染器见 §10，草稿接口与 `is_aigc` 的真机验证见 §9.5。
+
+### 9.4 补抓包：发布走的是 `create/opus`，不是 `draft/add`
+
+维护者用 HTTP Debugger 录了一次「新建图文并发布」（`member.bilibili.com/platform/upload-manager/opus`），
+导出的 xlsx 里 42 条请求中只有一条是发布，它推翻了 §9.3 对上一步接口的猜测：
+
+| 观察 | 值 |
+| --- | --- |
+| 发布请求 | `POST https://api.bilibili.com/x/dynamic/feed/create/opus` |
+| 查询串 | `csrf`、`gaia_source=main_web`、`w_rid`、`wts`、`b_wet`、`x-bili-locale-json`、`x-bili-device-req-json`、`dm_img_list`/`dm_img_str`/`dm_cover_img_str`/`dm_img_inter` |
+| 请求体 | `application/json`，90623 字节 |
+| 响应 | 200，113 字节 |
+| 同一会话里的相关请求 | `POST member.bilibili.com/x/material/up/check`（素材上传校验）、`GET x/polymer/web-dynamic/v1/opus/creationlist`（图文列表）、`POST x/v2/dynamic/sunflower/parse`（富文本解析） |
+
+三点结论：
+
+1. 新版图文/专栏是**一次发布**，这条链路里没有「存草稿」请求；老接口 `creative/draft/addupdate`
+   才是「先草稿、人工放行」的形态。要不要用新接口，等于要不要放弃草稿环节。
+2. `w_rid` + `wts` 确认存在（WBI 签名），另外还带了 `b_wet` 与 `dm_*` 一串风控/指纹参数；
+   这些是浏览器端生成的，能否省略、用什么值替代，只有实测才知道。
+3. 这次导出的 xlsx **只有摘要表**（Id/URL/方法/状态/大小/类型/耗时），没有请求体与响应体，
+   所以 `arg` 里的字段名与写法仍未确认——`create/opus` 是「发布」而非「草稿」，猜错会
+   在账号下留下一条公开的坏图文，所以实现前必须先拿到真实请求体。
+
+---
+
+### 9.5 eva3 存草稿：可用的请求体（2026-11-15 真机验证）
+
+§9.3 的 `draft/add` 猜测是对的，把段模型灌进去能存住。实机用我们的渲染器产出的
+174 段（普通 23 / 引用 30 / 列表 113 / 标题 8）投稿，读回逐项核对无误：
+
+| 项 | 值 |
+| --- | --- |
+| 请求 | `POST https://api.bilibili.com/x/dynamic/feed/article/draft/add` |
+| 查询串 | `csrf` + `gaia_source=main_web` + `wts` + `w_rid`（WBI）。实测**不需要** `b_wet` 与 `dm_*` 指纹参数 |
+| 响应 | `{"code":0,"data":{"article_id":374201}}`——键名是 `article_id`，不是 `aid` |
+| 读回 | `title` / `opus.title` / `category=26` / `template_id=1` / `type=4` / `is_aigc=1` / `paragraphs=174` / `summary` 100 字 / `image_urls` 一张封面 |
+
+可工作的 `arg`（最终这一条草稿是 aid=374201，把上面所有字段一次带上）：
+
+```json
+{"arg": {
+  "title": "Minecraft 26.4 快照 8 [AI翻译]",
+  "category_id": 26,
+  "template_id": 1,
+  "type": 4,
+  "summary": "好吧，看来我们的末影龙把飞行的事忘得一干二净了！……",
+  "image_urls": ["http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"],
+  "origin_image_urls": ["http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"],
+  "opus": {
+    "title": "Minecraft 26.4 快照 8 [AI翻译]",
+    "content": {"paragraphs": ["…174 段…"]},
+    "attachments": {"is_aigc": 1}
+  }
+}}
+```
+
+封面用的就是 `upcover` 上传后的 `article.biliimg.com` 地址，不需要另走素材接口。
+
+实测踩到的坑（都是「不报错但没生效」，比报错更难查）：
+
+| 写法 | 结果 |
+| --- | --- |
+| `category_id` + `template_id` | ✅ 读回 26 / 1 |
+| `category` + `tid`（老接口的键名） | ❌ 静默忽略，读回 `category=0`、`template=0` |
+| `arg.aid` = 0 或 = 已有草稿 id | ❌ 一律**新建**一条草稿，不会更新那条已有的 |
+| `content` 不传 | ✅ 服务端按段落自己拼纯文本（174 段 → 15109 字） |
+| `opus.attachments.is_aigc = 1` | ✅ 读回 `is_aigc=1`，声明生效（这才是 §9.3 想要的那一步） |
+| 顶层 `summary` 字符串 | ✅ 读回原样（100 字上限按配置截）；`opus.summary` 则被静默忽略 |
+| `image_urls` / `origin_image_urls` 用**字符串** | ❌ `code=-400 请求错误` |
+| 同上但用**列表** `["url"]` | ✅ 读回 `image_urls=["url"]`，编辑器里有封面 |
+| `cover_url` / `cover` | ❌ 静默忽略（`code=0`，读回为空） |
+| 把 `tags` / `is_new_editor` 塞进 arg | ❌ `code=-400 请求错误`（未逐项二分是哪一个） |
+| 我们生成的 `combine_hash`（`list_1` 这种） | ✅ 读回一字未改，分组没被服务端重写 |
+
+仍然没做的：`x/dynamic/feed/create/opus`（发布）的请求体还没抓到，所以段模型目前
+只能存草稿；`tags` 的正确写法（发布时必然要）也还没确认。
+
+---
+
+### 9.6 发布：`create/opus` 的完整请求体（2026-11-15 抓包）
+
+维护者把 aid=374201 那条草稿在专栏编辑器点「发布」，HTTP Debugger 的原始文本导出里
+拿到了全量 body（113941 字符，99% 是段落）。骨架：
+
+```json
+{
+  "raw_content": "",
+  "draft_id_str": "374201",
+  "opus_req": {
+    "upload_id": "1501743_1794720787_8051",
+    "opus": {
+      "opus_source": 2,
+      "title": "Minecraft 26.4 快照 8 [AI翻译]",
+      "content": {"paragraphs": ["…174 段…"]},
+      "article": {
+        "category_id": 15,
+        "list_id": 0,
+        "originality": 0,
+        "reproduced": 0,
+        "cover": [{"url": "http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"}]
+      },
+      "pub_info": {"editor_version": "eva3-4.0.0"}
+    },
+    "scene": 12,
+    "meta": {"app_meta": {"from": "create.creative.h5", "mobi_app": "web"}},
+    "option": {"aigc": 1, "close_comment": 0, "up_choose_comment": 0, "private_pub": 2}
+  }
+}
+```
+
+| 字段 | 含义与实测值 |
+| --- | --- |
+| `draft_id_str` | 要发布的草稿号（= `draft/add` 返回的 `article_id`），所以发布是「按草稿发布」 |
+| `raw_content` | 空串（老模型的富文本正文，eva3 不用） |
+| `opus_req.opus.opus_source` | `2` |
+| `opus_req.opus.article.category_id` | 分区。**这条抓到的是 15**：编辑器打开草稿时用界面上的分区（15）覆盖了我们写入的 26，与 §9.3 记的行为一致 |
+| `article.cover[].url` | 封面，列表里放对象（`[{"url": …}]`） |
+| `article.originality` / `reproduced` | 原创 / 转载标记，编辑器里都没勾时是 `0` / `0` |
+| `pub_info.editor_version` | `eva3-4.0.0` |
+| `opus_req.scene` | `12` |
+| `option.aigc` | **发布阶段的 AI 创作声明在这里**（1=已声明）；草稿阶段才是 `opus.attachments.is_aigc` |
+| `option.private_pub` | `2`（这条是公开发布）；`close_comment` / `up_choose_comment` 都是 0 |
+| `tags` / `summary` | **发布体里完全没有这两个字段**：摘要留在草稿侧，发布按 `draft_id_str` 取；标签在图文模型里没有对应字段 |
+
+附带观察：编辑器打开草稿时会把段落 `format` 补齐（`indent.first_line_indent`、列表的
+`align`、`word.color` / `dark_color`、链接的 `icon`/`biz_id`/`pics`），并把我们生成的
+`combine_hash`（`list_1`）改写成它自己的 `list_<毫秒戳>_<随机串>`。这些补齐不是必需的——
+我们那版精简格式在 `draft/add` 阶段就被接受了。
+
+这份导出只有请求（连响应体都没有），所以发布响应长什么样仍未知；要判断成败，
+只能发布后读 `draft/view` 或看创作中心。
+
+---
+
+### 9.7 首次真机发布（图文）与「只留署名超链接」
+
+2026-11-15 全链路首次真机发布成功：<https://www.bilibili.com/opus/1270805265844797465>
+（段模型草稿 → `create/opus`，174 段 + 封面 + 摘要 + AI 声明，与 §9.5 / §9.6 记录的字段一致）。
+
+发布后暴露一个阅读体验问题：B站 图文里点开外链不是直接跳转，而是先进「离开 B站」的
+拦截提示页——读者看到的是提示页而不是内容。正文里十几个外链就等于十几个拦截页，
+比不给链接更糟。因此改成：**除项目署名 `github.com/jiubook/MCTTK` 外，所有外链一律
+降级成纯文本 `文字（URL）`**——不产出 `href` / `link` 节点，地址仍留在正文里可复制
+（下载地址、漏洞追踪器这类信息丢了比不可点更糟）；链接文字本身是地址时不重复，
+直接只留一次。
+
+- 策略集中在 `bili/__init__.py` 的 `SIGNATURE_LINKS` + `is_signature_link()`，两套渲染器共用
+- 覆盖范围：正文段、列表项、头尾模块里的 `[文字](URL)`，以及元信息的「原文：URL」
+- 实测效果：那篇文章的段模型只剩 1 个链接节点（MCTTK），HTML 产物只剩 1 个 `<a>`
+- 也解释了 §9.2：老接口下 B站 同样会剥链接，只是剥得晚（发布时）；现在由我们自己先降级，
+  编辑器里看到的就是最终形态
+- 顺带把 §9.2 关掉的 `module_bili_footer`（外部来源与更新条目追踪）恢复开启：来源名字与地址
+  现在都在正文里，模块内容也从 `[url]` 改成「名称：地址」的纯文本，两种正文模型渲染一致
+
+---
+
+### 9.8 原文对照刷灰：段模型的 `color` 字段可用
+
+双语两边同样黑，读者分不清哪句是译文。段模型的文字节点本来就留了 `color`（实测编辑器
+payload 里是空串），所以不用新结构，直接把原文刷灰：
+
+| 位置 | 处理 |
+| --- | --- |
+| 正文 / 标题 / 引用块的原文引用框 | 整段文字节点 `color = "#c9ccd0"` |
+| 列表项 | 拆成「译文 / 换行 / 原文」三个节点，只有原文那段带 `color` |
+| 标题下的英文原标题 | 同样刷灰（HTML 版用的是 `<em>`，段模型没有斜体） |
+| 译文、元信息四行、模块内容 | 不刷灰 |
+
+灰度取的是编辑器取色板里那一格：`style="background-color: var(--Ga3, #c9ccd0)"`，
+即 `#c9ccd0`——与在编辑器里手动点「灰」同值，比 `#9499A0` 更浅，视觉上更像注释。
+
+真机验证：草稿 aid=374208 读回，30 个引用段里 26 个带 `#c9ccd0`（其余是元信息四行），
+113 个列表段里 94 个的原文部分带灰，读回出现的颜色值只有 `['#c9ccd0']`——
+`color` 原样留住、没有被打回空串，也没有被换成 CSS 变量。
+
+两个可调的点：灰度常量 `bili/opus.py::ORIGINAL_COLOR`（现在是编辑器取色板的灰），
+以及 `dark_color` 没写——深色模式下的表现没实测，先沿用 `color` 的值。
+
+---
+
+### 9.9 第一次全链路真机跑（MCBBS + 专栏，直发）
+
+2026-11-15 用 `uv run python main.py --publish all` 跑了一篇新文章（`[minecraft_api][other]`
+`Marketplace Spotlight: The Sound Effects Edition`），配置 `renderer: "opus"` + `submit: "publish"`：
+
+| 环节 | 结果 |
+| --- | --- |
+| 抓取 | 9 条候选（Feedback 因 `curl_cffi` 未安装跳过），新增 1 条 |
+| 解析 / 翻译 | 62 块（p 41 / h1 7 / h3 7 / img 7）→ 55 个文本块 16 批全部译完；标题「音效特辑」 |
+| 产物 | `.txt` 27.8 KB、`.md` 25.9 KB、`.opus.json` 63.3 KB、头图 124 KB |
+| 专栏 | 正文图片重托管 **7 张（0 丢弃）**、封面上传、草稿 aid=374211 → **直接发布成功**：<https://www.bilibili.com/opus/1270813731216949271> |
+| MCBBS | 第一次跑登录要验证码、`无法提取验证码 hash`（见下）；隔了几分钟重试登录直接成功，发帖返回「需审核」，无 URL |
+
+两处值得记下来：
+
+1. **`upload_bfs` 这条路通了**：正文 7 张图走 `x/dynamic/feed/draw/upload_bfs`，一次拿回
+   url/宽/高/体积，段落模型里 `pic.pics[]` 的四个字段齐了——之前只有草稿没有图，属于首次验证。
+2. **MCBBS 的验证码是概率触发的**：`poster._login_with_captcha` 依赖 `updateseccode('hash')`，
+   而纪念版登录页现在没有这段标记（GET 页 0 处命中），所以一旦被要求验证码就必然失败；
+   `ddddocr` 没装也补不上（`uv sync --extra captcha`）。重试一次通常就不需要验证码了。
+   要彻底修得按当前页面改造验证码提取，属于 MCBBS 侧的独立问题。
+3. `poster.py` 的独立 CLI（`python poster.py <stem>`）不会加载 `.env`，所以只配环境变量时
+   会报「未配置 MCBBS 账号密码」；走 `main.py --post-only` 不受影响（它会 `load_dotenv()`）。
+
+---
+
+## 10. 段模型渲染器（路线 A，2026-11-15 落地）
+
+§9.3 那篇草稿在编辑器里存盘后，正文被转成了 `opus.content.paragraphs`。用只读的
+`draft/view?aid=` 把它读回来，就是渲染器的对照组，字段与取值如下：
+
+| 结构 | 实测取值 | 说明 |
+| --- | --- | --- |
+| `para_type` | `1` 普通 / `2` 图片 / `4` 引用 / `6` 列表 / `9` 标题 | 没观察到的类型不猜 |
+| 段格式 | `format.indent = {}`、`format.heading_type = 1` | 只有一级标题 |
+| 引用 / 列表分组 | `format.combine_hash` = `blockquote_<毫秒戳>_<随机数>` / `list_<毫秒戳>_<随机串>` | 相邻同值段落会被并成一个引用框 / 一个列表 |
+| 列表层级 | `format.list_format = {level, order, theme: "dot"}` | `level` 从 1 起，`order` 是同层内序号 |
+| 文字节点 | `{"node_type": 1, "word": {words, font_size: 17, style, font_level: "regular"}}` | 正文 17 / regular，标题 24 / xxLarge |
+| 链接节点 | `{"node_type": 4, "link": {show_text, link, link_type: 16, style, font_level}}` | 不带 `font_size` |
+| 图片 | `{"para_type": 2, "pic": {"pics": [{url, width, height, size, comment}]}}` | `size` 单位 KB，`comment` 是 alt |
+| 段内换行 | `word.words` 里直接出现 `\n` | 编辑器把 `<br>` 存成换行，模块的多行粗体靠这个保住 |
+
+`bili/opus.py` 的映射：
+
+| blocks / 模块 | 段落 |
+| --- | --- |
+| `p` | 普通段（译文）+ 引用段（原文） |
+| `h1`/`h2` | 标题段（译文）+ 引用段（原文） |
+| `h3`/`h4` | 加粗普通段（译文）+ 引用段（原文） |
+| `blockquote`/`quote` | 两个引用框（译文、原文各一个） |
+| 连续 `li` | 列表段，`meta.indent_level + 1` 作 `level` |
+| `img` | 图片段（外链 URL，重托管交给发帖阶段） |
+| `pre`/`code` | 原样纯文本段（不解析链接） |
+| 头尾模块（BBCode） | 先压成 Markdown，再按段落 / 列表 / 引用 / 加粗解析 |
+
+三处取舍：
+
+1. **列表项的双语放在同一段内换行**，不像正文那样另起引用框。列表项在段模型里只能是一段
+   文字，中间插引用段会把一个列表劈成两截；BBCode 版的 `[*]译文\n原文` 本来就是同项两行。
+2. **`combine_hash` 用自增编号**（`blockquote_1` / `list_2`）而不是编辑器那种时间戳 + 随机数：
+   产物可复现，重跑同一篇不会产生无意义的 diff，测试也能直接断言分组。
+3. **图片段只写 `url` + `comment`**：宽高与体积要下载图片才知道，而转换器不碰网络；缺的字段
+   留给发帖阶段上传后补。
+
+验收方式（离线）：`bili/opus.py` + `converter.convert_to_bili_opus()` 的单元测试，以及
+`tools/preview_bili_html.py --renderer opus` 生成的预览页；与本仓库 HTML 产物的对照口径是
+「同一篇的文字内容与段落边界一致」（`tests/test_bili_opus.py::TestRendererParity`）。
+
+未做：发布环节的新接口还没有请求体样本。§9.3 原以为是 `draft/add`，§9.4 抓包显示实机
+发布打的是 `POST /x/dynamic/feed/create/opus`（WBI 签名 + 90 KB JSON 正文），但导出文件
+没有 body，`arg` 里（分区、标签、卡片、AI 声明）的键名与取值仍未确认。先把渲染器落地并与
+`draft/view` 样本对齐，等拿到真实请求体再接接口，避免重演 §9.1 那种字段语义猜错。
+
+---
+
+## 11. 参考
+
+- 专栏表单字段与富文本转换规则：<https://zihengcat.github.io/2018/04/19/bilibili%e4%b8%93%e6%a0%8fAPI%e5%88%86%e6%9E%90/>
+- 草稿接口实测（含完整 form）：<https://segmentfault.com/a/1190000023095047>
+- 官方开放平台「文章提交」：<https://bilibili.apifox.cn/api-23767554>
+- 官方开放平台「专栏稿件图片上传」：<https://bilibili.apifox.cn/api-23906916>
+- 同类可工作实现（含外链图片重托管、state 处理）：<https://cdn.jsdelivr.net/npm/@acedatacloud/skills@2026.1019.283001/skills/bilibili/SKILL.md>
+
+---
+
+## 12. 升级到 0.3.0：首次启用只做基线（2026-11-15 维护者要求）
+
+线上 Docker 还是 0.2.0，`output/` 里积压了一大批历史文章。要求：升级到带专栏的版本后，
+第一次运行 **B站 一篇都不发**，同时把当前文章全部记为「已投」，直到下一次翻译才恢复投稿。
+
+做法：`--post-only` 与全流程共用同一套基线逻辑（`main.py::_seed_bili_posted`）——
+`output/.posted_bili.json` 不存在或为空时，把 `news_*.json` 全部记为已投稿：
+
+- 全流程：做基线时排除本批新处理的篇目，所以「本次新翻译的」照常投，历史一篇不投；
+- `--post-only`：没有「本批」概念，基线覆盖全部现有文章，首次运行一篇都不投；
+- 补投历史：删掉（或清空成 `[]`）`output/.posted_bili.json`，再跑
+  `--post-only --publish bilibili --bili-backfill`。`--bili-backfill` 是「这次明确要补投、
+  别做基线」的开关（不加就会又被基线吞掉），同样受 `max_per_run` 限制。
+
+凭据口径同时收紧（维护者要求）：环境变量 `BILI_SESSDATA` / `BILI_JCT` 为空串时按「没设置」
+处理、回落到 `config/bili_cookies.json`；两处都没有 cookie 就整段跳过专栏（一条 WARNING，
+不计失败）。两份 Compose 编排此前没透传这两个变量（README / `.env.sample` 承诺可用但容器里
+读不到），已补上。
+
+### 未解决（另开 issue）
+
+`.posted_bili.json` 仍是扁平的 stem 集合：没有 per-篇结果、没有锁、不回查远端状态。
+Sourcery 在 PR #9 提的四条（结果不明重投 → 重复草稿/重复稿件、待审核被打回仍算已投、
+并发运行重复投稿）都源于这个缺口。修它要改状态文件语义（按仓库规范需先确认），单独开 issue。

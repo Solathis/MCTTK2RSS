@@ -594,6 +594,10 @@ python converter.py news.json --markdown-only
 头尾模块同样先按 `platform` 过滤、再压成 Markdown 交给各自渲染器，所以两边的段落边界一致
 （同一篇的引用块、列表、双语降级位置完全相同，只有承载格式不同）。
 
+**超链接策略**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链一律降级成纯文本。
+原因是 B站 图文里点外链先进「离开 B站」的拦截页（实测），正文十几个外链等于十几个提示页。
+策略写在 `bili/__init__.py` 的 `SIGNATURE_LINKS`，需要放开某个域名时改这一处。
+
 投稿前先看排版（近似样式，正式排版由专栏编辑器决定）：
 
 ```bash
@@ -805,6 +809,9 @@ git push origin v1.0.0
   想先看排版再决定：`uv run python tools/preview_bili_html.py --renderer opus`。
   注意 opus 模型没有标签字段（`bilibili.tags` 只在 html 模型下生效），分区与封面在发布时会
   被编辑器界面上的值覆盖——自动投稿不打开编辑器就不会有这个问题
+- **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
+  （B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。改策略见
+  `bili/__init__.py` 的 `SIGNATURE_LINKS`
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；

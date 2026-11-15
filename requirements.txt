@@ -3,3 +3,4 @@ beautifulsoup4>=4.12
 curl_cffi>=0.5
 urllib3>=2.0.0
 ddddocr>=1.4.11
+qrcode>=7.4

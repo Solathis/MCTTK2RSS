@@ -188,8 +188,10 @@ class TestSaveDraft:
         assert payload["reprint"] == "0"
         assert payload["original"] == "0"
         assert payload["list_id"] == "0"
-        # category 才是生效的分区字段，tid 必须一致
-        assert payload["tid"] == payload["category"] == "26"
+        # 分区只由 category 决定；tid 是卡片模板 id，不能把分区塞进去
+        assert payload["category"] == "26"
+        assert payload["tid"] == "1"
+        assert payload["tid"] != payload["category"]
 
     def test_business_error_raises_with_code(self, cookies):
         session = FakeSession(err(-400, "参数错误"))

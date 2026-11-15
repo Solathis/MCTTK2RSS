@@ -48,6 +48,9 @@ UPCOVER_URL = f"{API_BASE}/x/article/creative/article/upcover"
 BILI_IMAGE_HOSTS = ("hdslb.com", "bilibili.com", "biliimg.com")
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 DEFAULT_TIMEOUT = 120
+# 专栏的「卡片模板」id（编辑器里的卡片类型）。实测 2026-11：tid 传分区 id 不会报错，
+# 但会把草稿的 template_id 写成非法值；分区只由 category 决定。
+DEFAULT_TEMPLATE_ID = 1
 
 # 接口返回的 state（投稿管理里看到的状态），只有 0/1 是真的在线
 STATE_TEXT = {0: "已发布", 1: "已发布", -1: "未通过", -2: "待审核", -3: "锁定", -4: "已删除"}
@@ -416,7 +419,6 @@ class BilibiliPoster:
 
     def _article_payload(self, title: str, content: str, category_id: int,
                          summary: str = "", cover_url: str = "") -> dict:
-        tid = str(category_id)
         words = len(_TAG_RE.sub("", content).replace("\n", "").replace(" ", ""))
         payload = {
             "title": title,
@@ -429,9 +431,10 @@ class BilibiliPoster:
             "spoiler": "0",
             "save": "0",
             "pgc_id": "0",
-            # category 才是真正生效的分区字段，tid 必须与之一致，否则会静默落到别的分区
-            "tid": tid,
-            "category": tid,
+            # 分区只由 category 决定；tid 是「卡片模板」id（编辑器 payload 里 tid = template.id），
+            # 把分区 id 塞进 tid 会把草稿的 template_id 写成非法值
+            "tid": str(DEFAULT_TEMPLATE_ID),
+            "category": str(category_id),
             "words": str(words),
         }
         if summary:

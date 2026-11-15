@@ -639,25 +639,49 @@ def _bili_state_file(save_dir: str) -> str:
     return os.path.join(save_dir, ".posted_bili.json")
 
 
-def _seed_bili_posted(save_dir: str, state_file: str, processed: list) -> set:
-    """首次启用专栏时，把 output 里已有的文章标记为已投稿。
+# 段模型产物的后缀：news_xxx.opus.json 也是 news_*.json 的形状，扫文章时必须跳过。
+# 不跳的话它会被当成一篇「标题叫 xxx.opus」的文章排进队列：先白转换一轮，再以
+# 「找不到标题」失败，还会往已投稿记录里塞一条假记录。
+_BILI_OPUS_SUFFIX = ".opus.json"
 
-    否则开关一开，第一次跑 --post-only 会把历史文章全部投出去。做种时排除
-    本次新处理的篇目，否则自己刚生成的内容会被自己跳过。
+# 投稿必需的两块 cookie：SESSDATA=登录态，bili_jct=csrf。都缺就别开跑。
+_BILI_REQUIRED_COOKIES = ("SESSDATA", "bili_jct")
+
+
+def _bili_news_items(save_dir: str) -> list:
+    """output 里可投稿的文章：[(stem, txt 路径, json 路径)]。"""
+    items = []
+    for json_path in sorted(glob.glob(os.path.join(save_dir, "news_*.json"))):
+        name = os.path.basename(json_path)
+        if name.endswith(_BILI_OPUS_SUFFIX):
+            continue
+        stem = os.path.splitext(name)[0]
+        items.append((stem, os.path.join(save_dir, stem + ".txt"), json_path))
+    return items
+
+
+def _seed_bili_posted(save_dir: str, state_file: str, processed: list) -> set:
+    """首次启用专栏时，把 output 里已有的文章记成「已投稿」当作基线。
+
+    没有这一步，开关一开就会把积压的历史整批投出去（尤其是 --post-only：它没有
+    「本次新处理」的概念，pending 就是全部历史）。做基线时排除本次新处理的篇目，
+    否则自己刚生成的内容会被自己跳过。已投稿记录非空就不再重做；要重做基线（比如
+    升级后想重新清空历史）把 state 文件删掉、或清空成 `[]` 再跑一次即可。
     """
     posted = load_posted(state_file)
-    if os.path.isfile(state_file):
+    if posted:
         return posted
+
     current = {stem for stem, *_ in processed}
-    existing = {
-        os.path.splitext(os.path.basename(path))[0]
-        for path in glob.glob(os.path.join(save_dir, "news_*.json"))
-    } - current
-    if existing:
-        posted |= existing
-        save_posted(state_file, posted)
-        log_info("[专栏] 首次启用：把 output 里已有的 %d 篇文章标记为已投稿（不会补发历史）",
-                 len(existing))
+    existing = {item[0] for item in _bili_news_items(save_dir)} - current
+    if not existing:
+        return posted
+
+    posted |= existing
+    save_posted(state_file, posted)
+    log_info("[专栏] 首次启用：把 output 里已有的 %d 篇文章标记为已投稿（不补发历史）；"
+             "要补投历史请先删掉 %s 再跑一次 --post-only",
+             len(existing), os.path.basename(state_file))
     return posted
 
 
@@ -669,7 +693,7 @@ def _bili_renderer(config: dict) -> str:
 
 def _bili_content_suffix(renderer: str) -> str:
     """两种正文模型的产物后缀：HTML 是 .html，段模型是 .opus.json。"""
-    return ".opus.json" if renderer == "opus" else ".html"
+    return _BILI_OPUS_SUFFIX if renderer == "opus" else ".html"
 
 
 def _convert_bili_content(json_path: str, output_prefix: str, modules_cfg, renderer: str) -> str:
@@ -679,16 +703,31 @@ def _convert_bili_content(json_path: str, output_prefix: str, modules_cfg, rende
     return convert_bili_html_file(json_path, output_prefix=output_prefix, modules_config=modules_cfg)
 
 
+def _bili_artifact_stale(content_path: str, json_path: str) -> bool:
+    """产物是否比文章 JSON 旧。取不到时间戳时按「不旧」处理（保持旧行为）。"""
+    try:
+        return os.path.getmtime(content_path) < os.path.getmtime(json_path)
+    except OSError:
+        return False
+
+
 def _ensure_bili_content(json_path: str, content_path: str, modules_cfg, renderer: str) -> str | None:
-    """专栏正文产物缺失时按 JSON 现场生成。
+    """专栏正文产物缺失、或比 JSON 旧时，按 JSON 现场生成。
 
     历史产物（专栏功能上线前抓的文章）没有这份文件，而 --scrape-only 只处理「新新闻」，
     让用户为了补一份产物去重跑抓取是死路，所以这里按需补生成。
+
+    「比 JSON 旧」也重建：重译过、改过标题的文章，产物不会自己更新，不重渲就会把旧正文
+    投出去。改 modules_config.json 不触发重建（模板是全局配置，给每篇产物存指纹不值得），
+    想强制重渲删掉产物即可。
     """
     if os.path.isfile(content_path):
-        return content_path
-    log_info("[专栏] 缺少专栏正文（%s），按 JSON 现场生成: %s",
-             renderer, os.path.basename(content_path))
+        if not _bili_artifact_stale(content_path, json_path):
+            return content_path
+        log_info("[专栏] 专栏正文比文章 JSON 旧，重新生成: %s", os.path.basename(content_path))
+    else:
+        log_info("[专栏] 缺少专栏正文（%s），按 JSON 现场生成: %s",
+                 renderer, os.path.basename(content_path))
     stem = content_path[: -len(_bili_content_suffix(renderer))]
     try:
         return _convert_bili_content(json_path, stem, modules_cfg, renderer)
@@ -762,6 +801,27 @@ def _check_bili_login(poster) -> bool:
         return False
 
 
+def _bili_cookie_missing(bili_cfg: dict) -> list:
+    """缺哪些登录 cookie（空列表表示可以投稿）。
+
+    取值口径与 bili.poster.load_cookies 一致：环境变量优先，环境变量为空则回落到
+    cookie 文件；两者都没有就是没配置。没配置时直接跳过专栏——把它当失败来记，
+    每次运行都会刷一屏错误，而用户其实只是还没填 cookie。
+    """
+    from bili.poster import load_cookies
+
+    cookies = load_cookies(bili_cfg)
+    return [name for name in _BILI_REQUIRED_COOKIES if not cookies.get(name)]
+
+
+def _log_missing_bili_cookies(missing: list) -> None:
+    """凭据没配就整段跳过专栏：这不是失败，只是还没配。"""
+    log_warning("[专栏] 没有 B站 登录 cookie（缺 %s），本次跳过专栏："
+                "把 SESSDATA / bili_jct 写进 config/bili_cookies.json，"
+                "或设环境变量 BILI_SESSDATA / BILI_JCT，或用 tools/bili_login.py 扫码生成",
+                "、".join(missing))
+
+
 def _bili_skip_reason(json_path: str, bili_cfg: dict) -> str | None:
     """专栏投放前的来源 / 类型过滤，返回跳过原因（None 表示可以投）。
 
@@ -771,6 +831,10 @@ def _bili_skip_reason(json_path: str, bili_cfg: dict) -> str | None:
     """
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
+    if not isinstance(data, dict):
+        # 能解析但不是对象：多半是 .opus.json 这类产物，不是文章元数据。
+        # 不判形状的话 data.get 会抛 AttributeError，把整批投稿带崩。
+        return "元数据不是 JSON 对象（可能是专栏产物）"
 
     source = str(data.get("source") or "").strip()
     excluded = {str(item).strip().lower() for item in (bili_cfg.get("exclude_sources") or []) if str(item).strip()}
@@ -811,6 +875,21 @@ def _filter_bili_queue(pending: list, bili_cfg: dict) -> list:
     return kept
 
 
+def _bili_cap_queue(pending: list, bili_cfg: dict) -> list:
+    """按 bilibili.max_per_run 截断本次要投的篇目（两个入口同一口径）。
+
+    全流程模式只把「当批新文章」排进队列，被截掉的篇目下轮不会自动补上，
+    要用 --post-only 补投——日志里说清楚，别让人以为下次运行会接着投。
+    """
+    max_per_run = int(bili_cfg.get("max_per_run") or 0)
+    if max_per_run <= 0 or len(pending) <= max_per_run:
+        return pending
+    log_info("[专栏] 本次限投 %d 篇，其余 %d 篇本次不投（bilibili.max_per_run；"
+             "全流程模式只投当批新文章，可再用 --post-only 补投）",
+             max_per_run, len(pending) - max_per_run)
+    return pending[:max_per_run]
+
+
 def run_post_bili(processed: list, config: dict) -> dict:
     """把本次处理好的文章投稿到 B站专栏。
 
@@ -831,6 +910,12 @@ def run_post_bili(processed: list, config: dict) -> dict:
 
     started = time.monotonic()
     save_dir = config["output"]["save_dir"]
+
+    missing = _bili_cookie_missing(bili_cfg)
+    if missing:
+        _log_missing_bili_cookies(missing)
+        return result
+
     posted = _seed_bili_posted(save_dir, _bili_state_file(save_dir), processed)
     pending = [item for item in processed if item[0] not in posted]
     if not pending:
@@ -842,11 +927,7 @@ def run_post_bili(processed: list, config: dict) -> dict:
         log_info("[专栏] 本次没有符合投放条件的文章（按 publish_types / exclude_sources 过滤后为空）")
         return result
 
-    max_per_run = int(bili_cfg.get("max_per_run") or 0)
-    queue = pending[:max_per_run] if max_per_run > 0 else pending
-    if len(queue) < len(pending):
-        log_info("[专栏] 本次限投 %d 篇，其余 %d 篇留到下次（bilibili.max_per_run）",
-                 len(queue), len(pending) - len(queue))
+    queue = _bili_cap_queue(pending, bili_cfg)
 
     log_info("[专栏] 分区 %s | 提交方式 %s | 待投 %d 篇（间隔 %s 秒）",
              bili_cfg.get("category_id"), bili_cfg.get("submit"),
@@ -868,8 +949,13 @@ def run_post_bili(processed: list, config: dict) -> dict:
     return result
 
 
-def run_post_only_bili(config: dict) -> dict:
-    """只投稿 output 目录里还没投稿过的文章（按 stem 记账）。"""
+def run_post_only_bili(config: dict, backfill: bool = False) -> dict:
+    """只投稿 output 目录里还没投稿过的文章（按 stem 记账）。
+
+    首次运行没有已投稿记录时只做基线：把现有文章全部记为已投稿、一篇都不投（升级到带专栏
+    的版本时不会把积压的历史整批刷出去）。要真补投历史：删掉 output/.posted_bili.json，
+    再加 --bili-backfill 跑一次（backfill=True 跳过基线）。
+    """
     from bili.poster import BilibiliPoster
 
     result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
@@ -880,15 +966,23 @@ def run_post_only_bili(config: dict) -> dict:
         return result
 
     save_dir = config["output"]["save_dir"]
-    items = []
-    for json_path in sorted(glob.glob(os.path.join(save_dir, "news_*.json"))):
-        stem = os.path.splitext(os.path.basename(json_path))[0]
-        items.append((stem, os.path.join(save_dir, stem + ".txt"), json_path))
+    items = _bili_news_items(save_dir)
     if not items:
         log_warning("[专栏] output 目录没有可投稿的文章（需要 news_*.json）: %s", save_dir)
         return result
 
-    posted = load_posted(_bili_state_file(save_dir))
+    missing = _bili_cookie_missing(bili_cfg)
+    if missing:
+        _log_missing_bili_cookies(missing)
+        return result
+
+    # --post-only 没有「本批新文章」的概念，所以这里做基线时把现有文章全部算作历史：
+    # 首次运行（没有已投稿记录）只记账、一篇都不投，避免把积压的历史整批刷出去。
+    if backfill:
+        posted = load_posted(_bili_state_file(save_dir))
+        log_info("[专栏] --bili-backfill：跳过首次基线，按已投稿记录补投剩余文章")
+    else:
+        posted = _seed_bili_posted(save_dir, _bili_state_file(save_dir), [])
     pending = [item for item in items if item[0] not in posted]
     if not pending:
         log_info("[专栏] 所有 %d 篇文章都投稿过，无需处理", len(items))
@@ -903,12 +997,14 @@ def run_post_only_bili(config: dict) -> dict:
     log_info("[专栏] 待投稿 %d 篇（共 %d 篇，已投稿 %d 篇）",
              len(pending), len(items), len(items) - len(pending))
 
+    queue = _bili_cap_queue(pending, bili_cfg)
+
     poster = BilibiliPoster(bili_cfg, config.get("http") or {})
     if not _check_bili_login(poster):
-        result["failed"] = len(pending)
+        result["failed"] = len(queue)
         return result
 
-    result = _publish_bili_queue(poster, pending, config, posted)
+    result = _publish_bili_queue(poster, queue, config, posted)
     log_info("[专栏] 发布完成: 成功 %d（其中待审核 %d），失败 %d，用时 %s",
              result["success"], result["pending_review"], result["failed"],
              elapsed_since(started))
@@ -982,6 +1078,10 @@ def main():
         "--publish", choices=("all", "mcbbs", "bilibili", "none"), default="all",
         help="发布目标：all=按各平台 enabled 开关发布（默认）；mcbbs/bilibili=只投其中一个；none=只生成不发布",
     )
+    parser.add_argument(
+        "--bili-backfill", action="store_true",
+        help="配合 --post-only：跳过 B站专栏的首次基线，直接补投 output 里的历史文章",
+    )
     parser.add_argument("--config", help="指定配置文件路径")
     args = parser.parse_args()
 
@@ -999,6 +1099,9 @@ def main():
         mode = "scrape-only"
     else:
         mode = "full"
+
+    if args.bili_backfill and not args.post_only:
+        log_warning("[主] --bili-backfill 只对 --post-only 生效，本次忽略")
 
     run_started = time.monotonic()
     log_section("MCTTK 运行开始")
@@ -1035,7 +1138,7 @@ def main():
                 stats["posted"] = result["success"]
                 stats["post_failed"] = result["failed"]
             if args.publish in ("all", "bilibili"):
-                bili_result = run_post_only_bili(config)
+                bili_result = run_post_only_bili(config, backfill=args.bili_backfill)
                 stats["bili_posted"] = bili_result["success"]
                 stats["bili_failed"] = bili_result["failed"]
                 stats["bili_review"] = bili_result["pending_review"]

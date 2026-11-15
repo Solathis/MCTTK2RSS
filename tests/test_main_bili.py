@@ -3,6 +3,7 @@
 全部用假发帖器：不联网、不真投稿；断言编排行为（挑哪些篇、记什么账、什么时候停）。
 """
 import json
+import os
 
 import pytest
 
@@ -64,6 +65,13 @@ def fake_poster(monkeypatch):
     FakeBiliPoster.login_error = None
     monkeypatch.setattr(bili_poster, "BilibiliPoster", FakeBiliPoster)
     monkeypatch.setattr(main.time, "sleep", lambda *_: None)
+
+
+@pytest.fixture(autouse=True)
+def bili_credentials(monkeypatch):
+    """默认给一套能用的 cookie：没凭据时 run_*_bili 会整段跳过，用例就没得测了。"""
+    monkeypatch.setenv("BILI_SESSDATA", "sess-data")
+    monkeypatch.setenv("BILI_JCT", "csrf-token")
 
 
 @pytest.fixture
@@ -223,6 +231,38 @@ class TestRunPostBili:
         assert created == [str(save_dir / "news_a.html")]
         assert FakeBiliPoster.instances[0].html_paths[0].endswith("news_a.html")
 
+    def test_stale_html_is_regenerated(self, save_dir, monkeypatch):
+        """JSON 比产物新（重译 / 改标题）时必须重渲，否则投出去的是旧正文。"""
+        item = _write_article(save_dir, "news_a")
+        created = []
+
+        def fake_convert(json_path, output_prefix=None, modules_config=None):
+            path = output_prefix + ".html"
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("<p>新正文</p>")
+            created.append(path)
+            return path
+
+        monkeypatch.setattr(main, "convert_bili_html_file", fake_convert)
+        html_path = save_dir / "news_a.html"
+        old = html_path.stat().st_mtime - 60
+        os.utime(html_path, (old, old))
+
+        result = main.run_post_bili([item], _make_config(save_dir))
+
+        assert created == [str(save_dir / "news_a.html")]
+        assert result["success"] == 1
+
+    def test_fresh_html_is_reused(self, save_dir, monkeypatch):
+        item = _write_article(save_dir, "news_a")
+        called = []
+        monkeypatch.setattr(main, "convert_bili_html_file", lambda *a, **k: called.append(1))
+
+        result = main.run_post_bili([item], _make_config(save_dir))
+
+        assert called == []
+        assert result["success"] == 1
+
     def test_html_generation_failure_marks_failure(self, save_dir, monkeypatch):
         item = _write_article(save_dir, "news_bad", with_html=False)
 
@@ -361,6 +401,14 @@ class TestPublishFilters:
 
         assert main._filter_bili_queue([item], self.FILTERS) == [item]
 
+    def test_non_object_json_is_skipped(self, save_dir):
+        """能解析但不是对象的是产物，不是文章：跳过这一篇，不能让整批崩。"""
+        bad = save_dir / "news_arr.json"
+        bad.write_text(json.dumps([1, 2, 3]), encoding="utf-8")
+        item = ("news_arr", str(save_dir / "news_arr.txt"), str(bad))
+
+        assert main._filter_bili_queue([item], self.FILTERS) == []
+
 
 class TestRunPostOnlyBili:
     def test_posts_unposted_articles(self, save_dir):
@@ -384,6 +432,112 @@ class TestRunPostOnlyBili:
         result = main.run_post_only_bili(_make_config(save_dir))
         assert result["success"] == 0
         assert FakeBiliPoster.instances == []
+
+
+class TestRunPostOnlyBiliBaseline:
+    """升级到带专栏的版本后：第一次运行只记账不投，别把积压的历史整批刷出去。"""
+
+    def test_first_run_marks_archive_without_posting(self, save_dir):
+        _write_article(save_dir, "news_old_a")
+        _write_article(save_dir, "news_old_b", with_opus=True)  # 产物不算文章
+
+        result = main.run_post_only_bili(_make_config(save_dir))
+
+        assert result["success"] == 0
+        assert FakeBiliPoster.instances == []
+        assert _state(save_dir) == {"news_old_a", "news_old_b"}
+
+    def test_empty_state_file_reseeds(self, save_dir):
+        """清空成 [] 就等于「重新做基线」，这是文档给的补投/清零开关。"""
+        _write_article(save_dir, "news_a")
+        (save_dir / ".posted_bili.json").write_text("[]", encoding="utf-8")
+
+        result = main.run_post_only_bili(_make_config(save_dir))
+
+        assert result["success"] == 0
+        assert _state(save_dir) == {"news_a"}
+
+    def test_next_run_posts_only_new_articles(self, save_dir):
+        _write_article(save_dir, "news_old")
+        main.run_post_only_bili(_make_config(save_dir))
+        _write_article(save_dir, "news_new")
+
+        result = main.run_post_only_bili(_make_config(save_dir))
+
+        assert result["success"] == 1
+        assert FakeBiliPoster.instances[-1].posted_stems == ["news_new"]
+        assert _state(save_dir) == {"news_old", "news_new"}
+
+    def test_respects_max_per_run(self, save_dir):
+        (save_dir / ".posted_bili.json").write_text('["news_done"]', encoding="utf-8")
+        for index in range(3):
+            _write_article(save_dir, f"news_{index}")
+
+        result = main.run_post_only_bili(_make_config(save_dir, max_per_run=1))
+
+        assert result["success"] == 1
+        assert FakeBiliPoster.instances[0].posted_stems == ["news_0"]
+        assert _state(save_dir) == {"news_done", "news_0"}
+
+    def test_opus_artifact_not_queued(self, save_dir):
+        """news_xxx.opus.json 也是 news_*.json，但它是产物，不能当文章排进队列。"""
+        _write_article(save_dir, "news_a", with_opus=True)
+        (save_dir / ".posted_bili.json").write_text('["news_done"]', encoding="utf-8")
+
+        result = main.run_post_only_bili(_make_config(save_dir))
+
+        assert result["success"] == 1
+        assert result["failed"] == 0
+        assert _state(save_dir) == {"news_done", "news_a"}
+
+    def test_backfill_skips_baseline(self, save_dir):
+        """--bili-backfill：明确要补投历史时，不做基线，直接按已投稿记录补。"""
+        _write_article(save_dir, "news_old_a")
+        _write_article(save_dir, "news_old_b")
+
+        result = main.run_post_only_bili(_make_config(save_dir), backfill=True)
+
+        assert result["success"] == 2
+        assert FakeBiliPoster.instances[0].posted_stems == ["news_old_a", "news_old_b"]
+        assert _state(save_dir) == {"news_old_a", "news_old_b"}
+
+
+class TestBiliCredentials:
+    """没配 cookie 时整段跳过专栏：这不是失败，别每次都刷一屏错误。"""
+
+    @pytest.fixture(autouse=True)
+    def no_env_cookies(self, monkeypatch):
+        monkeypatch.delenv("BILI_SESSDATA", raising=False)
+        monkeypatch.delenv("BILI_JCT", raising=False)
+
+    def test_post_only_skips_without_cookies(self, save_dir):
+        _write_article(save_dir, "news_a")
+
+        result = main.run_post_only_bili(_make_config(save_dir))
+
+        assert result == {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
+        assert FakeBiliPoster.instances == []
+        assert _state(save_dir) == set()  # 没凭据就不写基线
+
+    def test_full_run_skips_without_cookies(self, save_dir):
+        item = _write_article(save_dir, "news_a")
+
+        result = main.run_post_bili([item], _make_config(save_dir))
+
+        assert result["failed"] == 0
+        assert FakeBiliPoster.instances == []
+
+    def test_cookie_file_used_when_env_is_empty(self, save_dir, monkeypatch):
+        """Docker Compose 会把未设置的变量传成空串，空串要回落到 cookie 文件。"""
+        monkeypatch.setenv("BILI_SESSDATA", "")
+        monkeypatch.setenv("BILI_JCT", "")
+        cookie_file = save_dir / "bili_cookies.json"
+        cookie_file.write_text(json.dumps({"SESSDATA": "s", "bili_jct": "c"}), encoding="utf-8")
+        item = _write_article(save_dir, "news_a")
+
+        result = main.run_post_bili([item], _make_config(save_dir, cookie_file=str(cookie_file)))
+
+        assert result["success"] == 1
 
 
 # ── 配置摘要 ─────────────────────────────────────────

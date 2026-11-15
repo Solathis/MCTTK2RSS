@@ -200,7 +200,56 @@
 
 ---
 
-## 10. 参考
+## 10. 段模型渲染器（路线 A，2026-11-15 落地）
+
+§9.3 那篇草稿在编辑器里存盘后，正文被转成了 `opus.content.paragraphs`。用只读的
+`draft/view?aid=` 把它读回来，就是渲染器的对照组，字段与取值如下：
+
+| 结构 | 实测取值 | 说明 |
+| --- | --- | --- |
+| `para_type` | `1` 普通 / `2` 图片 / `4` 引用 / `6` 列表 / `9` 标题 | 没观察到的类型不猜 |
+| 段格式 | `format.indent = {}`、`format.heading_type = 1` | 只有一级标题 |
+| 引用 / 列表分组 | `format.combine_hash` = `blockquote_<毫秒戳>_<随机数>` / `list_<毫秒戳>_<随机串>` | 相邻同值段落会被并成一个引用框 / 一个列表 |
+| 列表层级 | `format.list_format = {level, order, theme: "dot"}` | `level` 从 1 起，`order` 是同层内序号 |
+| 文字节点 | `{"node_type": 1, "word": {words, font_size: 17, style, font_level: "regular"}}` | 正文 17 / regular，标题 24 / xxLarge |
+| 链接节点 | `{"node_type": 4, "link": {show_text, link, link_type: 16, style, font_level}}` | 不带 `font_size` |
+| 图片 | `{"para_type": 2, "pic": {"pics": [{url, width, height, size, comment}]}}` | `size` 单位 KB，`comment` 是 alt |
+| 段内换行 | `word.words` 里直接出现 `\n` | 编辑器把 `<br>` 存成换行，模块的多行粗体靠这个保住 |
+
+`bili_opus.py` 的映射：
+
+| blocks / 模块 | 段落 |
+| --- | --- |
+| `p` | 普通段（译文）+ 引用段（原文） |
+| `h1`/`h2` | 标题段（译文）+ 引用段（原文） |
+| `h3`/`h4` | 加粗普通段（译文）+ 引用段（原文） |
+| `blockquote`/`quote` | 两个引用框（译文、原文各一个） |
+| 连续 `li` | 列表段，`meta.indent_level + 1` 作 `level` |
+| `img` | 图片段（外链 URL，重托管交给发帖阶段） |
+| `pre`/`code` | 原样纯文本段（不解析链接） |
+| 头尾模块（BBCode） | 先压成 Markdown，再按段落 / 列表 / 引用 / 加粗解析 |
+
+三处取舍：
+
+1. **列表项的双语放在同一段内换行**，不像正文那样另起引用框。列表项在段模型里只能是一段
+   文字，中间插引用段会把一个列表劈成两截；BBCode 版的 `[*]译文\n原文` 本来就是同项两行。
+2. **`combine_hash` 用自增编号**（`blockquote_1` / `list_2`）而不是编辑器那种时间戳 + 随机数：
+   产物可复现，重跑同一篇不会产生无意义的 diff，测试也能直接断言分组。
+3. **图片段只写 `url` + `comment`**：宽高与体积要下载图片才知道，而转换器不碰网络；缺的字段
+   留给发帖阶段上传后补。
+
+验收方式（离线）：`bili_opus.py` + `converter.convert_to_bili_opus()` 的单元测试，以及
+`tools/preview_bili_html.py --renderer opus` 生成的预览页；与本仓库 HTML 产物的对照口径是
+「同一篇的文字内容与段落边界一致」（`tests/test_bili_opus.py::TestRendererParity`）。
+
+未做：`POST /x/dynamic/feed/article/draft/add`（WBI 签名 + `{"arg": {...}}`）的请求体结构还没有
+实测样本——§9.3 只确认了「正文换成 `opus.content.paragraphs`、标题要放 `opus.title`」，
+`arg` 里其余字段（分区、标签、卡片、AI 声明）的键名与取值都靠猜。先把渲染器落地并与
+`draft/view` 样本对齐，等抓到编辑器真实请求体再接接口，避免重演 §9.1 那种字段语义猜错。
+
+---
+
+## 11. 参考
 
 - 专栏表单字段与富文本转换规则：<https://zihengcat.github.io/2018/04/19/bilibili%e4%b8%93%e6%a0%8fAPI%e5%88%86%e6%9E%90/>
 - 草稿接口实测（含完整 form）：<https://segmentfault.com/a/1190000023095047>

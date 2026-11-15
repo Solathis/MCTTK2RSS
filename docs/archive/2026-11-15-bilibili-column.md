@@ -156,7 +156,51 @@
 
 ---
 
-## 9. 参考
+## 9. 实测发现（2026-11-15 真机投稿后）
+
+真机发了一篇草稿（aid=374174，分区 26，7 张图重托管成功），暴露三件事。
+
+### 9.1 `tid` 是卡片模板 id，不是分区
+
+创作中心编辑器的真实 payload 是 `tid: store.template.id`、`category: store.category`。
+我们此前把分区 id 同时塞进 `tid`，草稿的 `template_id` 会被写成非法值。
+探针验证（用后即删）：
+
+| 请求 | 读回 |
+| --- | --- |
+| `category=26` + `tid=1` | category 26 / template 1 |
+| `category=4` + `tid=1` | category 4 / template 1 |
+
+已修：`bili_poster.DEFAULT_TEMPLATE_ID = 1`，`category` 单独传。
+
+### 9.2 B站 会去掉站外超链接
+
+`module_bili_footer` 的四条来源链接在发布态只剩纯文本，因此该模块暂时 `enabled: false`
+（内容保留，外链可用了再打开）。
+
+### 9.3 AI 创作声明：只能走新版编辑器接口，暂不实现
+
+- 声明字段是 `opus.attachments.is_aigc`（1=已声明），由新版编辑器（eva3）写入；
+  老接口 `x/article/creative/draft/addupdate` 不接受该字段——实测 5 种写法
+  （`is_aigc`/`opus_is_aigc`/`attachments`/`is_ai_generated`/`ai_declare`）全部返回 `47015`。
+- 新版接口：`POST /x/dynamic/feed/article/draft/add`，需要 WBI 签名
+  （`wts` + `w_rid`，mixin-key 由 `nav.wbi_img` 推出），body 为 `{"arg": {...}}`，
+  正文是结构化 `opus.content.paragraphs`（`para_type` 1 普通/2 图/4 引用/6 列表/9 标题，
+  `node_type` 1 文字/4 链接）。
+- 关键约束：新接口**不认 HTML `content`**。实测传入 `content` + 空 `paragraphs` 时，
+  正文被清空（content 长度 11 → 0），标题也要靠 `opus.title` 才留得住。
+  也就是说老接口（HTML 正文）与新接口（段落正文）**互斥**，不能混着用。
+- 编辑器保存会把 HTML 正文一一转成段落（我们那篇 132 个段落 = 54 段 + 58 引用 + 8 标题
+  + 7 图 + 5 列表，与 HTML 标签数完全一致），可作为实现段落渲染器的对照样本。
+- 编辑器保存还会**用界面上的分区覆盖草稿分区**（实测被写成 15），并且会覆盖 `is_aigc`
+  （勾选后曾变回空）。所以「投完草稿再进编辑器点保存」会改动已有字段。
+
+结论：要做自动声明，必须整体切到段落模型（还需先抓到发布/提交环节的新接口）。
+本次不做，留作独立特性；当前投稿后 `is_aigc` 需要人工在编辑器勾选。
+
+---
+
+## 10. 参考
 
 - 专栏表单字段与富文本转换规则：<https://zihengcat.github.io/2018/04/19/bilibili%e4%b8%93%e6%a0%8fAPI%e5%88%86%e6%9E%90/>
 - 草稿接口实测（含完整 form）：<https://segmentfault.com/a/1190000023095047>

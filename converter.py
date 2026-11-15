@@ -688,9 +688,8 @@ class J2MMConverter:
         if title_cn or title_en:
             doc.heading(title_cn or title_en)
         if title_cn and title_en and title_en != title_cn:
-            # HTML 版这里是 <p><em>英文标题</em>；段模型没有斜体，实测编辑器存盘时也会把
-            # <em> 吃掉，所以这里就是普通段
-            doc.text(title_en)
+            # HTML 版这里是 <p><em>英文标题</em>；段模型没有斜体，改用灰色弱化
+            doc.text(title_en, muted=True)
 
         meta_lines = []
         if json_data.get('release_date'):

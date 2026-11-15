@@ -43,6 +43,9 @@ HEADING_FONT_LEVEL = "xxLarge"
 HEADING_TYPE = 1
 LIST_THEME = "dot"
 LINK_TYPE = 16
+# 原文（英文对照）的灰色。编辑器给文字节点留了 color 字段（实测 payload 里是空串），
+# 这里用 B站 的次要文字灰；配色不合适就改这一个常量。
+ORIGINAL_COLOR = "#9499A0"
 
 _IMAGE_MD = re.compile(r'!\[[^\]]*\]\([^)]*\)')
 _BOLD_RUN = re.compile(r'(\*\*.+?\*\*)', re.DOTALL)
@@ -54,8 +57,11 @@ _LIST_INDENT_CHARS = 4
 
 # ── 行内节点 ─────────────────────────────────────────
 
-def _text_node(words: str, *, bold: bool, font_size: int, font_level: str) -> dict:
+def _text_node(words: str, *, bold: bool, font_size: int, font_level: str,
+               color: str = "") -> dict:
     word = {"words": words, "font_size": font_size}
+    if color:
+        word["color"] = color
     if bold:
         word["style"] = {"bold": True}
     word["font_level"] = font_level
@@ -91,40 +97,41 @@ def _stash_links(text: str) -> tuple[str, list[tuple[str, str]]]:
 
 
 def _nodes_from(stashed: str, links: list[tuple[str, str]], *, bold: bool,
-                font_size: int, font_level: str) -> list[dict]:
+                font_size: int, font_level: str, color: str = "") -> list[dict]:
     nodes: list[dict] = []
     for index, piece in enumerate(_LINK_SLOT.split(stashed)):
         if index % 2:  # 占位符 → 链接节点
             show_text, url = links[int(piece)]
             nodes.append(_link_node(show_text, url, bold=bold, font_level=font_level))
         elif piece:
-            nodes.append(_text_node(piece, bold=bold, font_size=font_size, font_level=font_level))
+            nodes.append(_text_node(piece, bold=bold, font_size=font_size,
+                                    font_level=font_level, color=color))
     return nodes
 
 
-def inline_nodes(text: str, *, bold: bool = False) -> list[dict]:
+def inline_nodes(text: str, *, bold: bool = False, muted: bool = False) -> list[dict]:
     """正文 / 元信息文字 → 节点：只认 Markdown 链接，不解析粗体与图片。
 
     与 HTML 渲染器的行内规则保持一致（``**`` 在正文里就是字面量），这样两套产物
-    在同一篇文章上只有「段落 vs 标签」的差别。
+    在同一篇文章上只有「段落 vs 标签」的差别。`muted` 用来把原文对照刷成灰色。
     """
     if not text:
         return []
     stashed, links = _stash_links(text)
     return _nodes_from(
         stashed, links, bold=bold, font_size=BODY_FONT_SIZE,
-        font_level=BODY_FONT_LEVEL,
+        font_level=BODY_FONT_LEVEL, color=ORIGINAL_COLOR if muted else "",
     )
 
 
-def heading_nodes(text: str) -> list[dict]:
+def heading_nodes(text: str, *, muted: bool = False) -> list[dict]:
     """标题 → 节点：字号 / 字重按实测的标题规格填。"""
     if not text:
         return []
     stashed, links = _stash_links(text)
     return _nodes_from(
         stashed, links, bold=False, font_size=HEADING_FONT_SIZE,
-        font_level=HEADING_FONT_LEVEL,
+        font_level=HEADING_FONT_LEVEL, color=ORIGINAL_COLOR if muted else "",
     )
 
 
@@ -215,8 +222,11 @@ class OpusDocument:
     def add(self, paragraph: dict) -> None:
         self.paragraphs.append(paragraph)
 
-    def text(self, text: str, *, bold: bool = False, markdown: bool = False) -> None:
-        nodes = markdown_nodes(text, bold=bold) if markdown else inline_nodes(text, bold=bold)
+    def text(self, text: str, *, bold: bool = False, markdown: bool = False,
+             muted: bool = False) -> None:
+        """普通段落。`muted=True` 用于原文（例如标题下的英文原标题）刷灰。"""
+        nodes = (markdown_nodes(text, bold=bold) if markdown
+                 else inline_nodes(text, bold=bold, muted=muted))
         if nodes:
             self.add(text_paragraph(nodes))
 
@@ -225,8 +235,10 @@ class OpusDocument:
         if nodes:
             self.add(heading_paragraph(nodes))
 
-    def quote(self, text: str, *, group: str | None = None, markdown: bool = False) -> None:
-        nodes = markdown_nodes(text) if markdown else inline_nodes(text)
+    def quote(self, text: str, *, group: str | None = None, markdown: bool = False,
+              muted: bool = False) -> None:
+        """引用段。`muted=True` 用来放原文对照（刷成灰色）。"""
+        nodes = markdown_nodes(text) if markdown else inline_nodes(text, muted=muted)
         if nodes:
             self.add(quote_paragraph(nodes, group or self.new_group("blockquote")))
 
@@ -239,8 +251,15 @@ class OpusDocument:
         for line in lines:
             self.quote(line, group=group, markdown=markdown)
 
-    def list_item(self, text: str, group: str, *, level: int = 1, markdown: bool = False) -> None:
+    def list_item(self, text: str, group: str, *, level: int = 1, markdown: bool = False,
+                  original: str = "") -> None:
+        """列表项。列表项在段模型里只能是一段文字，所以原文另起一行、刷成灰色放同一段里
+        （插引用段会把列表劈成两截）。"""
         nodes = markdown_nodes(text) if markdown else inline_nodes(text)
+        if nodes and original and original != text:
+            nodes = nodes + [_text_node(
+                "\n", bold=False, font_size=BODY_FONT_SIZE, font_level=BODY_FONT_LEVEL,
+            )] + inline_nodes(original, muted=True)
         if not nodes:
             return
         key = (group, level)
@@ -263,17 +282,6 @@ class OpusDocument:
     def image(self, url: str, alt: str = "") -> None:
         if url:
             self.add(image_paragraph(url, alt))
-
-
-def _bilingual_line(translated: str, source: str) -> str:
-    """列表项的双语：译文 + 原文放在同一段内换行。
-
-    列表项在段模型里只能是一段文字，往中间插引用段会把一个列表劈成两截；而 BBCode 版
-    的写法本来就是「[*]译文\\n原文」同一项内两行，读感一致。
-    """
-    if translated and source and translated != source:
-        return f"{translated}\n{source}"
-    return translated or source
 
 
 # ── 正文渲染器 ───────────────────────────────────────
@@ -345,7 +353,7 @@ class BiliOpusRenderer:
         main, source = self._split_dual(block)
         doc.text(main)
         if source:
-            doc.quote(source)
+            doc.quote(source, muted=True)
 
     def _render_heading(self, block, doc: OpusDocument) -> None:
         main, source = self._split_dual(block)
@@ -356,7 +364,7 @@ class BiliOpusRenderer:
         else:
             doc.text(main, bold=True)
         if source:
-            doc.quote(source)
+            doc.quote(source, muted=True)
 
     def _render_quote(self, block, doc: OpusDocument) -> None:
         main, source = self._split_dual(block)
@@ -364,7 +372,7 @@ class BiliOpusRenderer:
             return
         doc.quote(main)
         if source:
-            doc.quote(source)
+            doc.quote(source, muted=True)
 
     def _render_img(self, block, doc: OpusDocument) -> None:
         meta = block.get('meta', {})
@@ -383,7 +391,10 @@ class BiliOpusRenderer:
         for item in items:
             level = int(item.get('meta', {}).get('indent_level', 0) or 0) + 1
             translated, source = self._texts(item)
-            doc.list_item(_bilingual_line(translated, source), group, level=level)
+            doc.list_item(
+                translated or source, group, level=level,
+                original=source if translated else '',
+            )
 
 
 # ── 模块内容（Markdown）→ 段落 ───────────────────────

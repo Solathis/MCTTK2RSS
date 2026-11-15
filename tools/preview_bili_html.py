@@ -128,7 +128,7 @@ def find_default_inputs(output_dir: Path) -> list[Path]:
 
 
 def _nodes_to_html(nodes: list[dict]) -> str:
-    """段落节点 → 行内 HTML（文字 / 链接，粗体包 <strong>）。"""
+    """段落节点 → 行内 HTML（文字 / 链接，粗体包 <strong>，原文带 color 就上色）。"""
     out = []
     for node in nodes or []:
         if node.get("node_type") == 4:
@@ -144,6 +144,10 @@ def _nodes_to_html(nodes: list[dict]) -> str:
         text = html.escape(word.get("words") or "", quote=True).replace("\n", "<br>")
         if (word.get("style") or {}).get("bold"):
             text = f"<strong>{text}</strong>"
+        color = word.get("color") or ""
+        if color:
+            # 原文对照的灰色，和编辑器里的取值一致（B站 端由 color 字段渲染）
+            text = f'<span style="color:{html.escape(color, quote=True)}">{text}</span>'
         out.append(text)
     return "".join(out)
 

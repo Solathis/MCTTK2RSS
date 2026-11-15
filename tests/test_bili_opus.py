@@ -20,6 +20,7 @@ from bili.opus import (
     HEADING_TYPE,
     LINK_TYPE,
     LIST_THEME,
+    ORIGINAL_COLOR,
     PARA_HEADING,
     PARA_IMAGE,
     PARA_LIST,
@@ -270,6 +271,48 @@ class TestBiliOpusRenderer:
         doc.heading("标题")
         self.r.render([_block("p", "Hello", "你好")], doc)
         assert [p["para_type"] for p in doc.paragraphs] == [PARA_HEADING, PARA_TEXT, PARA_QUOTE]
+
+
+class TestMutedOriginal:
+    """原文对照刷灰：译文保持默认色，原文节点带 color。"""
+
+    def test_inline_nodes_muted_has_color(self):
+        nodes = inline_nodes("Added Javanese support", muted=True)
+        assert nodes[0]["word"]["color"] == ORIGINAL_COLOR
+
+    def test_default_nodes_have_no_color(self):
+        assert "color" not in inline_nodes("译文")[0]["word"]
+
+    def test_para_original_quote_is_gray(self):
+        paras = BiliOpusRenderer().render([_block("p", "Added X", "新增 X")])
+        assert "color" not in paras[0]["text"]["nodes"][0]["word"]
+        assert paras[1]["para_type"] == PARA_QUOTE
+        assert all(n["word"]["color"] == ORIGINAL_COLOR for n in paras[1]["text"]["nodes"])
+
+    def test_heading_original_quote_is_gray(self):
+        paras = BiliOpusRenderer().render([_block("h2", "New Features", "新特性")])
+        assert "color" not in paras[0]["text"]["nodes"][0]["word"]
+        assert paras[1]["text"]["nodes"][0]["word"]["color"] == ORIGINAL_COLOR
+
+    def test_list_original_part_is_gray(self):
+        paras = BiliOpusRenderer().render([_block("li", "Added X", "新增 X", {"indent_level": 0})])
+        nodes = paras[0]["text"]["nodes"]
+        assert [n["word"]["words"] for n in nodes] == ["新增 X", "\n", "Added X"]
+        assert "color" not in nodes[0]["word"]
+        assert nodes[2]["word"]["color"] == ORIGINAL_COLOR
+
+    def test_list_without_translation_not_gray(self):
+        """没译文时整条就是原文，不该刷灰（否则列表整段变灰）。"""
+        paras = BiliOpusRenderer().render([_block("li", "Only source", "", {"indent_level": 0})])
+        nodes = paras[0]["text"]["nodes"]
+        assert [n["word"]["words"] for n in nodes] == ["Only source"]
+        assert "color" not in nodes[0]["word"]
+
+    def test_text_content_unchanged(self):
+        """刷灰只加 color，不改文字（两套渲染器的文字契约不能破）。"""
+        plain = BiliOpusRenderer().render([_block("p", "Hello", "你好")])
+        muted = BiliOpusRenderer().render([_block("p", "Hello", "你好")])
+        assert [_words(p) for p in plain] == [_words(p) for p in muted] == ["你好", "Hello"]
 
 
 # ── 模块内容（Markdown）→ 段落 ───────────────────────

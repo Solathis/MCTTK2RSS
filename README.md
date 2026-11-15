@@ -42,7 +42,7 @@ MCTTK/
 │   ├── glossary.json          # 手写术语覆盖层（入库）
 │   ├── glossary.auto.json     # 自动词表层（tools/sync_glossary.py 生成，不入库）
 │   └── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
-├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；preview_bili_html.py 预览专栏排版）
+├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；bili_login.py 扫码取 cookie；preview_bili_html.py 预览专栏排版）
 ├── tests/                     # 单元测试（pytest）
 ├── docs/                      # 文档
 │   ├── DOCKER.md              # Docker 部署说明
@@ -144,6 +144,29 @@ cp config/config.sample.json config/config.json   # Windows PowerShell: Copy-Ite
   }
 }
 ```
+
+如果需要发布到 B站专栏，先用扫码工具拿登录 cookie（不用手动开 F12 复制）：
+
+```bash
+uv sync --extra login            # 首次：装二维码渲染依赖（qrcode）
+uv run python tools/bili_login.py
+```
+
+终端会打印二维码，用 B站 App 扫码确认后，`SESSDATA` / `bili_jct` 会写进
+`config/bili_cookies.json`（已 gitignore，不入库；也可改用环境变量）。重复运行会覆盖旧值，
+cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `config.json` 里打开：
+
+```json
+{
+  "bilibili": {
+    "enabled": true,
+    "submit": "draft"
+  }
+}
+```
+
+`submit: "draft"` 只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成
+`"publish"` 自动提交（会进审核队列）。
 
 也可以通过 `.env` 文件或环境变量传入敏感信息（优先级高于 config.json）：
 

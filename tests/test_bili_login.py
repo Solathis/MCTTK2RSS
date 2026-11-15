@@ -9,6 +9,7 @@ import sys
 
 import pytest
 
+from tools import bili_login
 from tools.bili_login import (
     LoginError,
     mask_secret,
@@ -69,6 +70,19 @@ class FakeSession:
         return self._record("POST", url, kwargs)
 
 
+class NavCookieCheckingSession(FakeSession):
+    """调 nav（校验登录态）时，会话里必须已经带着扫码拿到的 cookie。
+
+    真机上这就是「扫码成功后校验失败」的那个坑：cookie 只在回调 url 里，
+    没装进 jar 就拿未登录的会话去查 nav。
+    """
+
+    def get(self, url, **kwargs):
+        if url == bili_login.NAV_URL:
+            assert self.cookies.get("SESSDATA"), "校验登录态前没有把 SESSDATA 装进会话"
+        return super().get(url, **kwargs)
+
+
 def api_ok(data):
     return FakeResponse({"code": 0, "message": "0", "ttl": 1, "data": data})
 
@@ -100,6 +114,8 @@ class TestRenderQrText:
         assert len(compact) == (len(block) + 1) // 2
         assert len(compact[0]) * 2 == len(block[0])
         assert set("".join(compact)) <= set(" ▀▄█")
+        # 只有空格也能满足上面几条，但那样的二维码扫不出来
+        assert set("".join(compact)) & {"▀", "▄", "█"}
         assert len({len(line) for line in compact}) == 1  # 每行等宽，否则二维码是歪的
 
     @requires_qrcode
@@ -254,6 +270,23 @@ class TestRunLogin:
         saved = json.loads(out_path.read_text(encoding="utf-8"))
         assert saved["SESSDATA"] == "abc%2C1700000000%2Cdef*11"
         assert saved["bili_jct"] == "csrfvalue"
+
+    def test_cookies_installed_before_verify(self, tmp_path, monkeypatch):
+        """轮询只把 cookie 放进回调 url（不是 Set-Cookie）时，校验前必须先装进会话。"""
+        monkeypatch.setattr(bili_login, "render_qr_text", lambda *a, **k: "")
+        session = NavCookieCheckingSession(
+            api_ok({"url": "https://passport.bilibili.com/h5-app/passport/login/scan?qrcode_key=key",
+                    "qrcode_key": "key"}),
+            poll_state(86101),
+            api_ok({"code": 0, "url": CROSS_DOMAIN_URL}),
+            api_ok({"isLogin": True, "mid": 123456, "uname": "tester"}),
+        )
+
+        result = run_login(session, out_path=tmp_path / "c.json", timeout=10, interval=0,
+                           sleep=lambda _s: None, printer=lambda *_a, **_k: None)
+
+        assert result["mid"] == 123456
+        assert (tmp_path / "c.json").is_file()
 
     @requires_qrcode
     def test_missing_required_cookie_raises(self, tmp_path):

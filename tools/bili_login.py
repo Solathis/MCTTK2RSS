@@ -257,6 +257,10 @@ def run_login(session, *, out_path: Path, timeout: float = 180.0, interval: floa
     if missing:
         raise LoginError(f"扫码成功但没拿到 {', '.join(missing)}，请重试")
 
+    # 轮询响应也可能把 cookie 只放在 url 里（不是 Set-Cookie），这种 cookie 不在会话的
+    # cookie jar 里；不装进去就拿未登录的会话去调 nav，校验必然失败，还会把已经拿到的
+    # cookie 一起丢掉。先回填，再校验。
+    session.cookies.update(cookies)
     account = verify_login(session, request_timeout=request_timeout, verify=verify)
     saved = save_cookies(Path(out_path), cookies)
     return {

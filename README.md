@@ -30,9 +30,10 @@ MCTTK/
 ├── scraper.py                 # 爬取与翻译模块（含 Feedback 爬虫）
 ├── converter.py               # JSON → BBCode/Markdown/专栏产物 转换器
 ├── poster.py                  # MCBBS 发帖模块（含验证码识别）
-├── bili_poster.py             # B站专栏投稿模块（cookie 会话 + 图片重托管）
-├── bili_html.py               # 专栏渲染器①：老接口的 HTML 正文（真机验证过的路径）
-├── bili_opus.py               # 专栏渲染器②：新版编辑器的 eva3 段落正文
+├── bili/                     # B站专栏（包）：投稿器 + 两套正文渲染器
+│   ├── poster.py              # 创作中心 web 接口投稿（cookie 会话 + 图片重托管）
+│   ├── html.py                # 渲染器①：老接口的 HTML 正文（真机验证过的路径）
+│   └── opus.py                # 渲染器②：新版编辑器的 eva3 段落正文
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
 ├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
 ├── scheduler.py               # 定时调度器（默认每小时运行一次）
@@ -562,7 +563,7 @@ python converter.py news.json --markdown-only
   - `post_thread(title, message)` — 发帖
   - `post_news_file(stem, txt, json, dir)` — 发布单个新闻文件（含图片和 JSON 附件）
 
-### bili_poster.py
+### bili/poster.py
 
 - `BilibiliPoster` — 专栏投稿器（cookie 会话，走创作中心 web 接口）
   - `check_login()` — 校验 `SESSDATA` / `bili_jct` 是否还能用
@@ -573,14 +574,14 @@ python converter.py news.json --markdown-only
   - `post_news_file(stem, json, html, cover_path)` — 单篇完整投稿
 - `load_cookies(cfg)` — 取登录凭据：环境变量优先于 `config/bili_cookies.json`
 
-### bili_html.py / bili_opus.py
+### bili/html.py / bili/opus.py
 
 专栏有两套互斥的正文形态，各一个渲染器（纯函数，不联网）：
 
 | 模块 | 产出 | 用于 |
 | --- | --- | --- |
-| `bili_html.py` | HTML 字符串（`p/h1/ul/figure/a/strong`） | 老接口 `creative/draft/addupdate`，已真机投稿验证 |
-| `bili_opus.py` | `opus.content.paragraphs` 段数组 | 新版编辑器 `dynamic/feed/article/draft/add`，段落结构按实测样本核对，接口尚未接入 |
+| `bili/html.py` | HTML 字符串（`p/h1/ul/figure/a/strong`） | 老接口 `creative/draft/addupdate`，已真机投稿验证 |
+| `bili/opus.py` | `opus.content.paragraphs` 段数组 | 新版编辑器 `dynamic/feed/article/draft/add`，段落结构按实测样本核对，接口尚未接入 |
 
 两者都由 `converter.J2MMConverter` 组装：`convert_to_bili_html()` / `convert_to_bili_opus()`。
 头尾模块同样先按 `platform` 过滤、再压成 Markdown 交给各自渲染器，所以两边的段落边界一致
@@ -786,7 +787,7 @@ git push origin v1.0.0
   放 `.env` 或 `config/bili_cookies.json`（两者都不入库），日志里不会打印。`submit: "draft"` 只存草稿、
   需人工在编辑器发布，改成 `"publish"` 才会自动提交审核（提交后进入审核队列，通过前链接打不开）。
   正文图片会先重托管到 B站 CDN——残留外链会被整篇拒绝，所以上传失败的图会被直接丢弃
-- **专栏正文模型**：发帖走的是 HTML 正文那套（老接口）。段模型（`bili_opus.py`）已经能渲染，
+- **专栏正文模型**：发帖走的是 HTML 正文那套（老接口）。段模型（`bili/opus.py`）已经能渲染，
   但还没接上新版编辑器的接口，原因与实测记录见
   [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.3、§10；
   在那之前段模型只能用 `tools/preview_bili_html.py --renderer opus` 看效果

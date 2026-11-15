@@ -149,12 +149,12 @@ class TestConfigStructure:
             assert isinstance(bili["max_title_chars"], int) and bili["max_title_chars"] > 0
 
     def test_bilibili_defaults_match_poster_module(self):
-        """配置模板与 DEFAULT_CONFIG 里的 bilibili 键必须与 bili_poster 默认值一致。
+        """配置模板与 DEFAULT_CONFIG 里的 bilibili 键必须与 bili.poster 默认值一致。
 
         三处各写一遍不可避免（模块间不能反向 import），所以用测试钉住；
         否则新增一个配置项只改一处，另一个入口就会静默用错默认值。
         """
-        from bili_poster import DEFAULT_BILI_CONFIG
+        from bili.poster import DEFAULT_BILI_CONFIG
         from scraper import DEFAULT_CONFIG
 
         expected = set(DEFAULT_BILI_CONFIG)

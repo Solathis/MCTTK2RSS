@@ -7,8 +7,8 @@ import json
 
 import pytest
 
-import bili_poster
-from bili_poster import (
+from bili import poster as bili_poster
+from bili.poster import (
     BilibiliPoster,
     BiliError,
     _assert_public_url,

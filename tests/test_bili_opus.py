@@ -12,7 +12,7 @@ import re
 
 import pytest
 
-from bili_opus import (
+from bili.opus import (
     BODY_FONT_LEVEL,
     BODY_FONT_SIZE,
     HEADING_FONT_LEVEL,
@@ -455,7 +455,7 @@ class TestRendererParity:
         return re.sub(r"\s+", "", text).replace("\u00a0", "")
 
     def test_text_content_matches_html_renderer(self):
-        from bili_html import BiliHTMLRenderer
+        from bili.html import BiliHTMLRenderer
 
         html_out = BiliHTMLRenderer().render(self.BLOCKS)
         html_text = re.sub(r"<[^>]+>", "", html_out)

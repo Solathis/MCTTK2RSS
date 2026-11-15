@@ -11,7 +11,7 @@ main.py — MCTTK 新闻自动爬取 + 翻译 + 转换 + 发布 编排器
 
 发布平台按配置是否启用来决定，用 --publish 可以进一步只投其中一个：
   mcbbs     → poster.py（BBCode + 附件 + 验证码登录）
-  bilibili  → bili_poster.py（专栏 HTML + cookie 会话，正文图片重托管到 B站 CDN）
+  bilibili  → bili/poster.py（专栏 HTML + cookie 会话，正文图片重托管到 B站 CDN）
 
 用法：
   python main.py                    # 自动运行全流程
@@ -738,7 +738,7 @@ def run_post_bili(processed: list, config: dict) -> dict:
     Returns:
         {"success","failed","pending_review","urls","drafts"}
     """
-    from bili_poster import BilibiliPoster
+    from bili.poster import BilibiliPoster
 
     result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
     bili_cfg = config.get("bilibili") or {}
@@ -786,7 +786,7 @@ def run_post_bili(processed: list, config: dict) -> dict:
 
 def run_post_only_bili(config: dict) -> dict:
     """只投稿 output 目录里还没投稿过的文章（按 stem 记账）。"""
-    from bili_poster import BilibiliPoster
+    from bili.poster import BilibiliPoster
 
     result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
     bili_cfg = config.get("bilibili") or {}
@@ -863,7 +863,7 @@ def _bili_config_summary(config: dict) -> str:
     bili_cfg = config.get("bilibili") or {}
     if not bili_cfg.get("enabled", False):
         return "禁用"
-    from bili_poster import load_cookies
+    from bili.poster import load_cookies
 
     cookie_state = "已配置" if load_cookies(bili_cfg).get("SESSDATA") else "缺失（先跑 tools/bili_login.py）"
     return (f"启用（分区 {bili_cfg.get('category_id')}，提交方式 {bili_cfg.get('submit')}，"

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""bili_opus.py — B站专栏 eva3 段落渲染器（新版编辑器 draft/add 的正文模型）
+"""bili/opus.py — B站专栏 eva3 段落渲染器（新版编辑器 draft/add 的正文模型）
 
 背景：专栏有两套正文模型，互斥。
   - 老接口 `x/article/creative/draft/addupdate` 收 HTML 字符串（本仓库早先用它，见
-    `bili_html.py`），但不接受 AI 创作声明等新字段；
+    `bili/html.py`），但不接受 AI 创作声明等新字段；
   - 新版编辑器（内部代号 eva3）用 `POST /x/dynamic/feed/article/draft/add`，正文是
     结构化段落数组 `opus.content.paragraphs`，声明、卡片、挂载文件都在这个模型里。
 
@@ -277,7 +277,7 @@ def _bilingual_line(translated: str, source: str) -> str:
 class BiliOpusRenderer:
     """已翻译 blocks → eva3 段落数组。
 
-    映射规则（与 `bili_html.BiliHTMLRenderer` 一一对应，差别只在承载格式）：
+    映射规则（与 `bili.html.BiliHTMLRenderer` 一一对应，差别只在承载格式）：
       正文段 → 普通段 + 原文引用段
       h1/h2  → 一级标题段 + 原文引用段（专栏只有一级标题）
       h3/h4  → 加粗段 + 原文引用段（避免整篇都是大标题）
@@ -387,7 +387,7 @@ class BiliOpusRenderer:
 def markdown_to_paragraphs(md: str, doc: OpusDocument | None = None) -> list[dict]:
     """极简 Markdown → 段落数组，只服务头尾模块（段落 / 列表 / 引用 / 标题 / 行内）。
 
-    分块规则与 `bili_html.markdown_to_html` 保持一致：模块内容由
+    分块规则与 `bili.html.markdown_to_html` 保持一致：模块内容由
     `converter._bbcode_to_markdown` 产出，只会出现这几种形态；两套渲染器看到同样的
     段落边界，才不会出现「HTML 版把两行并成一段、段模型版拆成两段」的差异。
     """

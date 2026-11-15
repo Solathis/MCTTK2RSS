@@ -5,7 +5,7 @@ tools/bili_login.py — 扫码登录 B站，把登录 cookie 写进本地文件
 B站 扫码登录走三个公开接口：
   generate 拿 qrcode_key 与扫码链接 → poll 轮询扫码状态 → nav 校验登录态。
 扫完把 SESSDATA / bili_jct 等写进 config/bili_cookies.json（.gitignore 已忽略），
-bili_poster 会从这里读凭据；也可以用 BILI_SESSDATA / BILI_JCT 环境变量。
+bili/poster.py 会从这里读凭据；也可以用 BILI_SESSDATA / BILI_JCT 环境变量。
 
 这样就不用教用户开 F12 复制 cookie——扫码一次，之后自动续用，直到登录态过期。
 
@@ -29,7 +29,7 @@ from urllib.parse import urlsplit
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
-from bili_poster import (  # noqa: E402
+from bili.poster import (  # noqa: E402
     NAV_URL,
     BiliError,
     build_session,

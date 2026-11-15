@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-bili_poster.py — B站专栏发帖模块（创作中心 web 接口 + 登录 cookie）
+bili/poster.py — B站专栏发帖模块（创作中心 web 接口 + 登录 cookie）
 
 职责：把已生成的专栏 HTML 与文章元数据投稿到 B站——上传正文图片/封面、存草稿、
 按配置决定是否立刻提交审核。只负责单篇投稿，批量节奏（间隔、每次上限）由 main.py 控制。

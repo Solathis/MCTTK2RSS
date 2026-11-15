@@ -8,9 +8,9 @@
 也可作为模块导入:
   from converter import J2MMConverter
 
-专栏（B站）有两种正文形态，各自一个渲染器：HTML 字符串（老 form 接口，bili_html.py）
-与 eva3 段落数组（新版编辑器接口，bili_opus.py）。本模块只负责把模块 / 标题 / 元信息 /
-正文拼成整篇，按调用方要的形态各拼一遍。
+专栏（B站）有两种正文形态，各自一个渲染器（都在 bili/ 包里）：HTML 字符串（老 form
+接口，bili/html.py）与 eva3 段落数组（新版编辑器接口，bili/opus.py）。本模块只负责把
+模块 / 标题 / 元信息 / 正文拼成整篇，按调用方要的形态各拼一遍。
 """
 import argparse
 import json
@@ -18,8 +18,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from bili_html import BiliHTMLRenderer, escape_html, markdown_to_html
-from bili_opus import BiliOpusRenderer, OpusDocument, markdown_to_paragraphs
+from bili.html import BiliHTMLRenderer, escape_html, markdown_to_html
+from bili.opus import BiliOpusRenderer, OpusDocument, markdown_to_paragraphs
 from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
 from utils import CONFIG_DIR, MODULE_TYPE_MAP, rewrite_md_links
 

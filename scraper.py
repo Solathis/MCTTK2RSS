@@ -149,7 +149,7 @@ DEFAULT_CONFIG = {
         "verify_max_rounds": 1,
         "verify_max_items": 20,
     },
-    # B站专栏投稿（bili_poster.py 读取）。键集合必须与 bili_poster.DEFAULT_BILI_CONFIG
+    # B站专栏投稿（bili/poster.py 读取）。键集合必须与 bili.poster.DEFAULT_BILI_CONFIG
     # 一致，tests/test_config_json.py 会比对，避免两处默认值漂移。
     "bilibili": {
         "enabled": False,

@@ -6,8 +6,8 @@ import json
 
 import pytest
 
-import bili_poster
 import main
+from bili import poster as bili_poster
 
 DRAFT = {
     "ok": True, "state_desc": "已保存草稿", "pending_review": False,

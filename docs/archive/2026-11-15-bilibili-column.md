@@ -171,7 +171,7 @@
 | `category=26` + `tid=1` | category 26 / template 1 |
 | `category=4` + `tid=1` | category 4 / template 1 |
 
-已修：`bili_poster.DEFAULT_TEMPLATE_ID = 1`，`category` 单独传。
+已修：`bili.poster.DEFAULT_TEMPLATE_ID = 1`，`category` 单独传。
 
 ### 9.2 B站 会去掉站外超链接
 
@@ -216,7 +216,7 @@
 | 图片 | `{"para_type": 2, "pic": {"pics": [{url, width, height, size, comment}]}}` | `size` 单位 KB，`comment` 是 alt |
 | 段内换行 | `word.words` 里直接出现 `\n` | 编辑器把 `<br>` 存成换行，模块的多行粗体靠这个保住 |
 
-`bili_opus.py` 的映射：
+`bili/opus.py` 的映射：
 
 | blocks / 模块 | 段落 |
 | --- | --- |
@@ -238,7 +238,7 @@
 3. **图片段只写 `url` + `comment`**：宽高与体积要下载图片才知道，而转换器不碰网络；缺的字段
    留给发帖阶段上传后补。
 
-验收方式（离线）：`bili_opus.py` + `converter.convert_to_bili_opus()` 的单元测试，以及
+验收方式（离线）：`bili/opus.py` + `converter.convert_to_bili_opus()` 的单元测试，以及
 `tools/preview_bili_html.py --renderer opus` 生成的预览页；与本仓库 HTML 产物的对照口径是
 「同一篇的文字内容与段落边界一致」（`tests/test_bili_opus.py::TestRendererParity`）。
 

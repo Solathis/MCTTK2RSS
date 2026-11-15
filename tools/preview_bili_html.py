@@ -34,7 +34,7 @@ from string import Template
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
-from bili_opus import PARA_HEADING, PARA_IMAGE, PARA_LIST, PARA_QUOTE  # noqa: E402
+from bili.opus import PARA_HEADING, PARA_IMAGE, PARA_LIST, PARA_QUOTE  # noqa: E402
 from converter import J2MMConverter  # noqa: E402
 from log_setup import log_error, log_info, log_warning, setup_logging  # noqa: E402
 from utils import CONFIG_DIR  # noqa: E402

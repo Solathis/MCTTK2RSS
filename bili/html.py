@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""bili_html.py — B站专栏 HTML 渲染器（老版 form 接口的 content 字段）
+"""bili/html.py — B站专栏 HTML 渲染器（老版 form 接口的 content 字段）
 
 老接口 `x/article/creative/draft/addupdate` 收的是整篇 HTML 字符串，编辑器存盘时再把
 它一一转成自己的段落模型（实测 132 个段落与 HTML 标签数完全对应）。这条链路 2026-11
-真机投过稿、可用，因此原样保留：段模型（`bili_opus.py`）那套出问题时，把发帖用的渲染器
+真机投过稿、可用，因此原样保留：段模型（`bili/opus.py`）那套出问题时，把发帖用的渲染器
 切回 HTML 即可，不必重写。
 
 专栏编辑器只认白名单标签（p/h1/ul/figure/a/strong/em）：既没有 [size]/[color]/[align]

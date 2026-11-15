@@ -2,7 +2,7 @@
 
 测试原则：只测纯逻辑，不联网、不依赖仓库外的文件；断言行为，不写死整段 HTML。
 专栏的排版细节（字号/颜色/表格）没有等价物，所以这里测的是「结构标签 + 双语降级 +
-转义」这些会被后续发帖链路依赖的契约。渲染器本体在 bili_html.py，converter 只负责
+转义」这些会被后续发帖链路依赖的契约。渲染器本体在 bili/html.py，converter 只负责
 把模块 / 标题 / 元信息拼成整篇。
 
 """
@@ -11,7 +11,7 @@ import unittest.mock
 
 import pytest
 
-from bili_html import BiliHTMLRenderer, inline_html
+from bili.html import BiliHTMLRenderer, inline_html
 from converter import J2MMConverter, _bbcode_to_html, convert_bili_html_file
 
 

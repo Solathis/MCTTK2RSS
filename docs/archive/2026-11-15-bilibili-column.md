@@ -233,10 +233,10 @@
 | --- | --- |
 | 请求 | `POST https://api.bilibili.com/x/dynamic/feed/article/draft/add` |
 | 查询串 | `csrf` + `gaia_source=main_web` + `wts` + `w_rid`（WBI）。实测**不需要** `b_wet` 与 `dm_*` 指纹参数 |
-| 响应 | `{"code":0,"data":{"article_id":374197}}`——键名是 `article_id`，不是 `aid` |
-| 读回 | `title` / `opus.title` / `category=26` / `template_id=1` / `type=4` / `is_aigc=1` / `paragraphs=174` |
+| 响应 | `{"code":0,"data":{"article_id":374201}}`——键名是 `article_id`，不是 `aid` |
+| 读回 | `title` / `opus.title` / `category=26` / `template_id=1` / `type=4` / `is_aigc=1` / `paragraphs=174` / `summary` 100 字 / `image_urls` 一张封面 |
 
-可工作的 `arg`：
+可工作的 `arg`（最终这一条草稿是 aid=374201，把上面所有字段一次带上）：
 
 ```json
 {"arg": {
@@ -244,6 +244,9 @@
   "category_id": 26,
   "template_id": 1,
   "type": 4,
+  "summary": "好吧，看来我们的末影龙把飞行的事忘得一干二净了！……",
+  "image_urls": ["http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"],
+  "origin_image_urls": ["http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"],
   "opus": {
     "title": "Minecraft 26.4 快照 8 [AI翻译]",
     "content": {"paragraphs": ["…174 段…"]},
@@ -251,6 +254,8 @@
   }
 }}
 ```
+
+封面用的就是 `upcover` 上传后的 `article.biliimg.com` 地址，不需要另走素材接口。
 
 实测踩到的坑（都是「不报错但没生效」，比报错更难查）：
 
@@ -261,11 +266,15 @@
 | `arg.aid` = 0 或 = 已有草稿 id | ❌ 一律**新建**一条草稿，不会更新那条已有的 |
 | `content` 不传 | ✅ 服务端按段落自己拼纯文本（174 段 → 15109 字） |
 | `opus.attachments.is_aigc = 1` | ✅ 读回 `is_aigc=1`，声明生效（这才是 §9.3 想要的那一步） |
-| 把 `tags` / `summary` / `is_new_editor` 一起塞进 arg | ❌ `code=-400 请求错误`（未逐项二分是哪一个） |
+| 顶层 `summary` 字符串 | ✅ 读回原样（100 字上限按配置截）；`opus.summary` 则被静默忽略 |
+| `image_urls` / `origin_image_urls` 用**字符串** | ❌ `code=-400 请求错误` |
+| 同上但用**列表** `["url"]` | ✅ 读回 `image_urls=["url"]`，编辑器里有封面 |
+| `cover_url` / `cover` | ❌ 静默忽略（`code=0`，读回为空） |
+| 把 `tags` / `is_new_editor` 塞进 arg | ❌ `code=-400 请求错误`（未逐项二分是哪一个） |
 | 我们生成的 `combine_hash`（`list_1` 这种） | ✅ 读回一字未改，分组没被服务端重写 |
 
 仍然没做的：`x/dynamic/feed/create/opus`（发布）的请求体还没抓到，所以段模型目前
-只能存草稿；`tags` 与封面的正确写法也没确认（草稿阶段不写也能存）。
+只能存草稿；`tags` 的正确写法（发布时必然要）也还没确认。
 
 ---
 

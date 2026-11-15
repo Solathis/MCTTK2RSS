@@ -6,18 +6,23 @@ main.py — MCTTK 新闻自动爬取 + 翻译 + 转换 + 发布 编排器
   1. 从 Minecraft 官方 API 获取最新新闻
   2. 按 news_types 配置过滤类型（Java 正式版/快照/预发布/RC、基岩版正式版/测试版）
   3. 检查已发布状态，跳过已处理的新闻
-  4. 逐篇处理：解析 → 翻译 → 保存 JSON → 转换 BBCode/Markdown → 发布到 MCBBS
-  5. 记录运行汇总（来源条数 / 新增 / 翻译篇数 / 发帖成功失败 / 发帖地址 / 耗时）
+  4. 逐篇处理：解析 → 翻译 → 保存 JSON → 转换 BBCode/Markdown（+ 专栏 HTML）→ 发布
+  5. 记录运行汇总（来源条数 / 新增 / 翻译篇数 / 各平台发帖成功失败 / 发帖地址 / 耗时）
+
+发布平台按配置是否启用来决定，用 --publish 可以进一步只投其中一个：
+  mcbbs     → poster.py（BBCode + 附件 + 验证码登录）
+  bilibili  → bili_poster.py（专栏 HTML + cookie 会话，正文图片重托管到 B站 CDN）
 
 用法：
   python main.py                    # 自动运行全流程
   python main.py --dry-run          # 仅检测，不翻译也不发布
   python main.py --scrape-only      # 只爬取+翻译+转换，不发布
   python main.py --post-only        # 只发布 output 目录中未发布的文件
+  python main.py --publish bilibili # 只投专栏（不碰 MCBBS）
 
 配置：
   统一使用 config/config.json
-  环境变量覆盖：OPENAI_API_KEY, MCBBS_USERNAME, MCBBS_PASSWORD 等
+  环境变量覆盖：OPENAI_API_KEY, MCBBS_USERNAME, MCBBS_PASSWORD, BILI_SESSDATA, BILI_JCT 等
   日志：logs/mcttk_YYYY-MM-DD.log，级别用 MCTTK_LOG_LEVEL 调整
 """
 
@@ -30,7 +35,7 @@ import sys
 import time
 from collections import Counter
 
-from converter import convert_json_file
+from converter import convert_bili_html_file, convert_json_file
 from log_setup import (
     current_log_path,
     elapsed_since,
@@ -53,7 +58,7 @@ from scraper import (
     process_feedback_news,
     save_article_json,
 )
-from utils import CONFIG_DIR, load_dotenv
+from utils import CONFIG_DIR, find_image, load_dotenv, load_posted, save_posted
 
 # 项目根目录（源码所在目录；配置统一放 config/，路径由 utils.CONFIG_DIR 给出）
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -358,6 +363,16 @@ def _process_single_article(news: dict, config: dict, save_dir: str, modules_cfg
     log_info("[主] 已生成 BBCode: %s（%s）", bbcode_path, human_size(_safe_size(bbcode_path)))
     if md_path:
         log_info("[主] 已生成 Markdown: %s（%s）", md_path, human_size(_safe_size(md_path)))
+
+    # 专栏 HTML 只在启用专栏发布时生成：没启用就没必要在 output 里多留一份产物
+    if (config.get("bilibili") or {}).get("enabled", False):
+        try:
+            html_path = convert_bili_html_file(
+                json_path, output_prefix=base_path, modules_config=modules_cfg
+            )
+            log_info("[主] 已生成专栏 HTML: %s（%s）", html_path, human_size(_safe_size(html_path)))
+        except Exception:  # noqa: BLE001 - 少了 HTML 只是不能投专栏，不该中断整篇处理
+            log_error("[主] 生成专栏 HTML 失败，本次不投专栏: %s", json_path, exc_info=True)
     log_debug("[主] 转换用时 %s", elapsed_since(convert_started))
 
     stem = os.path.basename(base_path)
@@ -371,6 +386,17 @@ def _safe_size(path: str) -> int | None:
         return os.path.getsize(path)
     except OSError:
         return None
+
+
+def _load_modules_config() -> dict | None:
+    """读取 config/modules_config.json；缺失时返回 None，转换器会退回内置默认模块。"""
+    modules_cfg_path = os.path.join(CONFIG_DIR, "modules_config.json")
+    if os.path.isfile(modules_cfg_path):
+        with open(modules_cfg_path, encoding="utf-8") as f:
+            log_debug("[主] 已加载模块配置: %s", modules_cfg_path)
+            return json.load(f)
+    log_debug("[主] 未找到模块配置，将使用内置默认模块: %s", modules_cfg_path)
+    return None
 
 
 def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict = None) -> list:
@@ -416,14 +442,7 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict
             log_info("[Dry Run]     %s", news.get('url', ''))
         return []
 
-    modules_cfg_path = os.path.join(CONFIG_DIR, "modules_config.json")
-    modules_cfg = None
-    if os.path.exists(modules_cfg_path):
-        with open(modules_cfg_path, encoding="utf-8") as f:
-            modules_cfg = json.load(f)
-        log_debug("[主] 已加载模块配置: %s", modules_cfg_path)
-    else:
-        log_debug("[主] 未找到模块配置，将使用内置默认模块: %s", modules_cfg_path)
+    modules_cfg = _load_modules_config()
 
     # 处理失败的 URL 累计失败次数，超过上限才放弃，避免"失败即永久跳过"
     failed_attempts = dict(state.get("failed_attempts", {}))
@@ -605,6 +624,212 @@ def run_post_only(config: dict) -> dict:
     return result
 
 
+# ── B站专栏发布 ──────────────────────────────────────
+
+def _bili_state_file(save_dir: str) -> str:
+    """专栏的已投稿记录。与 MCBBS 的 .posted.json 分开，语义互不干扰。"""
+    return os.path.join(save_dir, ".posted_bili.json")
+
+
+def _seed_bili_posted(save_dir: str, state_file: str, processed: list) -> set:
+    """首次启用专栏时，把 output 里已有的文章标记为已投稿。
+
+    否则开关一开，第一次跑 --post-only 会把历史文章全部投出去。做种时排除
+    本次新处理的篇目，否则自己刚生成的内容会被自己跳过。
+    """
+    posted = load_posted(state_file)
+    if os.path.isfile(state_file):
+        return posted
+    current = {stem for stem, *_ in processed}
+    existing = {
+        os.path.splitext(os.path.basename(path))[0]
+        for path in glob.glob(os.path.join(save_dir, "news_*.json"))
+    } - current
+    if existing:
+        posted |= existing
+        save_posted(state_file, posted)
+        log_info("[专栏] 首次启用：把 output 里已有的 %d 篇文章标记为已投稿（不会补发历史）",
+                 len(existing))
+    return posted
+
+
+def _ensure_bili_html(json_path: str, html_path: str, modules_cfg) -> str | None:
+    """专栏 HTML 缺失时按 JSON 现场生成。
+
+    历史产物（专栏功能上线前抓的文章）没有 .html，而 --scrape-only 只处理「新新闻」，
+    让用户为了补一份产物去重跑抓取是死路，所以这里按需补生成。
+    """
+    if os.path.isfile(html_path):
+        return html_path
+    log_info("[专栏] 缺少专栏 HTML，按 JSON 现场生成: %s", os.path.basename(html_path))
+    try:
+        return convert_bili_html_file(
+            json_path, output_prefix=html_path.rsplit(".", 1)[0], modules_config=modules_cfg
+        )
+    except Exception:  # noqa: BLE001 - 单篇转换失败按单篇失败处理，不中断整批
+        log_error("[专栏] 生成专栏 HTML 失败: %s", json_path, exc_info=True)
+        return None
+
+
+def _publish_bili_queue(poster, queue: list, config: dict, posted: set) -> dict:
+    """逐篇投稿（两个入口共用的循环）：调用方负责账号校验与队列筛选。"""
+    result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
+    save_dir = config["output"]["save_dir"]
+    state_file = _bili_state_file(save_dir)
+    interval = float((config.get("bilibili") or {}).get("interval_seconds") or 0)
+    modules_cfg = _load_modules_config()
+
+    for index, (stem, _txt_path, json_path) in enumerate(queue, 1):
+        item_started = time.monotonic()
+        log_info("[专栏] %d/%d 开始投稿: %s", index, len(queue), stem)
+
+        html_path = _ensure_bili_html(json_path, os.path.join(save_dir, stem + ".html"), modules_cfg)
+        if not html_path:
+            result["failed"] += 1
+            continue
+
+        try:
+            outcome = poster.post_news_file(
+                stem, json_path, html_path, cover_path=find_image(save_dir, stem)
+            )
+        except Exception as e:  # noqa: BLE001 - 单篇异常不该打断整批投稿
+            result["failed"] += 1
+            log_error("[专栏] ✗ 投稿异常: %s | %s（用时 %s）",
+                      stem, e, elapsed_since(item_started), exc_info=True)
+            continue
+
+        if not outcome.get("ok"):
+            result["failed"] += 1
+            log_error("[专栏] ✗ 投稿失败: %s | %s", stem, outcome.get("error") or "未知错误")
+            continue
+
+        result["success"] += 1
+        if outcome.get("pending_review"):
+            result["pending_review"] += 1
+        if outcome.get("url"):
+            result["urls"].append(outcome["url"])
+        elif outcome.get("edit_url"):
+            result["drafts"].append(outcome["edit_url"])
+        posted.add(stem)
+        save_posted(state_file, posted)
+        log_info("[专栏] ✓ 完成: %s（%s，用时 %s）", stem,
+                 outcome.get("state_desc") or "已保存草稿", elapsed_since(item_started))
+
+        if index < len(queue) and interval > 0:
+            log_debug("[专栏] 间隔 %.0f 秒后投下一篇", interval)
+            time.sleep(interval)
+
+    return result
+
+
+def _check_bili_login(poster) -> bool:
+    """校验专栏登录态。凭据失效/风控/网络问题都在这里收口，由调用方记账。"""
+    try:
+        poster.check_login()
+        return True
+    except Exception as e:  # noqa: BLE001 - 没有 cookie、风控、网络三种都算「这批投不了」
+        log_error("[专栏] 登录校验失败，本次不投稿: %s", e, exc_info=True)
+        return False
+
+
+def run_post_bili(processed: list, config: dict) -> dict:
+    """把本次处理好的文章投稿到 B站专栏。
+
+    Returns:
+        {"success","failed","pending_review","urls","drafts"}
+    """
+    from bili_poster import BilibiliPoster
+
+    result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
+    bili_cfg = config.get("bilibili") or {}
+
+    if not bili_cfg.get("enabled", False):
+        log_warning("[专栏] 未启用（config.json 里 bilibili.enabled = false），跳过")
+        return result
+    if not processed:
+        log_info("[专栏] 没有需要投稿的文章")
+        return result
+
+    started = time.monotonic()
+    save_dir = config["output"]["save_dir"]
+    posted = _seed_bili_posted(save_dir, _bili_state_file(save_dir), processed)
+    pending = [item for item in processed if item[0] not in posted]
+    if not pending:
+        log_info("[专栏] %d 篇都已投稿过，无需处理", len(processed))
+        return result
+
+    max_per_run = int(bili_cfg.get("max_per_run") or 0)
+    queue = pending[:max_per_run] if max_per_run > 0 else pending
+    if len(queue) < len(pending):
+        log_info("[专栏] 本次限投 %d 篇，其余 %d 篇留到下次（bilibili.max_per_run）",
+                 len(queue), len(pending) - len(queue))
+
+    log_info("[专栏] 分区 %s | 提交方式 %s | 待投 %d 篇（间隔 %s 秒）",
+             bili_cfg.get("category_id"), bili_cfg.get("submit"),
+             len(queue), bili_cfg.get("interval_seconds"))
+
+    poster = BilibiliPoster(bili_cfg, config.get("http") or {})
+    if not _check_bili_login(poster):
+        result["failed"] = len(queue)
+        return result
+
+    result = _publish_bili_queue(poster, queue, config, posted)
+    log_info("[专栏] 发布完成: 成功 %d（其中待审核 %d），失败 %d，用时 %s",
+             result["success"], result["pending_review"], result["failed"],
+             elapsed_since(started))
+    for url in result["urls"]:
+        log_info("[专栏] 文章地址: %s", url)
+    for edit_url in result["drafts"]:
+        log_info("[专栏] 草稿待发布: %s", edit_url)
+    return result
+
+
+def run_post_only_bili(config: dict) -> dict:
+    """只投稿 output 目录里还没投稿过的文章（按 stem 记账）。"""
+    from bili_poster import BilibiliPoster
+
+    result = {"success": 0, "failed": 0, "pending_review": 0, "urls": [], "drafts": []}
+    bili_cfg = config.get("bilibili") or {}
+
+    if not bili_cfg.get("enabled", False):
+        log_warning("[专栏] 未启用（config.json 里 bilibili.enabled = false）")
+        return result
+
+    save_dir = config["output"]["save_dir"]
+    items = []
+    for json_path in sorted(glob.glob(os.path.join(save_dir, "news_*.json"))):
+        stem = os.path.splitext(os.path.basename(json_path))[0]
+        items.append((stem, os.path.join(save_dir, stem + ".txt"), json_path))
+    if not items:
+        log_warning("[专栏] output 目录没有可投稿的文章（需要 news_*.json）: %s", save_dir)
+        return result
+
+    posted = load_posted(_bili_state_file(save_dir))
+    pending = [item for item in items if item[0] not in posted]
+    if not pending:
+        log_info("[专栏] 所有 %d 篇文章都投稿过，无需处理", len(items))
+        return result
+
+    started = time.monotonic()
+    log_info("[专栏] 待投稿 %d 篇（共 %d 篇，已投稿 %d 篇）",
+             len(pending), len(items), len(items) - len(pending))
+
+    poster = BilibiliPoster(bili_cfg, config.get("http") or {})
+    if not _check_bili_login(poster):
+        result["failed"] = len(pending)
+        return result
+
+    result = _publish_bili_queue(poster, pending, config, posted)
+    log_info("[专栏] 发布完成: 成功 %d（其中待审核 %d），失败 %d，用时 %s",
+             result["success"], result["pending_review"], result["failed"],
+             elapsed_since(started))
+    for url in result["urls"]:
+        log_info("[专栏] 文章地址: %s", url)
+    for edit_url in result["drafts"]:
+        log_info("[专栏] 草稿待发布: %s", edit_url)
+    return result
+
+
 def _log_config_summary(config: dict, mode: str, save_dir: str, state_file: str):
     """把本次运行的关键配置写进日志（不打印任何密钥）。"""
     openai_cfg = config.get("openai_compat", {}) or {}
@@ -629,7 +854,20 @@ def _log_config_summary(config: dict, mode: str, save_dir: str, state_file: str)
              if feedback_cfg.get("enabled") else "禁用")
     log_info("[配置] MCBBS 发布: %s",
              "启用" if (config.get("mcbbs", {}) or {}).get("enabled", False) else "禁用")
+    log_info("[配置] B站专栏: %s", _bili_config_summary(config))
     log_info("[配置] 日志文件: %s", current_log_path() or "-")
+
+
+def _bili_config_summary(config: dict) -> str:
+    """专栏配置的一句话摘要（只说 cookie 有没有，绝不打印值）。"""
+    bili_cfg = config.get("bilibili") or {}
+    if not bili_cfg.get("enabled", False):
+        return "禁用"
+    from bili_poster import load_cookies
+
+    cookie_state = "已配置" if load_cookies(bili_cfg).get("SESSDATA") else "缺失（先跑 tools/bili_login.py）"
+    return (f"启用（分区 {bili_cfg.get('category_id')}，提交方式 {bili_cfg.get('submit')}，"
+            f"单次上限 {bili_cfg.get('max_per_run')}，cookie {cookie_state}）")
 
 
 # ── 入口 ─────────────────────────────────────────────
@@ -647,10 +885,14 @@ def main():
         )
     )
     parser.add_argument("--dry-run", action="store_true", help="仅检测新新闻，不实际处理")
-    parser.add_argument("--scrape-only", action="store_true", help="只爬取+翻译+转换，不发布到 MCBBS")
+    parser.add_argument("--scrape-only", action="store_true", help="只爬取+翻译+转换，不发布")
     parser.add_argument("--post-only", action="store_true", help="只发布 output 目录中未发布的文件")
-    parser.add_argument("--no-image", action="store_true", help="发布时跳过图片上传")
-    parser.add_argument("--no-json", action="store_true", help="发布时跳过 JSON 附件上传")
+    parser.add_argument("--no-image", action="store_true", help="发布时跳过图片上传（MCBBS）")
+    parser.add_argument("--no-json", action="store_true", help="发布时跳过 JSON 附件上传（MCBBS）")
+    parser.add_argument(
+        "--publish", choices=("all", "mcbbs", "bilibili", "none"), default="all",
+        help="发布目标：all=按各平台 enabled 开关发布（默认）；mcbbs/bilibili=只投其中一个；none=只生成不发布",
+    )
     parser.add_argument("--config", help="指定配置文件路径")
     args = parser.parse_args()
 
@@ -693,14 +935,23 @@ def main():
             log_error("[配置] 请先在 config.json 中配置 openai_compat 部分，至少需要 host / api_key / model")
             sys.exit(1)
 
-    stats = {"found": 0, "new": 0, "processed": 0, "posted": 0, "post_failed": 0}
+    stats = {"found": 0, "new": 0, "processed": 0, "posted": 0, "post_failed": 0,
+             "bili_posted": 0, "bili_failed": 0, "bili_review": 0}
     exit_code = 0
 
     try:
         if args.post_only:
-            result = run_post_only(config)
-            stats["posted"] = result["success"]
-            stats["post_failed"] = result["failed"]
+            if args.publish in ("all", "mcbbs"):
+                result = run_post_only(config)
+                stats["posted"] = result["success"]
+                stats["post_failed"] = result["failed"]
+            if args.publish in ("all", "bilibili"):
+                bili_result = run_post_only_bili(config)
+                stats["bili_posted"] = bili_result["success"]
+                stats["bili_failed"] = bili_result["failed"]
+                stats["bili_review"] = bili_result["pending_review"]
+            if args.publish == "none":
+                log_info("[主] --publish none：不做任何发布")
         elif args.dry_run:
             log_info("[模式] Dry Run — 仅检测新新闻，不翻译、不保存、不发布")
             run_scrape(config, state_file, dry_run=True, stats=stats)
@@ -708,19 +959,14 @@ def main():
             # 全流程 或 scrape-only
             processed = run_scrape(config, state_file, stats=stats)
             stats["processed"] = len(processed)
+            publish_target = "none" if args.scrape_only else args.publish
 
-            mcbbs_enabled = config.get("mcbbs", {}).get("enabled", False)
-            if processed and not args.scrape_only and mcbbs_enabled:
-                log_section("开始发布到 MCBBS")
-                result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json)
-                stats["posted"] = result["success"]
-                stats["post_failed"] = result["failed"]
-            elif processed and args.scrape_only:
-                log_info("[主] Scrape-only 模式，跳过发布（%d 篇待发布）", len(processed))
-            elif processed and not mcbbs_enabled:
-                log_warning("[主] 已生成 %d 篇内容，但 mcbbs.enabled = false，跳过发布", len(processed))
-            elif not processed:
+            if not processed:
                 log_info("[主] 没有新内容需要处理")
+            elif publish_target == "none":
+                log_info("[主] 跳过发布（%d 篇已生成产物）", len(processed))
+            else:
+                _publish_all(processed, config, args, publish_target, stats)
 
     except SystemExit:
         raise
@@ -729,14 +975,44 @@ def main():
         exit_code = 1
     finally:
         log_info(
-            "[汇总] 模式=%s | 来源 %d 条 | 新增 %d 条 | 翻译完成 %d 篇 | 发帖成功 %d | 发帖失败 %d | 总用时 %s",
+            "[汇总] 模式=%s | 来源 %d 条 | 新增 %d 条 | 翻译完成 %d 篇 | "
+            "MCBBS 成功 %d/失败 %d | 专栏 成功 %d（待审核 %d）/失败 %d | 总用时 %s",
             mode, stats["found"], stats["new"], stats["processed"],
-            stats["posted"], stats["post_failed"], elapsed_since(run_started),
+            stats["posted"], stats["post_failed"],
+            stats["bili_posted"], stats["bili_review"], stats["bili_failed"],
+            elapsed_since(run_started),
         )
         log_section("MCTTK 运行结束")
 
     if exit_code:
         sys.exit(exit_code)
+
+
+def _publish_all(processed: list, config: dict, args, publish_target: str, stats: dict) -> None:
+    """按 --publish 与各平台 enabled 开关依次发布，结果写回 stats。"""
+    mcbbs_enabled = (config.get("mcbbs") or {}).get("enabled", False)
+    bili_enabled = (config.get("bilibili") or {}).get("enabled", False)
+
+    if publish_target in ("all", "mcbbs"):
+        if mcbbs_enabled:
+            log_section("开始发布到 MCBBS")
+            result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json)
+            stats["posted"] = result["success"]
+            stats["post_failed"] = result["failed"]
+        else:
+            log_warning("[主] 目标是 MCBBS，但 mcbbs.enabled = false，跳过"
+                        "（在 config.json 里把 mcbbs.enabled 设为 true）")
+
+    if publish_target in ("all", "bilibili"):
+        if bili_enabled:
+            log_section("开始发布到 B站专栏")
+            bili_result = run_post_bili(processed, config)
+            stats["bili_posted"] = bili_result["success"]
+            stats["bili_failed"] = bili_result["failed"]
+            stats["bili_review"] = bili_result["pending_review"]
+        else:
+            log_warning("[主] 目标是专栏，但 bilibili.enabled = false，跳过"
+                        "（在 config.json 里把 bilibili.enabled 设为 true）")
 
 
 if __name__ == "__main__":

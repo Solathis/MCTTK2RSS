@@ -7,6 +7,8 @@ output/*.png
 output/*.gif
 output/*.webp
 output/*.json
+# 专栏 HTML 产物与 tools/preview_bili_html.py 生成的预览页
+output/*.html
 
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪

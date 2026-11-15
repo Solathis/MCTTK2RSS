@@ -24,9 +24,14 @@ import re
 from urllib.parse import urlsplit
 
 import requests
+import urllib3
 
 from log_setup import log_debug, log_info, log_warning
 from utils import PROJECT_ROOT
+
+# config 里允许 verify_ssl=false（自签代理 / 杀软做 TLS 解密），与 scraper.py 同口径：
+# 关掉随之而来的 InsecureRequestWarning，否则每发一个请求就刷一屏警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ── 接口常量 ─────────────────────────────────────────
 
@@ -220,6 +225,58 @@ def _truncate_title(title: str, suffix: str, max_chars: int) -> str:
     return body[: limit - len(suffix)] + suffix
 
 
+# ── 会话 ─────────────────────────────────────────────
+
+def build_session(http_config: dict | None = None, cookies: dict | None = None) -> requests.Session:
+    """按 config.http 构造会话：UA / 代理与其它模块同口径，不在这里硬编码。
+
+    投稿器与 tools/bili_login.py 的扫码工具共用这一份，避免两个入口各写一套请求头。
+    """
+    http_config = http_config or {}
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": http_config.get("user_agent")
+        or "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+           "Chrome/134.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Origin": MEMBER_BASE,
+        "Referer": MEMBER_BASE + "/",
+    })
+    if cookies:
+        session.cookies.update(cookies)
+    proxies = {k: v for k, v in (http_config.get("proxies") or {}).items() if v}
+    if proxies:
+        session.proxies.update(proxies)
+    return session
+
+
+def decode_json(resp, action: str) -> dict:
+    """校验 HTTP 状态与 JSON 结构；412 单独给一句能操作的话。"""
+    if resp.status_code == 412:
+        raise BiliError(f"{action} 被风控拦截（HTTP 412），本次不重试")
+    if resp.status_code >= 400:
+        raise BiliError(f"{action} 失败: HTTP {resp.status_code}")
+    try:
+        payload = resp.json()
+    except ValueError as e:
+        raise BiliError(f"{action} 返回的不是 JSON: {resp.text[:120]!r}") from e
+    if not isinstance(payload, dict):
+        raise BiliError(f"{action} 返回结构异常: {str(payload)[:120]}")
+    return payload
+
+
+def ensure_ok(payload: dict, action: str) -> dict:
+    """code 非 0 就抛错，并把已知错误码翻成人话。"""
+    code = payload.get("code")
+    if code == 0:
+        return payload
+    hint = ERROR_HINTS.get(code)
+    message = payload.get("message") or payload.get("msg") or "未知错误"
+    detail = f"code={code} {message}" + (f"（{hint}）" if hint else "")
+    raise BiliError(f"{action} 失败: {detail}")
+
+
 # ── 发帖器 ───────────────────────────────────────────
 
 class BilibiliPoster:
@@ -232,29 +289,10 @@ class BilibiliPoster:
         self.cookies = load_cookies(self.cfg)
         self.timeout = int(self.http_cfg.get("timeout") or DEFAULT_TIMEOUT)
         self.verify = self.http_cfg.get("verify_ssl", True)
-        self.session = session or self._make_session()
+        self.session = session or build_session(self.http_cfg, self.cookies)
         self.mid = None
         self.uname = ""
         self.submit_mode = self.cfg.get("submit") if self.cfg.get("submit") in ("draft", "publish") else "draft"
-
-    # ── 会话 ──
-
-    def _make_session(self) -> requests.Session:
-        session = requests.Session()
-        session.headers.update({
-            "User-Agent": self.http_cfg.get("user_agent")
-            or "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-               "Chrome/134.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Origin": MEMBER_BASE,
-            "Referer": MEMBER_BASE + "/",
-        })
-        session.cookies.update(self.cookies)
-        proxies = {k: v for k, v in (self.http_cfg.get("proxies") or {}).items() if v}
-        if proxies:
-            session.proxies.update(proxies)
-        return session
 
     @property
     def csrf_token(self) -> str:
@@ -271,33 +309,10 @@ class BilibiliPoster:
 
     # ── 请求封装 ──
 
-    def _decode(self, resp, action: str) -> dict:
-        """校验 HTTP 状态与 JSON 结构；412 单独给一句能操作的话。"""
-        if resp.status_code == 412:
-            raise BiliError(f"{action} 被风控拦截（HTTP 412），本次不重试")
-        if resp.status_code >= 400:
-            raise BiliError(f"{action} 失败: HTTP {resp.status_code}")
-        try:
-            payload = resp.json()
-        except ValueError as e:
-            raise BiliError(f"{action} 返回的不是 JSON: {resp.text[:120]!r}") from e
-        if not isinstance(payload, dict):
-            raise BiliError(f"{action} 返回结构异常: {str(payload)[:120]}")
-        return payload
-
-    def _check_code(self, payload: dict, action: str) -> dict:
-        code = payload.get("code")
-        if code == 0:
-            return payload
-        hint = ERROR_HINTS.get(code)
-        message = payload.get("message") or payload.get("msg") or "未知错误"
-        detail = f"code={code} {message}" + (f"（{hint}）" if hint else "")
-        raise BiliError(f"{action} 失败: {detail}")
-
     def _post_form(self, url: str, data: dict, action: str) -> dict:
         log_debug("[B站] POST %s（%d 个字段）", url, len(data))
         resp = self.session.post(url, data=data, timeout=self.timeout, verify=self.verify)
-        return self._check_code(self._decode(resp, action), action)
+        return ensure_ok(decode_json(resp, action), action)
 
     # ── 登录 ──
 
@@ -306,7 +321,7 @@ class BilibiliPoster:
         self._require_cookies()
         log_info("[B站] 校验登录态…")
         resp = self.session.get(NAV_URL, timeout=self.timeout, verify=self.verify)
-        payload = self._check_code(self._decode(resp, "登录校验"), "登录校验")
+        payload = ensure_ok(decode_json(resp, "登录校验"), "登录校验")
         data = payload.get("data") or {}
         if not data.get("isLogin"):
             raise BiliError("未登录：cookie 已失效，请重新导出 SESSDATA / bili_jct")
@@ -334,7 +349,7 @@ class BilibiliPoster:
             UPCOVER_URL, files=files, data={"csrf": self.csrf_token},
             timeout=self.timeout, verify=self.verify,
         )
-        payload = self._check_code(self._decode(resp, "上传图片"), "上传图片")
+        payload = ensure_ok(decode_json(resp, "上传图片"), "上传图片")
         url = (payload.get("data") or {}).get("url")
         if not url:
             raise BiliError("上传图片没有返回站内地址")

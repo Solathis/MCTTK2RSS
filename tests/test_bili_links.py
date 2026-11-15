@@ -3,7 +3,7 @@
 策略本身是两行判断，但它决定成稿长什么样：外链在 B站 里点开是拦截页，所以必须降级；
 地址又要留在正文里（下载地址、漏洞追踪器这类信息丢了比不可点更糟）。这两条用测试钉住。
 """
-from bili import SIGNATURE_LINKS, degrade_link, is_signature_link
+from bili import SIGNATURE_HOST, SIGNATURE_PATH, degrade_link, is_signature_link
 
 REPO = "https://github.com/jiubook/MCTTK"
 
@@ -20,9 +20,13 @@ class TestIsSignatureLink:
         assert not is_signature_link("https://www.minecraft.net/zh-hans")
         assert not is_signature_link("https://github.com/other/repo")
         assert not is_signature_link("")
+        # 只在子域名或 query 里出现仓库名，不算署名地址
+        assert not is_signature_link("https://github.com.evil.example/jiubook/MCTTK")
+        assert not is_signature_link("https://evil.example/?u=github.com/jiubook/MCTTK")
 
-    def test_policy_lists_repo(self):
-        assert any("jiubook/mcttk" in pattern.lower() for pattern in SIGNATURE_LINKS)
+    def test_policy_names_host_and_path(self):
+        assert SIGNATURE_HOST == "github.com"
+        assert SIGNATURE_PATH in REPO.lower()
 
 
 class TestDegradeLink:

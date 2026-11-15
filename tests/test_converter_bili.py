@@ -12,7 +12,12 @@ import unittest.mock
 import pytest
 
 from bili.html import BiliHTMLRenderer, inline_html
-from converter import J2MMConverter, _bbcode_to_html, convert_bili_html_file
+from converter import (
+    J2MMConverter,
+    _bbcode_to_html,
+    convert_bili_html_file,
+    convert_bili_opus_file,
+)
 
 
 def _block(btype, src, tr, meta=None):
@@ -337,3 +342,25 @@ class TestConvertBiliHtmlFile:
     def test_missing_json_raises(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             convert_bili_html_file(str(tmp_path / "nope.json"))
+
+
+class TestConvertBiliOpusFile:
+    def test_writes_paragraph_artifact(self, tmp_path):
+        json_path = tmp_path / "news_x.json"
+        json_path.write_text(
+            json.dumps({"title": "T", "translated_title": "标题",
+                        "blocks": [_block("h2", "New", "新特性"), _block("p", "Hello", "你好")]},
+                       ensure_ascii=False),
+            encoding="utf-8",
+        )
+        with unittest.mock.patch("converter.log_debug"):
+            out = convert_bili_opus_file(str(json_path), output_prefix=str(tmp_path / "news_x"))
+
+        assert out == str(tmp_path / "news_x.opus.json")
+        artifact = json.loads((tmp_path / "news_x.opus.json").read_text(encoding="utf-8"))
+        # 标题段 → 英文标题段 → h2 标题段 + 原文引用段 → 正文段 + 原文引用段
+        assert [p["para_type"] for p in artifact["paragraphs"]] == [9, 1, 9, 4, 1, 4]
+
+    def test_missing_json_raises(self, tmp_path):
+        with pytest.raises(FileNotFoundError):
+            convert_bili_opus_file(str(tmp_path / "nope.json"))

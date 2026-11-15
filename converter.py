@@ -785,6 +785,30 @@ def convert_bili_html_file(json_path: str, output_prefix: str = None, modules_co
     return html_path
 
 
+def convert_bili_opus_file(json_path: str, output_prefix: str = None, modules_config: dict = None) -> str:
+    """
+    将单个 JSON 文件转换为 eva3 段落产物 (.opus.json)
+
+    产物是派生物，结构固定为 {"paragraphs": [...]}，发帖阶段直接塞进 opus.content。
+    与 .html 分开两个文件而不是二选一覆盖：两种 renderer 切换时不必重跑转换。
+
+    Returns:
+        opus_path
+    """
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+
+    conv = J2MMConverter(modules_config)
+    stem = output_prefix or Path(json_path).stem
+    paragraphs = conv.convert_to_bili_opus(data)
+    opus_path = f'{stem}.opus.json'
+    with open(opus_path, 'w', encoding='utf-8') as f:
+        json.dump({"paragraphs": paragraphs}, f, ensure_ascii=False, indent=1)
+    log_debug("[转换] 段模型: %s（%d 块 → %d 段）", opus_path, len(data.get("blocks") or []), len(paragraphs))
+
+    return opus_path
+
+
 # ── CLI 入口 ─────────────────────────────────────────
 
 def _load_json(path):

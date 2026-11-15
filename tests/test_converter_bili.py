@@ -12,6 +12,7 @@ import pytest
 from converter import (
     BiliHTMLRenderer,
     J2MMConverter,
+    _bbcode_to_html,
     _bili_inline,
     convert_bili_html_file,
 )
@@ -177,24 +178,39 @@ class TestConvertToBiliHtml:
         out = self.conv.convert_to_bili_html(self._data(blocks=blocks))
         assert "<p>你好</p>" in out
 
-    def test_enabled_module_degraded_to_plain_text(self):
+    def test_enabled_module_keeps_bold_and_links(self):
+        """模块里的仓库/协议地址必须变成可点的 <a>，不能退化成「文字（地址）」。"""
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": True,
+                "platform": "all",
                 "content": "[b]署名[/b] [url=https://a.com]工具[/url]",
             }],
             "custom_modules": [],
         }
         out = J2MMConverter(modules).convert_to_bili_html(self._data())
-        assert "<p>署名 工具（https://a.com）</p>" in out
+        assert "<p><strong>署名</strong> <a href=\"https://a.com\">工具</a></p>" in out
         assert "[b]" not in out
         assert "[url=" not in out
+        assert "（https://a.com）" not in out
+
+    def test_module_list_becomes_ul(self):
+        modules = {
+            "default_modules": [{
+                "id": "module_sign", "position": "start", "order": 1, "enabled": True,
+                "platform": "all", "content": "[list][*]甲\n[*]乙[/list]",
+            }],
+            "custom_modules": [],
+        }
+        out = J2MMConverter(modules).convert_to_bili_html(self._data())
+        assert out.count("<li>") == 2
+        assert "<ul>" in out
 
     def test_disabled_module_skipped(self):
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": False,
-                "content": "不该出现的署名",
+                "platform": "all", "content": "不该出现的署名",
             }],
             "custom_modules": [],
         }
@@ -205,13 +221,102 @@ class TestConvertToBiliHtml:
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": True,
-                "content": "[b]<script>x</script>[/b]",
+                "platform": "all", "content": "[b]<script>x</script>[/b]",
             }],
             "custom_modules": [],
         }
         out = J2MMConverter(modules).convert_to_bili_html(self._data())
         assert "<script>" not in out
         assert "&lt;script&gt;" in out
+
+
+# ── 模块内容 BBCode → HTML ──────────────────────────
+
+class TestBbcodeToHtml:
+    def test_link_becomes_anchor(self):
+        out = _bbcode_to_html("[b]署名[/b] [url=https://a.com]工具[/url]")
+        assert "<strong>署名</strong>" in out
+        assert '<a href="https://a.com">工具</a>' in out
+
+    def test_list_becomes_unordered_list(self):
+        out = _bbcode_to_html("[list][*]甲\n[*]乙[/list]")
+        assert out.count("<li>") == 2
+
+    def test_zero_size_hidden_text_dropped(self):
+        """[size=0px] 是 Discuz 的隐藏文本，专栏没有隐藏样式，留着就会真显示。"""
+        out = _bbcode_to_html("[size=0px]本帖来自www.mcbbs.co[/size]快照说明")
+        assert "mcbbs" not in out
+        assert "快照说明" in out
+
+    def test_layout_icons_dropped(self):
+        out = _bbcode_to_html("[img=32,32]https://x.com/a.webp[/img]转载须知")
+        assert "<img" not in out
+        assert "转载须知" in out
+
+    def test_table_and_color_stripped_but_text_kept(self):
+        out = _bbcode_to_html("[table=85%][tr=#fff][td][color=#8E2609]注意备份[/color][/td][/tr][/table]")
+        assert "注意备份" in out
+        assert "[table" not in out
+        assert "color=" not in out
+
+    def test_markup_escaped(self):
+        assert "<script>" not in _bbcode_to_html("[b]<script>x</script>[/b]")
+
+    def test_empty(self):
+        assert _bbcode_to_html("") == ""
+
+
+# ── 模块平台过滤 ────────────────────────────────────
+
+class TestModulePlatform:
+    def _conv(self, module):
+        return J2MMConverter({"default_modules": [module], "custom_modules": []})
+
+    def _data(self):
+        return {"title": "Test Title", "translated_title": "测试标题", "blocks": []}
+
+    def test_missing_platform_defaults_to_mcbbs(self):
+        """老配置里没有 platform 的模块一律按 MCBBS 处理，不能漏到专栏。"""
+        conv = self._conv({"id": "m", "position": "end", "order": 1, "enabled": True, "content": "仅论坛"})
+        assert "仅论坛" in conv.convert_to_markdown(self._data())
+        assert "仅论坛" not in conv.convert_to_bili_html(self._data())
+
+    def test_bilibili_only_module_not_in_forum_output(self):
+        conv = self._conv({
+            "id": "m", "position": "end", "order": 1, "enabled": True,
+            "platform": "bilibili", "content": "仅专栏",
+        })
+        assert "仅专栏" in conv.convert_to_bili_html(self._data())
+        assert "仅专栏" not in conv.convert_to_markdown(self._data())
+        assert "仅专栏" not in conv.convert_to_bbcode(self._data())
+
+    def test_shared_module_in_both_outputs(self):
+        conv = self._conv({
+            "id": "m", "position": "end", "order": 1, "enabled": True,
+            "platform": "all", "content": "共用",
+        })
+        assert "共用" in conv.convert_to_bili_html(self._data())
+        assert "共用" in conv.convert_to_markdown(self._data())
+
+    def test_invalid_platform_value_treated_as_mcbbs(self):
+        conv = self._conv({
+            "id": "m", "position": "end", "order": 1, "enabled": True,
+            "platform": "BiliBili-Pro", "content": "拼错平台",
+        })
+        assert "拼错平台" not in conv.convert_to_bili_html(self._data())
+
+    def test_custom_module_respects_platform(self):
+        conv = J2MMConverter({
+            "default_modules": [],
+            "custom_modules": [
+                {"id": "c1", "enabled": True, "platform": "bilibili", "content": "专栏自定义"},
+                {"id": "c2", "enabled": True, "content": "论坛自定义"},
+            ],
+        })
+        bili = conv.convert_to_bili_html(self._data())
+        markdown = conv.convert_to_markdown(self._data())
+        assert "专栏自定义" in bili and "论坛自定义" not in bili
+        assert "论坛自定义" in markdown and "专栏自定义" not in markdown
 
 
 # ── convert_bili_html_file ──────────────────────────

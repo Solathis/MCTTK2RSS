@@ -101,14 +101,14 @@ class TestRenderJsonFile:
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": True,
-                "content": "[b]署名[/b]",
+                "platform": "all", "content": "[b]署名[/b]",
             }],
             "custom_modules": [],
         }
 
         page = render_json_file(json_path, tmp_path / "p.html", modules).read_text(encoding="utf-8")
 
-        assert "<p>署名</p>" in page
+        assert "<p><strong>署名</strong></p>" in page
 
     def test_non_article_json_raises(self, tmp_path):
         json_path = tmp_path / "weird.json"

@@ -3,6 +3,7 @@
     {
       "id": "module_sign",
       "title": "工具署名",
+      "platform": "all",
       "content": "[size=2][b]【本文Ai翻译及Ai排版借助了： [url=https://github.com/jiubook/MCTTK]MCTTK[/url]、[url=https://www.deepseek.com/]deepseek[/url]、[url=https://aistudio.xiaomimimo.com/]MiMo[/url]等工具 】[/b][/size]",
       "position": "start",
       "order": 1001,
@@ -11,6 +12,7 @@
     {
       "id": "module_java_snapshot_header",
       "title": "Java版 每周快照 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=48,48]https://www.mcbbs.co/data/attachment/common/ea/common_64_icon.png[/img][/float][size=32px][b][color=#645944]每周快照[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]每周快照[/b]是 Minecraft Java 版的测试机制，用于新特性的展示和反馈收集。\n[*][color=#8E2609]快照有可能导致存档损坏，因此请注意备份，不要直接在你的主存档游玩快照。[/color]\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[*]部分新特性译名仅供参考，不代表最终结果。\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1002,
@@ -19,6 +21,7 @@
     {
       "id": "module_java_prerelease_header",
       "title": "Java版 预发布版 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=48,48]https://www.mcbbs.co/data/attachment/common/ea/common_64_icon.png[/img][/float][size=32px][b][color=#645944]预发布版[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]预发布版[/b]是 Minecraft Java 版的测试机制，主要是为了收集漏洞反馈，为正式发布做好准备。\n[*][color=#8E2609]预发布版有可能导致存档损坏，因此请注意备份，不要直接在你的主存档游玩预发布版。[/color]\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[*]部分新特性译名仅供参考，不代表最终结果。\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1003,
@@ -27,6 +30,7 @@
     {
       "id": "module_java_rc_header",
       "title": "Java版 候选版本 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=48,48]https://www.mcbbs.co/data/attachment/common/ea/common_64_icon.png[/img][/float][size=32px][b][color=#645944]候选版本[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]候选版本[/b]是 Minecraft Java 版的测试机制。如果没有重大漏洞，该版本将会被用于正式发布。\n[*][color=#8E2609]候选版本有可能导致存档损坏，因此请注意备份，不要直接在你的主存档游玩候选版本。[/color]\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[*]部分新特性译名仅供参考，不代表最终结果。\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1004,
@@ -35,6 +39,7 @@
     {
       "id": "module_java_release_header",
       "title": "Java 正式版 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=46,48]https://ooo.0o0.ooo/2017/01/30/588f60bbaaf78.png[/img][/float][size=32px][b][color=#645944]Minecraft Java 版[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]Minecraft Java 版[/b]是指运行在 Windows、macOS 与 Linux 平台上，使用 Java 语言开发的 Minecraft 版本。\n[*][b]正式版[/b]包含所有特性且安全稳定，所有玩家都可以尽情畅享。\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1005,
@@ -43,6 +48,7 @@
     {
       "id": "module_bedrock_beta_header",
       "title": "基岩版 测试版 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=48,48]https://www.mcbbs.co/data/attachment/common/ea/common_64_icon.png[/img][/float][size=32px][b][color=#645944]测试版[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]测试版[/b]是 Minecraft 基岩版的测试机制，主要用于下一个正式版的特性预览。\n[*][color=#8E2609]测试版有可能导致存档损坏，因此请注意备份，不要直接在你的主存档游玩测试版。[/color]\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[*]部分新特性译名仅供参考，不代表最终结果。\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1006,
@@ -51,6 +57,7 @@
     {
       "id": "module_bedrock_release_header",
       "title": "基岩版 正式版 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=46,48]https://ooo.0o0.ooo/2017/01/30/588f60bbaaf78.png[/img][/float][size=32px][b][color=#645944]Minecraft 基岩版[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]Minecraft 基岩版[/b]是指运行在移动平台（Android、iOS）、Windows 10、主机（Xbox One、Switch、PlayStation 4）上，使用「基岩引擎」（C++语言）开发的 Minecraft 版本。\n[*][b]正式版[/b]包含所有特性且安全稳定，所有玩家都可以尽情畅享。\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1007,
@@ -59,6 +66,7 @@
     {
       "id": "module_commentary_header",
       "title": "时评 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=48,48]https://www.mcbbs.co/data/attachment/common/03/common_63_icon.png[/img][/float][size=32px][b][color=#645944]时评[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*][b]时评[/b]为玩家对官方消息的分析与探讨，不代表官方意见\n[*]请在交流时保持心平气和\n[*]转载本帖时须要注明原作者以及本帖地址。[size=0px]本帖来自www.mcbbs.co[/size]\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1008,
@@ -67,6 +75,7 @@
     {
       "id": "module_normal_header",
       "title": "普通资讯/博文 - 开头",
+      "platform": "all",
       "content": "[align=center][font=-apple-system, BlinkMacSystemFont,Segoe UI, Roboto, Helvetica, Arial, sans-serif][table=85%]\n[tr=#E3C99E][td][float=left][img=32,32]https://www.mcbbs.co/data/attachment/forum/202603/15/180957i6j4oo2mrn8s6btt.webp[/img][/float][size=24px][b][color=#645944]转载须知[/color][/b][/size][/td][/tr]\n[tr=#FDF6E5][td][size=16px][list]\n[*]转载本帖时须要注明原作者以及本帖地址。\n[/list][/size][/td][/tr]\n[/table][/font][/align]",
       "position": "start",
       "order": 1009,
@@ -139,10 +148,20 @@
     {
       "id": "module_Agreement",
       "title": "开源协议",
+      "platform": "all",
       "order": 2001,
       "content": "[size=2][b]【本Ai工具以 [url=https://www.gnu.org/licenses/gpl-3.0.zh-cn.html]GPL-3.0[/url] 协议发布】\n【本Ai翻译作品以 [url=https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hans]CC BY-SA 4.0[/url] 协议发布】[/b][/size]",
       "position": "end",
       "enabled": true
+    },
+    {
+      "id": "module_bili_footer",
+      "title": "专栏 - 结尾：外部来源与更新条目追踪",
+      "order": 2000,
+      "position": "end",
+      "platform": "bilibili",
+      "enabled": true,
+      "content": "[b]外部来源与更新条目追踪[/b]\n[list]\n[*][url=https://www.minecraft.net/zh-hans]Minecraft 官方网站（简体中文）[/url]\n[*][url=https://feedback.minecraft.net/]官方反馈与更新日志站点 Feedback[/url]\n[*][url=https://zh.minecraft.wiki/]Minecraft 中文 Wiki（译名核对）[/url]\n[*][url=https://piston-meta.mojang.com/mc/game/version_manifest_v2.json]Java 版版本清单（Mojang piston-meta）[/url]\n[/list]\n本文由 AI 翻译整理，原文链接见文首；译名与术语以 Minecraft 官方中文为准，如有出入欢迎在评论区指出。"
     }
   ],
   "custom_modules": []

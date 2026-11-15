@@ -360,20 +360,104 @@ def _bbcode_to_markdown(bbcode: str) -> str:
     return text.strip()
 
 
-def _bbcode_to_plain_html(bbcode: str) -> str:
-    """把模块内容（署名 / 协议等）降级成纯文本段落。
+def _markdown_inline_to_html(text: str) -> str:
+    """把一段 Markdown 行内元素转成 HTML：链接、粗体、斜体；图片丢弃。
 
-    模块是表格 + 彩色 + 对齐拼出来的版面，专栏没有等价物，硬转会原样吐出
-    ``[table=85%]`` 之类的脏标签。这里只保留可读文字，链接降级成「文字（地址）」
-    以便保留署名与协议溯源。
+    文内换行最终转成 <br>：模块里常见「[b]多行文字[/b]」，压成一行会丢掉断行。
+    粗体匹配允许多行（DOTALL），否则跨行的 **...** 会以字面量漏到页面上。
+    模块里的图片都是 MCBBS 版面的小图标（站内图床 webp），搬到专栏既没意义
+    还要多上传几张图，所以直接删掉。
+    """
+    out = _md_links_to_html(_escape_html(text))
+    out = re.sub(r'<img [^>]*>', '', out)
+    out = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', out, flags=re.DOTALL)
+    out = re.sub(r'(?<!\*)\*([^*]+)\*(?!\*)', r'<em>\1</em>', out)
+    return out.replace('\n', '<br>')
+
+
+_MD_LIST_ITEM = re.compile(r'^\s*[-*+]\s+(.*)$')
+
+
+def _markdown_to_html(md: str) -> str:
+    """极简 Markdown → HTML，只服务模块内容（段落 / 列表 / 引用 / 标题 / 行内）。
+
+    不追求通用：模块内容由 _bbcode_to_markdown 产出，只会出现这几种形态，
+    为此引入 Markdown 依赖或写完整解析器都不划算。
+    """
+    if not md:
+        return ''
+    parts: list[str] = []
+    items: list[str] = []
+    paragraph: list[str] = []
+
+    def flush_items():
+        if items:
+            body = ''.join(f'<li>{_markdown_inline_to_html(item)}</li>' for item in items)
+            parts.append(f'<ul>{body}</ul>')
+            items.clear()
+
+    def flush_paragraph():
+        if not paragraph:
+            return
+        heading = re.match(r'^#{1,6}\s+(.*)$', paragraph[0])
+        if heading and len(paragraph) == 1:
+            parts.append(f'<p><strong>{_markdown_inline_to_html(heading.group(1))}</strong></p>')
+        elif all(line.lstrip().startswith('>') for line in paragraph):
+            body = ''.join(
+                f'<p>{_markdown_inline_to_html(line.lstrip().removeprefix(">").strip())}</p>'
+                for line in paragraph
+            )
+            parts.append(f'<blockquote>{body}</blockquote>')
+        else:
+            # 交给行内转换统一处理换行（跨行粗体也要合并），不要逐行拼 <br>
+            paragraph_text = "\n".join(paragraph)
+            parts.append(f'<p>{_markdown_inline_to_html(paragraph_text)}</p>')
+        paragraph.clear()
+
+    for raw_line in md.splitlines():
+        line = raw_line.strip()
+        if not line:
+            flush_items()
+            flush_paragraph()
+            continue
+        item = _MD_LIST_ITEM.match(line)
+        if item:
+            flush_paragraph()
+            items.append(item.group(1))
+            continue
+        flush_items()
+        paragraph.append(line)
+    flush_items()
+    flush_paragraph()
+    return '\n'.join(parts)
+
+
+_PLATFORMS = ('all', 'mcbbs', 'bilibili')
+
+
+def _module_platform(module: dict) -> str:
+    """模块适用的发布平台：all / mcbbs / bilibili。
+
+    缺省视为 mcbbs——仓库里已有的模板都是 MCBBS 版面（表格、彩色、站内图标），
+    默认放给专栏会带出「本帖来自www.mcbbs.co」这类内容；要两边共用得显式写 "all"。
+    """
+    value = str(module.get('platform') or '').strip().lower()
+    return value if value in _PLATFORMS else 'mcbbs'
+
+
+def _bbcode_to_html(bbcode: str) -> str:
+    """把模块内容（BBCode）转成专栏 HTML。
+
+    模块是表格 + 彩色 + 浮动拼出来的版面，专栏没有等价物，但 [b]/[url]/[list]
+    这些语义标签要保住——否则署名与协议里的仓库/协议地址会退化成纯文本，读者没法点。
+    做法是先走 _bbcode_to_markdown 把版面压平（这套转换已有测试覆盖），再转 HTML。
     """
     if not bbcode:
         return ''
-    text = re.sub(r'\[url=([^\]]+)\](.*?)\[/url\]', r'\2（\1）', bbcode, flags=re.DOTALL)
-    text = re.sub(r'\[img(?:=[^\]]*)?\].*?\[/img\]', '', text, flags=re.DOTALL)
-    text = re.sub(r'\[/?[a-zA-Z*][^\]]*\]', '', text)
-    lines = (line.strip() for line in text.splitlines())
-    return '\n'.join(f'<p>{_escape_html(line)}</p>' for line in lines if line)
+    # [size=0px] 在 Discuz 里是隐藏文本（如「本帖来自www.mcbbs.co」）。专栏没有隐藏
+    # 样式，留着就会真的显示出来，所以先删掉，再交给压平流程。
+    text = re.sub(r'\[size=0px\].*?\[/size\]', '', bbcode, flags=re.DOTALL | re.IGNORECASE)
+    return _markdown_to_html(_bbcode_to_markdown(text))
 
 
 # ── BBCode 渲染器 ───────────────────────────────────
@@ -839,15 +923,16 @@ class J2MMConverter:
     def convert_to_bili_html(self, json_data: dict) -> str:
         """转为 B站专栏富文本 HTML。
 
-        结构对齐 BBCode/Markdown：模块（模块版面专栏无等价物，降级为纯文本段落）
-        → 标题 → 元信息引用块 → 正文 → 模块。
+        结构与 BBCode/Markdown 对齐：模块 → 标题 → 元信息引用块 → 正文 → 模块。
+        模块按 platform 过滤：只取 shared（all）与 bilibili 专用的，MCBBS 版面的
+        表格/彩色模板不会漏到专栏里。
         """
         blocks = json_data.get('blocks', [])
         parts = []
         article_type = _detect_article_type(json_data.get('title', ''))
 
-        for m in self._get_modules('start', article_type):
-            parts.append(_bbcode_to_plain_html(m.get('bbcode_content') or m['content']))
+        for m in self._get_modules('start', article_type, platform='bilibili'):
+            parts.append(_bbcode_to_html(m.get('bbcode_content') or m['content']))
 
         title_cn = json_data.get('translated_title', '')
         title_en = json_data.get('title', '')
@@ -873,20 +958,29 @@ class J2MMConverter:
             parts.append(self._bili.render(blocks))
 
         for position in ('custom', 'end'):
-            for m in self._get_modules(position, article_type):
-                parts.append(_bbcode_to_plain_html(m.get('bbcode_content') or m['content']))
+            for m in self._get_modules(position, article_type, platform='bilibili'):
+                parts.append(_bbcode_to_html(m.get('bbcode_content') or m['content']))
 
         return '\n'.join(p for p in parts if p)
 
-    def _get_modules(self, position: str, article_type: str = 'normal') -> list[dict]:
+    def _get_modules(self, position: str, article_type: str = 'normal', platform: str = 'mcbbs') -> list[dict]:
+        """按位置 / 文章类型 / 平台筛选模块。
+
+        platform 缺省的模块按 mcbbs 处理：老配置里的模板都是 MCBBS 版面，
+        不能让它们自动漏到专栏；想要两边共用就显式写 "platform": "all"。
+        """
         cfg = self.modules_config
         if position == 'custom':
-            return [m for m in cfg.get('custom_modules', []) if m.get('enabled')]
+            return [
+                m for m in cfg.get('custom_modules', [])
+                if m.get('enabled') and _module_platform(m) in ('all', platform)
+            ]
         modules = []
         for m in cfg.get('default_modules', []):
             if m.get('position') != position:
                 continue
-            if m.get('enabled') or MODULE_TYPE_MAP.get(m.get('id', '')) == article_type:
+            matched = m.get('enabled') or MODULE_TYPE_MAP.get(m.get('id', '')) == article_type
+            if matched and _module_platform(m) in ('all', platform):
                 modules.append(m)
         return sorted(modules, key=lambda m: m.get('order', 9999))
 

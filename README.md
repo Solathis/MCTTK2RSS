@@ -671,6 +671,25 @@ git push origin v1.0.0
     "attach_json": true,
     "sortid_map": {}
   },
+  "bilibili": {
+    "enabled": false,
+    "cookie_file": "config/bili_cookies.json",
+    "category_id": 26,
+    "candidate_categories": [26, 4, 15, 6],
+    "tags": ["Minecraft", "我的世界", "更新日志"],
+    "original": false,
+    "reprint": true,
+    "submit": "draft",
+    "title_suffix": " [AI翻译]",
+    "max_title_chars": 80,
+    "summary_max_chars": 100,
+    "attach_cover": true,
+    "rehost_images": true,
+    "max_inline_images": 20,
+    "ai_notice": "",
+    "interval_seconds": 20,
+    "max_per_run": 3
+  },
   "output": {
     "save_dir": "output"
   },
@@ -692,6 +711,10 @@ git push origin v1.0.0
 - **首次运行**：程序会自动将当前所有新闻标记为已处理，下次运行才开始处理真正的新新闻，避免刷屏
 - **API Key**：支持通过环境变量 `OPENAI_API_KEY` 传入，优先级高于 config.json
 - **MCBBS 账号**：支持通过环境变量 `MCBBS_USERNAME` / `MCBBS_PASSWORD` 传入
+- **B站专栏**：`bilibili.enabled` 默认关闭。凭据是浏览器登录后的 cookie（`SESSDATA` + `bili_jct`），
+  放 `.env` 或 `config/bili_cookies.json`（两者都不入库），日志里不会打印。`submit: "draft"` 只存草稿、
+  需人工在编辑器发布，改成 `"publish"` 才会自动提交审核（提交后进入审核队列，通过前链接打不开）。
+  正文图片会先重托管到 B站 CDN——残留外链会被整篇拒绝，所以上传失败的图会被直接丢弃
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；

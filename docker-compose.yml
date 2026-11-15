@@ -21,8 +21,10 @@ services:
       - ./poster.py:/app/poster.py
       - ./utils.py:/app/utils.py
       - ./scheduler.py:/app/scheduler.py
-      # tools/ 与 bili/ 不逐个挂载：容器用镜像里那份代码，
-      # 改了两者要 docker compose up -d --build 才生效（挂不存在的宿主文件会被建成同名目录）
+      # 专栏包与工具脚本按目录挂载：改完重启容器即生效。目录挂载不会出现上面逐文件挂载
+      # 那种「宿主文件缺失就被建成同名目录」的问题
+      - ./bili:/app/bili
+      - ./tools:/app/tools
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - MCBBS_USERNAME=${MCBBS_USERNAME}

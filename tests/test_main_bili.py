@@ -183,6 +183,16 @@ class TestRunPostBili:
         assert _state(save_dir) == {"news_old", "news_new"}
         assert FakeBiliPoster.instances[0].posted_stems == ["news_new"]
 
+    def test_baseline_written_even_without_new_articles(self, save_dir):
+        """升级后第一次运行可能没抓到新文章，基线也要落盘，别等到下次才记账。"""
+        _write_article(save_dir, "news_old")
+
+        result = main.run_post_bili([], _make_config(save_dir))
+
+        assert result["success"] == 0
+        assert FakeBiliPoster.instances == []
+        assert _state(save_dir) == {"news_old"}
+
     def test_login_failure_marks_whole_batch_failed(self, save_dir):
         FakeBiliPoster.login_error = "cookie 已失效"
         items = [_write_article(save_dir, "news_a"), _write_article(save_dir, "news_b")]

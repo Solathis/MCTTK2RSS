@@ -680,7 +680,7 @@ def _seed_bili_posted(save_dir: str, state_file: str, processed: list) -> set:
     posted |= existing
     save_posted(state_file, posted)
     log_info("[专栏] 首次启用：把 output 里已有的 %d 篇文章标记为已投稿（不补发历史）；"
-             "要补投历史请先删掉 %s 再跑一次 --post-only",
+             "要补投历史请先删掉 %s，再用 --post-only --bili-backfill 跑一次",
              len(existing), os.path.basename(state_file))
     return posted
 
@@ -904,9 +904,6 @@ def run_post_bili(processed: list, config: dict) -> dict:
     if not bili_cfg.get("enabled", False):
         log_warning("[专栏] 未启用（config.json 里 bilibili.enabled = false），跳过")
         return result
-    if not processed:
-        log_info("[专栏] 没有需要投稿的文章")
-        return result
 
     started = time.monotonic()
     save_dir = config["output"]["save_dir"]
@@ -916,7 +913,14 @@ def run_post_bili(processed: list, config: dict) -> dict:
         _log_missing_bili_cookies(missing)
         return result
 
+    # 基线先记账：即使这一轮没抓到新文章也要把积压的历史标成已投稿，
+    # 否则「升级后第一次运行」什么都没发生，下次真抓到新文章时才有基线
     posted = _seed_bili_posted(save_dir, _bili_state_file(save_dir), processed)
+
+    if not processed:
+        log_info("[专栏] 没有需要投稿的文章")
+        return result
+
     pending = [item for item in processed if item[0] not in posted]
     if not pending:
         log_info("[专栏] %d 篇都已投稿过，无需处理", len(processed))

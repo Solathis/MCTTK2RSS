@@ -21,7 +21,8 @@ services:
       - ./poster.py:/app/poster.py
       - ./utils.py:/app/utils.py
       - ./scheduler.py:/app/scheduler.py
-      - ./init_state.py:/app/init_state.py
+      # tools/ 与 bili/ 不逐个挂载：容器用镜像里那份代码，
+      # 改了两者要 docker compose up -d --build 才生效（挂不存在的宿主文件会被建成同名目录）
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - MCBBS_USERNAME=${MCBBS_USERNAME}

@@ -37,7 +37,6 @@ MCTTK/
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
 ├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
 ├── scheduler.py               # 定时调度器（默认每小时运行一次）
-├── init_state.py              # 初始化状态工具（测试用）
 ├── config/                    # 配置目录
 │   ├── config.sample.json     # 配置模板（复制为 config/config.json 后修改）
 │   ├── config.json            # 本地配置（不入库，.gitignore 已忽略）
@@ -46,7 +45,7 @@ MCTTK/
 │   ├── glossary.json          # 手写术语覆盖层（入库）
 │   ├── glossary.auto.json     # 自动词表层（tools/sync_glossary.py 生成，不入库）
 │   └── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
-├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；bili_login.py 扫码取 cookie；preview_bili_html.py 预览专栏排版）
+├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；bili_login.py 扫码取 cookie；preview_bili_html.py 预览专栏排版；init_state.py 初始化测试状态）
 ├── tests/                     # 单元测试（pytest）
 ├── docs/                      # 文档
 │   ├── DOCKER.md              # Docker 部署说明
@@ -605,12 +604,12 @@ python poster.py --no-image               # 跳过图片上传
 python poster.py --no-json                # 跳过 JSON 附件
 ```
 
-### init_state.py
+### tools/init_state.py
 
 测试辅助工具。运行后列出所有当前新闻，选择保留一条不标记为已处理，其余全部标记为已处理，避免测试时触发全量翻译。
 
 ```bash
-python init_state.py
+uv run python tools/init_state.py
 ```
 
 ## 处理流程

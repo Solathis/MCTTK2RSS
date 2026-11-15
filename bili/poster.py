@@ -95,6 +95,13 @@ DEFAULT_BILI_CONFIG = {
     "template_id": DEFAULT_TEMPLATE_ID,
     # 是否声明「AI 辅助创作」：opus 模型写 opus.attachments.is_aigc，发布时写 option.aigc
     "ai_declare": True,
+    # 投放过滤（由 main 在投稿前判断，放在这里是为了默认值集中一处）：
+    # 只投版本发布类文章；排除 feedback 的来源搬运。两个名单留空 = 不过滤。
+    "publish_types": [
+        "java_snapshot", "java_prerelease", "java_rc", "java_release",
+        "bedrock_beta", "bedrock_release",
+    ],
+    "exclude_sources": ["feedback"],
     # draft=只存草稿（人工在编辑器放行）| publish=存草稿后立即提交审核
     "submit": "draft",
     "title_suffix": " [AI翻译]",

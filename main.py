@@ -58,7 +58,14 @@ from scraper import (
     process_feedback_news,
     save_article_json,
 )
-from utils import CONFIG_DIR, find_image, load_dotenv, load_posted, save_posted
+from utils import (
+    CONFIG_DIR,
+    classify_article_type,
+    find_image,
+    load_dotenv,
+    load_posted,
+    save_posted,
+)
 
 # 项目根目录（源码所在目录；配置统一放 config/，路径由 utils.CONFIG_DIR 给出）
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -755,6 +762,55 @@ def _check_bili_login(poster) -> bool:
         return False
 
 
+def _bili_skip_reason(json_path: str, bili_cfg: dict) -> str | None:
+    """专栏投放前的来源 / 类型过滤，返回跳过原因（None 表示可以投）。
+
+    判断依据是存下来的 JSON：`source` 是抓取来源（minecraft_api / version_manifest /
+    feedback），类型从原文标题推（与抓取阶段 classify_news_type 同一口径）。
+    两个名单都为空的配置项表示「不过滤」——老配置没写这两项时行为与以前一致。
+    """
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)
+
+    source = str(data.get("source") or "").strip()
+    excluded = {str(item).strip().lower() for item in (bili_cfg.get("exclude_sources") or []) if str(item).strip()}
+    if source and source.lower() in excluded:
+        return f"来源 {source} 在 exclude_sources 里"
+
+    allowed = {str(item).strip().lower() for item in (bili_cfg.get("publish_types") or []) if str(item).strip()}
+    if allowed:
+        news_type = (classify_article_type(data.get("title") or "", fallback="other") or "other").lower()
+        if news_type not in allowed:
+            return f"类型 {news_type} 不在 publish_types 里"
+    return None
+
+
+def _filter_bili_queue(pending: list, bili_cfg: dict) -> list:
+    """按配置筛掉不投专栏的文章（快讯、feedback 等），并打日志说明为什么跳过。"""
+    if not (bili_cfg.get("publish_types") or bili_cfg.get("exclude_sources")):
+        return pending
+
+    kept = []
+    skipped = 0
+    for item in pending:
+        try:
+            reason = _bili_skip_reason(item[2], bili_cfg)
+        except (OSError, json.JSONDecodeError) as e:
+            # 读不出元数据就不替用户做决定：照旧投，失败会由投稿阶段报错
+            log_debug("[专栏] 读取元数据失败，按可投处理: %s（%s）", item[2], e)
+            kept.append(item)
+            continue
+        if reason is None:
+            kept.append(item)
+        else:
+            skipped += 1
+            log_info("[专栏] 跳过 %s：%s", item[0], reason)
+    if skipped:
+        log_info("[专栏] 按配置跳过 %d 篇（publish_types %s / exclude_sources %s）",
+                 skipped, bili_cfg.get("publish_types"), bili_cfg.get("exclude_sources"))
+    return kept
+
+
 def run_post_bili(processed: list, config: dict) -> dict:
     """把本次处理好的文章投稿到 B站专栏。
 
@@ -779,6 +835,11 @@ def run_post_bili(processed: list, config: dict) -> dict:
     pending = [item for item in processed if item[0] not in posted]
     if not pending:
         log_info("[专栏] %d 篇都已投稿过，无需处理", len(processed))
+        return result
+
+    pending = _filter_bili_queue(pending, bili_cfg)
+    if not pending:
+        log_info("[专栏] 本次没有符合投放条件的文章（按 publish_types / exclude_sources 过滤后为空）")
         return result
 
     max_per_run = int(bili_cfg.get("max_per_run") or 0)
@@ -831,6 +892,11 @@ def run_post_only_bili(config: dict) -> dict:
     pending = [item for item in items if item[0] not in posted]
     if not pending:
         log_info("[专栏] 所有 %d 篇文章都投稿过，无需处理", len(items))
+        return result
+
+    pending = _filter_bili_queue(pending, bili_cfg)
+    if not pending:
+        log_info("[专栏] 本次没有符合投放条件的文章（按 publish_types / exclude_sources 过滤后为空）")
         return result
 
     started = time.monotonic()

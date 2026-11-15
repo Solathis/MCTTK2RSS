@@ -94,13 +94,17 @@ def _make_config(save_dir, *, enabled=True, **bili_overrides):
     }
 
 
-def _write_article(save_dir, stem, *, with_html=True, with_opus=False):
+def _write_article(save_dir, stem, *, with_html=True, with_opus=False,
+                   title="Title", source=None):
     json_path = save_dir / f"{stem}.json"
-    json_path.write_text(json.dumps({
-        "title": "Title",
+    meta = {
+        "title": title,
         "translated_title": "标题",
         "blocks": [{"type": "p", "source_text": "Hello", "translated_text": "你好", "meta": {}}],
-    }, ensure_ascii=False), encoding="utf-8")
+    }
+    if source:
+        meta["source"] = source
+    json_path.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
     (save_dir / f"{stem}.txt").write_text("bbcode", encoding="utf-8")
     if with_html:
         (save_dir / f"{stem}.html").write_text("<p>你好</p>", encoding="utf-8")
@@ -285,6 +289,78 @@ class TestRunPostBili:
 
 
 # ── run_post_only_bili ───────────────────────────────
+
+class TestPublishFilters:
+    """专栏投放过滤：只投版本发布类，不搬 feedback 与快讯。"""
+
+    FILTERS = {
+        "publish_types": ["java_snapshot", "java_release", "bedrock_release"],
+        "exclude_sources": ["feedback"],
+    }
+
+    def test_feedback_source_skipped(self, save_dir):
+        item = _write_article(save_dir, "news_fb", title="Minecraft 1.21.5", source="feedback")
+
+        result = main.run_post_bili([item], _make_config(save_dir, **self.FILTERS))
+
+        assert result["success"] == 0
+        # 全被过滤时连登录都不该尝试
+        assert FakeBiliPoster.instances == []
+
+    def test_non_version_type_skipped(self, save_dir):
+        """官方 API 的快讯（类型落到 other）不投专栏。"""
+        item = _write_article(
+            save_dir, "news_spotlight",
+            title="Marketplace Spotlight: The Sound Effects Edition",
+            source="minecraft_api",
+        )
+
+        result = main.run_post_bili([item], _make_config(save_dir, **self.FILTERS))
+
+        assert result["success"] == 0
+        assert FakeBiliPoster.instances == []
+
+    def test_version_article_posted(self, save_dir):
+        item = _write_article(
+            save_dir, "news_snap", title="Minecraft 26.4 Snapshot 8", source="version_manifest",
+        )
+
+        result = main.run_post_bili([item], _make_config(save_dir, **self.FILTERS))
+
+        assert result["success"] == 1
+        assert FakeBiliPoster.instances[0].posted_stems == ["news_snap"]
+
+    def test_empty_filters_post_everything(self, save_dir):
+        item = _write_article(save_dir, "news_fb", title="Shop Update", source="feedback")
+
+        result = main.run_post_bili([item], _make_config(save_dir))
+
+        assert result["success"] == 1
+
+    def test_skip_reason_helpers(self, save_dir):
+        feedback = _write_article(save_dir, "news_fb", title="Minecraft 1.21.5", source="feedback")
+        snapshot = _write_article(save_dir, "news_snap", title="Minecraft 26.4 Snapshot 8",
+                                  source="version_manifest")
+
+        assert "feedback" in main._bili_skip_reason(feedback[2], self.FILTERS)
+        assert main._bili_skip_reason(snapshot[2], self.FILTERS) is None
+        assert main._bili_skip_reason(snapshot[2], {"publish_types": ["other"]})
+
+    def test_filter_queue_keeps_order_and_logs(self, save_dir):
+        ok = _write_article(save_dir, "news_snap", title="Minecraft 26.4 Snapshot 8",
+                            source="version_manifest")
+        bad = _write_article(save_dir, "news_fb", title="Minecraft 1.21.5", source="feedback")
+
+        kept = main._filter_bili_queue([bad, ok], self.FILTERS)
+
+        assert [item[0] for item in kept] == ["news_snap"]
+
+    def test_unreadable_json_is_kept(self, save_dir):
+        """元数据读不出来时不替用户做决定：照旧投，失败由投稿阶段报。"""
+        item = ("news_broken", str(save_dir / "news_broken.txt"), str(save_dir / "news_broken.json"))
+
+        assert main._filter_bili_queue([item], self.FILTERS) == [item]
+
 
 class TestRunPostOnlyBili:
     def test_posts_unposted_articles(self, save_dir):

@@ -167,7 +167,9 @@ cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `c
   "bilibili": {
     "enabled": true,
     "renderer": "opus",
-    "submit": "draft"
+    "submit": "draft",
+    "publish_types": ["java_snapshot", "java_release", "bedrock_release"],
+    "exclude_sources": ["feedback"]
   }
 }
 ```
@@ -176,6 +178,15 @@ cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `c
 `"opus"`（新版编辑器的段模型，能写封面、摘要与「AI 辅助创作」声明）。`submit: "draft"`
 只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成 `"publish"` 自动发布
 （opus 模式下会先存草稿再按草稿号发布，发布失败草稿仍在）。
+
+**投放范围**（`publish_types` / `exclude_sources`）在投稿前按文章元数据过滤：
+
+- `publish_types`：允许投专栏的文章类型，取值同抓取阶段的分类
+  （`java_snapshot` / `java_prerelease` / `java_rc` / `java_release` / `bedrock_beta` / `bedrock_release`）。
+  模板默认是**版本发布类全放**，于是官方 API 的「快讯」（类型落到 `other`）和时评不会进专栏。
+- `exclude_sources`：不投专栏的来源，默认排除 `feedback`（论坛式的更新日志搬运）。
+  来源取值是 `minecraft_api` / `version_manifest` / `feedback`。
+- 两项**留空或删掉即不过滤**（老配置行为不变）；被跳过的文章会在日志里逐条写明原因。
 
 也可以通过 `.env` 文件或环境变量传入敏感信息（优先级高于 config.json）：
 
@@ -773,6 +784,15 @@ git push origin v1.0.0
     "renderer": "html",
     "template_id": 1,
     "ai_declare": true,
+    "publish_types": [
+      "java_snapshot",
+      "java_prerelease",
+      "java_rc",
+      "java_release",
+      "bedrock_beta",
+      "bedrock_release"
+    ],
+    "exclude_sources": ["feedback"],
     "submit": "draft",
     "title_suffix": " [AI翻译]",
     "max_title_chars": 80,
@@ -817,6 +837,9 @@ git push origin v1.0.0
   想先看排版再决定：`uv run python tools/preview_bili_html.py --renderer opus`。
   注意 opus 模型没有标签字段（`bilibili.tags` 只在 html 模型下生效），分区与封面在发布时会
   被编辑器界面上的值覆盖——自动投稿不打开编辑器就不会有这个问题
+- **专栏投放范围**：`bilibili.publish_types`（默认版本发布类）与 `bilibili.exclude_sources`
+  （默认排除 `feedback`）在投稿前过滤，官方 API 的快讯、时评与论坛式更新日志不会进专栏。
+  两项留空即不过滤，被跳过的文章会在日志里逐条说明原因
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
   改策略见 `bili/__init__.py` 的 `SIGNATURE_LINKS` 与 `degrade_link()`

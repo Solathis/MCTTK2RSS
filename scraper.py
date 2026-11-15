@@ -162,6 +162,11 @@ DEFAULT_CONFIG = {
         "renderer": "html",
         "template_id": 1,
         "ai_declare": True,
+        "publish_types": [
+            "java_snapshot", "java_prerelease", "java_rc", "java_release",
+            "bedrock_beta", "bedrock_release",
+        ],
+        "exclude_sources": ["feedback"],
         "submit": "draft",
         "title_suffix": " [AI翻译]",
         "max_title_chars": 80,

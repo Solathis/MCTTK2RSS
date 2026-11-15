@@ -18,6 +18,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from bili import is_signature_link
 from bili.html import BiliHTMLRenderer, escape_html, markdown_to_html
 from bili.opus import BiliOpusRenderer, OpusDocument, markdown_to_paragraphs
 from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
@@ -649,7 +650,11 @@ class J2MMConverter:
             meta_lines.append(f'作者：{escape_html(json_data["author"])}')
         if json_data.get('url'):
             url = escape_html(json_data['url'])
-            meta_lines.append(f'原文：<a href="{url}">{url}</a>')
+            # 与段模型同一条策略：只有署名地址保留超链接，其余外链降级成纯文本
+            if is_signature_link(json_data['url']):
+                meta_lines.append(f'原文：<a href="{url}">{url}</a>')
+            else:
+                meta_lines.append(f'原文：{url}')
         if json_data.get('description'):
             meta_lines.append(f'简介：{escape_html(json_data["description"])}')
         if meta_lines:

@@ -30,8 +30,13 @@ class TestInlineText:
     def test_escapes_markup(self):
         assert inline_html("<script>alert(1)</script>") == "&lt;script&gt;alert(1)&lt;/script&gt;"
 
-    def test_md_link_becomes_anchor(self):
-        assert inline_html("看 [这里](https://x.com/a)") == '看 <a href="https://x.com/a">这里</a>'
+    def test_signature_link_stays_anchor(self):
+        """只有项目署名的地址保留超链接（其余外链点开是 B站 的「离开」拦截页）。"""
+        out = inline_html("看 [MCTTK](https://github.com/jiubook/MCTTK)")
+        assert out == '看 <a href="https://github.com/jiubook/MCTTK">MCTTK</a>'
+
+    def test_external_link_degrades_to_text(self):
+        assert inline_html("看 [这里](https://x.com/a)") == "看 这里"
 
     def test_md_image_stays_inline(self):
         """段落里的图片不能产出块级 <figure>，否则 <p> 里嵌块级元素。"""
@@ -43,8 +48,8 @@ class TestInlineText:
         assert inline_html("[裸括号] 不是链接") == "[裸括号] 不是链接"
 
     def test_url_ampersand_escaped_once(self):
-        out = inline_html("[a](https://x.com/?a=1&b=2)")
-        assert 'href="https://x.com/?a=1&amp;b=2"' in out
+        out = inline_html("[a](https://github.com/jiubook/MCTTK?a=1&b=2)")
+        assert 'href="https://github.com/jiubook/MCTTK?a=1&amp;b=2"' in out
 
     def test_empty(self):
         assert inline_html("") == ""
@@ -161,7 +166,9 @@ class TestConvertToBiliHtml:
         assert "<h1>测试标题</h1>" in out
         assert "<em>Test Title</em>" in out
         assert "作者：jiubook" in out
-        assert '<a href="https://github.com/jiubook/">https://github.com/jiubook/</a>' in out
+        # 原文地址不是署名链接 → 只留纯文本（外链在 B站 会被拦成提示页）
+        assert "原文：https://github.com/jiubook/" in out
+        assert '<a href="https://github.com/jiubook/">' not in out
 
     def test_meta_wrapped_in_quote_block(self):
         out = self.conv.convert_to_bili_html(self._data())
@@ -180,21 +187,23 @@ class TestConvertToBiliHtml:
         out = self.conv.convert_to_bili_html(self._data(blocks=blocks))
         assert "<p>你好</p>" in out
 
-    def test_enabled_module_keeps_bold_and_links(self):
-        """模块里的仓库/协议地址必须变成可点的 <a>，不能退化成「文字（地址）」。"""
+    def test_module_keeps_bold_and_signature_link(self):
+        """模块里的署名地址保留 <a>，其它外链降级成纯文字（B站 拦外链）。"""
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": True,
                 "platform": "all",
-                "content": "[b]署名[/b] [url=https://a.com]工具[/url]",
+                "content": "[b]署名[/b] [url=https://github.com/jiubook/MCTTK]MCTTK[/url] "
+                           "[url=https://a.com]工具[/url]",
             }],
             "custom_modules": [],
         }
         out = J2MMConverter(modules).convert_to_bili_html(self._data())
-        assert "<p><strong>署名</strong> <a href=\"https://a.com\">工具</a></p>" in out
+        assert '<a href="https://github.com/jiubook/MCTTK">MCTTK</a>' in out
+        assert '<a href="https://a.com">' not in out
+        assert "工具" in out
         assert "[b]" not in out
         assert "[url=" not in out
-        assert "（https://a.com）" not in out
 
     def test_module_list_becomes_ul(self):
         modules = {
@@ -235,10 +244,15 @@ class TestConvertToBiliHtml:
 # ── 模块内容 BBCode → HTML ──────────────────────────
 
 class TestBbcodeToHtml:
-    def test_link_becomes_anchor(self):
-        out = _bbcode_to_html("[b]署名[/b] [url=https://a.com]工具[/url]")
+    def test_signature_link_becomes_anchor(self):
+        out = _bbcode_to_html("[b]署名[/b] [url=https://github.com/jiubook/MCTTK]工具[/url]")
         assert "<strong>署名</strong>" in out
-        assert '<a href="https://a.com">工具</a>' in out
+        assert '<a href="https://github.com/jiubook/MCTTK">工具</a>' in out
+
+    def test_external_link_becomes_text(self):
+        out = _bbcode_to_html("[url=https://a.com]工具[/url]")
+        assert "工具" in out
+        assert "<a " not in out
 
     def test_list_becomes_unordered_list(self):
         out = _bbcode_to_html("[list][*]甲\n[*]乙[/list]")

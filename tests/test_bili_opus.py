@@ -66,15 +66,21 @@ class TestInlineNodes:
     def test_bold_flag_sets_style(self):
         assert inline_nodes("标题", bold=True)[0]["word"]["style"] == {"bold": True}
 
-    def test_link_becomes_link_node(self):
-        nodes = inline_nodes("看 [这里](https://x.com/a)")
+    def test_signature_link_becomes_link_node(self):
+        nodes = inline_nodes("看 [MCTTK](https://github.com/jiubook/MCTTK)")
         assert [n["node_type"] for n in nodes] == [1, 4]
         link = nodes[1]["link"]
-        assert link["show_text"] == "这里"
-        assert link["link"] == "https://x.com/a"
+        assert link["show_text"] == "MCTTK"
+        assert link["link"] == "https://github.com/jiubook/MCTTK"
         assert link["link_type"] == LINK_TYPE
         assert link["font_level"] == BODY_FONT_LEVEL
         assert "style" not in link
+
+    def test_external_link_degrades_to_text(self):
+        """除署名外不留超链接：B站 图文里点外链会跳到「离开 B站」拦截页（实测）。"""
+        nodes = inline_nodes("看 [这里](https://x.com/a)")
+        assert [n["node_type"] for n in nodes] == [1]
+        assert "".join(n["word"]["words"] for n in nodes) == "看 这里"
 
     def test_non_url_link_degrades_to_text(self):
         """模块模板里的 [标题](地址) 是占位写法，塞进段模型会被接口挡，退回纯文本。"""
@@ -83,12 +89,12 @@ class TestInlineNodes:
         assert nodes[0]["word"]["words"] == "标题"
 
     def test_label_with_nested_brackets(self):
-        nodes = inline_nodes("[预览版[测试版]](https://x.com/a)")
+        nodes = inline_nodes("[预览版[测试版]](https://github.com/jiubook/MCTTK)")
         assert nodes[0]["link"]["show_text"] == "预览版[测试版]"
 
     def test_url_with_parentheses(self):
-        nodes = inline_nodes("[A](https://en.wikipedia.org/wiki/A_(b))")
-        assert nodes[0]["link"]["link"] == "https://en.wikipedia.org/wiki/A_(b)"
+        nodes = inline_nodes("[A](https://github.com/jiubook/MCTTK_(b))")
+        assert nodes[0]["link"]["link"] == "https://github.com/jiubook/MCTTK_(b)"
 
     def test_newline_kept_inside_words(self):
         assert inline_nodes("第一行\n第二行")[0]["word"]["words"] == "第一行\n第二行"
@@ -126,7 +132,7 @@ class TestMarkdownNodes:
         assert all(n["word"]["style"] == {"bold": True} for n in nodes)
 
     def test_bold_link_node(self):
-        nodes = markdown_nodes("**【[工具](https://x.com)】】**")
+        nodes = markdown_nodes("**【[工具](https://github.com/jiubook/MCTTK)】】**")
         link = [n for n in nodes if n["node_type"] == 4][0]
         assert link["link"]["style"] == {"bold": True}
 
@@ -299,12 +305,17 @@ class TestMarkdownToParagraphs:
         paras = markdown_to_paragraphs("- 甲\n    - 甲一")
         assert [p["format"]["list_format"]["level"] for p in paras] == [1, 2]
 
-    def test_list_with_bold_and_link(self):
-        paras = markdown_to_paragraphs("- **每周快照**是 [机制](https://x.com/a)")
+    def test_list_with_bold_and_signature_link(self):
+        paras = markdown_to_paragraphs("- **每周快照**是 [机制](https://github.com/jiubook/MCTTK)")
         assert _words(paras[0]) == "每周快照是 机制"
         kinds = [n["node_type"] for n in paras[0]["text"]["nodes"]]
         assert 4 in kinds
         assert paras[0]["text"]["nodes"][0]["word"]["style"] == {"bold": True}
+
+    def test_list_external_link_keeps_text_only(self):
+        paras = markdown_to_paragraphs("- 见 [讨论帖](https://x.com/a)")
+        assert _words(paras[0]) == "见 讨论帖"
+        assert [n["node_type"] for n in paras[0]["text"]["nodes"]] == [1]
 
     def test_quote_lines_share_one_group(self):
         paras = markdown_to_paragraphs("> 甲\n> 乙")
@@ -355,12 +366,12 @@ class TestConvertToBiliOpus:
         assert len({_group(p) for p in paras}) == 1
         assert len(paras) == 4
 
-    def test_meta_url_is_link_node(self):
+    def test_meta_url_is_plain_text(self):
+        """元信息里的原文地址不保留超链接（外链在 B站 会被拦成提示页），但文字要在。"""
         paras = [p for p in self.conv.convert_to_bili_opus(self._data()) if p["para_type"] == PARA_QUOTE]
         meta = [p for p in paras if _words(p).startswith("原文：")][0]
-        link = meta["text"]["nodes"][-1]
-        assert link["node_type"] == 4
-        assert link["link"]["link"] == "https://github.com/jiubook/"
+        assert [n["node_type"] for n in meta["text"]["nodes"]] == [1]
+        assert _words(meta) == "原文：https://github.com/jiubook/"
 
     def test_source_fields_are_literal_text(self):
         """段模型的文字是 JSON 字段，尖括号就是字面量；不转义、也不能当标签使。"""
@@ -374,20 +385,22 @@ class TestConvertToBiliOpus:
         assert _words(paras[-2]) == "你好"
         assert _words(paras[-1]) == "Hello"
 
-    def test_enabled_module_keeps_bold_and_links(self):
+    def test_module_keeps_bold_and_signature_link(self):
         modules = {
             "default_modules": [{
                 "id": "module_sign", "position": "start", "order": 1, "enabled": True,
                 "platform": "all",
-                "content": "[b]署名[/b] [url=https://a.com]工具[/url]",
+                "content": "[b]署名[/b] [url=https://github.com/jiubook/MCTTK]MCTTK[/url] "
+                           "[url=https://a.com]工具[/url]",
             }],
             "custom_modules": [],
         }
         paras = J2MMConverter(modules).convert_to_bili_opus(self._data())
-        assert _words(paras[0]) == "署名 工具"
+        assert _words(paras[0]) == "署名 MCTTK 工具"
         nodes = paras[0]["text"]["nodes"]
-        assert nodes[-1]["node_type"] == 4
-        assert nodes[-1]["link"]["link"] == "https://a.com"
+        links = [n for n in nodes if n["node_type"] == 4]
+        assert [n["link"]["link"] for n in links] == ["https://github.com/jiubook/MCTTK"]
+        assert nodes[0]["word"]["style"] == {"bold": True}
         assert nodes[0]["word"]["style"] == {"bold": True}
 
     def test_module_list_becomes_list_paragraphs(self):

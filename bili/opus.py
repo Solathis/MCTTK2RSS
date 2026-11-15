@@ -20,6 +20,7 @@
 
 import re
 
+from bili import is_signature_link
 from utils import rewrite_md_links
 
 # ── 段落类型 ─────────────────────────────────────────
@@ -70,15 +71,15 @@ def _link_node(show_text: str, url: str, *, bold: bool, font_level: str) -> dict
 
 
 def _stash_links(text: str) -> tuple[str, list[tuple[str, str]]]:
-    """把 Markdown 链接换成占位符，返回（占位文本, [(文字, URL)]）。
+    """把「要保留超链接」的 Markdown 链接换成占位符，返回（占位文本, [(文字, URL)]）。
 
-    只认 http(s)：模块模板里存在 ``[标题](地址)`` 这种占位写法，段落模型里塞非 URL
-    可能被接口挡掉，退回纯文本与编辑器剥链接后的效果一致。
+    只留两类：http(s) 且是署名地址。其余链接一律降级成链接文字——B站 图文里点开外链
+    会跳到「离开 B站」的拦截页（实测），留超链接反而毁掉阅读体验。
     """
     links: list[tuple[str, str]] = []
 
     def render_link(label: str, url: str) -> str:
-        if not url.lower().startswith(("http://", "https://")):
+        if not url.lower().startswith(("http://", "https://")) or not is_signature_link(url):
             return label
         links.append((label, url))
         return f"\x00L{len(links) - 1}\x00"

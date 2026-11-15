@@ -44,8 +44,8 @@ HEADING_TYPE = 1
 LIST_THEME = "dot"
 LINK_TYPE = 16
 # 原文（英文对照）的灰色。编辑器给文字节点留了 color 字段（实测 payload 里是空串），
-# 这里用 B站 的次要文字灰；配色不合适就改这一个常量。
-ORIGINAL_COLOR = "#9499A0"
+# 这里取编辑器取色板里的灰色（`var(--Ga3, #c9ccd0)`），与手动在编辑器里点「灰」同值。
+ORIGINAL_COLOR = "#c9ccd0"
 
 _IMAGE_MD = re.compile(r'!\[[^\]]*\]\([^)]*\)')
 _BOLD_RUN = re.compile(r'(\*\*.+?\*\*)', re.DOTALL)

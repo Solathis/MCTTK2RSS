@@ -3,6 +3,7 @@
 全部用假会话：不联网、不真扫码；断言流程行为（请求了什么、落盘了什么）。
 """
 import json
+import re
 import sys
 
 import pytest
@@ -78,12 +79,30 @@ def poll_state(code, message="0"):
 # ── 二维码渲染 ───────────────────────────────────────
 
 class TestRenderQrText:
-    def test_renders_blocks(self):
-        text = render_qr_text("https://passport.bilibili.com/h5-app/passport/login/scan?qrcode_key=x")
-        lines = text.splitlines()
-        assert "██" in text
-        assert len(lines) > 20
-        assert len({len(line) for line in lines}) == 1  # 每行等宽，否则二维码是歪的
+    URL = "https://account.bilibili.com/h5/account-h5/auth/scan-web?navhide=1&qrcode_key=c48971ef"
+
+    def test_compact_is_half_height_and_single_width(self):
+        """默认样式要让一屏放得下：一个字符画上下两个模块，宽高各减半。"""
+        compact = render_qr_text(self.URL).splitlines()
+        block = render_qr_text(self.URL, style="block").splitlines()
+
+        assert len(compact) == (len(block) + 1) // 2
+        assert len(compact[0]) * 2 == len(block[0])
+        assert set("".join(compact)) <= set(" ▀▄█")
+        assert len({len(line) for line in compact}) == 1  # 每行等宽，否则二维码是歪的
+
+    def test_block_style_is_wide(self):
+        block = render_qr_text(self.URL, style="block").splitlines()
+        assert "██" in "".join(block)
+        assert len({len(line) for line in block}) == 1
+
+    def test_color_forces_black_on_white(self):
+        """深色终端上模块会和背景同色，所以真有终端时用 ANSI 固定黑模块白底。"""
+        colored = render_qr_text(self.URL, color=True)
+        assert "\x1b[38;5;0;48;5;" in colored
+        # 去掉转义序列后全是半块字符：颜色只影响配色，不影响形状
+        plain = re.sub(r"\x1b\[[0-9;]*m", "", colored).replace("\n", "")
+        assert set(plain) <= {"▀"}
 
     def test_missing_qrcode_dependency(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "qrcode", None)
@@ -215,7 +234,7 @@ class TestRunLogin:
 
         assert result["mid"] == 123456
         assert result["uname"] == "tester"
-        assert any("██" in chunk for chunk in printed), "二维码没有打印到终端"
+        assert any(set(chunk) & set("█▀▄") for chunk in printed), "二维码没有打印到终端"
         assert any("qrcode_key=key" in chunk for chunk in printed), "应同时给出二维码链接"
 
         saved = json.loads(out_path.read_text(encoding="utf-8"))

@@ -12,6 +12,7 @@ bili_poster 会从这里读凭据；也可以用 BILI_SESSDATA / BILI_JCT 环境
 用法：
   uv sync --extra login                       # 首次：装二维码渲染依赖（qrcode）
   uv run python tools/bili_login.py           # 打印二维码 → 手机扫码 → 保存 cookie
+  uv run python tools/bili_login.py --qr block    # 终端认不出半块字符时用大号图
   uv run python tools/bili_login.py --timeout 300
   uv run python tools/bili_login.py --out D:/tmp/bili_cookies.json
 """
@@ -65,20 +66,64 @@ class LoginError(RuntimeError):
 
 # ── 纯函数 ───────────────────────────────────────────
 
-def render_qr_text(url: str) -> str:
-    """把二维码渲染成控制台方块图。
+# 半块字符：一个字符表示「上下两个模块」，高度砍半，扫得动还省屏
+_HALF_BLOCKS = {
+    (False, False): " ",
+    (True, False): "▀",
+    (False, True): "▄",
+    (True, True): "█",
+}
+_ANSI_RESET = "\x1b[0m"
 
-    每个模块画两个字符宽：终端字符是竖长条，1:1 画出来会被压扁扫不出来。
+
+def _qr_matrix(url: str) -> list[list[bool]]:
+    """算出二维码模块矩阵（含 1 模块宽的静区）。
+
+    容错级别取 L（约 7%）：二维码是让手机扫屏幕上的干净图像，不是印在会磨损的纸上，
+    L 能让矩阵小一档（同样内容 51 → 43 模块），终端里更紧凑。
     """
     try:
         import qrcode
     except ImportError as e:  # pragma: no cover - 依赖装了就不会走到
         raise LoginError("需要 qrcode 才能打印二维码：先运行 uv sync --extra login") from e
 
-    qr = qrcode.QRCode(border=1)
+    qr = qrcode.QRCode(border=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
     qr.add_data(url)
     qr.make(fit=True)
-    return "\n".join("".join("██" if cell else "  " for cell in row) for row in qr.get_matrix())
+    return [[bool(cell) for cell in row] for row in qr.get_matrix()]
+
+
+def render_qr_text(url: str, *, style: str = "compact", color: bool = False) -> str:
+    """把二维码渲染成控制台可读的文本。
+
+    style="compact"（默认）：一个字符画上下两个模块，宽高各减半，成品约
+    「22 行 × 43 字符」。终端字符是竖长条，一行一模块会把码压扁扫不出来，
+    所以用半块字符把两行模块压进一行。
+    style="block"：每个模块两个字符宽，成品约「44 行 × 86 字符」，留给认不出
+    半块字符的终端（老式等宽字体/乱码时用）。
+
+    color=True 时加 ANSI 前景/背景色，强制「黑模块 + 白底」，
+    这样深色主题终端上也是正确极性（不加颜色时模块会随主题反色）。
+    """
+    matrix = _qr_matrix(url)
+    if style == "block":
+        return "\n".join("".join("██" if cell else "  " for cell in row) for row in matrix)
+
+    lines = []
+    for index in range(0, len(matrix), 2):
+        top = matrix[index]
+        bottom = matrix[index + 1] if index + 1 < len(matrix) else [False] * len(top)
+        if not color:
+            lines.append("".join(_HALF_BLOCKS[(bool(t), bool(b))] for t, b in zip(top, bottom, strict=True)))
+            continue
+        parts = []
+        for t, b in zip(top, bottom, strict=True):
+            # 前景=上半模块，背景=下半模块；固定用 256 色黑白，不吃终端主题
+            foreground = 0 if t else 15
+            background = 0 if b else 15
+            parts.append(f"\x1b[38;5;{foreground};48;5;{background}m▀")
+        lines.append("".join(parts) + _ANSI_RESET)
+    return "\n".join(lines)
 
 
 def parse_cookies_from_url(url: str) -> dict:
@@ -194,12 +239,14 @@ def save_cookies(path: Path, cookies: dict) -> Path:
 
 def run_login(session, *, out_path: Path, timeout: float = 180.0, interval: float = 2.0,
               request_timeout: int = 30, verify: bool = True, sleep=time.sleep,
-              printer=print, on_status=None) -> dict:
+              printer=print, on_status=None, qr_style: str = "compact",
+              qr_color: bool = False) -> dict:
     """完整流程：取二维码 → 打印 → 轮询 → 校验 → 落盘。返回账号信息与文件路径。"""
     qr_url, qr_key = fetch_qr(session, request_timeout=request_timeout, verify=verify)
-    printer(render_qr_text(qr_url))
+    printer(render_qr_text(qr_url, style=qr_style, color=qr_color))
     printer("")
-    printer(f"用 B站 App 扫码登录；二维码链接（终端显示异常时用浏览器打开）：{qr_url}")
+    printer(f"用 B站 App 扫码登录；二维码显示不全时加 --qr block 重跑，"
+            f"或直接用浏览器打开：{qr_url}")
 
     data = wait_for_login(
         session, qr_key, timeout=timeout, interval=interval,
@@ -249,6 +296,10 @@ def main() -> int:
     parser.add_argument("--config", help="指定配置文件路径")
     parser.add_argument("--timeout", type=float, default=180.0, help="等待扫码的最长秒数（默认 180）")
     parser.add_argument("--interval", type=float, default=2.0, help="轮询间隔秒数（默认 2）")
+    parser.add_argument(
+        "--qr", choices=("compact", "block"), default="compact",
+        help="二维码样式：compact 半高（默认，约 20 行）；block 逐行（约 40 行，终端认不出半块字符时用）",
+    )
     args = parser.parse_args()
 
     # 二维码直接打到终端，不要进日志文件（否则日志里全是方块字符）
@@ -271,6 +322,9 @@ def main() -> int:
             request_timeout=request_timeout,
             verify=verify,
             on_status=lambda text: log_info("[登录] %s", text),
+            qr_style=args.qr,
+            # 只在真实终端上上色：管道/重定向时留下转义字符只会污染输出
+            qr_color=sys.stdout.isatty(),
         )
     except (LoginError, BiliError) as e:
         log_error("[登录] 失败: %s", e)

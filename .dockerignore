@@ -27,7 +27,10 @@ config/config.json
 # 扫码工具写出的登录 cookie（SESSDATA / bili_jct）：本地 build 会把它烤进镜像层，
 # 一旦 push 或把 tar 发给别人就是凭据泄露。运行期同样靠只读挂载提供
 config/bili_cookies.json
-config*.bak
+# 本地备份同样含 API Key。注意 .dockerignore 用的是 Go filepath.Match 语义：
+# 不含 / 的模式只匹配**上下文根目录**，`config*.bak` 匹配不到 config/config.json.bak，
+# 所以这里必须带目录前缀
+config/*.bak
 
 # 输出目录（运行时通过 volume 挂载，不打包进镜像）
 output/

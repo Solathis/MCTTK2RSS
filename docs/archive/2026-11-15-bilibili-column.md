@@ -278,6 +278,61 @@
 
 ---
 
+### 9.6 发布：`create/opus` 的完整请求体（2026-11-15 抓包）
+
+维护者把 aid=374201 那条草稿在专栏编辑器点「发布」，HTTP Debugger 的原始文本导出里
+拿到了全量 body（113941 字符，99% 是段落）。骨架：
+
+```json
+{
+  "raw_content": "",
+  "draft_id_str": "374201",
+  "opus_req": {
+    "upload_id": "1501743_1794720787_8051",
+    "opus": {
+      "opus_source": 2,
+      "title": "Minecraft 26.4 快照 8 [AI翻译]",
+      "content": {"paragraphs": ["…174 段…"]},
+      "article": {
+        "category_id": 15,
+        "list_id": 0,
+        "originality": 0,
+        "reproduced": 0,
+        "cover": [{"url": "http://article.biliimg.com/bfs/new_dyn/86dd2a36…501743.jpg"}]
+      },
+      "pub_info": {"editor_version": "eva3-4.0.0"}
+    },
+    "scene": 12,
+    "meta": {"app_meta": {"from": "create.creative.h5", "mobi_app": "web"}},
+    "option": {"aigc": 1, "close_comment": 0, "up_choose_comment": 0, "private_pub": 2}
+  }
+}
+```
+
+| 字段 | 含义与实测值 |
+| --- | --- |
+| `draft_id_str` | 要发布的草稿号（= `draft/add` 返回的 `article_id`），所以发布是「按草稿发布」 |
+| `raw_content` | 空串（老模型的富文本正文，eva3 不用） |
+| `opus_req.opus.opus_source` | `2` |
+| `opus_req.opus.article.category_id` | 分区。**这条抓到的是 15**：编辑器打开草稿时用界面上的分区（15）覆盖了我们写入的 26，与 §9.3 记的行为一致 |
+| `article.cover[].url` | 封面，列表里放对象（`[{"url": …}]`） |
+| `article.originality` / `reproduced` | 原创 / 转载标记，编辑器里都没勾时是 `0` / `0` |
+| `pub_info.editor_version` | `eva3-4.0.0` |
+| `opus_req.scene` | `12` |
+| `option.aigc` | **发布阶段的 AI 创作声明在这里**（1=已声明）；草稿阶段才是 `opus.attachments.is_aigc` |
+| `option.private_pub` | `2`（这条是公开发布）；`close_comment` / `up_choose_comment` 都是 0 |
+| `tags` / `summary` | **发布体里完全没有这两个字段**：摘要留在草稿侧，发布按 `draft_id_str` 取；标签在图文模型里没有对应字段 |
+
+附带观察：编辑器打开草稿时会把段落 `format` 补齐（`indent.first_line_indent`、列表的
+`align`、`word.color` / `dark_color`、链接的 `icon`/`biz_id`/`pics`），并把我们生成的
+`combine_hash`（`list_1`）改写成它自己的 `list_<毫秒戳>_<随机串>`。这些补齐不是必需的——
+我们那版精简格式在 `draft/add` 阶段就被接受了。
+
+这份导出只有请求（连响应体都没有），所以发布响应长什么样仍未知；要判断成败，
+只能发布后读 `draft/view` 或看创作中心。
+
+---
+
 ## 10. 段模型渲染器（路线 A，2026-11-15 落地）
 
 §9.3 那篇草稿在编辑器里存盘后，正文被转成了 `opus.content.paragraphs`。用只读的

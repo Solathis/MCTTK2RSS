@@ -10,6 +10,7 @@ from tools.preview_bili_html import (
     build_preview_page,
     find_default_inputs,
     load_modules,
+    paragraphs_to_html,
     render_json_file,
 )
 
@@ -116,3 +117,102 @@ class TestRenderJsonFile:
 
         with pytest.raises(ValueError):
             render_json_file(json_path, tmp_path / "p.html")
+
+    def test_opus_renderer_uses_paragraph_model(self, tmp_path):
+        json_path = tmp_path / "news_x.json"
+        json_path.write_text(json.dumps(ARTICLE, ensure_ascii=False), encoding="utf-8")
+
+        page = render_json_file(
+            json_path, tmp_path / "p.html", renderer="opus",
+        ).read_text(encoding="utf-8")
+
+        assert "<h1>测试标题</h1>" in page
+        assert "<p>你好</p>" in page
+        assert "opus 渲染" in page
+
+    def test_html_renderer_is_the_default(self, tmp_path):
+        json_path = tmp_path / "news_x.json"
+        json_path.write_text(json.dumps(ARTICLE, ensure_ascii=False), encoding="utf-8")
+
+        page = render_json_file(json_path, tmp_path / "p.html").read_text(encoding="utf-8")
+
+        assert "html 渲染" in page
+
+
+# ── 段数组还原成预览 HTML ────────────────────────────
+
+def _para(ptype, nodes, **fmt):
+    return {"para_type": ptype, "format": fmt, "text": {"nodes": nodes}}
+
+
+def _word(text, bold=False):
+    word = {"words": text, "font_size": 17, "font_level": "regular"}
+    if bold:
+        word["style"] = {"bold": True}
+    return {"node_type": 1, "word": word}
+
+
+def _link(label, url):
+    return {"node_type": 4, "link": {"show_text": label, "link": url, "link_type": 16,
+                                     "font_level": "regular"}}
+
+
+class TestParagraphsToHtml:
+    def test_quote_group_merged_into_one_blockquote(self):
+        out = paragraphs_to_html([
+            _para(4, [_word("甲")], combine_hash="g1"),
+            _para(4, [_word("乙")], combine_hash="g1"),
+            _para(4, [_word("丙")], combine_hash="g2"),
+        ])
+        assert out.count("<blockquote>") == 2
+        assert "<blockquote><p>甲</p><p>乙</p></blockquote>" in out
+
+    def test_heading_and_paragraph(self):
+        out = paragraphs_to_html([
+            _para(9, [_word("标题")], heading_type=1),
+            _para(1, [_word("正文")]),
+        ])
+        assert "<h1>标题</h1>" in out
+        assert "<p>正文</p>" in out
+
+    def test_list_nesting(self):
+        out = paragraphs_to_html([
+            _para(6, [_word("甲")], list_format={"level": 1, "order": 1}, combine_hash="l1"),
+            _para(6, [_word("甲一")], list_format={"level": 2, "order": 1}, combine_hash="l1"),
+            _para(6, [_word("乙")], list_format={"level": 1, "order": 2}, combine_hash="l1"),
+        ])
+        assert out.count("<ul>") == 2
+        assert out.count("<li>") == 3
+        assert "<li>甲<ul><li>甲一</li></ul></li>" in out
+
+    def test_list_group_boundary_closes_previous(self):
+        out = paragraphs_to_html([
+            _para(6, [_word("甲")], list_format={"level": 1, "order": 1}, combine_hash="l1"),
+            _para(6, [_word("乙")], list_format={"level": 1, "order": 1}, combine_hash="l2"),
+        ])
+        assert out.count("<ul>") == 2
+
+    def test_image_paragraph(self):
+        out = paragraphs_to_html([
+            {"para_type": 2, "pic": {"pics": [{"url": "https://x.com/a.jpg", "comment": "图说"}]}},
+        ])
+        assert '<figure><img src="https://x.com/a.jpg" alt="图说"></figure>' in out
+
+    def test_bold_and_link(self):
+        out = paragraphs_to_html([
+            _para(1, [_word("看", bold=True), _link("这里", "https://x.com/a")]),
+        ])
+        assert "<strong>看</strong>" in out
+        assert '<a href="https://x.com/a">这里</a>' in out
+
+    def test_newline_becomes_br(self):
+        out = paragraphs_to_html([_para(1, [_word("第一行\n第二行")])])
+        assert "第一行<br>第二行" in out
+
+    def test_words_escaped(self):
+        out = paragraphs_to_html([_para(1, [_word("<script>x</script>")])])
+        assert "<script>" not in out
+        assert "&lt;script&gt;" in out
+
+    def test_empty(self):
+        assert paragraphs_to_html([]) == ""

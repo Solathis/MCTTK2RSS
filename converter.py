@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""converter.py — JSON 到 BBCode/Markdown 转换器（原 J2MM）
+"""converter.py — JSON 到 BBCode/Markdown/专栏产物的转换器（原 J2MM）
 
 用法:
   python converter.py <input.json> [选项]
@@ -7,6 +7,10 @@
 
 也可作为模块导入:
   from converter import J2MMConverter
+
+专栏（B站）有两种正文形态，各自一个渲染器：HTML 字符串（老 form 接口，bili_html.py）
+与 eva3 段落数组（新版编辑器接口，bili_opus.py）。本模块只负责把模块 / 标题 / 元信息 /
+正文拼成整篇，按调用方要的形态各拼一遍。
 """
 import argparse
 import json
@@ -15,6 +19,7 @@ from datetime import datetime
 from pathlib import Path
 
 from bili_html import BiliHTMLRenderer, escape_html, markdown_to_html
+from bili_opus import BiliOpusRenderer, OpusDocument, markdown_to_paragraphs
 from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
 from utils import CONFIG_DIR, MODULE_TYPE_MAP, rewrite_md_links
 
@@ -266,6 +271,14 @@ def _module_platform(module: dict) -> str:
     return value if value in _PLATFORMS else 'mcbbs'
 
 
+def _strip_hidden_bbcode(bbcode: str) -> str:
+    """删掉 [size=0px] 隐藏文本（Discuz 专用，如「本帖来自www.mcbbs.co」）。
+
+    专栏与段模型都没有隐藏样式，留着就会真的显示出来，所以两个渲染器都先过这一步。
+    """
+    return re.sub(r'\[size=0px\].*?\[/size\]', '', bbcode, flags=re.DOTALL | re.IGNORECASE)
+
+
 def _bbcode_to_html(bbcode: str) -> str:
     """把模块内容（BBCode）转成专栏 HTML。
 
@@ -275,10 +288,14 @@ def _bbcode_to_html(bbcode: str) -> str:
     """
     if not bbcode:
         return ''
-    # [size=0px] 在 Discuz 里是隐藏文本（如「本帖来自www.mcbbs.co」）。专栏没有隐藏
-    # 样式，留着就会真的显示出来，所以先删掉，再交给压平流程。
-    text = re.sub(r'\[size=0px\].*?\[/size\]', '', bbcode, flags=re.DOTALL | re.IGNORECASE)
-    return markdown_to_html(_bbcode_to_markdown(text))
+    return markdown_to_html(_bbcode_to_markdown(_strip_hidden_bbcode(bbcode)))
+
+
+def _bbcode_to_opus(bbcode: str, doc: OpusDocument) -> None:
+    """把模块内容（BBCode）转成段落，追加到文档末尾（规则与 _bbcode_to_html 一致）。"""
+    if not bbcode:
+        return
+    markdown_to_paragraphs(_bbcode_to_markdown(_strip_hidden_bbcode(bbcode)), doc)
 
 
 # ── BBCode 渲染器 ───────────────────────────────────
@@ -511,6 +528,7 @@ class J2MMConverter:
         self._bb = BBCodeRenderer()
         self._md = MarkdownRenderer()
         self._bili = BiliHTMLRenderer()
+        self._opu = BiliOpusRenderer()
 
     def convert_to_bbcode(self, json_data: dict) -> str:
         blocks = json_data.get('blocks', [])
@@ -645,6 +663,50 @@ class J2MMConverter:
                 parts.append(_bbcode_to_html(m.get('bbcode_content') or m['content']))
 
         return '\n'.join(p for p in parts if p)
+
+    def convert_to_bili_opus(self, json_data: dict) -> list[dict]:
+        """转为 B站专栏 eva3 段落数组（新版编辑器 draft/add 的正文）。
+
+        结构与 convert_to_bili_html 逐段对齐：模块 → 标题 → 元信息引用框 → 正文 → 模块，
+        模块同样按 platform 过滤。两套渲染器只有段落边界必须一致，元素怎么写成标签 /
+        怎么写成段落各管各的。
+        """
+        blocks = json_data.get('blocks', [])
+        article_type = _detect_article_type(json_data.get('title', ''))
+        doc = OpusDocument()
+
+        for m in self._get_modules('start', article_type, platform='bilibili'):
+            _bbcode_to_opus(m.get('bbcode_content') or m['content'], doc)
+
+        title_cn = json_data.get('translated_title', '')
+        title_en = json_data.get('title', '')
+        if title_cn or title_en:
+            doc.heading(title_cn or title_en)
+        if title_cn and title_en and title_en != title_cn:
+            # HTML 版这里是 <p><em>英文标题</em>；段模型没有斜体，实测编辑器存盘时也会把
+            # <em> 吃掉，所以这里就是普通段
+            doc.text(title_en)
+
+        meta_lines = []
+        if json_data.get('release_date'):
+            meta_lines.append(f'时间：{_parse_date(json_data["release_date"])}')
+        if json_data.get('author'):
+            meta_lines.append(f'作者：{json_data["author"]}')
+        if json_data.get('url'):
+            # 与 HTML 版一致：原文地址自己也是可点的链接（inline_nodes 认 Markdown 链接）
+            meta_lines.append(f'原文：[{json_data["url"]}]({json_data["url"]})')
+        if json_data.get('description'):
+            meta_lines.append(f'简介：{json_data["description"]}')
+        doc.quote_block(meta_lines)
+
+        if blocks:
+            self._opu.render(blocks, doc)
+
+        for position in ('custom', 'end'):
+            for m in self._get_modules(position, article_type, platform='bilibili'):
+                _bbcode_to_opus(m.get('bbcode_content') or m['content'], doc)
+
+        return doc.paragraphs
 
     def _get_modules(self, position: str, article_type: str = 'normal', platform: str = 'mcbbs') -> list[dict]:
         """按位置 / 文章类型 / 平台筛选模块。

@@ -10,8 +10,15 @@ tools/preview_bili_html.py — 把已翻译 JSON 渲染成可直接用浏览器�
   uv run python tools/preview_bili_html.py                    # 自动找 output/news_*.json
   uv run python tools/preview_bili_html.py output/news_x.json --open
   uv run python tools/preview_bili_html.py --no-modules       # 不带配置里的头尾模块
+  uv run python tools/preview_bili_html.py --renderer opus    # 看段模型下的排版
 
-产物：output/preview_<stem>.html（output/ 已被 .gitignore 忽略，不会入库）
+两种正文模型都能预览（发帖阶段二选一，见 converter.convert_to_bili_html /
+convert_to_bili_opus）：
+  html  —— 老接口收的 HTML 字符串，产物本身就是最终形态
+  opus  —— 新版编辑器的段数组，这里先还原成近似 HTML 再看
+
+产物：output/preview_<stem>.html（opus 模式为 preview_<stem>_opus.html；output/ 已被
+.gitignore 忽略，不会入库）
 """
 
 import argparse
@@ -27,6 +34,7 @@ from string import Template
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
+from bili_opus import PARA_HEADING, PARA_IMAGE, PARA_LIST, PARA_QUOTE  # noqa: E402
 from converter import J2MMConverter  # noqa: E402
 from log_setup import log_error, log_info, log_warning, setup_logging  # noqa: E402
 from utils import CONFIG_DIR  # noqa: E402
@@ -119,8 +127,115 @@ def find_default_inputs(output_dir: Path) -> list[Path]:
     return sorted(Path(p) for p in glob.glob(os.path.join(str(output_dir), "news_*.json")))
 
 
-def render_json_file(json_path: Path, out_path: Path, modules: dict | None = None) -> Path:
-    """渲染单篇文章为预览页，返回产物路径。"""
+def _nodes_to_html(nodes: list[dict]) -> str:
+    """段落节点 → 行内 HTML（文字 / 链接，粗体包 <strong>）。"""
+    out = []
+    for node in nodes or []:
+        if node.get("node_type") == 4:
+            link = node.get("link") or {}
+            label = html.escape(link.get("show_text") or "", quote=True)
+            url = html.escape(link.get("link") or "", quote=True)
+            text = f'<a href="{url}">{label}</a>'
+            if (link.get("style") or {}).get("bold"):
+                text = f"<strong>{text}</strong>"
+            out.append(text)
+            continue
+        word = node.get("word") or {}
+        text = html.escape(word.get("words") or "", quote=True).replace("\n", "<br>")
+        if (word.get("style") or {}).get("bold"):
+            text = f"<strong>{text}</strong>"
+        out.append(text)
+    return "".join(out)
+
+
+def _paragraph_nodes(paragraph: dict) -> list[dict]:
+    return (paragraph.get("text") or {}).get("nodes") or []
+
+
+def _quote_group(paragraph: dict) -> str | None:
+    return (paragraph.get("format") or {}).get("combine_hash")
+
+
+def _list_html(paragraphs: list[dict], start: int) -> tuple[str, int]:
+    """把一段连续的列表段还原成嵌套 <ul>（与 HTML 渲染器同样的嵌套算法）。"""
+    group = _quote_group(paragraphs[start])
+    parts: list[str] = []
+    levels: list[int] = []
+    index = start
+    while index < len(paragraphs):
+        paragraph = paragraphs[index]
+        if paragraph.get("para_type") != PARA_LIST or _quote_group(paragraph) != group:
+            break
+        fmt = paragraph.get("format") or {}
+        level = int((fmt.get("list_format") or {}).get("level") or 1)
+        while levels and level < levels[-1]:
+            parts.append("</li></ul>")
+            levels.pop()
+        if not levels:
+            parts.append("<ul>")
+            levels.append(level)
+        elif level > levels[-1]:
+            # 上一项 <li> 保持打开，子列表直接放进去
+            parts.append("<ul>")
+            levels.append(level)
+        else:
+            parts.append("</li>")
+        parts.append(f"<li>{_nodes_to_html(_paragraph_nodes(paragraph))}")
+        index += 1
+    while levels:
+        parts.append("</li></ul>")
+        levels.pop()
+    return "".join(parts), index
+
+
+def paragraphs_to_html(paragraphs: list[dict]) -> str:
+    """eva3 段数组 → 近似 HTML，供浏览器预览（正式排版仍由专栏编辑器决定）。
+
+    分组照抄编辑器的 combine_hash 语义：相邻且同组的引用段并成一个 <blockquote>，
+    列表段并成一个 <ul>——否则预览会把一个引用框拆成一堆小框，看着比实际更糟。
+    """
+    parts: list[str] = []
+    index = 0
+    total = len(paragraphs)
+    while index < total:
+        paragraph = paragraphs[index]
+        ptype = paragraph.get("para_type")
+        if ptype == PARA_QUOTE:
+            group = _quote_group(paragraph)
+            body = []
+            while index < total:
+                current = paragraphs[index]
+                if current.get("para_type") != PARA_QUOTE or _quote_group(current) != group:
+                    break
+                body.append(f"<p>{_nodes_to_html(_paragraph_nodes(current))}</p>")
+                index += 1
+            parts.append("<blockquote>" + "".join(body) + "</blockquote>")
+        elif ptype == PARA_LIST:
+            rendered, index = _list_html(paragraphs, index)
+            parts.append(rendered)
+        elif ptype == PARA_HEADING:
+            parts.append(f"<h1>{_nodes_to_html(_paragraph_nodes(paragraph))}</h1>")
+            index += 1
+        elif ptype == PARA_IMAGE:
+            pics = (paragraph.get("pic") or {}).get("pics") or []
+            for pic in pics:
+                src = html.escape(pic.get("url") or "", quote=True)
+                alt = html.escape(pic.get("comment") or "", quote=True)
+                parts.append(f'<figure><img src="{src}" alt="{alt}"></figure>')
+            index += 1
+        else:
+            parts.append(f"<p>{_nodes_to_html(_paragraph_nodes(paragraph))}</p>")
+            index += 1
+    return "\n".join(part for part in parts if part)
+
+
+def render_json_file(json_path: Path, out_path: Path, modules: dict | None = None,
+                     renderer: str = "html") -> Path:
+    """渲染单篇文章为预览页，返回产物路径。
+
+    renderer=opus 时先转成 eva3 段数组，再还原成近似 HTML——两种模型的预览入口
+    保持同一个函数，切换只看一个参数。
+    """
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
 
@@ -128,10 +243,13 @@ def render_json_file(json_path: Path, out_path: Path, modules: dict | None = Non
         raise ValueError(f"{json_path} 不是单篇文章 JSON（缺少 blocks）")
 
     converter = J2MMConverter(modules)
-    fragment = converter.convert_to_bili_html(data)
+    if renderer == "opus":
+        fragment = paragraphs_to_html(converter.convert_to_bili_opus(data))
+    else:
+        fragment = converter.convert_to_bili_html(data)
     title = data.get("translated_title") or data.get("title") or json_path.stem
 
-    page = build_preview_page(fragment, title=title, source=str(json_path))
+    page = build_preview_page(fragment, title=title, source=f"{json_path}（{renderer} 渲染）")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(page)
@@ -147,12 +265,15 @@ def main() -> int:
             "  python tools/preview_bili_html.py\n"
             "  python tools/preview_bili_html.py output/news_x.json --open\n"
             "  python tools/preview_bili_html.py --no-modules\n"
+            "  python tools/preview_bili_html.py --renderer opus\n"
         ),
     )
     parser.add_argument("json_files", nargs="*", help="要预览的 JSON（默认 output/news_*.json）")
     parser.add_argument("-o", "--out", help="输出文件（仅单个输入时可用）")
     parser.add_argument("-m", "--modules", help="模块配置（默认 config/modules_config.json）")
     parser.add_argument("--no-modules", action="store_true", help="不带头尾模块，只看正文")
+    parser.add_argument("--renderer", choices=("html", "opus"), default="html",
+                        help="正文模型：html=老接口（默认），opus=段模型")
     parser.add_argument("--open", action="store_true", help="生成后用默认浏览器打开")
     args = parser.parse_args()
 
@@ -169,19 +290,20 @@ def main() -> int:
         modules_path = Path(args.modules) if args.modules else Path(CONFIG_DIR) / "modules_config.json"
     modules = load_modules(modules_path)
     if modules:
-        log_info("[预览] 已加载模块配置: %s", modules_path)
+        log_info("[预览] 已加载模块配置: %s（正文模型 %s）", modules_path, args.renderer)
     else:
-        log_info("[预览] 不带头尾模块")
+        log_info("[预览] 不带头尾模块（正文模型 %s）", args.renderer)
 
     if args.out and len(inputs) > 1:
         log_error("[预览] 多个输入时不能用 -o 指定单个输出文件")
         return 1
 
     results = []
+    suffix = "" if args.renderer == "html" else f"_{args.renderer}"
     for json_path in inputs:
-        out_path = Path(args.out) if args.out else output_dir / f"preview_{json_path.stem}.html"
+        out_path = Path(args.out) if args.out else output_dir / f"preview_{json_path.stem}{suffix}.html"
         try:
-            page = render_json_file(json_path, out_path, modules)
+            page = render_json_file(json_path, out_path, modules, renderer=args.renderer)
         except (OSError, ValueError, json.JSONDecodeError) as e:
             log_error("[预览] 渲染失败: %s（%s）", json_path, e)
             continue

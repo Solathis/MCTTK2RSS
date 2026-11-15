@@ -30,6 +30,7 @@ MCTTK/
 ├── scraper.py                 # 爬取与翻译模块（含 Feedback 爬虫）
 ├── converter.py               # JSON → BBCode/Markdown 转换器
 ├── poster.py                  # MCBBS 发帖模块（含验证码识别）
+├── bili_poster.py             # B站专栏投稿模块（cookie 会话 + 图片重托管）
 ├── utils.py                   # 公共工具：路径常量、MODULE_TYPE_MAP、classify_article_type
 ├── log_setup.py               # 日志配置（按天分文件、stdout 落盘、保留天数）
 ├── scheduler.py               # 定时调度器（默认每小时运行一次）
@@ -52,9 +53,11 @@ MCTTK/
 ├── output/                    # 输出目录（自动生成，不提交）
 │   ├── .state.json            # 处理状态（URL 级别去重）
 │   ├── .posted.json           # MCBBS 发布状态
+│   ├── .posted_bili.json      # B站专栏投稿状态
 │   ├── news_*.json            # 翻译后的文章数据
 │   ├── news_*.txt             # BBCode 格式（用于 MCBBS）
 │   ├── news_*.md              # Markdown 格式
+│   ├── news_*.html            # 专栏 HTML（bilibili.enabled 时生成）
 │   └── news_*.jpg             # 文章头图
 ├── logs/                      # 运行日志（自动生成，不提交）
 │   └── mcttk_YYYY-MM-DD.log   # 每天一个文件，见上文「日志」章节
@@ -185,7 +188,7 @@ MCBBS_CAPTCHA_ANSWER 仅作占位，未来添加安全回答验证时使用
 ### 3. 运行
 
 ```bash
-# 全流程：爬取 → 翻译 → 转换 → 发布
+# 全流程：爬取 → 翻译 → 转换 → 发布（各平台是否发布由 enabled 决定）
 python main.py
 
 # 仅检测新新闻（不实际处理）
@@ -197,10 +200,15 @@ python main.py --scrape-only
 # 只发布 output 目录中已翻译但未发布的文件
 python main.py --post-only
 
-# 发布时跳过图片上传
-python main.py --no-image
+# 只投 B站专栏，不碰 MCBBS
+python main.py --publish bilibili
 
-# 发布时跳过 JSON 附件
+# 只投 MCBBS / 完全不发布
+python main.py --publish mcbbs
+python main.py --publish none
+
+# 发布时跳过图片上传 / JSON 附件（只对 MCBBS 生效）
+python main.py --no-image
 python main.py --no-json
 ```
 
@@ -214,7 +222,7 @@ python main.py --no-json
 
 | 阶段 | 记录内容 |
 |---|---|
-| 运行 | 模式、输出目录、状态文件、翻译模型、启用类型、Feedback 栏目、MCBBS 开关、日志文件路径 |
+| 运行 | 模式、输出目录、状态文件、翻译模型、启用类型、Feedback 栏目、MCBBS 开关、B站专栏开关（含 cookie 是否就位）、日志文件路径 |
 | 采集 | 每个来源（官方 API / Java 版本清单 / Feedback）拿到多少条、去重与类型过滤结果、耗时 |
 | 状态 | 候选 / 已处理 / 本次待处理条数，首次运行的标记情况 |
 | 解析 | 文章标题、内容块数量与类型分布、发布日期、耗时 |
@@ -550,6 +558,17 @@ python converter.py news.json --markdown-only
   - `post_thread(title, message)` — 发帖
   - `post_news_file(stem, txt, json, dir)` — 发布单个新闻文件（含图片和 JSON 附件）
 
+### bili_poster.py
+
+- `BilibiliPoster` — 专栏投稿器（cookie 会话，走创作中心 web 接口）
+  - `check_login()` — 校验 `SESSDATA` / `bili_jct` 是否还能用
+  - `upload_image(data)` — 上传图片到 B站图床
+  - `rehost_images(html)` — 把正文外链图重托管到 B站 CDN，失败的直接从正文移除
+  - `save_draft(title, content)` — 存草稿（分区无权限时按候选表回退）
+  - `publish(title, content)` — 存草稿并按 `submit` 决定是否提交审核
+  - `post_news_file(stem, json, html, cover_path)` — 单篇完整投稿
+- `load_cookies(cfg)` — 取登录凭据：环境变量优先于 `config/bili_cookies.json`
+
 也可独立使用：
 
 ```bash
@@ -592,12 +611,14 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
                   ↓
           转换 BBCode (output/news_*.txt)
           转换 Markdown (output/news_*.md)
+          转换专栏 HTML (output/news_*.html)   ← 仅 bilibili.enabled 时生成
                   ↓
           下载头图 (output/news_*.jpg)
                   ↓
-          登录 MCBBS → 上传图片 → 上传 JSON → 发帖
-                  ↓
-          记录已发布状态 (.posted.json)
+          ┌───────────────┴───────────────┐
+          ↓                               ↓
+  登录 MCBBS → 上传图片/JSON → 发帖   登录 B站 → 图片重托管 → 存草稿/投稿
+  记录 .posted.json                   记录 .posted_bili.json
 ```
 
 ## GitHub Actions 部署
@@ -610,6 +631,8 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
 | `MCBBS_USERNAME` | MCBBS 论坛用户名 |
 | `MCBBS_PASSWORD` | MCBBS 论坛密码 |
 | `MCBBS_CAPTCHA_ANSWER` | 验证码备用答案（未启用） |
+| `BILI_SESSDATA` | B站登录 cookie（启用专栏发布时需要） |
+| `BILI_JCT` | B站 csrf 令牌，与 `BILI_SESSDATA` 同一登录会话 |
 
 Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也可手动触发。
 

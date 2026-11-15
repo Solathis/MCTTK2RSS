@@ -22,6 +22,7 @@ import json
 import os
 import random
 import re
+import socket
 import time
 from urllib.parse import urlsplit
 
@@ -57,6 +58,9 @@ UPLOAD_BFS_URL = f"{API_BASE}/x/dynamic/feed/draw/upload_bfs"
 
 # 已经是 B站站内的图，不需要（也不该）再上传
 BILI_IMAGE_HOSTS = ("hdslb.com", "bilibili.com", "biliimg.com")
+# 登录 cookie 的作用域：只发给 B站 自己的域名（api/member/passport/account 都在下面），
+# 抓外链图片时带上 SESSDATA 属于凭据泄露
+BILI_COOKIE_DOMAIN = ".bilibili.com"
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 DEFAULT_TIMEOUT = 120
 # 专栏的「卡片模板」id（编辑器里的卡片类型）。实测 2026-11：tid 传分区 id 不会报错，
@@ -184,11 +188,33 @@ def load_cookies(bili_config: dict) -> dict:
 
 # ── 小工具 ───────────────────────────────────────────
 
+def _resolve_host_ips(host: str) -> set[str]:
+    """把域名解析成 IP 集合。
+
+    单独成一个函数是为了让单测能打桩——否则 pytest 会真去查 DNS，
+    无网环境（CI）直接红。
+    """
+    return {info[4][0] for info in socket.getaddrinfo(host, None)}
+
+
+def _is_public_ip(text: str) -> bool:
+    """只要不是「公网可路由」的地址就不算公网（内网 / 回环 / 链路本地 / 保留 / 组播）。"""
+    try:
+        ip = ipaddress.ip_address(text)
+    except ValueError:
+        return False
+    return not (ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast)
+
+
 def _assert_public_url(url: str) -> None:
     """只允许 https 公网地址。
 
     正文图片 URL 来自抓取内容，是数据不是指令：不能让它把我们指到内网或明文地址。
-    这里只挡明显的内网字面量与协议（域名解析交给 HTTP 层），避免单测触发 DNS。
+    字面 IP 直接判；域名要真解析一遍再看结果——只挡字面量的话，攻击者写个
+    解析到 127.0.0.1 / 169.254.169.254 的域名就能绕过。
+
+    残留风险：解析与实际连接之间仍有一次 TOCTOU（requests 会自己再解析），
+    要彻底封死得把 IP 钉住并自管 SNI，本项目不为抓取来的图片付这个代价。
     """
     parts = urlsplit(url)
     if parts.scheme != "https":
@@ -198,12 +224,25 @@ def _assert_public_url(url: str) -> None:
         raise ValueError(f"图片地址缺少域名: {url[:80]}")
     if host == "localhost" or host.endswith(".local"):
         raise ValueError(f"拒绝内网图片地址: {url[:80]}")
+
     try:
-        ip = ipaddress.ip_address(host)
+        ipaddress.ip_address(host)
+        is_ip_literal = True
     except ValueError:
+        is_ip_literal = False
+
+    if is_ip_literal:
+        if not _is_public_ip(host):
+            raise ValueError(f"拒绝内网图片地址: {url[:80]}")
         return
-    if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
-        raise ValueError(f"拒绝内网图片地址: {url[:80]}")
+
+    # 域名：解析不出来就当不可信（真去请求也只会失败，不如提前给出明确原因）
+    try:
+        addresses = _resolve_host_ips(host)
+    except OSError as e:
+        raise ValueError(f"图片域名解析失败: {host}（{e}）") from e
+    if not addresses or not all(_is_public_ip(item) for item in addresses):
+        raise ValueError(f"拒绝解析到内网/非公网地址的图片: {url[:80]}")
 
 
 def _is_bili_host(url: str) -> bool:
@@ -357,7 +396,11 @@ def build_session(http_config: dict | None = None, cookies: dict | None = None) 
         "Referer": MEMBER_BASE + "/",
     })
     if cookies:
-        session.cookies.update(cookies)
+        # 必须带 domain 写进去：`cookies.update(dict)` 得到的 cookie 没有域，
+        # requests 会把它发给任意 host —— 而 download_image 用同一个会话抓外链图片，
+        # 等于把 SESSDATA / bili_jct 送给正文里出现的每一个图片域名。
+        for name, value in cookies.items():
+            session.cookies.set(name, str(value), domain=BILI_COOKIE_DOMAIN, path="/")
     proxies = {k: v for k, v in (http_config.get("proxies") or {}).items() if v}
     if proxies:
         session.proxies.update(proxies)
@@ -502,19 +545,36 @@ class BilibiliPoster:
             return self.upload_image(f.read(), filename=os.path.splitext(os.path.basename(path))[0])
 
     def download_image(self, url: str) -> bytes:
-        """下载正文外链图片。只允许 https 公网地址，且不跟随重定向（防 SSRF）。"""
+        """下载正文外链图片。只允许 https 公网地址，且不跟随重定向（防 SSRF）。
+
+        流式读：一边收一边累计，超过上限立刻中止。整块 `resp.content` 之后再判大小
+        等于先把几百 MB 拉进内存，图片域名完全可以这么打我们。
+        """
         _assert_public_url(url)
         resp = self.session.get(
             url, timeout=self.timeout, verify=self.verify, allow_redirects=False,
-            headers={"Accept": "image/*"},
+            headers={"Accept": "image/*"}, stream=True,
         )
-        if resp.status_code != 200:
-            raise BiliError(f"下载图片失败: HTTP {resp.status_code}（{url[:80]}）")
-        data = resp.content or b""
+        try:
+            if resp.status_code != 200:
+                raise BiliError(f"下载图片失败: HTTP {resp.status_code}（{url[:80]}）")
+            chunks: list[bytes] = []
+            total = 0
+            for chunk in resp.iter_content(chunk_size=64 * 1024):
+                if not chunk:
+                    continue
+                total += len(chunk)
+                if total > MAX_IMAGE_BYTES:
+                    raise BiliError(f"图片过大（>{MAX_IMAGE_BYTES} 字节），已跳过: {url[:80]}")
+                chunks.append(chunk)
+        finally:
+            close = getattr(resp, "close", None)
+            if callable(close):
+                close()
+
+        data = b"".join(chunks)
         if not data:
             raise BiliError(f"图片内容为空: {url[:80]}")
-        if len(data) > MAX_IMAGE_BYTES:
-            raise BiliError(f"图片过大（{len(data)} 字节），已跳过: {url[:80]}")
         return data
 
     def rehost_images(self, html: str) -> tuple[str, int, int]:

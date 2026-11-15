@@ -6,6 +6,7 @@
 import json
 
 import pytest
+import requests
 
 from bili import poster as bili_poster
 from bili.poster import (
@@ -21,6 +22,15 @@ from bili.poster import (
 PNG_BYTES = b"\x89PNG\r\n\x1a\n" + b"0" * 64
 
 
+@pytest.fixture(autouse=True)
+def stub_dns(monkeypatch):
+    """域名解析不打真 DNS（CI 无网，真解析必红）。
+
+    默认把一个公网地址还回去；要测内网/解析失败，用例自己再 monkeypatch 一次。
+    """
+    monkeypatch.setattr(bili_poster, "_resolve_host_ips", lambda host: {"93.184.216.34"})
+
+
 # ── 测试替身 ─────────────────────────────────────────
 
 class FakeResponse:
@@ -29,6 +39,7 @@ class FakeResponse:
         self._payload = payload
         self._raw_text = raw_text
         self.content = content
+        self.closed = False
 
     @property
     def text(self):
@@ -40,6 +51,14 @@ class FakeResponse:
         if self._payload is None:
             raise ValueError("no json")
         return self._payload
+
+    def iter_content(self, chunk_size=1024, decode_unicode=False):
+        """按块吐出 body，模拟 requests 的流式读。"""
+        for start in range(0, len(self.content), chunk_size):
+            yield self.content[start:start + chunk_size]
+
+    def close(self):
+        self.closed = True
 
 
 class FakeSession:
@@ -325,6 +344,35 @@ class TestImages:
             make_poster(session).download_image("https://example.com/a.png")
         assert session.calls[0][2]["allow_redirects"] is False
 
+    def test_download_streams_without_reading_past_limit(self, cookies, monkeypatch):
+        """按块读、超限立刻中止：不能先把整个 body 收进内存再判大小。"""
+        monkeypatch.setattr(bili_poster, "MAX_IMAGE_BYTES", 100)
+        chunks = [b"x" * 60 for _ in range(5)]  # 300 字节，一超限就该停
+        response = FakeResponse(status=200, content=b"".join(chunks))
+        pulled = []
+
+        def iter_content(chunk_size=1024, decode_unicode=False):
+            for chunk in chunks:
+                pulled.append(len(chunk))
+                yield chunk
+
+        response.iter_content = iter_content
+        session = FakeSession(response)
+
+        with pytest.raises(BiliError) as excinfo:
+            make_poster(session).download_image("https://example.com/big.png")
+
+        assert "过大" in str(excinfo.value)
+        assert len(pulled) == 2  # 拿到 120 字节就停了，后面三块没读
+        assert response.closed is True
+
+    def test_download_reads_chunked_body(self, cookies):
+        session = FakeSession(FakeResponse(status=200, content=PNG_BYTES))
+
+        data = make_poster(session).download_image("https://example.com/a.png")
+
+        assert data == PNG_BYTES
+
     def test_rehost_replaces_external_images(self, cookies):
         session = FakeSession(
             FakeResponse(status=200, content=PNG_BYTES),
@@ -402,6 +450,43 @@ class TestPublicUrlGuard:
 
     def test_allows_public_https(self):
         _assert_public_url("https://www.minecraft.net/a.png")
+
+    def test_rejects_hostname_resolving_to_private(self, monkeypatch):
+        """只挡字面 IP 不够：攻击者可以用解析到内网的域名。"""
+        monkeypatch.setattr(bili_poster, "_resolve_host_ips", lambda host: {"127.0.0.1"})
+        with pytest.raises(ValueError) as excinfo:
+            _assert_public_url("https://innocent-looking.example/a.png")
+        assert "内网" in str(excinfo.value)
+
+    def test_rejects_mixed_public_and_private(self, monkeypatch):
+        monkeypatch.setattr(
+            bili_poster, "_resolve_host_ips", lambda host: {"93.184.216.34", "169.254.169.254"},
+        )
+        with pytest.raises(ValueError):
+            _assert_public_url("https://rebind.example/a.png")
+
+    def test_rejects_unresolvable_host(self, monkeypatch):
+        def boom(host):
+            raise OSError("no dns")
+
+        monkeypatch.setattr(bili_poster, "_resolve_host_ips", boom)
+        with pytest.raises(ValueError) as excinfo:
+            _assert_public_url("https://no-such-host.example/a.png")
+        assert "解析失败" in str(excinfo.value)
+
+
+class TestSessionCookies:
+    def test_cookies_only_sent_to_bilibili(self):
+        """抓外链图片用的是同一个会话，cookie 必须限定在 B站 域内。"""
+        session = bili_poster.build_session({}, {"SESSDATA": "s", "bili_jct": "c"})
+
+        external = session.prepare_request(requests.Request("GET", "https://example.com/a.png"))
+        internal = session.prepare_request(
+            requests.Request("GET", f"{bili_poster.API_BASE}/x/web-interface/nav")
+        )
+
+        assert external.headers.get("Cookie") is None
+        assert "SESSDATA=s" in internal.headers.get("Cookie", "")
 
 
 # ── 文件级入口 ───────────────────────────────────────

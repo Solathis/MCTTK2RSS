@@ -786,9 +786,10 @@ git push origin v1.0.0
   放 `.env` 或 `config/bili_cookies.json`（两者都不入库），日志里不会打印。`submit: "draft"` 只存草稿、
   需人工在编辑器发布，改成 `"publish"` 才会自动提交审核（提交后进入审核队列，通过前链接打不开）。
   正文图片会先重托管到 B站 CDN——残留外链会被整篇拒绝，所以上传失败的图会被直接丢弃
-- **专栏正文模型**：发帖走的是 HTML 正文那套（老接口）。段模型（`bili/opus.py`）已经能渲染，
-  但还没接上新版编辑器的接口，原因与实测记录见
-  [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.3、§10；
+- **专栏正文模型**：发帖走的是 HTML 正文那套（老接口 cv 专栏草稿）。段模型（`bili/opus.py`）
+  已经能渲染，但新版编辑器的发布接口还没接——实测发布打的是
+  `POST /x/dynamic/feed/create/opus`（WBI 签名，一次发布、没有草稿环节），请求体结构待补，
+  记录见 [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.3、§9.4、§10；
   在那之前段模型只能用 `tools/preview_bili_html.py --renderer opus` 看效果
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突

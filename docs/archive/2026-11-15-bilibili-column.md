@@ -198,6 +198,29 @@
 结论：要做自动声明，必须整体切到段落模型（还需先抓到发布/提交环节的新接口）。
 本次不做，留作独立特性；当前投稿后 `is_aigc` 需要人工在编辑器勾选。
 
+### 9.4 补抓包：发布走的是 `create/opus`，不是 `draft/add`
+
+维护者用 HTTP Debugger 录了一次「新建图文并发布」（`member.bilibili.com/platform/upload-manager/opus`），
+导出的 xlsx 里 42 条请求中只有一条是发布，它推翻了 §9.3 对上一步接口的猜测：
+
+| 观察 | 值 |
+| --- | --- |
+| 发布请求 | `POST https://api.bilibili.com/x/dynamic/feed/create/opus` |
+| 查询串 | `csrf`、`gaia_source=main_web`、`w_rid`、`wts`、`b_wet`、`x-bili-locale-json`、`x-bili-device-req-json`、`dm_img_list`/`dm_img_str`/`dm_cover_img_str`/`dm_img_inter` |
+| 请求体 | `application/json`，90623 字节 |
+| 响应 | 200，113 字节 |
+| 同一会话里的相关请求 | `POST member.bilibili.com/x/material/up/check`（素材上传校验）、`GET x/polymer/web-dynamic/v1/opus/creationlist`（图文列表）、`POST x/v2/dynamic/sunflower/parse`（富文本解析） |
+
+三点结论：
+
+1. 新版图文/专栏是**一次发布**，这条链路里没有「存草稿」请求；老接口 `creative/draft/addupdate`
+   才是「先草稿、人工放行」的形态。要不要用新接口，等于要不要放弃草稿环节。
+2. `w_rid` + `wts` 确认存在（WBI 签名），另外还带了 `b_wet` 与 `dm_*` 一串风控/指纹参数；
+   这些是浏览器端生成的，能否省略、用什么值替代，只有实测才知道。
+3. 这次导出的 xlsx **只有摘要表**（Id/URL/方法/状态/大小/类型/耗时），没有请求体与响应体，
+   所以 `arg` 里的字段名与写法仍未确认——`create/opus` 是「发布」而非「草稿」，猜错会
+   在账号下留下一条公开的坏图文，所以实现前必须先拿到真实请求体。
+
 ---
 
 ## 10. 段模型渲染器（路线 A，2026-11-15 落地）
@@ -242,10 +265,10 @@
 `tools/preview_bili_html.py --renderer opus` 生成的预览页；与本仓库 HTML 产物的对照口径是
 「同一篇的文字内容与段落边界一致」（`tests/test_bili_opus.py::TestRendererParity`）。
 
-未做：`POST /x/dynamic/feed/article/draft/add`（WBI 签名 + `{"arg": {...}}`）的请求体结构还没有
-实测样本——§9.3 只确认了「正文换成 `opus.content.paragraphs`、标题要放 `opus.title`」，
-`arg` 里其余字段（分区、标签、卡片、AI 声明）的键名与取值都靠猜。先把渲染器落地并与
-`draft/view` 样本对齐，等抓到编辑器真实请求体再接接口，避免重演 §9.1 那种字段语义猜错。
+未做：发布环节的新接口还没有请求体样本。§9.3 原以为是 `draft/add`，§9.4 抓包显示实机
+发布打的是 `POST /x/dynamic/feed/create/opus`（WBI 签名 + 90 KB JSON 正文），但导出文件
+没有 body，`arg` 里（分区、标签、卡片、AI 声明）的键名与取值仍未确认。先把渲染器落地并与
+`draft/view` 样本对齐，等拿到真实请求体再接接口，避免重演 §9.1 那种字段语义猜错。
 
 ---
 

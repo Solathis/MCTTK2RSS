@@ -1,6 +1,11 @@
 requests>=2.28
 beautifulsoup4>=4.12
 curl_cffi>=0.5
-urllib3>=2.0.0
+# 安全下限：2.8.0 修掉 HTTPS 代理 TLS 配置被覆盖（GHSA-8988-9cw3-xx77）
+urllib3>=2.8.0
+# 安全下限：2026.10.19 起移除私钥泄露的 emSign 根证书（GHSA-6q48-6c7w-9gw2）
+certifi>=2026.10.19
+# 安全下限：4.0 修掉后代选择器的多项式时间 DoS（GHSA-mmhr-3c5m-f64f）
+soupsieve>=4.0
 ddddocr>=1.4.11
 qrcode>=7.4

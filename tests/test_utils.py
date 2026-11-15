@@ -2,6 +2,9 @@
 import json
 import os
 
+import pytest
+
+import utils
 from utils import find_image, load_dotenv, load_posted, save_posted
 
 
@@ -68,6 +71,27 @@ class TestPostedState:
         save_posted(path, {"old"})
         save_posted(path, {"new"})
         assert load_posted(path) == {"new"}
+
+    def test_write_leaves_no_temp_file(self, tmp_path):
+        path = str(tmp_path / ".posted.json")
+        save_posted(path, {"news_a"})
+        assert [item.name for item in tmp_path.iterdir()] == [".posted.json"]
+
+    def test_interrupted_write_keeps_old_state(self, tmp_path, monkeypatch):
+        """写到一半失败（断电 / 磁盘满 / 被 kill）时旧文件必须还完整可读。"""
+        path = str(tmp_path / ".posted.json")
+        save_posted(path, {"old"})
+
+        def boom(obj, fp, **kwargs):
+            fp.write('["half')
+            raise OSError("磁盘满了")
+
+        monkeypatch.setattr(utils.json, "dump", boom)
+        with pytest.raises(OSError):
+            save_posted(path, {"new"})
+
+        assert load_posted(path) == {"old"}
+        assert [item.name for item in tmp_path.iterdir()] == [".posted.json"]
 
 
 class TestFindImage:

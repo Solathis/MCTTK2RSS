@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """utils.py — 项目公共工具函数"""
 
+import contextlib
 import json
 import os
 import re
+import tempfile
 from collections.abc import Callable
 
 # ── 项目路径 ───────────────────────────────────────────
@@ -34,9 +36,21 @@ def load_posted(state_file: str) -> set:
 
 
 def save_posted(state_file: str, posted: set) -> None:
-    """写入「已发布」记录。排序后落盘，diff 才稳定。"""
-    with open(state_file, "w", encoding="utf-8") as f:
-        json.dump(sorted(posted), f, ensure_ascii=False, indent=2)
+    """写入「已发布」记录。排序后落盘，diff 才稳定。
+
+    先写同目录临时文件再 os.replace：直接 `open(..., "w")` 会先把文件截断，
+    这时进程被 kill / 断电就留下半截 JSON，下次 load_posted 直接 json 解析炸掉。
+    """
+    directory = os.path.dirname(os.path.abspath(state_file))
+    fd, tmp_path = tempfile.mkstemp(prefix=".posted-", suffix=".tmp", dir=directory)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(sorted(posted), f, ensure_ascii=False, indent=2)
+        os.replace(tmp_path, state_file)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            os.remove(tmp_path)
+        raise
 
 MODULE_TYPE_MAP = {
     'module_java_snapshot_header': 'java_snapshot',

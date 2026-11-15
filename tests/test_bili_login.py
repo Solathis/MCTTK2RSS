@@ -2,6 +2,7 @@
 
 全部用假会话：不联网、不真扫码；断言流程行为（请求了什么、落盘了什么）。
 """
+import importlib.util
 import json
 import re
 import sys
@@ -78,9 +79,19 @@ def poll_state(code, message="0"):
 
 # ── 二维码渲染 ───────────────────────────────────────
 
+# `qrcode` 是 login 可选依赖（uv sync --extra login），CI 只跑基础依赖，
+# 所以依赖它的用例在这里降级跳过；`test_missing_qrcode_dependency` 例外——
+# 它本来就是在验「缺依赖时的报错」，两套环境都该跑。
+_HAS_QRCODE = importlib.util.find_spec("qrcode") is not None
+requires_qrcode = pytest.mark.skipif(
+    not _HAS_QRCODE, reason="需要可选依赖 qrcode（uv sync --extra login）",
+)
+
+
 class TestRenderQrText:
     URL = "https://account.bilibili.com/h5/account-h5/auth/scan-web?navhide=1&qrcode_key=c48971ef"
 
+    @requires_qrcode
     def test_compact_is_half_height_and_single_width(self):
         """默认样式要让一屏放得下：一个字符画上下两个模块，宽高各减半。"""
         compact = render_qr_text(self.URL).splitlines()
@@ -91,11 +102,13 @@ class TestRenderQrText:
         assert set("".join(compact)) <= set(" ▀▄█")
         assert len({len(line) for line in compact}) == 1  # 每行等宽，否则二维码是歪的
 
+    @requires_qrcode
     def test_block_style_is_wide(self):
         block = render_qr_text(self.URL, style="block").splitlines()
         assert "██" in "".join(block)
         assert len({len(line) for line in block}) == 1
 
+    @requires_qrcode
     def test_color_forces_black_on_white(self):
         """深色终端上模块会和背景同色，所以真有终端时用 ANSI 固定黑模块白底。"""
         colored = render_qr_text(self.URL, color=True)
@@ -216,6 +229,7 @@ class TestSaveCookies:
 # ── 完整流程 ─────────────────────────────────────────
 
 class TestRunLogin:
+    @requires_qrcode
     def test_full_flow_saves_cookies(self, tmp_path):
         session = FakeSession(
             api_ok({"url": "https://passport.bilibili.com/h5-app/passport/login/scan?qrcode_key=key",
@@ -241,6 +255,7 @@ class TestRunLogin:
         assert saved["SESSDATA"] == "abc%2C1700000000%2Cdef*11"
         assert saved["bili_jct"] == "csrfvalue"
 
+    @requires_qrcode
     def test_missing_required_cookie_raises(self, tmp_path):
         session = FakeSession(
             api_ok({"url": "https://x/scan?qrcode_key=key", "qrcode_key": "key"}),

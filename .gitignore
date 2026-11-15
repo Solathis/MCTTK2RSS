@@ -17,6 +17,8 @@ output/*.html
 # config/modules_config.json 与 config/config.sample.json 仍然入库
 config/config.json
 config*.bak
+# B站登录 cookie（SESSDATA 等价于账号密码），绝不入库
+config/bili_cookies.json
 
 # 日志文件
 logs/

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """utils.py — 项目公共工具函数"""
 
+import json
 import os
 import re
 
@@ -10,6 +11,31 @@ import re
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(PROJECT_ROOT, "config")
 GLOSSARY_DIR = os.path.join(PROJECT_ROOT, "glossary")
+
+
+# ── 产物与状态（MCBBS / B站 两个平台共用）───────────────
+
+def find_image(news_dir: str, stem: str) -> str | None:
+    """找文章同名题图（支持常见后缀），找不到返回 None。"""
+    for ext in [".jpg", ".jpeg", ".png", ".gif", ".webp"]:
+        img_path = os.path.join(news_dir, stem + ext)
+        if os.path.isfile(img_path):
+            return img_path
+    return None
+
+
+def load_posted(state_file: str) -> set:
+    """读取「已发布」记录（文件名 stem 集合）。文件不存在时返回空集合。"""
+    if os.path.isfile(state_file):
+        with open(state_file, encoding="utf-8") as f:
+            return set(json.load(f))
+    return set()
+
+
+def save_posted(state_file: str, posted: set) -> None:
+    """写入「已发布」记录。排序后落盘，diff 才稳定。"""
+    with open(state_file, "w", encoding="utf-8") as f:
+        json.dump(sorted(posted), f, ensure_ascii=False, indent=2)
 
 MODULE_TYPE_MAP = {
     'module_java_snapshot_header': 'java_snapshot',

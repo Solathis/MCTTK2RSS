@@ -24,7 +24,7 @@ import time
 import requests
 
 from log_setup import log_debug, log_error, log_info, log_warning, setup_logging
-from utils import CONFIG_DIR, MODULE_TYPE_MAP
+from utils import CONFIG_DIR, MODULE_TYPE_MAP, find_image, load_posted, save_posted
 
 # ── 配置 ─────────────────────────────────────────────
 
@@ -102,14 +102,6 @@ def detect_module_type(message: str, title: str) -> str | None:
             return category
     from utils import classify_article_type
     return classify_article_type(title, chinese=True, fallback=None)
-
-
-def find_image(news_dir: str, stem: str) -> str | None:
-    for ext in [".jpg", ".jpeg", ".png", ".gif", ".webp"]:
-        img_path = os.path.join(news_dir, stem + ext)
-        if os.path.exists(img_path):
-            return img_path
-    return None
 
 
 def insert_image_bbcode(message: str, aid: str) -> str:
@@ -629,17 +621,8 @@ class MCBBSPoster:
 
 
 # ── 状态管理 ─────────────────────────────────────────
-
-def load_posted(state_file: str) -> set:
-    if os.path.exists(state_file):
-        with open(state_file) as f:
-            return set(json.load(f))
-    return set()
-
-
-def save_posted(state_file: str, posted: set):
-    with open(state_file, "w") as f:
-        json.dump(sorted(posted), f, ensure_ascii=False, indent=2)
+# load_posted / save_posted 已上移到 utils（B站 侧也要用），本模块从 utils 导入，
+# `from poster import load_posted` 的老调用方与测试仍然有效。
 
 
 # ── CLI 入口 ─────────────────────────────────────────

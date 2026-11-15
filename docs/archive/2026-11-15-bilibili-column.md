@@ -1,4 +1,4 @@
-# B站专栏自动发布 — 调研与决策记录（2026-11-15）
+﻿# B站专栏自动发布 — 调研与决策记录（2026-11-15）
 
 本文件是「给 MCTTK 增加 B站专栏发帖能力」的调研结论与决策留痕，供后续实现与 PR review 对照。
 **代码尚未改动**；本文只记录事实、取舍和待实测项。
@@ -464,3 +464,30 @@ payload 里是空串），所以不用新结构，直接把原文刷灰：
 - 官方开放平台「文章提交」：<https://bilibili.apifox.cn/api-23767554>
 - 官方开放平台「专栏稿件图片上传」：<https://bilibili.apifox.cn/api-23906916>
 - 同类可工作实现（含外链图片重托管、state 处理）：<https://cdn.jsdelivr.net/npm/@acedatacloud/skills@2026.1019.283001/skills/bilibili/SKILL.md>
+
+---
+
+## 12. 升级到 0.3.0：首次启用只做基线（2026-11-15 维护者要求）
+
+线上 Docker 还是 0.2.0，`output/` 里积压了一大批历史文章。要求：升级到带专栏的版本后，
+第一次运行 **B站 一篇都不发**，同时把当前文章全部记为「已投」，直到下一次翻译才恢复投稿。
+
+做法：`--post-only` 与全流程共用同一套基线逻辑（`main.py::_seed_bili_posted`）——
+`output/.posted_bili.json` 不存在或为空时，把 `news_*.json` 全部记为已投稿：
+
+- 全流程：做基线时排除本批新处理的篇目，所以「本次新翻译的」照常投，历史一篇不投；
+- `--post-only`：没有「本批」概念，基线覆盖全部现有文章，首次运行一篇都不投；
+- 补投历史：删掉（或清空成 `[]`）`output/.posted_bili.json`，再跑
+  `--post-only --publish bilibili --bili-backfill`。`--bili-backfill` 是「这次明确要补投、
+  别做基线」的开关（不加就会又被基线吞掉），同样受 `max_per_run` 限制。
+
+凭据口径同时收紧（维护者要求）：环境变量 `BILI_SESSDATA` / `BILI_JCT` 为空串时按「没设置」
+处理、回落到 `config/bili_cookies.json`；两处都没有 cookie 就整段跳过专栏（一条 WARNING，
+不计失败）。两份 Compose 编排此前没透传这两个变量（README / `.env.sample` 承诺可用但容器里
+读不到），已补上。
+
+### 未解决（另开 issue）
+
+`.posted_bili.json` 仍是扁平的 stem 集合：没有 per-篇结果、没有锁、不回查远端状态。
+Sourcery 在 PR #9 提的四条（结果不明重投 → 重复草稿/重复稿件、待审核被打回仍算已投、
+并发运行重复投稿）都源于这个缺口。修它要改状态文件语义（按仓库规范需先确认），单独开 issue。

@@ -25,6 +25,7 @@ cp .env.sample .env
 # OPENAI_API_KEY=你的API密钥
 # MCBBS_USERNAME=你的用户名
 # MCBBS_PASSWORD=你的密码
+# BILI_SESSDATA= / BILI_JCT=（可选，投 B站专栏才需要；留空则用 config/bili_cookies.json）
 ```
 
 2. 若还没有本地配置，先 `cp config/config.sample.json config/config.json`（`config/config.json` 不入库），
@@ -104,6 +105,10 @@ docker run -d \
   -e MCBBS_PASSWORD=密码 \
   ghcr.io/jiubook/mcttk:1.0.0
 ```
+
+> B站专栏凭据二选一：`-e BILI_SESSDATA=... -e BILI_JCT=...`，或把 cookie 写进
+> `config/bili_cookies.json`（`config/` 已只读挂载，容器里读得到）。环境变量为空串时按
+> 「没设置」处理、回落到 cookie 文件；两者都没有就整段跳过专栏，不计入失败。
 
 ### 使用 docker-compose（推荐）
 
@@ -378,7 +383,12 @@ tail -f "logs/mcttk_$(date +%F).log"
 ## 注意事项
 
 - 首次运行会自动将当前所有新闻标记为已处理，下次运行才开始处理真正的新新闻
-- 状态文件 `output/.state.json` 和 `output/.posted.json` 持久化保存在宿主机
+- 启用 B站专栏（`bilibili.enabled: true`）后第一次运行只做基线：把 `output` 里已有的文章
+  记为「已投稿」，一篇都不投；之后只投新翻译的文章。想补投历史，先删掉（或清空成 `[]`）
+  `output/.posted_bili.json`，再在宿主机跑
+  `docker exec mcttk-scraper python main.py --post-only --publish bilibili --bili-backfill`
+- 状态文件 `output/.state.json`、`output/.posted.json` 和 `output/.posted_bili.json`
+  持久化保存在宿主机
 - 删除 `output/.state.json` 会导致重新处理所有新闻，谨慎操作
 - 环境变量优先级高于 `config.json`，敏感信息建议通过环境变量传入
 - 日志文件保存在 `logs/` 目录，格式为 `mcttk_YYYY-MM-DD.log`，默认保留 90 天

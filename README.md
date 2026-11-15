@@ -179,14 +179,30 @@ cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `c
 只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成 `"publish"` 自动发布
 （opus 模式下会先存草稿再按草稿号发布，发布失败草稿仍在）。
 
+**凭据来源**（按优先级）：环境变量 `BILI_SESSDATA` / `BILI_JCT` → `bilibili.cookie_file`
+（默认 `config/bili_cookies.json`）。环境变量是空串时按「没设置」处理、回落到 cookie 文件，
+所以 Docker Compose 里留空 `BILI_SESSDATA=` 不会把文件里的值覆盖掉。两处都没有 cookie 时
+专栏整段跳过（日志一条 WARNING，不计入失败），其余流程照常跑。
+
+**首次启用会先做基线**：`output/.posted_bili.json` 不存在（或内容为空）时，第一次运行把
+`output` 里已有的 `news_*.json` 全部记为「已投稿」，**一篇都不投**，之后只投新翻译的文章。
+升级到带专栏的版本时不用手动清理历史。要补投历史：删掉（或清空成 `[]`）
+`output/.posted_bili.json`，再用 `--post-only --publish bilibili --bili-backfill` 跑
+（`--bili-backfill` 就是「这次明确要补投，别做基线」的开关，同样受 `max_per_run` 限制，
+一次投不完就多跑几次）。
+
 **投放范围**（`publish_types` / `exclude_sources`）在投稿前按文章元数据过滤：
 
 - `publish_types`：允许投专栏的文章类型，取值同抓取阶段的分类
   （`java_snapshot` / `java_prerelease` / `java_rc` / `java_release` / `bedrock_beta` / `bedrock_release`）。
   模板默认是**版本发布类全放**，于是官方 API 的「快讯」（类型落到 `other`）和时评不会进专栏。
 - `exclude_sources`：不投专栏的来源，默认排除 `feedback`（论坛式的更新日志搬运）。
-  来源取值是 `minecraft_api` / `version_manifest` / `feedback`。
+  目前能区分的是 `minecraft_api` 与 `feedback`：版本清单（Piston manifest）补出来的文章
+  抓取阶段同样记成 `minecraft_api`，要按版本类型排除请用 `publish_types`。
 - 两项**留空或删掉即不过滤**（老配置行为不变）；被跳过的文章会在日志里逐条写明原因。
+
+`bilibili.max_per_run`（默认 3）对全流程和 `--post-only` 都生效：单次运行最多投这么多篇，
+剩下的下次运行再投（全流程只投当批新文章，补投用 `--post-only`）。
 
 也可以通过 `.env` 文件或环境变量传入敏感信息（优先级高于 config.json）：
 
@@ -219,6 +235,9 @@ python main.py --post-only
 
 # 只投 B站专栏，不碰 MCBBS
 python main.py --publish bilibili
+
+# 把 B站专栏里积压的历史文章补投出去（跳过首次基线，配合 --post-only）
+python main.py --post-only --publish bilibili --bili-backfill
 
 # 只投 MCBBS / 完全不发布
 python main.py --publish mcbbs
@@ -610,7 +629,7 @@ python converter.py news.json --markdown-only
 **超链接策略**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链一律降级成纯文本
 `文字（URL）`（地址留在正文里可复制，文字就是地址时只留一次）。原因是 B站 图文里点外链
 先进「离开 B站」的拦截页（实测），正文十几个外链等于十几个提示页。策略写在
-`bili/__init__.py` 的 `SIGNATURE_LINKS` / `degrade_link()`，两套渲染器共用。
+`bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`，两套渲染器共用。
 
 **原文刷灰**：段模型的原文对照（引用框、列表项第二行、英文原标题）用 `color` 写成
 `#c9ccd0` 的灰色（编辑器取色板里的 `--Ga3`），译文保持默认色；HTML 版没有颜色能力
@@ -842,7 +861,7 @@ git push origin v1.0.0
   两项留空即不过滤，被跳过的文章会在日志里逐条说明原因
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
-  改策略见 `bili/__init__.py` 的 `SIGNATURE_LINKS` 与 `degrade_link()`
+  改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；
@@ -869,7 +888,9 @@ git push origin v1.0.0
 - **磁盘管理**：`output/` 目录下的文件不会被自动清理，需手动管理
 - **日志**：每轮运行的来源条数、翻译量、保存的文件、发帖地址都会写进 `logs/mcttk_YYYY-MM-DD.log`
   （`print()` 与 stderr 也一并落盘）。容器重建后 `docker logs` 会清空，排查历史问题请以该目录为准
-- **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json` 后会重新发布所有已翻译文件
+- **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json`
+  后会重新发布所有已翻译文件；删除 `output/.posted_bili.json` 后会先把现有文章重新记为
+  「已投稿」做基线（一篇都不投），要真补投就用 `--post-only --bili-backfill`
 
 ## 许可证
 

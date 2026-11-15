@@ -503,3 +503,319 @@ class TestHelpers:
         ]}
         assert BilibiliPoster._build_summary(data, 100) == "第一段 第二段"
         assert BilibiliPoster._build_summary(data, 0) == ""
+
+
+# ── eva3 段落模型（renderer=opus） ──────────────────
+
+TEXT_ONLY_PARAS = [
+    {"para_type": 1, "format": {"indent": {}}, "text": {"nodes": [
+        {"node_type": 1, "word": {"words": "你好", "font_size": 17, "font_level": "regular"}},
+    ]}},
+]
+
+EXTERNAL_IMAGE_PARAS = [
+    {"para_type": 2, "pic": {"pics": [{"url": "https://x.com/a.png", "comment": "图"}]}},
+]
+
+
+def _opus_poster(session, **overrides):
+    """eva3 发帖器：直接把 WBI 键塞好，测试里不去拉 nav。"""
+    poster = make_poster(session, renderer="opus", **overrides)
+    poster.wbi_keys = ("img-key", "sub-key")
+    return poster
+
+
+def _write_opus_article(tmp_path, *, paragraphs=None, title="Test Title", translated="测试标题"):
+    meta = {
+        "title": title,
+        "translated_title": translated,
+        "blocks": [{"type": "p", "source_text": "Hello", "translated_text": "你好世界", "meta": {}}],
+    }
+    json_path = tmp_path / "news_x.json"
+    json_path.write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    opus_path = tmp_path / "news_x.opus.json"
+    opus_path.write_text(
+        json.dumps({"paragraphs": paragraphs if paragraphs is not None else TEXT_ONLY_PARAS},
+                   ensure_ascii=False),
+        encoding="utf-8",
+    )
+    return json_path, opus_path
+
+
+class TestBuildOpusDraftArg:
+    def test_minimal_shape(self):
+        arg = bili_poster.build_opus_draft_arg(title="标题", paragraphs=TEXT_ONLY_PARAS,
+                                               category_id=26, template_id=1)
+        assert arg["title"] == "标题"
+        assert (arg["category_id"], arg["template_id"], arg["type"]) == (26, 1, 4)
+        assert arg["opus"]["title"] == "标题"
+        assert arg["opus"]["content"] == {"paragraphs": TEXT_ONLY_PARAS}
+        assert arg["opus"]["attachments"] == {"is_aigc": 1}
+        assert "summary" not in arg and "image_urls" not in arg
+
+    def test_summary_and_cover(self):
+        arg = bili_poster.build_opus_draft_arg(
+            title="标题", paragraphs=[], summary="摘要", cover_url="http://c.jpg",
+        )
+        assert arg["summary"] == "摘要"
+        # 封面必须是列表：字符串会被接口 -400 挡掉
+        assert arg["image_urls"] == ["http://c.jpg"]
+        assert arg["origin_image_urls"] == ["http://c.jpg"]
+
+    def test_ai_declare_off(self):
+        arg = bili_poster.build_opus_draft_arg(title="标题", paragraphs=[], ai_declare=False)
+        assert "attachments" not in arg["opus"]
+
+
+class TestBuildOpusPublishPayload:
+    def test_structure(self):
+        body = bili_poster.build_opus_publish_payload(
+            title="标题", paragraphs=TEXT_ONLY_PARAS, draft_id=374201, category_id=26,
+            cover_url="http://c.jpg", originality=False, reproduced=True,
+            ai_declare=True, upload_id="1_2_3",
+        )
+        assert body["raw_content"] == ""
+        assert body["draft_id_str"] == "374201"
+        req = body["opus_req"]
+        assert (req["upload_id"], req["scene"]) == ("1_2_3", 12)
+        assert req["meta"]["app_meta"]["mobi_app"] == "web"
+        opus = req["opus"]
+        assert opus["opus_source"] == 2
+        assert opus["content"]["paragraphs"] == TEXT_ONLY_PARAS
+        assert opus["article"]["category_id"] == 26
+        assert opus["article"]["cover"] == [{"url": "http://c.jpg"}]
+        assert (opus["article"]["originality"], opus["article"]["reproduced"]) == (0, 1)
+        assert opus["pub_info"]["editor_version"].startswith("eva3")
+        assert req["option"] == {"aigc": 1, "close_comment": 0, "up_choose_comment": 0,
+                                "private_pub": 2}
+
+    def test_without_cover_or_declaration(self):
+        body = bili_poster.build_opus_publish_payload(
+            title="标题", paragraphs=[], draft_id=1, ai_declare=False,
+        )
+        assert "cover" not in body["opus_req"]["opus"]["article"]
+        assert body["opus_req"]["option"]["aigc"] == 0
+
+
+class TestBuildUploadId:
+    def test_matches_editor_shape(self):
+        mid, stamp, tail = bili_poster.build_upload_id(1501743).split("_")
+        assert mid == "1501743"
+        assert len(stamp) == 10 and stamp.isdigit()
+        assert len(tail) == 4 and tail.isdigit()
+
+    def test_works_without_mid(self):
+        assert bili_poster.build_upload_id(None).startswith("0_")
+
+
+class TestSaveOpusDraft:
+    def test_posts_signed_arg_and_reads_article_id(self, cookies):
+        session = FakeSession(FakeResponse({"code": 0, "data": {"article_id": 374201}}))
+
+        draft = _opus_poster(session).save_opus_draft(
+            "标题", TEXT_ONLY_PARAS, summary="摘要", cover_url="http://c.jpg",
+        )
+
+        assert draft == {"aid": 374201, "category_id": 26}
+        method, url, kwargs = session.calls[0]
+        assert (method, url) == ("POST", bili_poster.DRAFT_OPUS_URL)
+        assert kwargs["json"]["arg"]["summary"] == "摘要"
+        params = kwargs["params"]
+        assert params["csrf"] == "csrf-token"
+        assert params["gaia_source"] == "main_web"
+        assert params["w_rid"] and params["wts"]
+
+    def test_missing_article_id_raises(self, cookies):
+        session = FakeSession(FakeResponse({"code": 0, "data": {}}))
+        with pytest.raises(BiliError):
+            _opus_poster(session).save_opus_draft("标题", TEXT_ONLY_PARAS)
+
+    def test_category_fallback(self, cookies):
+        """分区无权限（-17）时按候选表回退。"""
+        session = FakeSession(
+            FakeResponse({"code": -17, "message": "无权投稿到该分区"}),
+            FakeResponse({"code": 0, "data": {"article_id": 9}}),
+        )
+
+        draft = _opus_poster(session, candidate_categories=[4]).save_opus_draft("标题", TEXT_ONLY_PARAS)
+
+        assert draft["category_id"] == 4
+        assert len(session.calls) == 2
+
+    def test_other_errors_do_not_retry(self, cookies):
+        session = FakeSession(FakeResponse({"code": -400, "message": "请求错误"}))
+        with pytest.raises(BiliError):
+            _opus_poster(session, candidate_categories=[4]).save_opus_draft("标题", TEXT_ONLY_PARAS)
+        assert len(session.calls) == 1
+
+
+class TestPublishOpus:
+    def test_posts_publish_payload(self, cookies):
+        session = FakeSession(FakeResponse({"code": 0, "data": {"dyn_id_str": "123456"}}))
+
+        out = _opus_poster(session).publish_opus(
+            {"aid": 374201, "category_id": 26}, "标题", TEXT_ONLY_PARAS, cover_url="http://c.jpg",
+        )
+
+        assert out["url"] == "https://www.bilibili.com/opus/123456"
+        method, url, kwargs = session.calls[0]
+        assert (method, url) == ("POST", bili_poster.PUBLISH_OPUS_URL)
+        body = kwargs["json"]
+        assert body["draft_id_str"] == "374201"
+        assert body["opus_req"]["option"]["aigc"] == 1
+        assert body["opus_req"]["opus"]["article"]["cover"] == [{"url": "http://c.jpg"}]
+
+    def test_missing_dyn_id_gives_no_url(self, cookies):
+        session = FakeSession(FakeResponse({"code": 0, "data": {}}))
+        out = _opus_poster(session).publish_opus({"aid": 1, "category_id": 26}, "标题", [])
+        assert out["url"] is None
+
+
+class TestRehostOpusImages:
+    def test_bili_host_passthrough(self, cookies):
+        paragraphs = [{"para_type": 2, "pic": {"pics": [{"url": "http://i0.hdslb.com/x.png"}]}}]
+        session = FakeSession()
+
+        out, uploaded, dropped = _opus_poster(session).rehost_opus_images(paragraphs)
+
+        assert (uploaded, dropped) == (0, 0)
+        assert out[0]["pic"]["pics"][0]["url"] == "http://i0.hdslb.com/x.png"
+        assert session.calls == []
+
+    def test_external_image_uploaded_with_geometry(self, cookies):
+        session = FakeSession(
+            FakeResponse(None, 200, None, PNG_BYTES),
+            FakeResponse({"code": 0, "data": {
+                "image_url": "http://i0.hdslb.com/new.png",
+                "image_width": 100, "image_height": 50, "img_size": 12.5,
+            }}),
+        )
+
+        out, uploaded, dropped = _opus_poster(session).rehost_opus_images(
+            [dict(EXTERNAL_IMAGE_PARAS[0])]
+        )
+
+        assert (uploaded, dropped) == (1, 0)
+        pic = out[0]["pic"]["pics"][0]
+        assert pic["url"] == "http://i0.hdslb.com/new.png"
+        assert (pic["width"], pic["height"], pic["size"]) == (100, 50, 12.5)
+        assert session.urls("GET") == ["https://x.com/a.png"]
+
+    def test_upload_failure_drops_image_and_paragraph(self, cookies):
+        session = FakeSession(
+            FakeResponse(None, 200, None, PNG_BYTES),
+            FakeResponse({"code": -400, "message": "请求错误"}),
+        )
+
+        out, uploaded, dropped = _opus_poster(session).rehost_opus_images(
+            [dict(EXTERNAL_IMAGE_PARAS[0])]
+        )
+
+        assert (uploaded, dropped) == (0, 1)
+        assert out == []  # 丢空的图片段整段去掉
+
+    def test_max_inline_images_limits(self, cookies):
+        paragraphs = [{"para_type": 2, "pic": {"pics": [
+            {"url": "https://x.com/a.png"}, {"url": "https://x.com/b.png"},
+        ]}}]
+        session = FakeSession(
+            FakeResponse(None, 200, None, PNG_BYTES),
+            FakeResponse({"code": 0, "data": {"image_url": "http://i0.hdslb.com/a.png"}}),
+        )
+
+        out, uploaded, dropped = _opus_poster(session, max_inline_images=1).rehost_opus_images(paragraphs)
+
+        assert (uploaded, dropped) == (1, 1)
+        assert len(out[0]["pic"]["pics"]) == 1
+
+    def test_rehost_disabled_keeps_external_urls(self, cookies):
+        session = FakeSession()
+        out, uploaded, dropped = _opus_poster(session, rehost_images=False).rehost_opus_images(
+            [dict(EXTERNAL_IMAGE_PARAS[0])]
+        )
+        assert (uploaded, dropped) == (0, 0)
+        assert out[0]["pic"]["pics"][0]["url"] == "https://x.com/a.png"
+        assert session.calls == []
+
+
+class TestPostNewsFileOpus:
+    def test_renderer_defaults_to_html(self, cookies):
+        assert make_poster(FakeSession(), renderer="weird").renderer == "html"
+
+    def test_draft_mode_saves_draft_only(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path)
+        session = FakeSession(FakeResponse({"code": 0, "data": {"article_id": 7}}))
+
+        result = _opus_poster(session).post_news_file("news_x", str(json_path), str(opus_path))
+
+        assert result["ok"] is True
+        assert result["draft_aid"] == 7
+        assert result["submit_mode"] == "draft"
+        assert result["stem"] == "news_x"
+        assert "aid=7" in result["edit_url"]
+        assert result["images"] == {"uploaded": 0, "dropped": 0}
+        assert [call[1] for call in session.calls] == [bili_poster.DRAFT_OPUS_URL]
+
+    def test_publish_mode_publishes_after_draft(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path)
+        session = FakeSession(
+            FakeResponse({"code": 0, "data": {"article_id": 7}}),
+            FakeResponse({"code": 0, "data": {"dyn_id_str": "123"}}),
+        )
+
+        result = _opus_poster(session, submit="publish").post_news_file(
+            "news_x", str(json_path), str(opus_path)
+        )
+
+        assert result["ok"] is True
+        assert result["url"] == "https://www.bilibili.com/opus/123"
+        assert result["pending_review"] is False
+        assert [call[1] for call in session.calls] == [
+            bili_poster.DRAFT_OPUS_URL, bili_poster.PUBLISH_OPUS_URL,
+        ]
+
+    def test_publish_failure_keeps_draft(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path)
+        session = FakeSession(
+            FakeResponse({"code": 0, "data": {"article_id": 7}}),
+            FakeResponse(None, status=412, raw_text=""),
+        )
+
+        result = _opus_poster(session, submit="publish").post_news_file(
+            "news_x", str(json_path), str(opus_path)
+        )
+
+        assert result["ok"] is False
+        assert result["draft_aid"] == 7
+        assert "412" in result["error"]
+
+    def test_publish_without_dyn_id_needs_manual_check(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path)
+        session = FakeSession(
+            FakeResponse({"code": 0, "data": {"article_id": 7}}),
+            FakeResponse({"code": 0, "data": {}}),
+        )
+
+        result = _opus_poster(session, submit="publish").post_news_file(
+            "news_x", str(json_path), str(opus_path)
+        )
+
+        assert result["ok"] is True
+        assert result["pending_review"] is True
+        assert result["url"] is None
+
+    def test_empty_artifact_raises(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path, paragraphs=[])
+        with pytest.raises(BiliError):
+            _opus_poster(FakeSession()).post_news_file("news_x", str(json_path), str(opus_path))
+
+    def test_title_suffix_and_summary_applied(self, cookies, tmp_path):
+        json_path, opus_path = _write_opus_article(tmp_path)
+        session = FakeSession(FakeResponse({"code": 0, "data": {"article_id": 7}}))
+
+        _opus_poster(session).post_news_file("news_x", str(json_path), str(opus_path))
+
+        arg = session.calls[0][2]["json"]["arg"]
+        assert arg["title"] == "测试标题 [AI翻译]"
+        assert arg["opus"]["title"] == "测试标题 [AI翻译]"
+        assert arg["summary"] == "你好世界"

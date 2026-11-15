@@ -20,12 +20,15 @@ bili/poster.py — B站专栏发帖模块（创作中心 web 接口 + 登录 coo
 import ipaddress
 import json
 import os
+import random
 import re
+import time
 from urllib.parse import urlsplit
 
 import requests
 import urllib3
 
+from bili.wbi import image_keys, sign_params
 from log_setup import log_debug, log_info, log_warning
 from utils import PROJECT_ROOT
 
@@ -38,11 +41,19 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 API_BASE = "https://api.bilibili.com"
 MEMBER_BASE = "https://member.bilibili.com"
 EDIT_URL_TEMPLATE = MEMBER_BASE + "/article-text/home?aid={aid}"
+OPUS_URL_PREFIX = "https://www.bilibili.com/opus/"
 
 NAV_URL = f"{API_BASE}/x/web-interface/nav"
 DRAFT_URL = f"{API_BASE}/x/article/creative/draft/addupdate"
 SUBMIT_URL = f"{API_BASE}/x/article/creative/article/submit"
 UPCOVER_URL = f"{API_BASE}/x/article/creative/article/upcover"
+# 新版编辑器（eva3）两条接口：先按段模型存草稿，需要时再按草稿号发布。
+# 两者都要 WBI 签名，且正文只认 opus.content.paragraphs（不认 HTML content）。
+DRAFT_OPUS_URL = f"{API_BASE}/x/dynamic/feed/article/draft/add"
+PUBLISH_OPUS_URL = f"{API_BASE}/x/dynamic/feed/create/opus"
+# 图文正文图片上传：返回 image_url / image_width / image_height / img_size，
+# 正好是段落模型里 pic.pics[] 需要的四个字段（upcover 只给 url，不够用）
+UPLOAD_BFS_URL = f"{API_BASE}/x/dynamic/feed/draw/upload_bfs"
 
 # 已经是 B站站内的图，不需要（也不该）再上传
 BILI_IMAGE_HOSTS = ("hdslb.com", "bilibili.com", "biliimg.com")
@@ -78,6 +89,12 @@ DEFAULT_BILI_CONFIG = {
     # 译文不是原创，默认不勾原创声明；要标原创自己在配置里改
     "original": False,
     "reprint": True,
+    # 正文模型：html=老接口（HTML 字符串，已真机验证）| opus=新版编辑器（段落数组）
+    "renderer": "html",
+    # 卡片模板 id：编辑器 payload 里的 tid / template_id
+    "template_id": DEFAULT_TEMPLATE_ID,
+    # 是否声明「AI 辅助创作」：opus 模型写 opus.attachments.is_aigc，发布时写 option.aigc
+    "ai_declare": True,
     # draft=只存草稿（人工在编辑器放行）| publish=存草稿后立即提交审核
     "submit": "draft",
     "title_suffix": " [AI翻译]",
@@ -228,6 +245,92 @@ def _truncate_title(title: str, suffix: str, max_chars: int) -> str:
     return body[: limit - len(suffix)] + suffix
 
 
+# ── eva3 请求体（纯函数，字段名都踩过坑，见 docs/archive §9.5 / §9.6）──
+
+OPUS_SOURCE = 2          # opus_source：图文/专栏
+OPUS_SCENE = 12          # 发布场景
+OPUS_ARTICLE_TYPE = 4    # 新模型草稿的 type 标记
+EDITOR_VERSION = "eva3-4.0.0"
+
+
+def build_opus_draft_arg(*, title: str, paragraphs: list[dict], summary: str = "",
+                         cover_url: str = "", category_id: int = 26,
+                         template_id: int = DEFAULT_TEMPLATE_ID,
+                         ai_declare: bool = True) -> dict:
+    """`draft/add` 的 arg。
+
+    三处容易写错：分区/模板的键是 category_id / template_id（category + tid 会被静默忽略）；
+    封面必须是列表，传字符串直接 -400；标题要同时放顶层与 opus.title，后者才是正文标题。
+    """
+    opus: dict = {"title": title, "content": {"paragraphs": paragraphs}}
+    if ai_declare:
+        opus["attachments"] = {"is_aigc": 1}
+    arg: dict = {
+        "title": title,
+        "category_id": int(category_id),
+        "template_id": int(template_id),
+        "type": OPUS_ARTICLE_TYPE,
+        "opus": opus,
+    }
+    if summary:
+        arg["summary"] = summary
+    if cover_url:
+        arg["image_urls"] = [cover_url]
+        arg["origin_image_urls"] = [cover_url]
+    return arg
+
+
+def build_opus_publish_payload(*, title: str, paragraphs: list[dict], draft_id: int,
+                               category_id: int = 26, cover_url: str = "",
+                               originality: bool = False, reproduced: bool = False,
+                               ai_declare: bool = True, upload_id: str = "") -> dict:
+    """`create/opus` 的 body：发布是「按草稿号发布」，正文要再带一份全量段落。
+
+    AI 声明在发布阶段换成 `option.aigc`（草稿阶段是 `opus.attachments.is_aigc`），
+    两处都要写；`tags` / `summary` 在这个接口里没有对应字段。
+    """
+    article: dict = {
+        "category_id": int(category_id),
+        "list_id": 0,
+        "originality": 1 if originality else 0,
+        "reproduced": 1 if reproduced else 0,
+    }
+    if cover_url:
+        article["cover"] = [{"url": cover_url}]
+    return {
+        "raw_content": "",
+        "draft_id_str": str(draft_id),
+        "opus_req": {
+            "upload_id": upload_id or build_upload_id(0),
+            "opus": {
+                "opus_source": OPUS_SOURCE,
+                "title": title,
+                "content": {"paragraphs": paragraphs},
+                "article": article,
+                "pub_info": {"editor_version": EDITOR_VERSION},
+            },
+            "scene": OPUS_SCENE,
+            "meta": {"app_meta": {"from": "create.creative.h5", "mobi_app": "web"}},
+            "option": {
+                "aigc": 1 if ai_declare else 0,
+                "close_comment": 0,
+                "up_choose_comment": 0,
+                # 2 = 公开发布（实测值）
+                "private_pub": 2,
+            },
+        },
+    }
+
+
+def build_upload_id(mid: int | None) -> str:
+    """`{mid}_{秒级时间戳}_{四位随机数}`，与编辑器的 upload_id 同构。
+
+    这只是一个请求去重用的客户端标记，不是凭据，所以用普通随机数即可
+    （S311 关掉的正是「别用非密码学随机数」这条通用建议）。
+    """
+    return f"{mid or 0}_{int(time.time())}_{random.randint(1000, 9999)}"  # noqa: S311
+
+
 # ── 会话 ─────────────────────────────────────────────
 
 def build_session(http_config: dict | None = None, cookies: dict | None = None) -> requests.Session:
@@ -296,6 +399,9 @@ class BilibiliPoster:
         self.mid = None
         self.uname = ""
         self.submit_mode = self.cfg.get("submit") if self.cfg.get("submit") in ("draft", "publish") else "draft"
+        self.renderer = self.cfg.get("renderer") if self.cfg.get("renderer") in ("html", "opus") else "html"
+        # WBI 签名的两个键，由 check_login 从 nav.wbi_img 取；没取到时按需再拉一次
+        self.wbi_keys: tuple[str, str] = ("", "")
 
     @property
     def csrf_token(self) -> str:
@@ -317,6 +423,30 @@ class BilibiliPoster:
         resp = self.session.post(url, data=data, timeout=self.timeout, verify=self.verify)
         return ensure_ok(decode_json(resp, action), action)
 
+    def _signed_query(self, extra: dict | None = None) -> dict:
+        """WBI 签名后的查询串。签名键来自 nav，缺了就现场拉一次。"""
+        params = {"csrf": self.csrf_token, "gaia_source": "main_web"}
+        params.update(extra or {})
+        if not any(self.wbi_keys):
+            self._load_wbi_keys()
+        return sign_params(params, *self.wbi_keys)
+
+    def _load_wbi_keys(self) -> None:
+        resp = self.session.get(NAV_URL, timeout=self.timeout, verify=self.verify)
+        data = ensure_ok(decode_json(resp, "WBI 键"), "WBI 键").get("data") or {}
+        self.wbi_keys = image_keys(data.get("wbi_img"))
+        if not any(self.wbi_keys):
+            raise BiliError("nav 没有返回 wbi_img，无法给新版接口签名")
+
+    def _post_opus(self, url: str, body: dict, action: str) -> dict:
+        """新版接口：JSON body + WBI 签名的查询串。"""
+        log_debug("[B站] POST %s（%d 个顶层字段）", url, len(body))
+        resp = self.session.post(
+            url, params=self._signed_query(), json=body,
+            timeout=self.timeout, verify=self.verify,
+        )
+        return ensure_ok(decode_json(resp, action), action)
+
     # ── 登录 ──
 
     def check_login(self) -> dict:
@@ -330,6 +460,8 @@ class BilibiliPoster:
             raise BiliError("未登录：cookie 已失效，请重新导出 SESSDATA / bili_jct")
         self.mid = data.get("mid")
         self.uname = data.get("uname") or ""
+        # 新版接口（renderer=opus）要 WBI 签名，顺手把键缓存下来，不用再多发一次 nav
+        self.wbi_keys = image_keys(data.get("wbi_img"))
         log_info("[B站] ✓ 已登录: %s（mid=%s）", self.uname, self.mid)
         return data
 
@@ -569,7 +701,7 @@ class BilibiliPoster:
             log_warning("[B站] %s", result["error"])
         return result
 
-    # ── 文件级入口（与 poster.post_news_file 对齐） ──
+    # ── 文件级入口（两个正文模型共用外壳，按 renderer 分派） ──
 
     @staticmethod
     def _build_summary(data: dict, limit: int) -> str:
@@ -591,9 +723,56 @@ class BilibiliPoster:
         summary = re.sub(r"\s+", " ", " ".join(parts)).strip()
         return summary[:limit]
 
-    def post_news_file(self, stem: str, json_path: str, html_path: str,
+    def _article_title(self, meta: dict, json_path: str) -> str:
+        base_title = (meta.get("translated_title") or meta.get("title") or "").strip()
+        if not base_title:
+            raise BiliError(f"{json_path} 中找不到标题")
+        return _truncate_title(
+            base_title, str(self.cfg.get("title_suffix") or ""), int(self.cfg.get("max_title_chars") or 80)
+        )
+
+    def _upload_cover(self, cover_path: str | None) -> str:
+        """上传封面（upcover）。失败只告警：没封面的稿子照样能投。"""
+        if not cover_path or not self.cfg.get("attach_cover", True):
+            return ""
+        try:
+            cover_url = self.upload_image_file(cover_path)
+            log_info("[B站] ✓ 封面已上传: %s", cover_url)
+            return cover_url
+        except (BiliError, OSError, requests.RequestException) as e:
+            log_warning("[B站] 封面上传失败，改为无封面投稿: %s", e)
+            return ""
+
+    def _empty_result(self, title: str) -> dict:
+        """投稿结果的统一外壳：两个模型共用同一套键，main.py 的记账逻辑不用分支。"""
+        return {
+            "ok": False,
+            "title": title,
+            "draft_aid": None,
+            "cv_id": None,
+            "url": None,
+            "state": None,
+            "state_desc": "",
+            "pending_review": False,
+            "category_id": None,
+            "edit_url": "",
+            "submit_mode": self.submit_mode,
+            "error": None,
+        }
+
+    def post_news_file(self, stem: str, json_path: str, content_path: str,
                        cover_path: str | None = None) -> dict:
-        """读 JSON 元数据与专栏 HTML，完成一次投稿。"""
+        """完成一次投稿。content_path 随 renderer 变：.html 或 .opus.json。"""
+        if self.renderer == "opus":
+            result = self._post_news_file_opus(json_path, content_path, cover_path)
+        else:
+            result = self._post_news_file_html(json_path, content_path, cover_path)
+        result["stem"] = stem
+        return result
+
+    def _post_news_file_html(self, json_path: str, html_path: str,
+                             cover_path: str | None = None) -> dict:
+        """读 JSON 元数据与专栏 HTML，走老接口（HTML 正文）投稿。"""
         with open(json_path, encoding="utf-8") as f:
             meta = json.load(f)
         with open(html_path, encoding="utf-8") as f:
@@ -601,12 +780,7 @@ class BilibiliPoster:
         if not content:
             raise BiliError(f"{html_path} 内容为空")
 
-        base_title = (meta.get("translated_title") or meta.get("title") or "").strip()
-        if not base_title:
-            raise BiliError(f"{json_path} 中找不到标题")
-        title = _truncate_title(
-            base_title, str(self.cfg.get("title_suffix") or ""), int(self.cfg.get("max_title_chars") or 80)
-        )
+        title = self._article_title(meta, json_path)
         summary = self._build_summary(meta, int(self.cfg.get("summary_max_chars") or 0))
 
         notice = str(self.cfg.get("ai_notice") or "").strip()
@@ -616,16 +790,194 @@ class BilibiliPoster:
         content, uploaded, dropped = self.rehost_images(content)
         log_info("[B站] 正文图片: 重托管 %d 张，丢弃 %d 张", uploaded, dropped)
 
-        cover_url = ""
-        if cover_path and self.cfg.get("attach_cover", True):
-            try:
-                cover_url = self.upload_image_file(cover_path)
-                log_info("[B站] ✓ 封面已上传: %s", cover_url)
-            except (BiliError, OSError, requests.RequestException) as e:
-                log_warning("[B站] 封面上传失败，改为无封面投稿: %s", e)
-
+        cover_url = self._upload_cover(cover_path)
         result = self.publish(title, content, summary=summary, cover_url=cover_url)
-        result["stem"] = stem
         result["images"] = {"uploaded": uploaded, "dropped": dropped}
         result["cover_url"] = cover_url
+        return result
+
+    # ── eva3 段落模型（renderer=opus） ──
+
+    def upload_bfs_image(self, data: bytes, filename: str = "image") -> dict:
+        """上传图文正文图片，返回 {"url", "width", "height", "size"}。
+
+        段落模型里 `pic.pics[]` 需要宽高与体积，`upcover` 只给 URL，所以正文图片走这个接口：
+        它一次把 image_url / image_width / image_height / img_size 都回给我们。
+        """
+        self._require_cookies()
+        if len(data) > MAX_IMAGE_BYTES:
+            raise BiliError(f"图片过大（{len(data)} 字节 > {MAX_IMAGE_BYTES}），已跳过")
+        ext, mime = _sniff_image(data)
+        resp = self.session.post(
+            UPLOAD_BFS_URL,
+            files={"file_up": (f"{filename}.{ext}", data, mime)},
+            data={"category": "daily", "biz": "new_dyn", "csrf": self.csrf_token},
+            timeout=self.timeout, verify=self.verify,
+        )
+        body = ensure_ok(decode_json(resp, "上传正文图片"), "上传正文图片").get("data") or {}
+        url = body.get("image_url")
+        if not url:
+            raise BiliError("上传正文图片没有返回站内地址")
+        return {
+            "url": url,
+            "width": int(body.get("image_width") or 0),
+            "height": int(body.get("image_height") or 0),
+            "size": float(body.get("img_size") or 0),
+        }
+
+    def rehost_opus_images(self, paragraphs: list[dict]) -> tuple[list[dict], int, int]:
+        """把段落里的外链图片重托管到 B站 CDN，并补齐宽高/体积。
+
+        与 HTML 版同一个口径：上传失败的图直接丢掉（宁可少一张图，也不能让整篇被拒），
+        丢空了就整段去掉，避免留下空的图片段。
+        """
+        uploaded = dropped = 0
+        limit = int(self.cfg.get("max_inline_images") or 0)
+        rehost = bool(self.cfg.get("rehost_images", True))
+        out: list[dict] = []
+        for paragraph in paragraphs:
+            if paragraph.get("para_type") != 2:
+                out.append(paragraph)
+                continue
+            pics = (paragraph.get("pic") or {}).get("pics") or []
+            kept: list[dict] = []
+            for pic in pics:
+                src = (pic.get("url") or "").strip()
+                if not src:
+                    continue
+                if not rehost or _is_bili_host(src):
+                    kept.append(pic)
+                    continue
+                if limit > 0 and uploaded >= limit:
+                    dropped += 1
+                    log_warning("[B站] 段落图片超过上限 %d 张，已移除: %s", limit, src[:80])
+                    continue
+                try:
+                    info = self.upload_bfs_image(self.download_image(src), filename="inline")
+                except (BiliError, ValueError, requests.RequestException) as e:
+                    dropped += 1
+                    log_warning("[B站] 段落图片重托管失败，已移除: %s（%s）", src[:80], e)
+                    continue
+                uploaded += 1
+                kept.append(dict(pic, **info))
+                log_debug("[B站] 段落图片已重托管: %s → %s", src[:60], info["url"][:60])
+            if kept:
+                out.append({**paragraph, "pic": {**(paragraph.get("pic") or {}), "pics": kept}})
+            # 一张都没留下的图片段整段丢掉；失败计数在循环里已经加过，这里不重复计
+        return out, uploaded, dropped
+
+    def _primary_category(self) -> int:
+        categories = self._candidate_categories()
+        return categories[0] if categories else 26
+
+    def save_opus_draft(self, title: str, paragraphs: list[dict], *, summary: str = "",
+                        cover_url: str = "") -> dict:
+        """存 eva3 草稿，返回 {"aid", "category_id"}；分区无权限时按候选表回退。"""
+        last_error = None
+        for category_id in self._candidate_categories():
+            arg = {
+                "title": title,
+                "paragraphs": paragraphs,
+                "summary": summary,
+                "cover_url": cover_url,
+                "category_id": category_id,
+                "template_id": int(self.cfg.get("template_id") or DEFAULT_TEMPLATE_ID),
+                "ai_declare": bool(self.cfg.get("ai_declare", True)),
+            }
+            payload = build_opus_draft_arg(**arg)
+            try:
+                data = self._post_opus(DRAFT_OPUS_URL, {"arg": payload}, "保存段模型草稿")
+            except BiliError as e:
+                last_error = e
+                if not any(hint in str(e) for hint in _CATEGORY_HINTS):
+                    raise
+                log_warning("[B站] 分区 %s 不可用，尝试下一个: %s", category_id, e)
+                continue
+            aid = int((data.get("data") or {}).get("article_id") or 0)
+            if not aid:
+                raise BiliError("保存草稿成功但没有返回 article_id")
+            log_info("[B站] ✓ 段模型草稿已保存: article_id=%s（分区 %s）", aid, category_id)
+            return {"aid": aid, "category_id": category_id}
+        raise last_error or BiliError("没有可用的投稿分区")
+
+    def publish_opus(self, draft: dict, title: str, paragraphs: list[dict],
+                     *, cover_url: str = "") -> dict:
+        """按草稿号发布（`create/opus`），返回 {"dyn_id", "url", "raw"}。"""
+        payload = build_opus_publish_payload(
+            title=title,
+            paragraphs=paragraphs,
+            draft_id=draft["aid"],
+            category_id=draft["category_id"],
+            cover_url=cover_url,
+            originality=bool(self.cfg.get("original", False)),
+            reproduced=bool(self.cfg.get("reprint", True)),
+            ai_declare=bool(self.cfg.get("ai_declare", True)),
+            upload_id=build_upload_id(self.mid),
+        )
+        data = self._post_opus(PUBLISH_OPUS_URL, payload, "发布段模型稿件")
+        body = data.get("data") or {}
+        dyn = body.get("dyn_id_str") or body.get("dyn_id") or body.get("article_id") or ""
+        dyn_id = str(dyn)
+        return {
+            "dyn_id": dyn_id,
+            "url": f"{OPUS_URL_PREFIX}{dyn_id}" if dyn_id else None,
+            "raw": body,
+        }
+
+    def _post_news_file_opus(self, json_path: str, opus_path: str,
+                             cover_path: str | None = None) -> dict:
+        """读 JSON 元数据与段模型产物（.opus.json），走 eva3 存草稿 / 发布。"""
+        with open(json_path, encoding="utf-8") as f:
+            meta = json.load(f)
+        with open(opus_path, encoding="utf-8") as f:
+            artifact = json.load(f)
+        paragraphs = artifact.get("paragraphs") if isinstance(artifact, dict) else artifact
+        if not paragraphs:
+            raise BiliError(f"{opus_path} 里没有段落（先跑一次转换生成）")
+
+        title = self._article_title(meta, json_path)
+        summary = self._build_summary(meta, int(self.cfg.get("summary_max_chars") or 0))
+        result = self._empty_result(title)
+
+        paragraphs, uploaded, dropped = self.rehost_opus_images(paragraphs)
+        log_info("[B站] 正文图片: 重托管 %d 张，丢弃 %d 张", uploaded, dropped)
+        cover_url = self._upload_cover(cover_path)
+
+        try:
+            self._require_cookies()
+            draft = self.save_opus_draft(title, paragraphs, summary=summary, cover_url=cover_url)
+        except BiliError as e:
+            result["error"] = str(e)
+            log_warning("[B站] 存段模型草稿失败: %s", e)
+            return result
+
+        result["draft_aid"] = draft["aid"]
+        result["category_id"] = draft["category_id"]
+        result["edit_url"] = EDIT_URL_TEMPLATE.format(aid=draft["aid"])
+        result["images"] = {"uploaded": uploaded, "dropped": dropped}
+        result["cover_url"] = cover_url
+
+        if self.submit_mode != "publish":
+            result["ok"] = True
+            log_info("[B站] 已保存段模型草稿（submit=draft，需人工在编辑器发布）: %s", result["edit_url"])
+            return result
+
+        try:
+            published = self.publish_opus(draft, title, paragraphs, cover_url=cover_url)
+        except BiliError as e:
+            # 412/风控时草稿仍在，这是可交付的结果，不能算「没发出去」
+            result["error"] = str(e)
+            log_warning("[B站] 发布失败，草稿已保留: %s（%s）", result["edit_url"], e)
+            return result
+
+        result["ok"] = True
+        result["url"] = published["url"]
+        result["state_desc"] = "已提交发布"
+        if published["url"]:
+            log_info("[B站] ✓ 已发布: %s", published["url"])
+        else:
+            # 发布接口没回 dyn_id 时不敢说 URL，交给人工去创作中心确认
+            result["pending_review"] = True
+            result["error"] = "发布请求已接受，但没返回图文 id，请到创作中心确认"
+            log_warning("[B站] 发布结果缺少 dyn_id，需人工确认: %s", result["edit_url"])
         return result

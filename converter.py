@@ -9,6 +9,7 @@
   from converter import J2MMConverter
 """
 import argparse
+import html
 import json
 import re
 from collections.abc import Callable
@@ -114,6 +115,49 @@ def _md_links_to_bbcode(text: str) -> str:
         _md_images_to_bbcode(text),
         lambda label, url: f'[url={url}]{label}[/url]',
     )
+
+
+def _md_images_to_html(text: str) -> str:
+    """把内嵌的 Markdown 图片 ![alt](URL) 转成行内 <img>。
+
+    正文图片在 blocks 里是独立图片块（渲染成 <figure>），这里只兜住行内出现的
+    图片语法。调用方必须已经做过 HTML 转义，否则 alt/URL 里的引号会截断属性。
+    """
+    if not text or '![' not in text:
+        return text
+    return re.sub(
+        r'!\[([^\]]*)\]\((https?://[^)\s]+)\)',
+        lambda m: f'<img src="{m.group(2)}" alt="{m.group(1)}">',
+        text,
+    )
+
+
+def _md_links_to_html(text: str) -> str:
+    """把 Markdown 链接 [文字](URL) 转成 <a href>（专栏只认 HTML，没有 BBCode）。"""
+    if not text:
+        return text
+    return _rewrite_md_links(
+        _md_images_to_html(text),
+        lambda label, url: f'<a href="{url}">{label}</a>',
+    )
+
+
+def _escape_html(text: str) -> str:
+    """转义成 HTML 文本节点/属性值。
+
+    抓回来的正文是数据不是标记：不转义的话正文里一个 `<` 就能把整篇结构写坏。
+    """
+    return html.escape(text, quote=True)
+
+
+def _bili_inline(text: str) -> str:
+    """把一段译文/原文转成专栏 HTML 的行内内容。
+
+    顺序不能反：先转义再插标签，否则我们插入的 <a>/<img> 会被一起转义成字面量。
+    """
+    if not text:
+        return ""
+    return _md_links_to_html(_escape_html(text))
 
 
 def _parse_date(date_str: str) -> str:
@@ -314,6 +358,22 @@ def _bbcode_to_markdown(bbcode: str) -> str:
     text = re.sub(r'((?:^[ \t]*>.*(?:\n|$))+)(?=[ \t]*(?:[-*+] |\d+\. ))', r'\1\n', text, flags=re.MULTILINE)
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
+
+
+def _bbcode_to_plain_html(bbcode: str) -> str:
+    """把模块内容（署名 / 协议等）降级成纯文本段落。
+
+    模块是表格 + 彩色 + 对齐拼出来的版面，专栏没有等价物，硬转会原样吐出
+    ``[table=85%]`` 之类的脏标签。这里只保留可读文字，链接降级成「文字（地址）」
+    以便保留署名与协议溯源。
+    """
+    if not bbcode:
+        return ''
+    text = re.sub(r'\[url=([^\]]+)\](.*?)\[/url\]', r'\2（\1）', bbcode, flags=re.DOTALL)
+    text = re.sub(r'\[img(?:=[^\]]*)?\].*?\[/img\]', '', text, flags=re.DOTALL)
+    text = re.sub(r'\[/?[a-zA-Z*][^\]]*\]', '', text)
+    lines = (line.strip() for line in text.splitlines())
+    return '\n'.join(f'<p>{_escape_html(line)}</p>' for line in lines if line)
 
 
 # ── BBCode 渲染器 ───────────────────────────────────
@@ -531,6 +591,144 @@ class MarkdownRenderer:
         return tr or (f'> {src}' if src else '') or ''
 
 
+# ── 专栏 HTML 渲染器（B站）───────────────────────────
+
+class BiliHTMLRenderer:
+    """已翻译 blocks → B站专栏富文本 HTML。
+
+    专栏编辑器只认白名单标签：既没有 [size]/[color]/[align] 的等价物，内联 style
+    也会被剥离，所以这里只产出结构标签（p/h1/ul/figure），排版交给专栏自己。
+    双语对照沿用「译文正文 + 原文引用块」而不是灰色小字：专栏没有对应样式，
+    引用块是唯一稳定可用的视觉降级。
+    """
+
+    def render(self, blocks: list[dict]) -> str:
+        out = []
+        i = 0
+        while i < len(blocks):
+            block = blocks[i]
+            btype = (block.get('type') or 'p').lower()
+            if btype == 'li':
+                chunk, i = self._collect_li_chunk(blocks, i)
+                out.append(self._render_li_chunk(chunk))
+            elif btype in ('pre', 'code'):
+                # 代码块不翻译，原样保留并转义，否则内容里的尖括号会破坏结构
+                src = block.get('source_text', '') or block.get('translated_text', '')
+                if src.strip():
+                    out.append(f'<pre><code>{_escape_html(src)}</code></pre>')
+                i += 1
+            elif btype == 'img':
+                out.append(self._render_img(block))
+                i += 1
+            elif btype in ('h1', 'h2', 'h3', 'h4'):
+                out.append(self._render_heading(block))
+                i += 1
+            elif btype in ('blockquote', 'quote'):
+                out.append(self._render_quote(block))
+                i += 1
+            else:
+                out.append(self._render_para(block))
+                i += 1
+        return '\n'.join(part for part in out if part)
+
+    def _collect_li_chunk(self, blocks, start):
+        chunk = []
+        i = start
+        while i < len(blocks) and blocks[i].get('type', '').lower() == 'li':
+            chunk.append(blocks[i])
+            i += 1
+        return chunk, i
+
+    @staticmethod
+    def _dual(src: str, tr: str) -> str:
+        """行内双语片段：译文主体 + 原文引用块（两者相同或缺原文时只留一份）。"""
+        text = tr or src
+        if not text:
+            return ''
+        content = _bili_inline(text)
+        if tr and src and tr != src:
+            content += f'<blockquote><p>{_bili_inline(src)}</p></blockquote>'
+        return content
+
+    def _render_para(self, block):
+        src = (block.get('source_text') or '').strip()
+        tr = (block.get('translated_text') or '').strip()
+        text = tr or src
+        if not text:
+            return ''
+        parts = [f'<p>{_bili_inline(text)}</p>']
+        if tr and src and tr != src:
+            parts.append(f'<blockquote><p>{_bili_inline(src)}</p></blockquote>')
+        return '\n'.join(parts)
+
+    def _render_heading(self, block):
+        btype = (block.get('type') or '').lower()
+        src = (block.get('source_text') or '').strip()
+        tr = (block.get('translated_text') or '').strip()
+        text = tr or src
+        if not text:
+            return ''
+        if btype in ('h1', 'h2'):
+            # 专栏只支持一级标题，h2 也只能落到 h1
+            rendered = f'<h1>{_bili_inline(text)}</h1>'
+        else:
+            # h3/h4 降级成加粗段落，避免整篇都是大标题
+            rendered = f'<p><strong>{_bili_inline(text)}</strong></p>'
+        if tr and src and tr != src:
+            rendered += f'\n<blockquote><p>{_bili_inline(src)}</p></blockquote>'
+        return rendered
+
+    def _render_quote(self, block):
+        src = (block.get('source_text') or '').strip()
+        tr = (block.get('translated_text') or '').strip()
+        text = tr or src
+        if not text:
+            return ''
+        parts = [f'<blockquote><p>{_bili_inline(text)}</p></blockquote>']
+        if tr and src and tr != src:
+            parts.append(f'<blockquote><p>{_bili_inline(src)}</p></blockquote>')
+        return '\n'.join(parts)
+
+    def _render_img(self, block):
+        meta = block.get('meta', {})
+        src = (meta.get('src') or '').strip()
+        alt = (meta.get('alt') or '').strip()
+        if not src:
+            return f'<p><em>{_escape_html(alt)}</em></p>' if alt else ''
+        # 这里保留原始外链：重托管到 B站 CDN 由发帖阶段负责（转换器不碰网络）
+        return f'<figure><img src="{_escape_html(src)}" alt="{_escape_html(alt)}"></figure>'
+
+    def _render_li_chunk(self, items):
+        """把连续的 li 块还原成嵌套 <ul>；子列表挂在父项 <li> 内部，保证结构合法。"""
+        if not items:
+            return ''
+        parts: list[str] = []
+        levels: list[int] = []
+        for item in items:
+            level = int(item.get('meta', {}).get('indent_level', 0) or 0)
+            while levels and level < levels[-1]:
+                parts.append('</li>')
+                parts.append('</ul>')
+                levels.pop()
+            if not levels:
+                parts.append('<ul>')
+                levels.append(level)
+            elif level > levels[-1]:
+                # 上一项的 <li> 保持打开，嵌套列表直接放进去
+                parts.append('<ul>')
+                levels.append(level)
+            else:
+                parts.append('</li>')
+            src = (item.get('source_text') or '').strip()
+            tr = (item.get('translated_text') or '').strip()
+            parts.append(f'<li>{self._dual(src, tr)}')
+        while levels:
+            parts.append('</li>')
+            parts.append('</ul>')
+            levels.pop()
+        return '\n'.join(parts)
+
+
 # ── 文章类型检测 ─────────────────────────────────────
 
 def _detect_article_type(title: str) -> str:
@@ -545,6 +743,7 @@ class J2MMConverter:
         self.modules_config = modules_config or {'default_modules': [], 'custom_modules': []}
         self._bb = BBCodeRenderer()
         self._md = MarkdownRenderer()
+        self._bili = BiliHTMLRenderer()
 
     def convert_to_bbcode(self, json_data: dict) -> str:
         blocks = json_data.get('blocks', [])
@@ -637,6 +836,48 @@ class J2MMConverter:
 
         return '\n\n'.join(p for p in parts if p)
 
+    def convert_to_bili_html(self, json_data: dict) -> str:
+        """转为 B站专栏富文本 HTML。
+
+        结构对齐 BBCode/Markdown：模块（模块版面专栏无等价物，降级为纯文本段落）
+        → 标题 → 元信息引用块 → 正文 → 模块。
+        """
+        blocks = json_data.get('blocks', [])
+        parts = []
+        article_type = _detect_article_type(json_data.get('title', ''))
+
+        for m in self._get_modules('start', article_type):
+            parts.append(_bbcode_to_plain_html(m.get('bbcode_content') or m['content']))
+
+        title_cn = json_data.get('translated_title', '')
+        title_en = json_data.get('title', '')
+        if title_cn or title_en:
+            parts.append(f'<h1>{_escape_html(title_cn or title_en)}</h1>')
+        if title_cn and title_en and title_en != title_cn:
+            parts.append(f'<p><em>{_escape_html(title_en)}</em></p>')
+
+        meta_lines = []
+        if json_data.get('release_date'):
+            meta_lines.append(f'时间：{_escape_html(_parse_date(json_data["release_date"]))}')
+        if json_data.get('author'):
+            meta_lines.append(f'作者：{_escape_html(json_data["author"])}')
+        if json_data.get('url'):
+            url = _escape_html(json_data['url'])
+            meta_lines.append(f'原文：<a href="{url}">{url}</a>')
+        if json_data.get('description'):
+            meta_lines.append(f'简介：{_escape_html(json_data["description"])}')
+        if meta_lines:
+            parts.append('<blockquote>' + ''.join(f'<p>{line}</p>' for line in meta_lines) + '</blockquote>')
+
+        if blocks:
+            parts.append(self._bili.render(blocks))
+
+        for position in ('custom', 'end'):
+            for m in self._get_modules(position, article_type):
+                parts.append(_bbcode_to_plain_html(m.get('bbcode_content') or m['content']))
+
+        return '\n'.join(p for p in parts if p)
+
     def _get_modules(self, position: str, article_type: str = 'normal') -> list[dict]:
         cfg = self.modules_config
         if position == 'custom':
@@ -679,6 +920,30 @@ def convert_json_file(json_path: str, output_prefix: str = None, modules_config:
     log_debug("[转换] Markdown: %s（%d 字符）", md_path, len(md_content))
 
     return bbcode_path, md_path
+
+
+def convert_bili_html_file(json_path: str, output_prefix: str = None, modules_config: dict = None) -> str:
+    """
+    将单个 JSON 文件转换为 B站专栏 HTML (.html)
+
+    与 convert_json_file 分开而不是合并成多返回值：后者的 (bbcode_path, md_path)
+    会被 main 解包后继续往下传，改签名会波及调用方与测试，收益不足以抵消风险。
+
+    Returns:
+        html_path
+    """
+    with open(json_path, encoding='utf-8') as f:
+        data = json.load(f)
+
+    conv = J2MMConverter(modules_config)
+    stem = output_prefix or Path(json_path).stem
+    content = conv.convert_to_bili_html(data)
+    html_path = f'{stem}.html'
+    with open(html_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    log_debug("[转换] 专栏 HTML: %s（%d 块 → %d 字符）", html_path, len(data.get("blocks") or []), len(content))
+
+    return html_path
 
 
 # ── CLI 入口 ─────────────────────────────────────────

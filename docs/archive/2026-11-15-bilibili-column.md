@@ -382,6 +382,32 @@ payload 里是空串），所以不用新结构，直接把原文刷灰：
 
 ---
 
+### 9.9 第一次全链路真机跑（MCBBS + 专栏，直发）
+
+2026-11-15 用 `uv run python main.py --publish all` 跑了一篇新文章（`[minecraft_api][other]`
+`Marketplace Spotlight: The Sound Effects Edition`），配置 `renderer: "opus"` + `submit: "publish"`：
+
+| 环节 | 结果 |
+| --- | --- |
+| 抓取 | 9 条候选（Feedback 因 `curl_cffi` 未安装跳过），新增 1 条 |
+| 解析 / 翻译 | 62 块（p 41 / h1 7 / h3 7 / img 7）→ 55 个文本块 16 批全部译完；标题「音效特辑」 |
+| 产物 | `.txt` 27.8 KB、`.md` 25.9 KB、`.opus.json` 63.3 KB、头图 124 KB |
+| 专栏 | 正文图片重托管 **7 张（0 丢弃）**、封面上传、草稿 aid=374211 → **直接发布成功**：<https://www.bilibili.com/opus/1270813731216949271> |
+| MCBBS | 第一次跑登录要验证码、`无法提取验证码 hash`（见下）；隔了几分钟重试登录直接成功，发帖返回「需审核」，无 URL |
+
+两处值得记下来：
+
+1. **`upload_bfs` 这条路通了**：正文 7 张图走 `x/dynamic/feed/draw/upload_bfs`，一次拿回
+   url/宽/高/体积，段落模型里 `pic.pics[]` 的四个字段齐了——之前只有草稿没有图，属于首次验证。
+2. **MCBBS 的验证码是概率触发的**：`poster._login_with_captcha` 依赖 `updateseccode('hash')`，
+   而纪念版登录页现在没有这段标记（GET 页 0 处命中），所以一旦被要求验证码就必然失败；
+   `ddddocr` 没装也补不上（`uv sync --extra captcha`）。重试一次通常就不需要验证码了。
+   要彻底修得按当前页面改造验证码提取，属于 MCBBS 侧的独立问题。
+3. `poster.py` 的独立 CLI（`python poster.py <stem>`）不会加载 `.env`，所以只配环境变量时
+   会报「未配置 MCBBS 账号密码」；走 `main.py --post-only` 不受影响（它会 `load_dotenv()`）。
+
+---
+
 ## 10. 段模型渲染器（路线 A，2026-11-15 落地）
 
 §9.3 那篇草稿在编辑器里存盘后，正文被转成了 `opus.content.paragraphs`。用只读的

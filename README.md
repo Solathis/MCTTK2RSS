@@ -42,7 +42,7 @@ MCTTK/
 │   ├── glossary.json          # 手写术语覆盖层（入库）
 │   ├── glossary.auto.json     # 自动词表层（tools/sync_glossary.py 生成，不入库）
 │   └── glossary.auto.index.json # 词表溯源索引（同上，仅供人工查阅）
-├── tools/                     # 辅助脚本（sync_glossary.py：同步官方术语表）
+├── tools/                     # 辅助脚本（sync_glossary.py 同步词表；preview_bili_html.py 预览专栏排版）
 ├── tests/                     # 单元测试（pytest）
 ├── docs/                      # 文档
 │   ├── DOCKER.md              # Docker 部署说明
@@ -359,8 +359,19 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 - `position`：`"start"` 插入头部，`"end"` 插入尾部
 - `enabled`：`true` 表示对所有类型生效，`false` 表示仅对匹配类型生效
 - `order`：排序权重，数字越小越靠前
+- `platform`：模块适用的发布平台，`"all"`（两边共用）/ `"mcbbs"` / `"bilibili"`。**缺省按 `"mcbbs"` 处理**，避免 MCBBS 版面的表格模板漏到专栏
 
 每个模块支持 `content`（BBCode）、`bbcode_content`、`markdown_content` 字段，转换时自动选择对应格式。
+
+### 平台差异
+
+- 当前共用（`"platform": "all"`）：开头署名、各类型开头说明、结尾开源协议。
+- MCBBS 独占：结尾的「实用链接 / 如何游玩 / 想了解更多资讯」等模块，里面全是 MCBBS 站内链接。
+- 专栏独占：`module_bili_footer`（外部来源与更新条目追踪），B站 读者不关心 MCBBS 版块，所以单独写了一份官方站点链接。
+
+渲染专栏 HTML 时，模块里的 BBCode 会被降级：粗体、链接、列表保留（`[b]`→`<strong>`、`[url]`→`<a>`、`[list]`→`<ul>`），
+表格/彩色/浮动/图标和 `[size=0px]` 隐藏文本会被丢弃——专栏没有这些等价物，留着只会显示成脏标签或
+把「本帖来自www.mcbbs.co」这类隐藏文字曝光出来。
 
 ## 智能词汇表
 

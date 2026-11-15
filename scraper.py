@@ -148,7 +148,28 @@ DEFAULT_CONFIG = {
         "verify": True,
         "verify_max_rounds": 1,
         "verify_max_items": 20,
-    }
+    },
+    # B站专栏投稿（bili_poster.py 读取）。键集合必须与 bili_poster.DEFAULT_BILI_CONFIG
+    # 一致，tests/test_config_json.py 会比对，避免两处默认值漂移。
+    "bilibili": {
+        "enabled": False,
+        "cookie_file": "config/bili_cookies.json",
+        "category_id": 26,
+        "candidate_categories": [26, 4, 15, 6],
+        "tags": ["Minecraft", "我的世界", "更新日志"],
+        "original": False,
+        "reprint": True,
+        "submit": "draft",
+        "title_suffix": " [AI翻译]",
+        "max_title_chars": 80,
+        "summary_max_chars": 100,
+        "attach_cover": True,
+        "rehost_images": True,
+        "max_inline_images": 20,
+        "ai_notice": "",
+        "interval_seconds": 20,
+        "max_per_run": 3,
+    },
 }
 
 

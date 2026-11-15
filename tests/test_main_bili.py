@@ -94,7 +94,7 @@ def _make_config(save_dir, *, enabled=True, **bili_overrides):
     }
 
 
-def _write_article(save_dir, stem, *, with_html=True):
+def _write_article(save_dir, stem, *, with_html=True, with_opus=False):
     json_path = save_dir / f"{stem}.json"
     json_path.write_text(json.dumps({
         "title": "Title",
@@ -104,6 +104,12 @@ def _write_article(save_dir, stem, *, with_html=True):
     (save_dir / f"{stem}.txt").write_text("bbcode", encoding="utf-8")
     if with_html:
         (save_dir / f"{stem}.html").write_text("<p>你好</p>", encoding="utf-8")
+    if with_opus:
+        (save_dir / f"{stem}.opus.json").write_text(
+            json.dumps({"paragraphs": [{"para_type": 1, "format": {"indent": {}}, "text": {"nodes": []}}]},
+                       ensure_ascii=False),
+            encoding="utf-8",
+        )
     return (stem, str(save_dir / f"{stem}.txt"), str(json_path))
 
 
@@ -234,6 +240,40 @@ class TestRunPostBili:
         main.run_post_bili(items, _make_config(save_dir, interval_seconds=7))
 
         assert slept == [7]  # 两篇之间睡一次，最后一篇之后不睡
+
+    def test_opus_renderer_posts_opus_artifact(self, save_dir):
+        item = _write_article(save_dir, "news_a", with_html=False, with_opus=True)
+
+        result = main.run_post_bili([item], _make_config(save_dir, renderer="opus"))
+
+        assert result["success"] == 1
+        assert FakeBiliPoster.instances[0].html_paths[0].endswith("news_a.opus.json")
+
+    def test_opus_artifact_generated_on_demand(self, save_dir, monkeypatch):
+        item = _write_article(save_dir, "news_a", with_html=False, with_opus=False)
+        created = []
+
+        def fake_convert(json_path, output_prefix=None, modules_config=None):
+            path = output_prefix + ".opus.json"
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump({"paragraphs": []}, f)
+            created.append(path)
+            return path
+
+        monkeypatch.setattr(main, "convert_bili_opus_file", fake_convert)
+
+        result = main.run_post_bili([item], _make_config(save_dir, renderer="opus"))
+
+        assert result["success"] == 1
+        assert created == [str(save_dir / "news_a.opus.json")]
+        assert FakeBiliPoster.instances[0].html_paths[0].endswith("news_a.opus.json")
+
+    def test_renderer_defaults_to_html(self):
+        assert main._bili_renderer({"bilibili": {"renderer": "weird"}}) == "html"
+        assert main._bili_renderer({"bilibili": {}}) == "html"
+        assert main._bili_renderer({"bilibili": {"renderer": "OPUS"}}) == "opus"
+        assert main._bili_content_suffix("opus") == ".opus.json"
+        assert main._bili_content_suffix("html") == ".html"
 
     def test_cover_image_passed_when_present(self, save_dir):
         item = _write_article(save_dir, "news_a")

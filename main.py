@@ -35,7 +35,7 @@ import sys
 import time
 from collections import Counter
 
-from converter import convert_bili_html_file, convert_json_file
+from converter import convert_bili_html_file, convert_bili_opus_file, convert_json_file
 from log_setup import (
     current_log_path,
     elapsed_since,
@@ -364,15 +364,16 @@ def _process_single_article(news: dict, config: dict, save_dir: str, modules_cfg
     if md_path:
         log_info("[主] 已生成 Markdown: %s（%s）", md_path, human_size(_safe_size(md_path)))
 
-    # 专栏 HTML 只在启用专栏发布时生成：没启用就没必要在 output 里多留一份产物
+    # 专栏正文只在启用专栏发布时生成：没启用就没必要在 output 里多留一份产物。
+    # 产物按 bilibili.renderer 二选一：html（老接口）/ opus（新版编辑器段模型）。
     if (config.get("bilibili") or {}).get("enabled", False):
+        renderer = _bili_renderer(config)
         try:
-            html_path = convert_bili_html_file(
-                json_path, output_prefix=base_path, modules_config=modules_cfg
-            )
-            log_info("[主] 已生成专栏 HTML: %s（%s）", html_path, human_size(_safe_size(html_path)))
-        except Exception:  # noqa: BLE001 - 少了 HTML 只是不能投专栏，不该中断整篇处理
-            log_error("[主] 生成专栏 HTML 失败，本次不投专栏: %s", json_path, exc_info=True)
+            content_path = _convert_bili_content(json_path, base_path, modules_cfg, renderer)
+            log_info("[主] 已生成专栏正文（%s）: %s（%s）",
+                     renderer, content_path, human_size(_safe_size(content_path)))
+        except Exception:  # noqa: BLE001 - 少了正文只是不能投专栏，不该中断整篇处理
+            log_error("[主] 生成专栏正文失败，本次不投专栏: %s", json_path, exc_info=True)
     log_debug("[主] 转换用时 %s", elapsed_since(convert_started))
 
     stem = os.path.basename(base_path)
@@ -653,21 +654,39 @@ def _seed_bili_posted(save_dir: str, state_file: str, processed: list) -> set:
     return posted
 
 
-def _ensure_bili_html(json_path: str, html_path: str, modules_cfg) -> str | None:
-    """专栏 HTML 缺失时按 JSON 现场生成。
+def _bili_renderer(config: dict) -> str:
+    """专栏正文模型：html（老接口）| opus（新版编辑器段模型）。取值非法时按 html 处理。"""
+    value = str((config.get("bilibili") or {}).get("renderer") or "html").strip().lower()
+    return value if value in ("html", "opus") else "html"
 
-    历史产物（专栏功能上线前抓的文章）没有 .html，而 --scrape-only 只处理「新新闻」，
+
+def _bili_content_suffix(renderer: str) -> str:
+    """两种正文模型的产物后缀：HTML 是 .html，段模型是 .opus.json。"""
+    return ".opus.json" if renderer == "opus" else ".html"
+
+
+def _convert_bili_content(json_path: str, output_prefix: str, modules_cfg, renderer: str) -> str:
+    """按正文模型生成专栏产物（HTML 或段模型 JSON）。"""
+    if renderer == "opus":
+        return convert_bili_opus_file(json_path, output_prefix=output_prefix, modules_config=modules_cfg)
+    return convert_bili_html_file(json_path, output_prefix=output_prefix, modules_config=modules_cfg)
+
+
+def _ensure_bili_content(json_path: str, content_path: str, modules_cfg, renderer: str) -> str | None:
+    """专栏正文产物缺失时按 JSON 现场生成。
+
+    历史产物（专栏功能上线前抓的文章）没有这份文件，而 --scrape-only 只处理「新新闻」，
     让用户为了补一份产物去重跑抓取是死路，所以这里按需补生成。
     """
-    if os.path.isfile(html_path):
-        return html_path
-    log_info("[专栏] 缺少专栏 HTML，按 JSON 现场生成: %s", os.path.basename(html_path))
+    if os.path.isfile(content_path):
+        return content_path
+    log_info("[专栏] 缺少专栏正文（%s），按 JSON 现场生成: %s",
+             renderer, os.path.basename(content_path))
+    stem = content_path[: -len(_bili_content_suffix(renderer))]
     try:
-        return convert_bili_html_file(
-            json_path, output_prefix=html_path.rsplit(".", 1)[0], modules_config=modules_cfg
-        )
+        return _convert_bili_content(json_path, stem, modules_cfg, renderer)
     except Exception:  # noqa: BLE001 - 单篇转换失败按单篇失败处理，不中断整批
-        log_error("[专栏] 生成专栏 HTML 失败: %s", json_path, exc_info=True)
+        log_error("[专栏] 生成专栏正文失败: %s", json_path, exc_info=True)
         return None
 
 
@@ -678,19 +697,23 @@ def _publish_bili_queue(poster, queue: list, config: dict, posted: set) -> dict:
     state_file = _bili_state_file(save_dir)
     interval = float((config.get("bilibili") or {}).get("interval_seconds") or 0)
     modules_cfg = _load_modules_config()
+    renderer = _bili_renderer(config)
+    suffix = _bili_content_suffix(renderer)
 
     for index, (stem, _txt_path, json_path) in enumerate(queue, 1):
         item_started = time.monotonic()
-        log_info("[专栏] %d/%d 开始投稿: %s", index, len(queue), stem)
+        log_info("[专栏] %d/%d 开始投稿: %s（%s）", index, len(queue), stem, renderer)
 
-        html_path = _ensure_bili_html(json_path, os.path.join(save_dir, stem + ".html"), modules_cfg)
-        if not html_path:
+        content_path = _ensure_bili_content(
+            json_path, os.path.join(save_dir, stem + suffix), modules_cfg, renderer
+        )
+        if not content_path:
             result["failed"] += 1
             continue
 
         try:
             outcome = poster.post_news_file(
-                stem, json_path, html_path, cover_path=find_image(save_dir, stem)
+                stem, json_path, content_path, cover_path=find_image(save_dir, stem)
             )
         except Exception as e:  # noqa: BLE001 - 单篇异常不该打断整批投稿
             result["failed"] += 1

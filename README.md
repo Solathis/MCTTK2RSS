@@ -59,7 +59,8 @@ MCTTK/
 │   ├── news_*.json            # 翻译后的文章数据
 │   ├── news_*.txt             # BBCode 格式（用于 MCBBS）
 │   ├── news_*.md              # Markdown 格式
-│   ├── news_*.html            # 专栏 HTML（bilibili.enabled 时生成）
+│   ├── news_*.html            # 专栏 HTML 正文（renderer=html 时生成）
+│   ├── news_*.opus.json       # 专栏段模型正文（renderer=opus 时生成）
 │   └── news_*.jpg             # 文章头图
 ├── logs/                      # 运行日志（自动生成，不提交）
 │   └── mcttk_YYYY-MM-DD.log   # 每天一个文件，见上文「日志」章节
@@ -165,13 +166,16 @@ cookie 过期（投稿报 `-101` / `-111`）时重跑一次即可。然后在 `c
 {
   "bilibili": {
     "enabled": true,
+    "renderer": "opus",
     "submit": "draft"
   }
 }
 ```
 
-`submit: "draft"` 只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成
-`"publish"` 自动提交（会进审核队列）。
+`renderer` 选正文模型：`"html"`（默认，老接口收 HTML 字符串，只存草稿/提交审核两态）或
+`"opus"`（新版编辑器的段模型，能写封面、摘要与「AI 辅助创作」声明）。`submit: "draft"`
+只存草稿，需要你到创作中心手动发布；确认排版与标题没问题后再改成 `"publish"` 自动发布
+（opus 模式下会先存草稿再按草稿号发布，发布失败草稿仍在）。
 
 也可以通过 `.env` 文件或环境变量传入敏感信息（优先级高于 config.json）：
 
@@ -565,13 +569,17 @@ python converter.py news.json --markdown-only
 ### bili/poster.py
 
 - `BilibiliPoster` — 专栏投稿器（cookie 会话，走创作中心 web 接口）
-  - `check_login()` — 校验 `SESSDATA` / `bili_jct` 是否还能用
-  - `upload_image(data)` — 上传图片到 B站图床
+  - `check_login()` — 校验 `SESSDATA` / `bili_jct` 是否还能用（顺带缓存 WBI 签名用的键）
+  - `upload_image(data)` — 上传图片到 B站图床（封面走 `upcover`）
   - `rehost_images(html)` — 把正文外链图重托管到 B站 CDN，失败的直接从正文移除
   - `save_draft(title, content)` — 存草稿（分区无权限时按候选表回退）
   - `publish(title, content)` — 存草稿并按 `submit` 决定是否提交审核
-  - `post_news_file(stem, json, html, cover_path)` — 单篇完整投稿
+  - `save_opus_draft(title, paragraphs)` — eva3 存草稿（封面 / 摘要 / AI 声明一起写入）
+  - `publish_opus(draft, title, paragraphs)` — 按草稿号发布（`create/opus`）
+  - `upload_bfs_image(data)` / `rehost_opus_images(paragraphs)` — 段模型正文图片上传（带宽高体积）
+  - `post_news_file(stem, json, content_path, cover_path)` — 单篇完整投稿，按 `renderer` 分派
 - `load_cookies(cfg)` — 取登录凭据：环境变量优先于 `config/bili_cookies.json`
+- `build_opus_draft_arg(...)` / `build_opus_publish_payload(...)` — 两个请求体的纯函数构造器
 
 ### bili/html.py / bili/opus.py
 
@@ -580,7 +588,7 @@ python converter.py news.json --markdown-only
 | 模块 | 产出 | 用于 |
 | --- | --- | --- |
 | `bili/html.py` | HTML 字符串（`p/h1/ul/figure/a/strong`） | 老接口 `creative/draft/addupdate`，已真机投稿验证 |
-| `bili/opus.py` | `opus.content.paragraphs` 段数组 | 新版编辑器 `dynamic/feed/article/draft/add`，段落结构按实测样本核对，接口尚未接入 |
+| `bili/opus.py` | `opus.content.paragraphs` 段数组 | 新版编辑器 `dynamic/feed/article/draft/add`（存草稿）+ `dynamic/feed/create/opus`（发布），两条都已真机验证 |
 
 两者都由 `converter.J2MMConverter` 组装：`convert_to_bili_html()` / `convert_to_bili_opus()`。
 头尾模块同样先按 `platform` 过滤、再压成 Markdown 交给各自渲染器，所以两边的段落边界一致
@@ -636,7 +644,7 @@ Minecraft 官方 API      Piston 版本清单        Feedback 网站
                   ↓
           转换 BBCode (output/news_*.txt)
           转换 Markdown (output/news_*.md)
-          转换专栏 HTML (output/news_*.html)   ← 仅 bilibili.enabled 时生成
+          转换专栏正文 (news_*.html | news_*.opus.json)   ← 仅 bilibili.enabled 时按 renderer 生成
                   ↓
           下载头图 (output/news_*.jpg)
                   ↓
@@ -750,6 +758,9 @@ git push origin v1.0.0
     "tags": ["Minecraft", "我的世界", "更新日志"],
     "original": false,
     "reprint": true,
+    "renderer": "html",
+    "template_id": 1,
+    "ai_declare": true,
     "submit": "draft",
     "title_suffix": " [AI翻译]",
     "max_title_chars": 80,
@@ -786,11 +797,14 @@ git push origin v1.0.0
   放 `.env` 或 `config/bili_cookies.json`（两者都不入库），日志里不会打印。`submit: "draft"` 只存草稿、
   需人工在编辑器发布，改成 `"publish"` 才会自动提交审核（提交后进入审核队列，通过前链接打不开）。
   正文图片会先重托管到 B站 CDN——残留外链会被整篇拒绝，所以上传失败的图会被直接丢弃
-- **专栏正文模型**：发帖走的是 HTML 正文那套（老接口 cv 专栏草稿）。段模型（`bili/opus.py`）
-  已经能渲染，但新版编辑器的发布接口还没接——实测发布打的是
-  `POST /x/dynamic/feed/create/opus`（WBI 签名，一次发布、没有草稿环节），请求体结构待补，
-  记录见 [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.3、§9.4、§10；
-  在那之前段模型只能用 `tools/preview_bili_html.py --renderer opus` 看效果
+- **专栏正文模型**：`bilibili.renderer` 决定用哪套正文。`"html"`（默认）是老接口的 HTML 正文
+  + cv 专栏草稿；`"opus"` 是新版编辑器的段模型，能写封面、摘要与「AI 辅助创作」声明
+  （`bilibili.ai_declare`），发布走 `POST /x/dynamic/feed/create/opus`。两种模型的接口都已在
+  真机验证过，字段与踩过的坑见
+  [`docs/archive/2026-11-15-bilibili-column.md`](docs/archive/2026-11-15-bilibili-column.md) §9.5、§9.6、§10。
+  想先看排版再决定：`uv run python tools/preview_bili_html.py --renderer opus`。
+  注意 opus 模型没有标签字段（`bilibili.tags` 只在 html 模型下生效），分区与封面在发布时会
+  被编辑器界面上的值覆盖——自动投稿不打开编辑器就不会有这个问题
 - **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；

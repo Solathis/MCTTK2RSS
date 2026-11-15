@@ -2,20 +2,17 @@
 
 测试原则：只测纯逻辑，不联网、不依赖仓库外的文件；断言行为，不写死整段 HTML。
 专栏的排版细节（字号/颜色/表格）没有等价物，所以这里测的是「结构标签 + 双语降级 +
-转义」这些会被后续发帖链路依赖的契约。
+转义」这些会被后续发帖链路依赖的契约。渲染器本体在 bili_html.py，converter 只负责
+把模块 / 标题 / 元信息拼成整篇。
+
 """
 import json
 import unittest.mock
 
 import pytest
 
-from converter import (
-    BiliHTMLRenderer,
-    J2MMConverter,
-    _bbcode_to_html,
-    _bili_inline,
-    convert_bili_html_file,
-)
+from bili_html import BiliHTMLRenderer, inline_html
+from converter import J2MMConverter, _bbcode_to_html, convert_bili_html_file
 
 
 def _block(btype, src, tr, meta=None):
@@ -26,26 +23,26 @@ def _block(btype, src, tr, meta=None):
 
 class TestInlineText:
     def test_escapes_markup(self):
-        assert _bili_inline("<script>alert(1)</script>") == "&lt;script&gt;alert(1)&lt;/script&gt;"
+        assert inline_html("<script>alert(1)</script>") == "&lt;script&gt;alert(1)&lt;/script&gt;"
 
     def test_md_link_becomes_anchor(self):
-        assert _bili_inline("看 [这里](https://x.com/a)") == '看 <a href="https://x.com/a">这里</a>'
+        assert inline_html("看 [这里](https://x.com/a)") == '看 <a href="https://x.com/a">这里</a>'
 
     def test_md_image_stays_inline(self):
         """段落里的图片不能产出块级 <figure>，否则 <p> 里嵌块级元素。"""
-        out = _bili_inline("![图](https://x.com/a.png)")
+        out = inline_html("![图](https://x.com/a.png)")
         assert '<img src="https://x.com/a.png" alt="图">' in out
         assert "<figure>" not in out
 
     def test_bare_brackets_untouched(self):
-        assert _bili_inline("[裸括号] 不是链接") == "[裸括号] 不是链接"
+        assert inline_html("[裸括号] 不是链接") == "[裸括号] 不是链接"
 
     def test_url_ampersand_escaped_once(self):
-        out = _bili_inline("[a](https://x.com/?a=1&b=2)")
+        out = inline_html("[a](https://x.com/?a=1&b=2)")
         assert 'href="https://x.com/?a=1&amp;b=2"' in out
 
     def test_empty(self):
-        assert _bili_inline("") == ""
+        assert inline_html("") == ""
 
 
 # ── BiliHTMLRenderer ────────────────────────────────

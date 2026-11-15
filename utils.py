@@ -4,6 +4,7 @@
 import json
 import os
 import re
+from collections.abc import Callable
 
 # ── 项目路径 ───────────────────────────────────────────
 # 源码与入口脚本留在根目录；配置放 config/，词表放 glossary/。
@@ -119,3 +120,68 @@ def classify_article_type(
         return "java_release"
 
     return fallback
+
+
+# ── Markdown 行内语法扫描（BBCode / HTML / 段落三套产物共用）──
+
+def find_closing_bracket(text: str, open_pos: int, opener: str, closer: str) -> int:
+    """返回与 text[open_pos] 处 opener 匹配的 closer 下标；找不到返回 -1。"""
+    depth = 0
+    for i in range(open_pos, len(text)):
+        ch = text[i]
+        if ch == opener:
+            depth += 1
+        elif ch == closer:
+            depth -= 1
+            if depth == 0:
+                return i
+    return -1
+
+
+def rewrite_md_links(text: str, render_link: Callable[[str, str], str]) -> str:
+    """按配对扫描 Markdown 链接 ``[文字](URL)``，把每个链接交给 render_link 格式化。
+
+    BBCode / HTML / 段落三种产物只有最终格式不同，扫描逻辑必须共用一份：
+    链接文字允许含嵌套方括号（如 ``[9月30日：生物及更多内容！[预览版/测试版]](url)``），
+    URL 允许含括号（如 ``https://en.wikipedia.org/wiki/A_(b)``）；
+    因此不能用简单的正则匹配，需要按括号配对扫描。
+    """
+    if not text:
+        return text
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if text[i] != '[':
+            out.append(text[i])
+            i += 1
+            continue
+        # 图片语法已在上一步转成相应标记，这里跳过 ![ 避免被当成链接
+        if i > 0 and text[i - 1] == '!':
+            out.append(text[i])
+            i += 1
+            continue
+        # 链接文字：方括号需配对，例如 [a[b]c]
+        text_end = find_closing_bracket(text, i, '[', ']')
+        if text_end < 0:
+            out.append(text[i:])
+            break
+        if text_end + 1 >= n or text[text_end + 1] != '(':
+            # 不是 Markdown 链接，原样保留
+            out.append(text[i:text_end + 1])
+            i = text_end + 1
+            continue
+        # URL：圆括号需配对（标题行等可含换行，各方言里压成空格）
+        url_end = find_closing_bracket(text, text_end + 1, '(', ')')
+        if url_end < 0:
+            out.append(text[i:text_end + 1])
+            i = text_end + 1
+            continue
+        label = text[i + 1:text_end].replace('\n', ' ')
+        url = text[text_end + 2:url_end].replace('\n', ' ')
+        if label and url:
+            out.append(render_link(label, url))
+        else:
+            out.append(text[i:url_end + 1])
+        i = url_end + 1
+    return ''.join(out)

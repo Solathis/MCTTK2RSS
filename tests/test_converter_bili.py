@@ -36,7 +36,7 @@ class TestInlineText:
         assert out == '看 <a href="https://github.com/jiubook/MCTTK">MCTTK</a>'
 
     def test_external_link_degrades_to_text(self):
-        assert inline_html("看 [这里](https://x.com/a)") == "看 这里"
+        assert inline_html("看 [这里](https://x.com/a)") == "看 这里（https://x.com/a）"
 
     def test_md_image_stays_inline(self):
         """段落里的图片不能产出块级 <figure>，否则 <p> 里嵌块级元素。"""

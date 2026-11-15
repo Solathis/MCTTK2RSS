@@ -18,3 +18,16 @@ def is_signature_link(url: str) -> bool:
     """是否是必须保留超链接的署名地址（其余外链统一降级成纯文本）。"""
     lowered = (url or "").lower()
     return any(pattern.lower() in lowered for pattern in SIGNATURE_LINKS)
+
+
+def degrade_link(label: str, url: str) -> str:
+    """非署名链接的纯文本形态：`文字（URL）`。
+
+    地址要留在正文里——读者至少能看见、能复制（下载地址、漏洞追踪器这类信息丢了比
+    不可点更糟）；链接文字本身就是地址时不重复写成「URL（URL）」。
+    """
+    label = (label or "").strip()
+    url = (url or "").strip()
+    if not url or not label or label == url:
+        return url or label
+    return f"{label}（{url}）"

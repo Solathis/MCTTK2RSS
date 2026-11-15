@@ -77,10 +77,11 @@ class TestInlineNodes:
         assert "style" not in link
 
     def test_external_link_degrades_to_text(self):
-        """除署名外不留超链接：B站 图文里点外链会跳到「离开 B站」拦截页（实测）。"""
+        """除署名外不留超链接：B站 图文里点外链会跳到「离开 B站」拦截页（实测），
+        但地址要留在正文里，读者至少能复制。"""
         nodes = inline_nodes("看 [这里](https://x.com/a)")
         assert [n["node_type"] for n in nodes] == [1]
-        assert "".join(n["word"]["words"] for n in nodes) == "看 这里"
+        assert "".join(n["word"]["words"] for n in nodes) == "看 这里（https://x.com/a）"
 
     def test_non_url_link_degrades_to_text(self):
         """模块模板里的 [标题](地址) 是占位写法，塞进段模型会被接口挡，退回纯文本。"""
@@ -314,7 +315,7 @@ class TestMarkdownToParagraphs:
 
     def test_list_external_link_keeps_text_only(self):
         paras = markdown_to_paragraphs("- 见 [讨论帖](https://x.com/a)")
-        assert _words(paras[0]) == "见 讨论帖"
+        assert _words(paras[0]) == "见 讨论帖（https://x.com/a）"
         assert [n["node_type"] for n in paras[0]["text"]["nodes"]] == [1]
 
     def test_quote_lines_share_one_group(self):
@@ -396,7 +397,7 @@ class TestConvertToBiliOpus:
             "custom_modules": [],
         }
         paras = J2MMConverter(modules).convert_to_bili_opus(self._data())
-        assert _words(paras[0]) == "署名 MCTTK 工具"
+        assert _words(paras[0]) == "署名 MCTTK 工具（https://a.com）"
         nodes = paras[0]["text"]["nodes"]
         links = [n for n in nodes if n["node_type"] == 4]
         assert [n["link"]["link"] for n in links] == ["https://github.com/jiubook/MCTTK"]

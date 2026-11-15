@@ -15,7 +15,7 @@
 import html
 import re
 
-from bili import is_signature_link
+from bili import degrade_link, is_signature_link
 from utils import rewrite_md_links
 
 
@@ -43,16 +43,17 @@ def _md_images_to_html(text: str) -> str:
 
 
 def _md_links_to_html(text: str) -> str:
-    """把 Markdown 链接 [文字](URL) 转成 <a href>；非署名链接只留文字。
+    """把 Markdown 链接 [文字](URL) 转成 <a href>；非署名链接只留「文字（URL）」。
 
     专栏只认 HTML、没有 BBCode，但外链点开是 B站 的「离开 B站」提示页（实测），
-    所以除署名外一律降级成纯文本，读者至少不会撞到拦截页。
+    所以除署名外一律降级成纯文本，地址仍留在正文里供读者复制。
     """
     if not text:
         return text
     return rewrite_md_links(
         _md_images_to_html(text),
-        lambda label, url: f'<a href="{url}">{label}</a>' if is_signature_link(url) else label,
+        lambda label, url: f'<a href="{url}">{label}</a>' if is_signature_link(url)
+        else degrade_link(label, url),
     )
 
 

@@ -197,6 +197,7 @@
 
 结论：要做自动声明，必须整体切到段落模型（还需先抓到发布/提交环节的新接口）。
 本次不做，留作独立特性；当前投稿后 `is_aigc` 需要人工在编辑器勾选。
+→ 后续：段落渲染器见 §10，草稿接口与 `is_aigc` 的真机验证见 §9.5。
 
 ### 9.4 补抓包：发布走的是 `create/opus`，不是 `draft/add`
 
@@ -220,6 +221,51 @@
 3. 这次导出的 xlsx **只有摘要表**（Id/URL/方法/状态/大小/类型/耗时），没有请求体与响应体，
    所以 `arg` 里的字段名与写法仍未确认——`create/opus` 是「发布」而非「草稿」，猜错会
    在账号下留下一条公开的坏图文，所以实现前必须先拿到真实请求体。
+
+---
+
+### 9.5 eva3 存草稿：可用的请求体（2026-11-15 真机验证）
+
+§9.3 的 `draft/add` 猜测是对的，把段模型灌进去能存住。实机用我们的渲染器产出的
+174 段（普通 23 / 引用 30 / 列表 113 / 标题 8）投稿，读回逐项核对无误：
+
+| 项 | 值 |
+| --- | --- |
+| 请求 | `POST https://api.bilibili.com/x/dynamic/feed/article/draft/add` |
+| 查询串 | `csrf` + `gaia_source=main_web` + `wts` + `w_rid`（WBI）。实测**不需要** `b_wet` 与 `dm_*` 指纹参数 |
+| 响应 | `{"code":0,"data":{"article_id":374197}}`——键名是 `article_id`，不是 `aid` |
+| 读回 | `title` / `opus.title` / `category=26` / `template_id=1` / `type=4` / `is_aigc=1` / `paragraphs=174` |
+
+可工作的 `arg`：
+
+```json
+{"arg": {
+  "title": "Minecraft 26.4 快照 8 [AI翻译]",
+  "category_id": 26,
+  "template_id": 1,
+  "type": 4,
+  "opus": {
+    "title": "Minecraft 26.4 快照 8 [AI翻译]",
+    "content": {"paragraphs": ["…174 段…"]},
+    "attachments": {"is_aigc": 1}
+  }
+}}
+```
+
+实测踩到的坑（都是「不报错但没生效」，比报错更难查）：
+
+| 写法 | 结果 |
+| --- | --- |
+| `category_id` + `template_id` | ✅ 读回 26 / 1 |
+| `category` + `tid`（老接口的键名） | ❌ 静默忽略，读回 `category=0`、`template=0` |
+| `arg.aid` = 0 或 = 已有草稿 id | ❌ 一律**新建**一条草稿，不会更新那条已有的 |
+| `content` 不传 | ✅ 服务端按段落自己拼纯文本（174 段 → 15109 字） |
+| `opus.attachments.is_aigc = 1` | ✅ 读回 `is_aigc=1`，声明生效（这才是 §9.3 想要的那一步） |
+| 把 `tags` / `summary` / `is_new_editor` 一起塞进 arg | ❌ `code=-400 请求错误`（未逐项二分是哪一个） |
+| 我们生成的 `combine_hash`（`list_1` 这种） | ✅ 读回一字未改，分组没被服务端重写 |
+
+仍然没做的：`x/dynamic/feed/create/opus`（发布）的请求体还没抓到，所以段模型目前
+只能存草稿；`tags` 与封面的正确写法也没确认（草稿阶段不写也能存）。
 
 ---
 

@@ -272,6 +272,18 @@ def _module_platform(module: dict) -> str:
     return value if value in _PLATFORMS else 'mcbbs'
 
 
+def _module_text(module: dict) -> str:
+    """取模块正文喂给专栏渲染器。
+
+    老配置里模块可能只写 `content`、只写 `bbcode_content`，或两者都写；专栏这两条路径
+    都只认 BBCode，取不到就跳过这个模块——直接索引 `m['content']` 会让「只写
+    bbcode_content（或只写 markdown_content）」的模块整篇转换 KeyError。
+    `markdown_content` 只服务 Markdown 产物（没有等价的 Markdown→BBCode 反解），
+    所以它不参与专栏渲染，只在 Markdown 路径里用。
+    """
+    return module.get('bbcode_content') or module.get('content') or ''
+
+
 def _strip_hidden_bbcode(bbcode: str) -> str:
     """删掉 [size=0px] 隐藏文本（Discuz 专用，如「本帖来自www.mcbbs.co」）。
 
@@ -634,7 +646,7 @@ class J2MMConverter:
         article_type = _detect_article_type(json_data.get('title', ''))
 
         for m in self._get_modules('start', article_type, platform='bilibili'):
-            parts.append(_bbcode_to_html(m.get('bbcode_content') or m['content']))
+            parts.append(_bbcode_to_html(_module_text(m)))
 
         title_cn = json_data.get('translated_title', '')
         title_en = json_data.get('title', '')
@@ -665,7 +677,7 @@ class J2MMConverter:
 
         for position in ('custom', 'end'):
             for m in self._get_modules(position, article_type, platform='bilibili'):
-                parts.append(_bbcode_to_html(m.get('bbcode_content') or m['content']))
+                parts.append(_bbcode_to_html(_module_text(m)))
 
         return '\n'.join(p for p in parts if p)
 
@@ -681,7 +693,7 @@ class J2MMConverter:
         doc = OpusDocument()
 
         for m in self._get_modules('start', article_type, platform='bilibili'):
-            _bbcode_to_opus(m.get('bbcode_content') or m['content'], doc)
+            _bbcode_to_opus(_module_text(m), doc)
 
         title_cn = json_data.get('translated_title', '')
         title_en = json_data.get('title', '')
@@ -708,7 +720,7 @@ class J2MMConverter:
 
         for position in ('custom', 'end'):
             for m in self._get_modules(position, article_type, platform='bilibili'):
-                _bbcode_to_opus(m.get('bbcode_content') or m['content'], doc)
+                _bbcode_to_opus(_module_text(m), doc)
 
         return doc.paragraphs
 

@@ -599,6 +599,10 @@ python converter.py news.json --markdown-only
 先进「离开 B站」的拦截页（实测），正文十几个外链等于十几个提示页。策略写在
 `bili/__init__.py` 的 `SIGNATURE_LINKS` / `degrade_link()`，两套渲染器共用。
 
+**原文刷灰**：段模型的原文对照（引用框、列表项第二行、英文原标题）用 `color` 写成
+`#9499A0` 的灰色，译文保持默认色；HTML 版没有颜色能力（内联样式会被编辑器剥掉）。
+灰度常量是 `bili/opus.py::ORIGINAL_COLOR`。
+
 投稿前先看排版（近似样式，正式排版由专栏编辑器决定）：
 
 ```bash

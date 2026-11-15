@@ -129,16 +129,24 @@ class TestConfigStructure:
         assert mcbbs["base_url"].startswith("https://")
 
     def test_bilibili_structure(self, config):
+        """本地 config.json 允许只写想改的键（其余由 DEFAULT_CONFIG 补齐），
+
+        所以这里只校验「出现了的键」类型是否对；键的完整性由
+        test_bilibili_defaults_match_poster_module 对模板做全量校验。
+        """
         if "bilibili" not in config:
             return
         bili = config["bilibili"]
-        for key in ["enabled", "cookie_file", "category_id", "submit"]:
-            assert key in bili, f"bilibili 缺少键: {key}"
-        assert isinstance(bili["enabled"], bool)
-        assert isinstance(bili["cookie_file"], str)
-        assert isinstance(bili["category_id"], int) and bili["category_id"] > 0
-        assert bili["submit"] in ("draft", "publish"), f"submit 只能是 draft/publish: {bili['submit']}"
-        assert isinstance(bili["max_title_chars"], int) and bili["max_title_chars"] > 0
+        if "enabled" in bili:
+            assert isinstance(bili["enabled"], bool)
+        if "cookie_file" in bili:
+            assert isinstance(bili["cookie_file"], str)
+        if "category_id" in bili:
+            assert isinstance(bili["category_id"], int) and bili["category_id"] > 0
+        if "submit" in bili:
+            assert bili["submit"] in ("draft", "publish"), f"submit 只能是 draft/publish: {bili['submit']}"
+        if "max_title_chars" in bili:
+            assert isinstance(bili["max_title_chars"], int) and bili["max_title_chars"] > 0
 
     def test_bilibili_defaults_match_poster_module(self):
         """配置模板与 DEFAULT_CONFIG 里的 bilibili 键必须与 bili_poster 默认值一致。

@@ -142,6 +142,17 @@ _SECCODE_HASH_PATTERNS = (
 # 记日志/落盘时关注的页面标记，用来区分登录表单、验证码表单和风控页
 _LOGIN_MARKERS = ("formhash", "loginhash", "updateseccode", "seccodehash", "验证码", "messagetext")
 
+# 登录链路的请求必须有超时：站点或网络挂住时，超时才能把它变成可重试的失败。
+# 这里是交互式登录，不用抓取链路的 http.timeout（那是有意给长下载留的余量）。
+LOGIN_TIMEOUT = 30
+
+# 站点明确拒绝凭证的提示：重试只会加重失败计数，遇到就立即停手。
+# 注意不能把「验证码错误」放进来——那是 OCR 没认对，应该换一张继续试。
+_PERMANENT_LOGIN_HINTS = (
+    "密码错误", "用户名或密码", "用户名不存在", "用户不存在",
+    "安全问题", "账号", "冻结", "禁止", "锁定", "尝试",
+)
+
 
 class LoginRetryable(RuntimeError):
     """登录流程里可以换新会话重试的失败。
@@ -149,6 +160,15 @@ class LoginRetryable(RuntimeError):
     验证码页结构不符、风控页、会话没带上登录态都属于这一类；凭证被站点明确
     拒绝（密码错误/安全问题）不算——重试只会让失败计数继续涨，还可能触发验证码。
     """
+
+
+class LoginRejected(RuntimeError):
+    """站点明确拒绝凭证或账号状态（密码错误/安全问题/被限制），重试没有意义。"""
+
+
+def _is_permanent_login_error(message: str) -> bool:
+    """提示语是不是「重试也没用」的那一类（凭证被拒、账号被限制）。"""
+    return any(hint in message for hint in _PERMANENT_LOGIN_HINTS)
 
 
 def extract_formhash(html: str) -> str:
@@ -186,8 +206,12 @@ def _login_debug_dir() -> str:
 
 
 def _scrub_login_html(html: str) -> str:
-    """落盘前抹掉登录令牌和密码框内容：日志里不许出现凭据。"""
-    html = re.sub(r"(auth=)[A-Za-z0-9%/+]{8,}", r"\1***", html)
+    """落盘前抹掉登录令牌和密码框内容：日志里不许出现凭据。
+
+    auth 的值按「到分隔符为止」整体抹掉，不假设它只含 base64 字符——站点可能用
+    URL-safe 的 `-`/`_` 或带 `=` 填充，漏掉就会把会话令牌留在排查文件里。
+    """
+    html = re.sub(r"(auth=)[^\s\"'&<>]+", r"\1***", html)
     return re.sub(r'(name="password"[^>]*value=")[^"]*(")', r"\1***\2", html)
 
 
@@ -217,7 +241,7 @@ def _log_login_evidence(tag: str, label: str, response) -> str:
 
 
 def _verify_login(session: requests.Session, base_url: str) -> str:
-    r = session.get(f"{base_url}/forum.php")
+    r = session.get(f"{base_url}/forum.php", timeout=LOGIN_TIMEOUT)
     r.raise_for_status()
     uid = re.search(r"discuz_uid\s*=\s*'(\d+)'", r.text)
     if not uid or uid.group(1) == "0":
@@ -312,6 +336,7 @@ def _submit_captcha_login(session, base_url, r_cap, idhash, auth_token,
         f"{base_url}/member.php?mod=logging&action=login"
         f"&loginsubmit=yes&loginhash={lh_cap}&inajax=1",
         data=post_data,
+        timeout=LOGIN_TIMEOUT,
     )
     session.headers.pop("Referer", None)
 
@@ -323,6 +348,9 @@ def _submit_captcha_login(session, base_url, r_cap, idhash, auth_token,
         err_msg = re.sub(r'<[^>]+>', '', err_match.group(1)).strip()[:200]
         if "安全问题" not in err_msg:
             log_warning(f"    ✗ 登录被拒: {err_msg}")
+        # 凭证被拒和「验证码不对」必须分开：前者再试只会加重失败计数
+        if _is_permanent_login_error(err_msg):
+            raise LoginRejected(f"登录失败: {err_msg}")
     else:
         log_warning(f"    ✗ 未知登录结果（HTTP {r_post.status_code}，长度 {len(r_post.text)}）")
     return False
@@ -332,7 +360,8 @@ def _fetch_captcha_page(session, base_url, auth_token) -> tuple:
     """重新取一次登录页，返回 (响应, idhash, auth_token)；idhash 可能为空。"""
     r_cap = session.get(
         f"{base_url}/member.php?mod=logging&action=login"
-        f"&auth={quote(auth_token, safe='')}&referer={base_url}/&cookietime=1"
+        f"&auth={quote(auth_token, safe='')}&referer={base_url}/&cookietime=1",
+        timeout=LOGIN_TIMEOUT,
     )
     auth_m = re.search(r"auth=([A-Za-z0-9%/+]+)", r_cap.text)
     if auth_m:
@@ -394,7 +423,8 @@ def _login_with_captcha(session, base_url, username, password, captcha_answer, r
         )
         session.headers.update({"Referer": referer_url})
         update_seed = str(int(time.time() * 1000))[-6:]
-        r_img = session.get(f"{base_url}/misc.php?mod=seccode&update={update_seed}&idhash={idhash}")
+        r_img = session.get(f"{base_url}/misc.php?mod=seccode&update={update_seed}&idhash={idhash}",
+                            timeout=LOGIN_TIMEOUT)
         session.headers.pop("Referer", None)
 
         if len(r_img.content) < 100:
@@ -491,10 +521,11 @@ class MCBBSPoster:
                 time.sleep(wait_seconds)
 
     def _login_once(self) -> bool:
-        """走一遍完整登录流程（新建会话）；失败时抛 LoginRetryable 或 RuntimeError。"""
+        """走一遍完整登录流程（新建会话）；失败时抛可重试/不可重试的登录错误。"""
         self.session = _make_session()
 
-        r = self.session.get(f"{self.base_url}/member.php?mod=logging&action=login")
+        r = self.session.get(f"{self.base_url}/member.php?mod=logging&action=login",
+                             timeout=LOGIN_TIMEOUT)
         r.raise_for_status()
         try:
             formhash = extract_formhash(r.text)
@@ -512,7 +543,7 @@ class MCBBSPoster:
             "username": self.username, "password": self.password,
             "questionid": "0", "answer": "", "cookietime": "2592000",
         }
-        r = self.session.post(login_url, data=data)
+        r = self.session.post(login_url, data=data, timeout=LOGIN_TIMEOUT)
 
         if "欢迎您回来" in r.text:
             self.formhash = _verify_login(self.session, self.base_url)
@@ -531,7 +562,11 @@ class MCBBSPoster:
             _log_login_evidence("login", "登录结果", r)
             raise LoginRetryable("登录结果无法识别（页面里没有提示信息），可能命中风控页")
         err_msg = re.sub(r"<[^>]+>", "", err.group(1)).strip()[:200]
-        raise RuntimeError(f"登录失败: {err_msg}")
+        # 凭证被拒就停手；其余提示（来路不正确、表单验证串不符等）多是临时状态，值得重试
+        if _is_permanent_login_error(err_msg):
+            raise LoginRejected(f"登录失败: {err_msg}")
+        _log_login_evidence("login", "登录结果", r)
+        raise LoginRetryable(f"登录失败（可重试）: {err_msg}")
 
     def _upload(self, file_path: str, upload_filename: str, mime_type: str,
                 extra_data: dict = None) -> str:

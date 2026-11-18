@@ -98,6 +98,8 @@ class TestConfigStructure:
             assert retry["login"]["max_attempts"] >= 1
             assert isinstance(retry["login"]["wait_seconds"], int)
             assert retry["login"]["wait_seconds"] >= 0
+        if "backfill_unposted" in retry:
+            assert isinstance(retry["backfill_unposted"], bool)
 
     def test_concurrency_structure(self, config):
         c = config["concurrency"]

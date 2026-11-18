@@ -59,6 +59,7 @@
       "max_attempts": 3,
       "wait_seconds": 10
     },
+    "backfill_unposted": true,
     "max_article_attempts": 3
   },
   "concurrency": {

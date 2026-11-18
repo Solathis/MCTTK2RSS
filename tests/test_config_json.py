@@ -93,6 +93,14 @@ class TestConfigStructure:
             assert "max_retries" in retry[key]
             assert isinstance(retry[key]["max_retries"], int)
             assert retry[key]["max_retries"] >= 0
+        # 这两个键是模板的一部分，删掉就该报错，不能靠 if 跳过检查
+        assert "login" in retry, "模板必须保留 retry.login（MCBBS 登录重试）"
+        assert isinstance(retry["login"]["max_attempts"], int)
+        assert retry["login"]["max_attempts"] >= 1
+        assert isinstance(retry["login"]["wait_seconds"], int)
+        assert retry["login"]["wait_seconds"] >= 0
+        assert "backfill_unposted" in retry, "模板必须保留 retry.backfill_unposted（未发布文章补发）"
+        assert isinstance(retry["backfill_unposted"], bool)
 
     def test_concurrency_structure(self, config):
         c = config["concurrency"]

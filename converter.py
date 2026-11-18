@@ -13,8 +13,11 @@
 模块 / 标题 / 元信息 / 正文拼成整篇，按调用方要的形态各拼一遍。
 """
 import argparse
+import contextlib
 import json
+import os
 import re
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -748,6 +751,24 @@ class J2MMConverter:
 
 # ── 文件转换辅助 ─────────────────────────────────────
 
+def _write_atomic(path: str, content: str) -> None:
+    """先写同目录临时文件再 os.replace：写到一半被打断也不留半截产物。
+
+    发布链路把「有 .txt + 同名 .json」当作可发布，直接 open(..., 'w') 截断重写时
+    进程被打断会留下半截 .txt，补发时就会把截断的正文发出去。
+    """
+    directory = os.path.dirname(os.path.abspath(path))
+    fd, tmp_path = tempfile.mkstemp(prefix=f".{os.path.basename(path)}.", suffix=".tmp", dir=directory)
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            f.write(content)
+        os.replace(tmp_path, path)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            os.remove(tmp_path)
+        raise
+
+
 def convert_json_file(json_path: str, output_prefix: str = None, modules_config: dict = None) -> tuple:
     """
     将单个 JSON 文件转换为 BBCode (.txt) 和 Markdown (.md)
@@ -764,14 +785,12 @@ def convert_json_file(json_path: str, output_prefix: str = None, modules_config:
 
     bbcode_content = conv.convert_to_bbcode(data)
     bbcode_path = f'{stem}.txt'
-    with open(bbcode_path, 'w', encoding='utf-8') as f:
-        f.write(bbcode_content)
+    _write_atomic(bbcode_path, bbcode_content)
     log_debug("[转换] BBCode: %s（%d 块 → %d 字符）", bbcode_path, len(blocks), len(bbcode_content))
 
     md_content = conv.convert_to_markdown(data)
     md_path = f'{stem}.md'
-    with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(md_content)
+    _write_atomic(md_path, md_content)
     log_debug("[转换] Markdown: %s（%d 字符）", md_path, len(md_content))
 
     return bbcode_path, md_path
@@ -794,8 +813,7 @@ def convert_bili_html_file(json_path: str, output_prefix: str = None, modules_co
     stem = output_prefix or Path(json_path).stem
     content = conv.convert_to_bili_html(data)
     html_path = f'{stem}.html'
-    with open(html_path, 'w', encoding='utf-8') as f:
-        f.write(content)
+    _write_atomic(html_path, content)
     log_debug("[转换] 专栏 HTML: %s（%d 块 → %d 字符）", html_path, len(data.get("blocks") or []), len(content))
 
     return html_path
@@ -818,8 +836,7 @@ def convert_bili_opus_file(json_path: str, output_prefix: str = None, modules_co
     stem = output_prefix or Path(json_path).stem
     paragraphs = conv.convert_to_bili_opus(data)
     opus_path = f'{stem}.opus.json'
-    with open(opus_path, 'w', encoding='utf-8') as f:
-        json.dump({"paragraphs": paragraphs}, f, ensure_ascii=False, indent=1)
+    _write_atomic(opus_path, json.dumps({"paragraphs": paragraphs}, ensure_ascii=False, indent=1))
     log_debug("[转换] 段模型: %s（%d 块 → %d 段）", opus_path, len(data.get("blocks") or []), len(paragraphs))
 
     return opus_path

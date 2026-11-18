@@ -501,7 +501,56 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict
     return processed
 
 
-def run_post(processed: list, config: dict, no_image: bool = False, no_json: bool = False) -> dict:
+def _backfill_enabled(config: dict) -> bool:
+    """是否补发 output 里已生成但没发出去的文章（retry.backfill_unposted）。"""
+    return bool((config.get("retry") or {}).get("backfill_unposted", True))
+
+
+def _collect_unposted(save_dir: str, posted: set, exclude: set | None = None) -> list:
+    """收集 output 里「.txt + 同名 .json」且没发布过的文章，按文件名排序（旧→新）。
+
+    post_news_file 要求 BBCode 与元数据成对存在，缺一个就发不了，所以这里一并过滤。
+    """
+    skip = exclude or set()
+    items = []
+    for txt_path in sorted(glob.glob(os.path.join(save_dir, "*.txt"))):
+        stem = os.path.splitext(os.path.basename(txt_path))[0]
+        if stem in posted or stem in skip:
+            continue
+        json_path = os.path.join(save_dir, stem + ".json")
+        if os.path.isfile(json_path):
+            items.append((stem, txt_path, json_path))
+    return items
+
+
+def _has_unposted_mcbbs(config: dict) -> bool:
+    """没有新文章时是否还有该补发的 MCBBS 文章；main 据此决定要不要跑发布。"""
+    if not (config.get("mcbbs") or {}).get("enabled", False) or not _backfill_enabled(config):
+        return False
+    save_dir = config["output"]["save_dir"]
+    posted = load_posted(os.path.join(save_dir, ".posted.json"))
+    return bool(_collect_unposted(save_dir, posted))
+
+
+def _build_publish_queue(processed: list, save_dir: str, posted: set, config: dict) -> list:
+    """本轮要发布的文章 = 本轮新处理的 + 历史未发布的（受 retry.backfill_unposted 控制）。"""
+    queue = list(processed)
+    unposted = _collect_unposted(save_dir, posted, {stem for stem, _, _ in queue})
+    if not unposted:
+        return queue
+    if not _backfill_enabled(config):
+        log_warning("[发布] 有 %d 篇已生成但未发布的文章，补发未开启"
+                    "（config.json 的 retry.backfill_unposted = false）", len(unposted))
+        return queue
+    log_info("[发布] 补发 %d 篇已生成但未发布的文章", len(unposted))
+    for stem, _txt_path, _json_path in unposted:
+        log_info("[发布] 补发: %s", stem)
+    queue.extend(unposted)
+    return queue
+
+
+def run_post(processed: list, config: dict, no_image: bool = False, no_json: bool = False,
+             config_path: str | None = None) -> dict:
     """执行发布流程
 
     Returns:
@@ -516,13 +565,18 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
         log_warning("[发布] MCBBS 发布未启用（config.json 中 mcbbs.enabled = false），跳过发帖")
         return result
 
-    if not processed:
+    mcbbs_config = load_poster_config(config_path)
+    save_dir = config["output"]["save_dir"]
+    poster_state_file = os.path.join(save_dir, ".posted.json")
+    posted = load_posted(poster_state_file)
+
+    queue = _build_publish_queue(processed, save_dir, posted, config)
+    if not queue:
         log_info("[发布] 没有需要发布的文章")
         return result
 
-    mcbbs_config = load_poster_config()
     log_info("[发布] 目标站点: %s | 版块 fid=%s | 待发布 %d 篇",
-             mcbbs_config.get("base_url"), mcbbs_config.get("forum_fid"), len(processed))
+             mcbbs_config.get("base_url"), mcbbs_config.get("forum_fid"), len(queue))
 
     poster = MCBBSPoster(mcbbs_config)
     login_started = time.monotonic()
@@ -530,17 +584,13 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
         poster.login()
     except Exception as e:
         log_error("[发布] MCBBS 登录失败，本次不发布: %s", e, exc_info=True)
-        result["failed"] = len(processed)
+        result["failed"] = len(queue)
         return result
     log_info("[发布] 登录成功，用时 %s", elapsed_since(login_started))
 
-    save_dir = config["output"]["save_dir"]
-    poster_state_file = os.path.join(save_dir, ".posted.json")
-    posted = load_posted(poster_state_file)
-
-    for index, (stem, txt_path, json_path) in enumerate(processed, 1):
+    for index, (stem, txt_path, json_path) in enumerate(queue, 1):
         post_started = time.monotonic()
-        log_info("[发布] %d/%d 开始发帖: %s", index, len(processed), stem)
+        log_info("[发布] %d/%d 开始发帖: %s", index, len(queue), stem)
         try:
             url = poster.post_news_file(stem, txt_path, json_path, save_dir,
                                         no_image=no_image, attach_json=not no_json)
@@ -562,26 +612,21 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
     return result
 
 
-def run_post_only(config: dict) -> dict:
+def run_post_only(config: dict, config_path: str | None = None) -> dict:
     """仅发布 output 目录中未发布的文件"""
     from poster import MCBBSPoster, load_posted, load_poster_config, save_posted
 
     result = {"success": 0, "failed": 0, "urls": []}
     started = time.monotonic()
 
-    mcbbs_config = load_poster_config()
+    mcbbs_config = load_poster_config(config_path)
     if not config.get("mcbbs", {}).get("enabled", False):
         log_warning("[发布] MCBBS 发布未启用（config.json 中 mcbbs.enabled = false）")
         return result
 
     save_dir = config["output"]["save_dir"]
 
-    all_news = []
-    for txt_path in sorted(glob.glob(os.path.join(save_dir, "*.txt"))):
-        stem = os.path.splitext(os.path.basename(txt_path))[0]
-        json_path = os.path.join(save_dir, stem + ".json")
-        if os.path.exists(json_path):
-            all_news.append((stem, txt_path, json_path))
+    all_news = _collect_unposted(save_dir, set())
 
     if not all_news:
         log_warning("[发布] output 目录没有可发布的新闻文件（需要 .txt + 同名 .json）: %s", save_dir)
@@ -1138,7 +1183,7 @@ def main():
     try:
         if args.post_only:
             if args.publish in ("all", "mcbbs"):
-                result = run_post_only(config)
+                result = run_post_only(config, config_path=args.config)
                 stats["posted"] = result["success"]
                 stats["post_failed"] = result["failed"]
             if args.publish in ("all", "bilibili"):
@@ -1156,12 +1201,19 @@ def main():
             processed = run_scrape(config, state_file, stats=stats)
             stats["processed"] = len(processed)
             publish_target = "none" if args.scrape_only else args.publish
+            # 没抓到新文章时也要跑发布，否则上次登录失败留下的文章永远补不上
+            can_backfill = publish_target in ("all", "mcbbs") and _has_unposted_mcbbs(config)
 
-            if not processed:
+            if publish_target == "none":
+                if processed:
+                    log_info("[主] 跳过发布（%d 篇已生成产物）", len(processed))
+                else:
+                    log_info("[主] 没有新内容需要处理")
+            elif not processed and not can_backfill:
                 log_info("[主] 没有新内容需要处理")
-            elif publish_target == "none":
-                log_info("[主] 跳过发布（%d 篇已生成产物）", len(processed))
             else:
+                if not processed:
+                    log_info("[主] 没有新内容，检查是否有上次未发布的文章需要补发")
                 _publish_all(processed, config, args, publish_target, stats)
 
     except SystemExit:
@@ -1192,7 +1244,8 @@ def _publish_all(processed: list, config: dict, args, publish_target: str, stats
     if publish_target in ("all", "mcbbs"):
         if mcbbs_enabled:
             log_section("开始发布到 MCBBS")
-            result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json)
+            result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json,
+                              config_path=args.config)
             stats["posted"] = result["success"]
             stats["post_failed"] = result["failed"]
         else:

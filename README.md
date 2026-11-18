@@ -232,6 +232,7 @@ python main.py --scrape-only
 
 # 只发布 output 目录中已翻译但未发布的文件
 python main.py --post-only
+# （全流程默认也会补发，见 retry.backfill_unposted；这个开关关掉后才需要手动跑）
 
 # 只投 B站专栏，不碰 MCBBS
 python main.py --publish bilibili
@@ -265,6 +266,7 @@ python main.py --no-json
 | 翻译 | 标题原文与译文、正文可译块数、成功/失败块数、原文字符 → 译文字符、批次数、每次 API 调用的耗时与 token 用量 |
 | 保存 | JSON / 头图 / BBCode / Markdown 的完整路径与文件大小 |
 | 发布 | 登录结果、每篇发帖结果、**帖子地址**、耗时；失败时附异常堆栈 |
+| 发布排查 | 登录页/验证码页解析失败时记 `[登录排查]`，并把响应写进日志目录 `mcbbs_login_*.html`（`auth` 令牌与密码框已打码） |
 | 汇总 | 每轮结束一行：来源条数 / 新增条数 / 翻译篇数 / 发帖成功失败 / 总用时 |
 
 日志示例（节选）：
@@ -592,7 +594,7 @@ python converter.py news.json --markdown-only
 ### poster.py
 
 - `MCBBSPoster` — 发帖器类
-  - `login()` — 登录 MCBBS（支持验证码自动识别，最多重试 5 次）
+  - `login()` — 登录 MCBBS（验证码流程内最多尝试 5 次；整体登录失败会按 `retry.login` 换新会话重试）
   - `upload_image(path)` — 上传图片附件
   - `upload_file(path)` — 上传普通文件附件（如 JSON）
   - `post_thread(title, message)` — 发帖
@@ -829,6 +831,8 @@ git push origin v1.0.0
   "retry": {
     "translation": { "max_retries": 3 },
     "download": { "max_retries": 3 },
+    "login": { "max_attempts": 3, "wait_seconds": 10 },
+    "backfill_unposted": true,
     "max_article_attempts": 3
   },
   "concurrency": {
@@ -862,10 +866,20 @@ git push origin v1.0.0
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
   改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`
-- **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
+- **验证码**：登录时若遇到验证码，优先从这次失败的登录响应里取验证码表单（站点要求验证码时，
+  那张页面本身就是带验证码的登录页），取不到再重取登录页；识别仍用 `ddddocr`，单次流程最多试 5 次，
+  识别失败时用 `captcha_answer` 备用答案。验证码页解析不出来时会把响应写进日志目录
+  （`mcbbs_login_*.html`，`auth` 令牌与密码框已打码）并在日志里记 `[登录排查]`，便于对照站点改版
+- **登录重试**：整段登录失败（验证码页结构不符、风控页、网络抖动）时换一个新会话重试，
+  默认 3 次、间隔 10 秒，由 `retry.login.max_attempts` / `retry.login.wait_seconds` 控制。
+  凭证被站点明确拒绝（密码错误、安全问题）不重试，避免把失败计数刷上去又触发验证码
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；
   连续失败达到 `retry.max_article_attempts`（默认 3）次后才放弃，避免个别坏链接被反复重试
+- **失败补发**：登录失败会让整轮 MCBBS 发布跳过，文章留在 `output/` 里但没进
+  `.posted.json`。`retry.backfill_unposted`（默认 `true`）让**下一次运行**把这些「已生成但
+  未发布」的文章一起发掉，每篇在日志里单独打一条 `[发布] 补发: <文件名>`；没有待补发文章时
+  不会多跑一轮登录。想只让全流程发新文章就设为 `false`，改完用 `--post-only` 手动补
 - **翻译丢译文**：批量翻译开启了结构化输出（`openai_compat.json_schema`），
   解析同时兼容 `{"translations": [...]}` / 裸数组、`translated_text` / `text` 两种字段名。
   若某批返回完全无法解析，日志会输出 `[翻译] 警告: ...` 而不是静默丢弃
@@ -889,8 +903,9 @@ git push origin v1.0.0
 - **日志**：每轮运行的来源条数、翻译量、保存的文件、发帖地址都会写进 `logs/mcttk_YYYY-MM-DD.log`
   （`print()` 与 stderr 也一并落盘）。容器重建后 `docker logs` 会清空，排查历史问题请以该目录为准
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json`
-  后会重新发布所有已翻译文件；删除 `output/.posted_bili.json` 后会先把现有文章重新记为
-  「已投稿」做基线（一篇都不投），要真补投就用 `--post-only --bili-backfill`
+  后会重新发布所有已翻译文件（`retry.backfill_unposted` 开着时下一次全流程就会补发）；删除
+  `output/.posted_bili.json` 后会先把现有文章重新记为「已投稿」做基线（一篇都不投），
+  要真补投就用 `--post-only --bili-backfill`
 
 ## 许可证
 

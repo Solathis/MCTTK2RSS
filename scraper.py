@@ -135,6 +135,11 @@ DEFAULT_CONFIG = {
     "retry": {
         "translation": { "max_retries": 3, "parse_retries": 2, "wait_for_input": False },
         "download":    { "max_retries": 3, "wait_for_input": False },
+        # 论坛登录会概率性被要求验证码、页面结构还可能变，一次失败就整轮不发布代价太大，
+        # 所以登录失败时换新会话重试；凭证被站点明确拒绝不重试（见 poster.login）
+        "login":       { "max_attempts": 3, "wait_seconds": 10 },
+        # 登录失败/发帖失败会让文章「已生成但没发布」；开启后下一次运行把它补发出去
+        "backfill_unposted": True,
         "max_article_attempts": 3
     },
     "concurrency": {

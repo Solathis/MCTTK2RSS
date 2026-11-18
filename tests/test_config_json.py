@@ -93,6 +93,11 @@ class TestConfigStructure:
             assert "max_retries" in retry[key]
             assert isinstance(retry[key]["max_retries"], int)
             assert retry[key]["max_retries"] >= 0
+        if "login" in retry:
+            assert isinstance(retry["login"]["max_attempts"], int)
+            assert retry["login"]["max_attempts"] >= 1
+            assert isinstance(retry["login"]["wait_seconds"], int)
+            assert retry["login"]["wait_seconds"] >= 0
 
     def test_concurrency_structure(self, config):
         c = config["concurrency"]

@@ -592,7 +592,7 @@ python converter.py news.json --markdown-only
 ### poster.py
 
 - `MCBBSPoster` — 发帖器类
-  - `login()` — 登录 MCBBS（支持验证码自动识别，最多重试 5 次）
+  - `login()` — 登录 MCBBS（验证码流程内最多尝试 5 次；整体登录失败会按 `retry.login` 换新会话重试）
   - `upload_image(path)` — 上传图片附件
   - `upload_file(path)` — 上传普通文件附件（如 JSON）
   - `post_thread(title, message)` — 发帖
@@ -829,6 +829,7 @@ git push origin v1.0.0
   "retry": {
     "translation": { "max_retries": 3 },
     "download": { "max_retries": 3 },
+    "login": { "max_attempts": 3, "wait_seconds": 10 },
     "max_article_attempts": 3
   },
   "concurrency": {
@@ -862,7 +863,13 @@ git push origin v1.0.0
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
   改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`
-- **验证码**：登录时若遇到验证码，会自动使用 `ddddocr` 识别，最多重试 5 次；识别失败时使用 `captcha_answer` 备用答案
+- **验证码**：登录时若遇到验证码，优先从这次失败的登录响应里取验证码表单（站点要求验证码时，
+  那张页面本身就是带验证码的登录页），取不到再重取登录页；识别仍用 `ddddocr`，单次流程最多试 5 次，
+  识别失败时用 `captcha_answer` 备用答案。验证码页解析不出来时会把响应写进日志目录
+  （`mcbbs_login_*.html`，`auth` 令牌与密码框已打码）并在日志里记 `[登录排查]`，便于对照站点改版
+- **登录重试**：整段登录失败（验证码页结构不符、风控页、网络抖动）时换一个新会话重试，
+  默认 3 次、间隔 10 秒，由 `retry.login.max_attempts` / `retry.login.wait_seconds` 控制。
+  凭证被站点明确拒绝（密码错误、安全问题）不重试，避免把失败计数刷上去又触发验证码
 - **输出文件**：文件名自动处理非法字符，同名文件自动加序号避免冲突
 - **失败重试**：处理失败的文章**不会**被标记为已处理，下次运行会自动重试；
   连续失败达到 `retry.max_article_attempts`（默认 3）次后才放弃，避免个别坏链接被反复重试

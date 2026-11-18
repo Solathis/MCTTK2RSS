@@ -55,6 +55,10 @@
       "max_retries": 3,
       "wait_for_input": false
     },
+    "login": {
+      "max_attempts": 3,
+      "wait_seconds": 10
+    },
     "max_article_attempts": 3
   },
   "concurrency": {

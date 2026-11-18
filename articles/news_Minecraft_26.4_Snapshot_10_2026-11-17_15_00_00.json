@@ -1,0 +1,2742 @@
+{
+  "title": "Minecraft 26.4 Snapshot 10",
+  "translated_title": "Minecraft 26.4 快照 10",
+  "release_date": "2026-11-17T15:00:00Z",
+  "url": "https://www.minecraft.net/zh-hans/article/minecraft-26-4-snapshot-9",
+  "author": "",
+  "imageAltText": "",
+  "description": "",
+  "header_image_url": "https://www.minecraft.net/content/dam/minecraftnet/article-asset/2026/minecraft-26-4-snapshot-9/new-article-hero-image.jpg",
+  "blocks": [
+    {
+      "id": "b0001",
+      "type": "p",
+      "source_text": "**Update**: We have now released 26.4 Snapshot 10, fixing a crash in the Multiplayer screen.",
+      "translated_text": "**更新**：我们现已发布了26.4 Snapshot 10版本，修复了多人模式界面中的一个崩溃问题。",
+      "meta": {}
+    },
+    {
+      "id": "b0002",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 10",
+      "translated_text": "修复了26.4 Snapshot 10中的漏洞。",
+      "meta": {}
+    },
+    {
+      "id": "b0003",
+      "type": "li",
+      "source_text": "[MC-313265](https://bugs.mojang.com/browse/MC-313265)  - The game crashes when scrolling through the multiplayer menu",
+      "translated_text": "[MC-313265](https://bugs.mojang.com/browse/MC-313265) - 在浏览多人模式菜单时游戏会崩溃。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0004",
+      "type": "p",
+      "source_text": "Original article:",
+      "translated_text": "原文文章：",
+      "meta": {}
+    },
+    {
+      "id": "b0005",
+      "type": "h1",
+      "source_text": "Minecraft 26.4 Snapshot 9",
+      "translated_text": "Minecraft 26.4 Snapshot 9",
+      "meta": {}
+    },
+    {
+      "id": "b0006",
+      "type": "p",
+      "source_text": "26.4 Snapshot 9 is here, bringing data-driven dispensers, Vulkan as the default graphics backend, and a new setting to fine-tune your fog. We've also made improvements to keyboard navigation and narration, alongside a few other tweaks and fixes!",
+      "translated_text": "26.4 Snapshot 9现已发布，带来了数据驱动的分配器、Vulkan作为默认的图形后端，以及一个用于微调雾效的新设置。我们还改进了键盘导航和游戏旁白，并进行了其他一些调整和修复！",
+      "meta": {}
+    },
+    {
+      "id": "b0007",
+      "type": "p",
+      "source_text": "Happy mining!",
+      "translated_text": "快乐采矿！",
+      "meta": {}
+    },
+    {
+      "id": "b0008",
+      "type": "h2",
+      "source_text": "Changes",
+      "translated_text": "更改内容",
+      "meta": {}
+    },
+    {
+      "id": "b0009",
+      "type": "li",
+      "source_text": "Added a Repeat Recipe/Trade keybind that repeats the last recipe or trade used",
+      "translated_text": "新增了“重复配方/交易”键绑定功能，可以重复使用上一次使用的配方或交易指令。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0010",
+      "type": "li",
+      "source_text": "Added a separate \"Improved Fog\" video setting that allows to control the Improved Fog feature independently of the \"Improved Transparency\" video setting",
+      "translated_text": "新增了一个独立的“优化雾效”设置，允许用户独立于“优化透明度”设置来控制雾效功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0011",
+      "type": "li",
+      "source_text": "Vulkan is now the default graphics backend, rather than being randomized, and is no longer considered experimental",
+      "translated_text": "Vulkan 现在已成为默认的图形后端，不再随机选择，并且不再被视为实验性技术",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0012",
+      "type": "blockquote",
+      "source_text": "**Developer's Note**: *The plan is to ship 26.4 with Vulkan graphics API being the default one unless any critical issues are discovered before the full release*",
+      "translated_text": "**开发者注**：计划将 Vulkan 图形 API 设为默认后端进行发布，除非在正式发布前发现任何严重问题",
+      "meta": {}
+    },
+    {
+      "id": "b0013",
+      "type": "h3",
+      "source_text": "A Separate \"Improved Fog\" Video Setting",
+      "translated_text": "新增了一个独立的“优化雾效”设置",
+      "meta": {}
+    },
+    {
+      "id": "b0014",
+      "type": "li",
+      "source_text": "Separated the \"Improved Fog\" video setting from the \"Improved Transparency\"",
+      "translated_text": "将“优化雾效”设置与“优化透明度”设置分开",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0015",
+      "type": "li",
+      "source_text": "Turning it on together with the \"Improved Transparency\" will behave the same way as the previous Snapshot with \"Improved Transparency\" enabled: both sky and clouds will be blended into the terrain render distance fog",
+      "translated_text": "如果同时启用“优化雾效”和“优化透明度”，其行为将与之前的版本相同：天空和云层都会融入地形渲染的雾效中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0016",
+      "type": "li",
+      "source_text": "Turning it on without \"Improved Transparency\" will only blend the sky but not the clouds",
+      "translated_text": "如果未启用“改进透明度”（Improved Transparency），则只会使天空颜色混合，但云层不会发生变化",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0017",
+      "type": "li",
+      "source_text": "You can now use \"Improved Transparency\" without \"Improved Fog\" if you don't like the effect",
+      "translated_text": "如果你不喜欢“改进雾效”（Improved Fog）的效果，现在也可以单独使用“改进透明度”",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0018",
+      "type": "li",
+      "source_text": "The performance impact of \"Improved Fog\" is minimal, but it may be noticeable on lower-end hardware",
+      "translated_text": "“改进雾效”对性能的影响很小，但在低端硬件上可能会稍微明显一些",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0019",
+      "type": "li",
+      "source_text": "The setting is enabled by default",
+      "translated_text": "该设置默认是启用的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0020",
+      "type": "li",
+      "source_text": "It is disabled on the \"Fast\" graphics preset and enabled on the \"Fancy\" and \"Fabulous\" graphics presets",
+      "translated_text": "在“快速”（Fast）图形预设中该效果是禁用的，而在“华丽”（Fancy）和“惊艳”（Fabulous）图形预设中则是启用的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0021",
+      "type": "h3",
+      "source_text": "Minor Tweaks to Blocks, Items and Entities",
+      "translated_text": "对方块、物品和实体的些许调整",
+      "meta": {}
+    },
+    {
+      "id": "b0022",
+      "type": "li",
+      "source_text": "The random boost time for using a Carrot or Warped Fungus on a Stick while riding a Pig or Strider respectively is now between 7 and 35 seconds",
+      "translated_text": "现在在骑猪或炽足兽（Strider）时，使用“胡萝卜”或“扭曲真菌棒”（Carrot or Warped Fungus on a Stick）的随机效果持续时间在7到35秒之间",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0023",
+      "type": "h3",
+      "source_text": "Sounds",
+      "translated_text": "音效相关调整",
+      "meta": {}
+    },
+    {
+      "id": "b0024",
+      "type": "li",
+      "source_text": "Fire and Soul Fire now use the extinguish sound as their block break sound, including when their supporting block is removed",
+      "translated_text": "火焰（Fire）和灵魂之火（Soul Fire）现在在摧毁自身时使用同样的熄灭音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0025",
+      "type": "h3",
+      "source_text": "UI",
+      "translated_text": "用户界面（UI）",
+      "meta": {}
+    },
+    {
+      "id": "b0026",
+      "type": "li",
+      "source_text": "Recipe Book tabs now show their category as a tooltip",
+      "translated_text": "配方书的标签现在会以工具提示的形式显示其类别",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0027",
+      "type": "li",
+      "source_text": "Recipes in the Recipe Book are now highlighted when hovered or focused",
+      "translated_text": "现在当鼠标悬停或选中配方书中的配方时，这些配方会被高亮显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0028",
+      "type": "h4",
+      "source_text": "Friends",
+      "translated_text": "好友系统",
+      "meta": {}
+    },
+    {
+      "id": "b0029",
+      "type": "li",
+      "source_text": "Improved the reliability and speed of friend availability updates",
+      "translated_text": "提高了好友状态更新的可靠性和速度",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0030",
+      "type": "h3",
+      "source_text": "Accessibility",
+      "translated_text": "可访问性（Accessibility）",
+      "meta": {}
+    },
+    {
+      "id": "b0031",
+      "type": "h4",
+      "source_text": "Gameplay Screen Keyboard Navigation",
+      "translated_text": "游戏玩法屏幕的键盘导航",
+      "meta": {}
+    },
+    {
+      "id": "b0032",
+      "type": "li",
+      "source_text": "The Recipe Book can now be used with the keyboard",
+      "translated_text": "现在可以使用键盘来操作配方书",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0033",
+      "type": "li",
+      "source_text": "Tab moves between the tab buttons, search box, filter button, recipes, and page buttons",
+      "translated_text": "按 Tab 键可以在标签按钮、搜索框、筛选按钮、配方列表和页面按钮之间切换",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0034",
+      "type": "li",
+      "source_text": "Enter/Space on a recipe places it in the crafting grid, and holding Shift places as many as possible",
+      "translated_text": "在配方上输入或按空格键会将其放入制作格中；按住 Shift 键可以一次性放入多个配方",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0035",
+      "type": "li",
+      "source_text": "Control + Enter on a recipe opens the popup of alternative recipes, like right-clicking",
+      "translated_text": "在配方上按下 Control + Enter 会弹出替代配方窗口，效果与右键点击相同",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0036",
+      "type": "li",
+      "source_text": "The arrow keys move within the popup, and Escape or Tab closes it",
+      "translated_text": "使用箭头键可以在窗口内移动；按下 Escape 或 Tab 键可以关闭窗口",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0037",
+      "type": "li",
+      "source_text": "Repeating the last selected recipe has moved from Space and Enter to the new Repeat Recipe/Trade key (R by default), and holding Shift still places as many as possible",
+      "translated_text": "重复上一个选中的配方的方式已从使用空格键和 Enter 键改为新的按键（默认为 R 键）；按住 Shift 键可以一次性重复尽可能多的配方",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0038",
+      "type": "li",
+      "source_text": "The Repeat Recipe/Trade key also repeats the last selected trade in the Villager and Wandering Trader screens",
+      "translated_text": "重复配方/交易按键也可以在村民和流浪商人界面中重复上一次的交易操作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0039",
+      "type": "li",
+      "source_text": "The Creative Inventory can now be used with the keyboard",
+      "translated_text": "现在可以通过键盘操作创意库存（Creative Inventory）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0040",
+      "type": "h4",
+      "source_text": "Gameplay Screen Narration",
+      "translated_text": "游戏画面的旁白系统",
+      "meta": {}
+    },
+    {
+      "id": "b0041",
+      "type": "li",
+      "source_text": "The narrator now reads out the Recipe Book",
+      "translated_text": "旁白现在会念出配方书的名称",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0042",
+      "type": "li",
+      "source_text": "Recipes are narrated with their result and their column and row in the grid",
+      "translated_text": "配方会在游戏中被朗读，并同时说明其在网格中的列和行位置",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0043",
+      "type": "li",
+      "source_text": "The tabs, search box, and filter button are narrated with their names",
+      "translated_text": "标签页、搜索框和过滤按钮的名称也会在游戏中被朗读",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0044",
+      "type": "li",
+      "source_text": "The page buttons narrate the current page",
+      "translated_text": "页面上的按钮会描述当前页面的功能",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0045",
+      "type": "li",
+      "source_text": "Recipes in the alternative recipes popup are narrated with their position, and the narrator mentions that Escape closes it",
+      "translated_text": "替代配方弹窗中的配方会附带它们的位置信息，同时会有语音提示‘Escape’可以关闭该弹窗",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0046",
+      "type": "li",
+      "source_text": "The narrator now reads out the Creative Inventory",
+      "translated_text": "现在会有语音为玩家读取创意物品栏的内容",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0047",
+      "type": "li",
+      "source_text": "Tabs are narrated with their name and position",
+      "translated_text": "标签页会通过它们的名称和位置来进行描述",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0048",
+      "type": "li",
+      "source_text": "Items are narrated with their column and row in the grid",
+      "translated_text": "物品会按照它们在网格中的列和行进行命名",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0049",
+      "type": "h2",
+      "source_text": "Technical Changes",
+      "translated_text": "技术性变更",
+      "meta": {}
+    },
+    {
+      "id": "b0050",
+      "type": "li",
+      "source_text": "The Data Pack version is now 128.0",
+      "translated_text": "数据包的版本现在更新为128.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0051",
+      "type": "li",
+      "source_text": "The Resource Pack version is now 104.0",
+      "translated_text": "资源包的版本现在更新为104.0",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0052",
+      "type": "h3",
+      "source_text": "Network Protocol",
+      "translated_text": "网络协议进行了修改",
+      "meta": {}
+    },
+    {
+      "id": "b0053",
+      "type": "h4",
+      "source_text": "Modified Login Protocol",
+      "translated_text": "登录协议也经过了修改",
+      "meta": {}
+    },
+    {
+      "id": "b0054",
+      "type": "li",
+      "source_text": "Changed encryption key establishment procedure",
+      "translated_text": "修改了加密密钥的生成流程",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0055",
+      "type": "h3",
+      "source_text": "Dedicated Server Properties",
+      "translated_text": "专用服务器属性",
+      "meta": {}
+    },
+    {
+      "id": "b0056",
+      "type": "li",
+      "source_text": "Added key-rotation-period-seconds field",
+      "translated_text": "添加了‘key-rotation-period-seconds’字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0057",
+      "type": "li",
+      "source_text": "Determines the minimum duration after which server keys (used for establishing new connections) will be recreated",
+      "translated_text": "用于指定服务器密钥（用于建立新连接）在被重新生成之前的最小持续时间",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0058",
+      "type": "li",
+      "source_text": "If set to 0 a unique (i.e. ephemeral) key will be used for every connection",
+      "translated_text": "如果设置为0，则每次连接都会使用一个唯一的（即临时的）密钥",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0059",
+      "type": "li",
+      "source_text": "Default value: 60",
+      "translated_text": "默认值：60",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0060",
+      "type": "h2",
+      "source_text": "Data Pack Versions 122.0 through 128.0",
+      "translated_text": "数据包版本122.0至128.0",
+      "meta": {}
+    },
+    {
+      "id": "b0061",
+      "type": "li",
+      "source_text": "Dispense behaviors are now data-driven",
+      "translated_text": "现在分配行为是由数据驱动的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0062",
+      "type": "h3",
+      "source_text": "Commands",
+      "translated_text": "命令",
+      "meta": {}
+    },
+    {
+      "id": "b0063",
+      "type": "h4",
+      "source_text": "Added support for local arguments in 2D coordinates",
+      "translated_text": "增加了对2D坐标中本地参数的支持",
+      "meta": {}
+    },
+    {
+      "id": "b0064",
+      "type": "li",
+      "source_text": "Arguments in form of ^<left> ^<forwards> are now accepted in commands that take 2D coordinates:",
+      "translated_text": "现在，接受以 ^<left> ^<forwards> 形式给出的参数，这些参数用于需要二维坐标的命令中。",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0065",
+      "type": "li",
+      "source_text": "Chunk coordinates in forceload",
+      "translated_text": "强制加载（forceload）中的区块坐标",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0066",
+      "type": "li",
+      "source_text": "spreadplayers <center>",
+      "translated_text": "spreadplayers <center>",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0067",
+      "type": "li",
+      "source_text": "worldborder center <pos>",
+      "translated_text": "世界边界中心 <pos>",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0068",
+      "type": "li",
+      "source_text": "Only takes into account player rotation around Y axis (as opposed to interpreting that as ^<left> ^0 ^<forwards> and casting to XZ plane)",
+      "translated_text": "仅考虑玩家围绕 Y 轴的旋转（而不是将其解释为 ^<left> ^0 ^<forwards> 并转换到 XZ 平面）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0069",
+      "type": "h3",
+      "source_text": "Dispense Behaviors",
+      "translated_text": "分配物品行为（Dispense Behaviors）",
+      "meta": {}
+    },
+    {
+      "id": "b0070",
+      "type": "p",
+      "source_text": "A new registry folder: dispense_behavior. Each file is a list of behaviors that describe a sequence of behaviors to attempt when dispensing an item. Unless otherwise noted, behaviors are tried in sequence until one succeeds.",
+      "translated_text": "新增了一个注册表文件夹：dispense_behavior。每个文件都包含一系列行为描述，用于在分配物品时尝试执行这些行为。除非另有说明，否则会按顺序尝试这些行为，直到其中一种成功。",
+      "meta": {}
+    },
+    {
+      "id": "b0071",
+      "type": "p",
+      "source_text": "Each entry has a type field specifying a dispense behavior type as described below, possibly with type-specific additional fields.",
+      "translated_text": "每个条目都有一个类型字段，用于指定分配行为类型（如下所述），可能还包含特定类型的附加字段。",
+      "meta": {}
+    },
+    {
+      "id": "b0072",
+      "type": "p",
+      "source_text": "Vanilla entries:",
+      "translated_text": "基础（Vanilla）条目：",
+      "meta": {}
+    },
+    {
+      "id": "b0073",
+      "type": "li",
+      "source_text": "minecraft:armor_stand - Used for Armor Stands",
+      "translated_text": "minecraft:armor_stand - 用于放置护甲",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0074",
+      "type": "li",
+      "source_text": "minecraft:boat - Used for all types of Boats, Chest Boats, Rafts and Chest Rafts",
+      "translated_text": "minecraft:boat - 用于所有类型的船只、箱型船只、木筏和箱型木筏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0075",
+      "type": "li",
+      "source_text": "minecraft:bone_meal - Used for Bone Meal",
+      "translated_text": "minecraft:bone_meal - 用于制作骨粉",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0076",
+      "type": "li",
+      "source_text": "minecraft:brush - Used for Brushes",
+      "translated_text": "minecraft:brush - 用于绘制（或清理）方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0077",
+      "type": "li",
+      "source_text": "minecraft:carved_pumpkin - Used for Carved Pumpkins",
+      "translated_text": "minecraft:carved_pumpkin - 用于制作雕刻南瓜",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0078",
+      "type": "li",
+      "source_text": "minecraft:chest - Used for Chests (note: only default Chests, not Trapped, Copper or other types of Chests)",
+      "translated_text": "minecraft:chest - 用于放置箱子（注意：仅适用于默认类型的箱子，不包括陷阱箱子、铜箱或其他类型的箱子）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0079",
+      "type": "li",
+      "source_text": "minecraft:default - Used for any items without another specified behavior",
+      "translated_text": "minecraft:default - 用于没有其他指定用途的物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0080",
+      "type": "li",
+      "source_text": "minecraft:default_projectile - Used for all types of Arrows, all types of Eggs, Snow Balls and Ice Balls",
+      "translated_text": "minecraft:default_projectile - 用于所有类型的箭、鸡蛋、雪球和冰球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0081",
+      "type": "li",
+      "source_text": "minecraft:dropper - Used for all item types by Droppers",
+      "translated_text": "minecraft:dropper - 用于通过掉落器释放所有类型的物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0082",
+      "type": "li",
+      "source_text": "minecraft:empty_bucket - Used for empty Buckets",
+      "translated_text": "minecraft:empty_bucket - 用于表示空桶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0083",
+      "type": "li",
+      "source_text": "minecraft:equipment - Used for all types of equippables except Carved Pumpkins and Wither Skeleton Skulls",
+      "translated_text": "minecraft:equipment - 用于所有类型的装备，except Carved Pumpkins 和 Wither Skeleton Skulls",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0084",
+      "type": "li",
+      "source_text": "minecraft:filled_bucket - Used for all types of Buckets with any contents",
+      "translated_text": "minecraft:filled_bucket - 用于装有任何内容物的所有类型的桶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0085",
+      "type": "li",
+      "source_text": "minecraft:fire_charge - Used for Fire Charges",
+      "translated_text": "minecraft:fire_charge - 用于火种",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0086",
+      "type": "li",
+      "source_text": "minecraft:firework_rocket - Used for all Firework Rockets",
+      "translated_text": "minecraft:firework_rocket - 用于所有类型的烟花火箭",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0087",
+      "type": "li",
+      "source_text": "minecraft:flint_and_steel - Used for Flint & Steel",
+      "translated_text": "minecraft:flint_and_steel - 用于打火石与钢铁",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0088",
+      "type": "li",
+      "source_text": "minecraft:glass_bottle - Used for empty Glass Bottles",
+      "translated_text": "minecraft:glass_bottle - 用于空玻璃瓶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0089",
+      "type": "li",
+      "source_text": "minecraft:glowstone - Used for Glowstone Blocks",
+      "translated_text": "minecraft:glowstone - 用于发光石块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0090",
+      "type": "li",
+      "source_text": "minecraft:honeycomb - Used for Honeycombs",
+      "translated_text": "minecraft:honeycomb - 用于蜂巢",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0091",
+      "type": "li",
+      "source_text": "minecraft:minecart - Used for all types of Minecarts",
+      "translated_text": "minecraft:minecart - 用于所有类型的矿车",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0092",
+      "type": "li",
+      "source_text": "minecraft:potion - Used for Potions (note: only default Potions, not Splash or Lingering)",
+      "translated_text": "minecraft:potion - 用于药水（注：仅限默认药水，不包括溅射药水和持续药水）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0093",
+      "type": "li",
+      "source_text": "minecraft:shears - Used for Shears",
+      "translated_text": "minecraft:shears - 用于剪切工具",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0094",
+      "type": "li",
+      "source_text": "minecraft:shulker_box - Used for all Shulker Boxes",
+      "translated_text": "minecraft:shulker_box - 用于所有孙克箱",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0095",
+      "type": "li",
+      "source_text": "minecraft:spawn_egg - Used for all Spawn Eggs",
+      "translated_text": "minecraft:spawn_egg - 用于所有重生蛋",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0096",
+      "type": "li",
+      "source_text": "minecraft:thrown_potion - Used for Splash Potions and Lingering Potions",
+      "translated_text": "minecraft:thrown_potion - 用于 splash 药水和 lingering 药水",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0097",
+      "type": "li",
+      "source_text": "minecraft:tnt - Used for TNT Blocks",
+      "translated_text": "minecraft:tnt - 用于 TNT 块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0098",
+      "type": "li",
+      "source_text": "minecraft:wind_charge - Used for Wind Charges",
+      "translated_text": "minecraft:wind_charge - 用于风元素充能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0099",
+      "type": "li",
+      "source_text": "minecraft:wither_skeleton_skull - Used for Wither Skeleton Skulls",
+      "translated_text": "minecraft:wither_skeleton_skull - 用于凋零骷髅的头部",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0100",
+      "type": "h3",
+      "source_text": "Dispense Behavior Types",
+      "translated_text": "分配行为类型",
+      "meta": {}
+    },
+    {
+      "id": "b0101",
+      "type": "h4",
+      "source_text": "minecraft:brush_armadillo",
+      "translated_text": "minecraft:brush_armadillo",
+      "meta": {}
+    },
+    {
+      "id": "b0102",
+      "type": "li",
+      "source_text": "Brushes an Armadillo in front of the Dispenser",
+      "translated_text": "在分配器前刷出一只犰狳",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0103",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0104",
+      "type": "h4",
+      "source_text": "minecraft:charge_respawn_anchor",
+      "translated_text": "minecraft:charge_respawn_anchor",
+      "meta": {}
+    },
+    {
+      "id": "b0105",
+      "type": "li",
+      "source_text": "Charges a Respawn Anchor in front of the Dispenser",
+      "translated_text": "在散布器前为重生锚充电",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0106",
+      "type": "li",
+      "source_text": "If the Respawn Anchor is already fully charged, no further behaviors are tried",
+      "translated_text": "如果重生锚已经充满电，则不再尝试其他操作",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0107",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0108",
+      "type": "h4",
+      "source_text": "minecraft:convert_to_mud",
+      "translated_text": "minecraft:convert_to_mud",
+      "meta": {}
+    },
+    {
+      "id": "b0109",
+      "type": "li",
+      "source_text": "Converts the block in front of the Dispenser to Mud in case it has the #minecraft:convertible_to_mud block tag.",
+      "translated_text": "如果散布器前方的方块带有#minecraft:convertible_to_mud标签，将其转换为泥块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0110",
+      "type": "li",
+      "source_text": "The item needs to contain a Water potion, otherwise it fails",
+      "translated_text": "该物品需要包含一瓶水药剂，否则操作会失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0111",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0112",
+      "type": "h4",
+      "source_text": "minecraft:drop_item",
+      "translated_text": "minecraft:drop_item",
+      "meta": {}
+    },
+    {
+      "id": "b0113",
+      "type": "li",
+      "source_text": "The item is dropped as an item entity",
+      "translated_text": "该物品将以物品实体的形式掉落",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0114",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0115",
+      "type": "h4",
+      "source_text": "minecraft:empty_bucket",
+      "translated_text": "minecraft:empty_bucket",
+      "meta": {}
+    },
+    {
+      "id": "b0116",
+      "type": "li",
+      "source_text": "Empties the bucket in front of the Dispenser",
+      "translated_text": "清空分配器前面的桶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0117",
+      "type": "li",
+      "source_text": "The item needs to be a bucket, otherwise it fails",
+      "translated_text": "该物品必须是桶，否则操作会失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0118",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0119",
+      "type": "h4",
+      "source_text": "minecraft:equip",
+      "translated_text": "minecraft:equip",
+      "meta": {}
+    },
+    {
+      "id": "b0120",
+      "type": "li",
+      "source_text": "Equips the item onto a living entity in front of the Dispenser",
+      "translated_text": "将物品装备到分配器前面的生物身上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0121",
+      "type": "li",
+      "source_text": "The item must be equippable onto a slot of the entity",
+      "translated_text": "该物品必须可以装备到生物的某个位置上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0122",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0123",
+      "type": "h4",
+      "source_text": "minecraft:equip_chest",
+      "translated_text": "minecraft:equip_chest",
+      "meta": {}
+    },
+    {
+      "id": "b0124",
+      "type": "li",
+      "source_text": "Equips a Chest onto a tamed mob that can carry a Chest in front of the Dispenser",
+      "translated_text": "将箱子装备到已经被驯服的怪物身上，这样怪物就可以在分配器前携带箱子",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0125",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "没有其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0126",
+      "type": "h4",
+      "source_text": "minecraft:equip_sulfur_cube",
+      "translated_text": "minecraft:equip_sulfur_cube",
+      "meta": {}
+    },
+    {
+      "id": "b0127",
+      "type": "li",
+      "source_text": "Gives the item to a Sulfur Cube in front of the Dispenser",
+      "translated_text": "将物品交给分配器前面的硫方怪",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0128",
+      "type": "li",
+      "source_text": "The item needs to be in the #minecraft:sulfur_cube_swallowable item tag, otherwise it fails",
+      "translated_text": "物品必须带有 #minecraft:sulfur_cube_swallowable 标签，否则操作会失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0129",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "没有其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0130",
+      "type": "h4",
+      "source_text": "minecraft:fill_bottle",
+      "translated_text": "minecraft:fill_bottle",
+      "meta": {}
+    },
+    {
+      "id": "b0131",
+      "type": "li",
+      "source_text": "Fills the bottle from the block in front",
+      "translated_text": "从前面的方块中取水填充瓶子",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0132",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "没有其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0133",
+      "type": "h4",
+      "source_text": "minecraft:fill_bucket",
+      "translated_text": "minecraft:fill_bucket",
+      "meta": {}
+    },
+    {
+      "id": "b0134",
+      "type": "li",
+      "source_text": "Picks up a fluid in front of the Dispenser, filling the bucket",
+      "translated_text": "从分配器前拿起一种流体，然后将其填入桶中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0135",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0136",
+      "type": "h4",
+      "source_text": "minecraft:grow_plant",
+      "translated_text": "minecraft:grow_plant",
+      "meta": {}
+    },
+    {
+      "id": "b0137",
+      "type": "li",
+      "source_text": "Grows a plant in front of the Dispenser",
+      "translated_text": "在分配器前种植一株植物",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0138",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0139",
+      "type": "h4",
+      "source_text": "minecraft:ignite",
+      "translated_text": "minecraft:ignite",
+      "meta": {}
+    },
+    {
+      "id": "b0140",
+      "type": "li",
+      "source_text": "Ignites the block in front of the Dispenser",
+      "translated_text": "点燃分配器前的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0141",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0142",
+      "type": "h4",
+      "source_text": "minecraft:insert_into_container",
+      "translated_text": "minecraft:insert_into_container",
+      "meta": {}
+    },
+    {
+      "id": "b0143",
+      "type": "li",
+      "source_text": "Inserts the item into a container in front of the Dispenser",
+      "translated_text": "将物品放入分配器前面的容器中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0144",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无附加字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0145",
+      "type": "h4",
+      "source_text": "minecraft:place_armor_stand",
+      "translated_text": "minecraft:place_armor_stand",
+      "meta": {}
+    },
+    {
+      "id": "b0146",
+      "type": "li",
+      "source_text": "Places an Armor Stand in front of the Dispenser",
+      "translated_text": "在分配器前面放置一个盔甲架",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0147",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无附加字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0148",
+      "type": "h4",
+      "source_text": "minecraft:place_block",
+      "translated_text": "minecraft:place_block",
+      "meta": {}
+    },
+    {
+      "id": "b0149",
+      "type": "li",
+      "source_text": "Places the item as a block in front of the Dispenser",
+      "translated_text": "将物品以方块的形式放置在分配器前面",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0150",
+      "type": "li",
+      "source_text": "The item needs to be a block item, otherwise it fails",
+      "translated_text": "物品必须是方块形式，否则操作会失败",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0151",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无附加字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0152",
+      "type": "h4",
+      "source_text": "minecraft:place_boat",
+      "translated_text": "minecraft:place_boat",
+      "meta": {}
+    },
+    {
+      "id": "b0153",
+      "type": "li",
+      "source_text": "Places a Boat on water in front of the Dispenser",
+      "translated_text": "将一艘船放在分配器前方的水平水面上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0154",
+      "type": "li",
+      "source_text": "The entity type is determined by the minecraft:entity_data component of the item, and needs to be a Boat, Chest Boat, Raft or Chest Raft",
+      "translated_text": "实体的类型由物品的 `minecraft:entity_data` 组件决定，必须是船（Boat）、箱子船（Chest Boat）、筏子（Raft）或箱子筏子（Chest Raft）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0155",
+      "type": "li",
+      "source_text": "For any other entity type, the action fails",
+      "translated_text": "对于其他任何类型的实体，该操作将失败",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0156",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "没有额外的字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0157",
+      "type": "h4",
+      "source_text": "minecraft:place_minecart",
+      "translated_text": "minecraft:place_minecart",
+      "meta": {}
+    },
+    {
+      "id": "b0158",
+      "type": "li",
+      "source_text": "Places a Minecart on rails in front of the Dispenser",
+      "translated_text": "将一辆矿车（Minecart）放在分配器前方的轨道上",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0159",
+      "type": "li",
+      "source_text": "The entity type is determined by the minecraft:entity_data component of the item, and needs to be a Minecart",
+      "translated_text": "实体的类型由物品的 `minecraft:entity_data` 组件决定，必须是矿车（Minecart）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0160",
+      "type": "li",
+      "source_text": "For any other entity type, the action fails",
+      "translated_text": "对于其他任何类型的实体，该操作将失败",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0161",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "没有额外的字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0162",
+      "type": "h4",
+      "source_text": "minecraft:shear",
+      "translated_text": "minecraft:shear",
+      "meta": {}
+    },
+    {
+      "id": "b0163",
+      "type": "li",
+      "source_text": "Shears a mob or harvests a beehive in front of the Dispenser",
+      "translated_text": "在分配器（Dispenser）前剪切怪物或采集蜂巢",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0164",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无额外字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0165",
+      "type": "h4",
+      "source_text": "minecraft:shoot_projectile",
+      "translated_text": "minecraft:shoot_projectile",
+      "meta": {}
+    },
+    {
+      "id": "b0166",
+      "type": "li",
+      "source_text": "Shoots the item as a projectile",
+      "translated_text": "将物品作为投射物发射",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0167",
+      "type": "li",
+      "source_text": "The item needs to be a projectile item, such as an Arrow or Snowball",
+      "translated_text": "发射的物品必须是投射物，例如箭或雪球",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0168",
+      "type": "li",
+      "source_text": "Additional fields:",
+      "translated_text": "额外字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0169",
+      "type": "li",
+      "source_text": "offset - vector of 3 doubles, the offset of the spawn position of the projectile from the center of the Dispenser",
+      "translated_text": "offset - 一个包含3个双精度浮点数的向量，表示投射物起始位置相对于分配器中心的位置偏移量",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0170",
+      "type": "li",
+      "source_text": "scale - double, how far from the offset position to spawn the projectile, along the direction of the Dispenser",
+      "translated_text": "scale - 一个双精度浮点数，表示投射物从偏移位置开始沿分配器方向延伸的距离",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0171",
+      "type": "li",
+      "source_text": "uncertainty - non-negative float, the inaccuracy of the shot",
+      "translated_text": "uncertainty - 一个非负浮点数，表示射击的精度误差",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0172",
+      "type": "li",
+      "source_text": "power - non-negative float, the velocity of the shot",
+      "translated_text": "power - 一个非负浮点数，表示射击的速度",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0173",
+      "type": "li",
+      "source_text": "sound - optional object, the sound to play when shooting (defaults to minecraft:block.dispenser.launch with volume 1.0 and pitch 1.2 )",
+      "translated_text": "声音 - 可选对象，表示射击时播放的声音（默认值为 `minecraft:block.dispenser.launch`，音量为 1.0，音调为 1.2）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0174",
+      "type": "li",
+      "source_text": "sound - Sound Event to play",
+      "translated_text": "声音 - 用于播放的声音事件",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0175",
+      "type": "li",
+      "source_text": "volume - float provider, the volume of the sound",
+      "translated_text": "音量 - 浮点数类型，表示声音的音量",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0176",
+      "type": "li",
+      "source_text": "pitch - float provider, the pitch of the sound",
+      "translated_text": "音调 - 浮点数类型，表示声音的音调",
+      "meta": {
+        "indent_level": 2,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0177",
+      "type": "h4",
+      "source_text": "minecraft:spawn_golem_from_carved_pumpkin",
+      "translated_text": "minecraft:spawn_golem_from_carved_pumpkin",
+      "meta": {}
+    },
+    {
+      "id": "b0178",
+      "type": "li",
+      "source_text": "Completes a Golem in front of the Dispenser",
+      "translated_text": "在分配器（Dispenser）前生成魔像（Golem）",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0179",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0180",
+      "type": "h4",
+      "source_text": "minecraft:spawn_mob",
+      "translated_text": "minecraft:spawn_mob",
+      "meta": {}
+    },
+    {
+      "id": "b0181",
+      "type": "li",
+      "source_text": "Spawns the entity defined by the minecraft:entity_data component in front of the Dispenser",
+      "translated_text": "在分配器前生成由 `minecraft:entity_data` 组件定义的实体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0182",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0183",
+      "type": "h4",
+      "source_text": "minecraft:spawn_tnt",
+      "translated_text": "生成TNT",
+      "meta": {}
+    },
+    {
+      "id": "b0184",
+      "type": "li",
+      "source_text": "Spawns Primed TNT in front of the Dispenser",
+      "translated_text": "在分配器前方生成已设置的TNT",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0185",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0186",
+      "type": "h4",
+      "source_text": "minecraft:transform_block",
+      "translated_text": "转换方块",
+      "meta": {}
+    },
+    {
+      "id": "b0187",
+      "type": "li",
+      "source_text": "Transforms the block in front of the Dispenser using a Block Transformer",
+      "translated_text": "使用方块转换器转换分配器前方的方块",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0188",
+      "type": "li",
+      "source_text": "Additional field:",
+      "translated_text": "附加字段：",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0189",
+      "type": "li",
+      "source_text": "transformer - Namespaced ID of the Block Transformer to use",
+      "translated_text": "transformer - 要使用的方块转换器的命名空间ID",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0190",
+      "type": "h4",
+      "source_text": "minecraft:spawn_wither_from_wither_skeleton_skull",
+      "translated_text": "从凋零骷髅头生成凋灵",
+      "meta": {}
+    },
+    {
+      "id": "b0191",
+      "type": "li",
+      "source_text": "Completes a Wither in front of the Dispenser",
+      "translated_text": "在分配器前方完成凋零过程",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0192",
+      "type": "li",
+      "source_text": "No additional fields",
+      "translated_text": "无其他字段",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0193",
+      "type": "h3",
+      "source_text": "Data Components",
+      "translated_text": "数据组件",
+      "meta": {}
+    },
+    {
+      "id": "b0194",
+      "type": "h4",
+      "source_text": "Added minecraft:dispense_behavior",
+      "translated_text": "新增了 `minecraft:dispense_behavior`",
+      "meta": {}
+    },
+    {
+      "id": "b0195",
+      "type": "p",
+      "source_text": "Determines what happens when the item is dispensed from a Dispenser.",
+      "translated_text": "用于确定物品从分配器中分发时会发生什么",
+      "meta": {}
+    },
+    {
+      "id": "b0196",
+      "type": "li",
+      "source_text": "Format: Namespaced ID of a dispense_behavior registry entry or an inline list of Dispense Behaviors",
+      "translated_text": "格式：分配行为注册表的命名空间ID，或分配行为的内联列表",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0197",
+      "type": "h4",
+      "source_text": "minecraft:entity_data",
+      "translated_text": "`minecraft:entity_data`",
+      "meta": {}
+    },
+    {
+      "id": "b0198",
+      "type": "li",
+      "source_text": "Boat and Minecart items now have this component by default, determining which entity is placed when the item is used or dispensed",
+      "translated_text": "现在船和矿车物品默认具有此组件，用于确定使用或分发物品时放置的是哪个实体",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0199",
+      "type": "li",
+      "source_text": "Entity types that do not match the type requirement result in the action failing",
+      "translated_text": "如果实体类型不符合要求，操作将失败",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0200",
+      "type": "h3",
+      "source_text": "Block Transformers",
+      "translated_text": "方块转换器",
+      "meta": {}
+    },
+    {
+      "id": "b0201",
+      "type": "li",
+      "source_text": "Added block transformer minecraft:honeycomb",
+      "translated_text": "新增了方块转换器 `minecraft:honeycomb`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0202",
+      "type": "li",
+      "source_text": "Used to wax blocks (currently only from dispensers)",
+      "translated_text": "用于给方块涂蜡（目前仅通过分配器实现）",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0203",
+      "type": "h3",
+      "source_text": "Particles",
+      "translated_text": "粒子效果",
+      "meta": {}
+    },
+    {
+      "id": "b0204",
+      "type": "h4",
+      "source_text": "Changed minecraft:current_down",
+      "translated_text": "修改了 minecraft:current_down",
+      "meta": {}
+    },
+    {
+      "id": "b0205",
+      "type": "li",
+      "source_text": "Added new field radius - float, the radius around the position to spawn the particle at",
+      "translated_text": "新增了 radius 字段（类型为 float）：表示粒子生成位置周围的半径",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0206",
+      "type": "h4",
+      "source_text": "Changed minecraft:bubble_column_up",
+      "translated_text": "修改了 minecraft:bubble_column_up",
+      "meta": {}
+    },
+    {
+      "id": "b0207",
+      "type": "li",
+      "source_text": "Added optional field pop_chance - float between 0.0 and 1.0, the chance that the particle will spawn a pop particle and play a pop sound once at the end of its lifecycle",
+      "translated_text": "新增了 pop_chance 字段（类型为 float，范围在 0.0 到 1.0 之间）：表示粒子在其生命周期结束后有几率生成一个“pop”粒子并播放一个音效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0208",
+      "type": "li",
+      "source_text": "If omitted, defaults to 0.0",
+      "translated_text": "如果省略该字段，其默认值为 0.0",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0209",
+      "type": "h3",
+      "source_text": "Dialogs",
+      "translated_text": "对话框",
+      "meta": {}
+    },
+    {
+      "id": "b0210",
+      "type": "li",
+      "source_text": "The game will now show red text and a warning tooltip if the user appears to be entering an email address into a dialog input field",
+      "translated_text": "如果用户在对话框输入框中输入电子邮件地址，游戏将显示红色文本和警告提示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0211",
+      "type": "h2",
+      "source_text": "Resource Pack Versions 98.0 through 104.0",
+      "translated_text": "资源包版本 98.0 至 104.0",
+      "meta": {}
+    },
+    {
+      "id": "b0212",
+      "type": "li",
+      "source_text": "Certain language keys can no longer be replaced by resource packs:",
+      "translated_text": "某些语言设置无法再通过资源包进行更改",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0213",
+      "type": "li",
+      "source_text": "All keys beginning with menu.custom_options",
+      "translated_text": "所有以 `menu.custom_options` 开头的键",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0214",
+      "type": "li",
+      "source_text": "All keys beginning with menu.custom_screen_info",
+      "translated_text": "所有以 `menu.custom_screen_info` 开头的键",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0215",
+      "type": "h3",
+      "source_text": "UI Sprites",
+      "translated_text": "UI 精灵图片",
+      "meta": {}
+    },
+    {
+      "id": "b0216",
+      "type": "li",
+      "source_text": "Added new UI textures:",
+      "translated_text": "添加了新的 UI 纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0217",
+      "type": "li",
+      "source_text": "recipe_book/slot_highlight_back.png",
+      "translated_text": "recipe_book/slot_highlight_back.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0218",
+      "type": "li",
+      "source_text": "recipe_book/slot_highlight_front.png",
+      "translated_text": "recipe_book/slot_highlight_front.png",
+      "meta": {
+        "indent_level": 1,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0219",
+      "type": "h3",
+      "source_text": "Shaders & Post-process Effects",
+      "translated_text": "着色器和后期处理效果",
+      "meta": {}
+    },
+    {
+      "id": "b0220",
+      "type": "li",
+      "source_text": "core/terrain.fsh was modified to support the separate \"Improved Fog\" video setting",
+      "translated_text": "修改了 `core/terrain.fsh` 文件，以支持单独的 \"改进的雾效\" 视频设置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0221",
+      "type": "h2",
+      "source_text": "Fixed bugs in 26.4 Snapshot 9",
+      "translated_text": "修复了 26.4 快照 9 中的错误",
+      "meta": {}
+    },
+    {
+      "id": "b0222",
+      "type": "li",
+      "source_text": "[MC-11739](https://bugs.mojang.com/browse/MC-11739) - Moving the scroll bar in the Creative mode inventory with the left mouse button and releasing it over the \"Survival Inventory\" tab switches to that tab",
+      "translated_text": "[MC-11739](https://bugs.mojang.com/browse/MC-11739) - 在创意模式库存中使用左键移动滚动条，然后在 \"生存模式库存\" 选项卡上释放鼠标会切换到该选项卡",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0223",
+      "type": "li",
+      "source_text": "[MC-93384](https://bugs.mojang.com/browse/MC-93384) - Bubbles appear at the feet of drowning mobs",
+      "translated_text": "[MC-93384](https://bugs.mojang.com/browse/MC-93384) - 溺水的怪物脚下会出现气泡",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0224",
+      "type": "li",
+      "source_text": "[MC-126913](https://bugs.mojang.com/browse/MC-126913) - Misleading error message when using local coordinates where they are not allowed",
+      "translated_text": "[MC-126913](https://bugs.mojang.com/browse/MC-126913) - 在不允许使用局部坐标的地方显示误导性的错误信息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0225",
+      "type": "li",
+      "source_text": "[MC-132067](https://bugs.mojang.com/browse/MC-132067) - Bubble popping sounds and particles aren't produced at the top of bubble columns",
+      "translated_text": "[MC-132067](https://bugs.mojang.com/browse/MC-132067) - 气泡列顶部没有发出气泡破裂的声音和生成相应的粒子效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0226",
+      "type": "li",
+      "source_text": "[MC-146740](https://bugs.mojang.com/browse/MC-146740) - Magma bubble column particles are misaligned",
+      "translated_text": "[MC-146740](https://bugs.mojang.com/browse/MC-146740) - 岩浆气泡列的粒子效果不对齐",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0227",
+      "type": "li",
+      "source_text": "[MC-150635](https://bugs.mojang.com/browse/MC-150635) - EntityCatSplitFix does not properly retain the newly set Trusting tag during datafixing",
+      "translated_text": "[MC-150635] - EntityCatSplitFix 在数据修复过程中无法正确保留新设置的“Trusting”标签",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0228",
+      "type": "li",
+      "source_text": "[MC-152331](https://bugs.mojang.com/browse/MC-152331) - The barrier icon in the Spectator mode hotbar widgets does not use the updated texture",
+      "translated_text": "[MC-152331] - 观察者模式的热键栏图标没有使用更新的纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0229",
+      "type": "li",
+      "source_text": "[MC-172634](https://bugs.mojang.com/browse/MC-172634) - Argument types contain syntactically incorrect examples",
+      "translated_text": "[MC-172634](https://bugs.mojang.com/browse/MC-172634) - 参数类型中包含语法错误的示例",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0230",
+      "type": "li",
+      "source_text": "[MC-179165](https://bugs.mojang.com/browse/MC-179165) - Releasing the left mouse button over tabs in the Creative mode inventory clicks them even if the click started elsewhere",
+      "translated_text": "[MC-179165](https://bugs.mojang.com/browse/MC-179165) - 在创造模式（Creative mode）的物品栏中，将鼠标左键移到标签上会触发点击，即使点击操作最初是在其他位置开始的",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0231",
+      "type": "li",
+      "source_text": "[MC-182892](https://bugs.mojang.com/browse/MC-182892) - The clocks and compasses within the Creative mode inventory are functional",
+      "translated_text": "[MC-182892] - 创造模式物品栏中的时钟和指南针可以正常使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0232",
+      "type": "li",
+      "source_text": "[MC-183680](https://bugs.mojang.com/browse/MC-183680) - Recipe book buttons are not keyboard-navigable",
+      "translated_text": "[MC-183680] - 食谱书按钮无法通过键盘进行导航",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0233",
+      "type": "li",
+      "source_text": "[MC-191033](https://bugs.mojang.com/browse/MC-191033) - The textures of the Spectator mode hotbar widgets used for teleportation do not use the updated texture of eyes of ender",
+      "translated_text": "[MC-191033] - 观战模式（Spectator mode）热键栏中用于传送的图标所使用的纹理没有更新为末影生物（Ender）的眼睛纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0234",
+      "type": "li",
+      "source_text": "[MC-196142](https://bugs.mojang.com/browse/MC-196142) - Basalt delta particles always move northwest, unlike in Bedrock Edition",
+      "translated_text": "[MC-196142] - 玄武岩三角洲（Basalt delta）的颗粒总是向西北方向移动，这与基岩版（Bedrock Edition）的行为不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0235",
+      "type": "li",
+      "source_text": "[MC-227327](https://bugs.mojang.com/browse/MC-227327) - Dragon fireballs can collide with the ender dragon itself, resulting in floating area effect clouds",
+      "translated_text": "[MC-227327] - 龙火球可以与末影龙本身发生碰撞，导致区域效果云漂浮在空气中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0236",
+      "type": "li",
+      "source_text": "[MC-233818](https://bugs.mojang.com/browse/MC-233818) - Recipe book previews do not display their tooltips when hovered over while the recipe book is closed",
+      "translated_text": "[MC-233818] - 当食谱书关闭时，将鼠标悬停在食谱书上时不会显示其工具提示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0237",
+      "type": "li",
+      "source_text": "[MC-233889](https://bugs.mojang.com/browse/MC-233889) - Hovering over tabs in the recipe book doesn't display any tooltips",
+      "translated_text": "[MC-233889] - 将鼠标悬停在食谱书的标签上时不会显示任何工具提示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0238",
+      "type": "li",
+      "source_text": "[MC-240966](https://bugs.mojang.com/browse/MC-240966) - Lava particles don't glow, unlike dripping obsidian tear particles",
+      "translated_text": "[MC-240966] - 熔岩颗粒不会发光，而滴落的黑曜石泪颗粒则会发光",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0239",
+      "type": "li",
+      "source_text": "[MC-247234](https://bugs.mojang.com/browse/MC-247234) - Splash and bubble particles produced when coming into contact with flowing water are displayed slightly too high",
+      "translated_text": "[MC-247234] - 与流动的水接触时产生的溅泼和水泡颗粒显示位置略高",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0240",
+      "type": "li",
+      "source_text": "[MC-254668](https://bugs.mojang.com/browse/MC-254668) - Pressing Escape on the death screen's title screen warning respawns the player",
+      "translated_text": "[MC-254668](https://bugs.mojang.com/browse/MC-254668) - 在死亡界面或标题界面上按下 Esc 键会导致玩家重新生成",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0241",
+      "type": "li",
+      "source_text": "[MC-261386](https://bugs.mojang.com/browse/MC-261386) - Tabs in the Creative mode inventory inconsistently react to the mouse being released",
+      "translated_text": "[MC-261386](https://bugs.mojang.com/browse/MC-261386) - 创造模式下物品栏中的标签对鼠标释放的操作反应不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0242",
+      "type": "li",
+      "source_text": "[MC-270414](https://bugs.mojang.com/browse/MC-270414) - Growing area effect clouds that collide with water create bubble and splash particles",
+      "translated_text": "[MC-270414](https://bugs.mojang.com/browse/MC-270414) - 当生长区域效果云与水面碰撞时，会产生气泡和溅水效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0243",
+      "type": "li",
+      "source_text": "[MC-276133](https://bugs.mojang.com/browse/MC-276133) - Cannot close the inventory after clicking a recipe in the recipe book with the \"Open/Close Inventory\" key bind bound to Enter",
+      "translated_text": "[MC-276133] - 如果将 \"打开/关闭物品栏\" 的快捷键绑定到 Enter 键，点击配方书中的配方后无法关闭物品栏",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0244",
+      "type": "li",
+      "source_text": "[MC-304749](https://bugs.mojang.com/browse/MC-304749) - The mouse cursor doesn't change to the pointing hand shape when hovering over recipes in the recipe book",
+      "translated_text": "[MC-304749] - 将鼠标悬停在配方书中的配方上时，鼠标指针不会变成指向手的形状",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0245",
+      "type": "li",
+      "source_text": "[MC-310401](https://bugs.mojang.com/browse/MC-310401) - Phantoms can attack through corners",
+      "translated_text": "[MC-310401](https://bugs.mojang.com/browse/MC-310401) - 鬼魂可以穿过角落进行攻击",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0246",
+      "type": "li",
+      "source_text": "[MC-312243](https://bugs.mojang.com/browse/MC-312243) - Some strings are missing an article before an adjective that follows a verb, unlike similar strings",
+      "translated_text": "[MC-312243](https://bugs.mojang.com/browse/MC-312243) - 一些字符串在动词后面的形容词前缺少冠词，这与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0247",
+      "type": "li",
+      "source_text": "[MC-312250](https://bugs.mojang.com/browse/MC-312250) - Some lead closed caption strings aren't in the correct tense, unlike similar strings",
+      "translated_text": "[MC-312250](https://bugs.mojang.com/browse/MC-312250) - 一些引导性字幕字符串的时态不正确，这与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0248",
+      "type": "li",
+      "source_text": "[MC-312252](https://bugs.mojang.com/browse/MC-312252) - Some error strings introduce the invalid value with a colon instead of surrounding it with single quotes, unlike similar strings",
+      "translated_text": "[MC-312252](https://bugs.mojang.com/browse/MC-312252) - 一些错误提示字符串使用了冒号而不是单引号来标注无效值，这与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0249",
+      "type": "li",
+      "source_text": "[MC-312255](https://bugs.mojang.com/browse/MC-312255) - Some chunk generation labels on the debug overlay are abbreviated, unlike similar labels",
+      "translated_text": "[MC-312255](https://bugs.mojang.com/browse/MC-312255) - 调试界面中的一些区块生成标签被缩写，这与类似的标签不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0250",
+      "type": "li",
+      "source_text": "[MC-312258](https://bugs.mojang.com/browse/MC-312258) - Some descriptive tooltip and error message strings lack a period, unlike similar strings",
+      "translated_text": "[MC-312258](https://bugs.mojang.com/browse/MC-312258) - 一些描述性工具提示和错误消息字符串缺少句点，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0251",
+      "type": "li",
+      "source_text": "[MC-312260](https://bugs.mojang.com/browse/MC-312260) - Some friends list narration strings are missing articles and possessive determiners",
+      "translated_text": "[MC-312260](https://bugs.mojang.com/browse/MC-312260) - 一些好友列表的描述文本中缺少冠词和所有格修饰词",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0252",
+      "type": "li",
+      "source_text": "[MC-312291](https://bugs.mojang.com/browse/MC-312291) - Some jigsaw block tooltip strings are improperly capitalized, unlike similar strings",
+      "translated_text": "[MC-312291](https://bugs.mojang.com/browse/MC-312291) - 一些拼图方块的工具提示字符串大小写不正确，与类似的字符串不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0253",
+      "type": "li",
+      "source_text": "[MC-312299](https://bugs.mojang.com/browse/MC-312299) - The subtitles.entity.generic.death string is formatted inconsistently",
+      "translated_text": "[MC-312299](https://bugs.mojang.com/browse/MC-312299) - 字幕中的 entitygeneric.death 字符串格式不一致",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0254",
+      "type": "li",
+      "source_text": "[MC-312365](https://bugs.mojang.com/browse/MC-312365) - Worlds' icons in the world selection screen briefly show the missing texture when returning from another screen",
+      "translated_text": "[MC-312365](https://bugs.mojang.com/browse/MC-312365) - 在世界选择屏幕中，从其他屏幕返回时，世界的图标会短暂显示缺失的纹理",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0255",
+      "type": "li",
+      "source_text": "[MC-312649](https://bugs.mojang.com/browse/MC-312649) - Ice crystals don't use the strict_cutout mipmap strategy, unlike amethyst clusters",
+      "translated_text": "[MC-312649] - 冰晶不适用严格的‘cutout mipmap’策略，这与紫水晶簇不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0256",
+      "type": "li",
+      "source_text": "[MC-312673](https://bugs.mojang.com/browse/MC-312673) - The narrator reads the recipe book button and tabs as \"button\" without providing any context",
+      "translated_text": "[MC-312673] - 解说员将食谱书按钮和标签页读作“button”，而没有提供任何上下文",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0257",
+      "type": "li",
+      "source_text": "[MC-312753](https://bugs.mojang.com/browse/MC-312753) - /item uses the wrong evaluation order for filtered and limit_slots slot sources",
+      "translated_text": "[MC-312753] - /item 对过滤后的物品源和限定栏物品源使用了错误的评估顺序",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0258",
+      "type": "li",
+      "source_text": "[MC-312766](https://bugs.mojang.com/browse/MC-312766) - Fire still does not make its extinguishing sound when water flows into it",
+      "translated_text": "[MC-312766] - 当水流入火源时，火仍然不会发出熄灭的声音",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0259",
+      "type": "li",
+      "source_text": "[MC-312826](https://bugs.mojang.com/browse/MC-312826) - /kill fails to kill the target if it recently survived 3.4028235E38+ damage due to the Resistance effect",
+      "translated_text": "[MC-312826] - /kill 命令无法杀死目标，如果目标最近因“Resistance”效果而承受了超过 3.4028235E38 的伤害",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0260",
+      "type": "li",
+      "source_text": "[MC-312903](https://bugs.mojang.com/browse/MC-312903) - /item selects fewer slots than expected with nested limit_slots slot sources inside a group slot source",
+      "translated_text": "[MC-312903] - 当在组槽源中嵌套 limit_slots 槽源时，/item 命令选择的槽位数量少于预期",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0261",
+      "type": "li",
+      "source_text": "[MC-312940](https://bugs.mojang.com/browse/MC-312940) - The sounds of fire charges being shot from dispensers are controlled by the \"Hostile Mobs\" sound category instead of \"Blocks\"",
+      "translated_text": "[MC-312940] - 从分配器中发射的火弹音效被归类为“Hostile Mobs” sound 类别，而非“Blocks”类别",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0262",
+      "type": "li",
+      "source_text": "[MC-312941](https://bugs.mojang.com/browse/MC-312941) - The sounds of fireworks being shot from dispensers are controlled by the \"Friendly Mobs\" sound category instead of \"Blocks\"",
+      "translated_text": "[MC-312941] - 从分配器中发射的烟花音效被归类为“Friendly Mobs” sound 类别，而非“Blocks”类别",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0263",
+      "type": "li",
+      "source_text": "[MC-312967](https://bugs.mojang.com/browse/MC-312967) - Implicit empty-slot filtering in /item modify makes slot selection differ from all other commands",
+      "translated_text": "[MC-312967] - /item modify 命令中的隐式空槽过滤机制导致槽位选择与其他命令的结果不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0264",
+      "type": "li",
+      "source_text": "[MC-313021](https://bugs.mojang.com/browse/MC-313021) - /item override leaves destination slots unchanged when the source selects no slots",
+      "translated_text": "[MC-313021] - 当来源没有选择任何槽位时，/item override 命令不会改变目标槽位的状态",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0265",
+      "type": "li",
+      "source_text": "[MC-313067](https://bugs.mojang.com/browse/MC-313067) - Snowballs can now apply knockback to players while they're blocking",
+      "translated_text": "[MC-313067] - 雪球在玩家阻挡时现在可以对玩家造成击退效果",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0266",
+      "type": "li",
+      "source_text": "[MC-313082](https://bugs.mojang.com/browse/MC-313082) - Debug messages for toggling chunk boundaries and entity hitboxes are displayed in chat when the \"Reduced Debug Info\" option is enabled",
+      "translated_text": "[MC-313082] - 当启用“简化调试信息”选项时，切换区块边界和实体碰撞盒的调试信息会显示在聊天框中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0267",
+      "type": "li",
+      "source_text": "[MC-313083](https://bugs.mojang.com/browse/MC-313083) - The debug shortcut for copying your location still functions when the \"Reduced Debug Info\" option is enabled",
+      "translated_text": "[MC-313083] - 即使启用“简化调试信息”选项，复制玩家位置的调试快捷键仍然有效",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0268",
+      "type": "li",
+      "source_text": "[MC-313086](https://bugs.mojang.com/browse/MC-313086) - The player inventory model no longer looks at the cursor correctly when the player's scale attribute is modified",
+      "translated_text": "[MC-313086] - 当修改玩家的缩放属性时，玩家物品栏模型不再正确显示光标位置",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0269",
+      "type": "li",
+      "source_text": "[MC-313090](https://bugs.mojang.com/browse/MC-313090) - Pressing Space or Enter no longer refills items in the trading UI",
+      "translated_text": "[MC-313090] - 现在按空格键或回车键不会重新填充交易界面中的物品",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0270",
+      "type": "li",
+      "source_text": "[MC-313109](https://bugs.mojang.com/browse/MC-313109) - /rotate no longer properly rotates mobs",
+      "translated_text": "[MC-313109](https://bugs.mojang.com/browse/MC-313109) - `/rotate`命令不再能够正确旋转怪物",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0271",
+      "type": "li",
+      "source_text": "[MC-313126](https://bugs.mojang.com/browse/MC-313126) - The oversized chunk warning produced by RegionFile contains a mismatched brace",
+      "translated_text": "[MC-313126](https://bugs.mojang.com/browse/MC-313126) - `RegionFile`产生的过大区块警告中存在括号不匹配的问题",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0272",
+      "type": "li",
+      "source_text": "[MC-313141](https://bugs.mojang.com/browse/MC-313141) - The speed boost from using a carrot on a stick on a pig or a warped fungus on a stick on a strider is not saved to NBT",
+      "translated_text": "[MC-313141](https://bugs.mojang.com/browse/MC-313141) - 用胡萝卜或扭曲真菌制成的‘武器’给猪或炽足兽使用后带来的速度提升效果不会保存到NBT文件中",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0273",
+      "type": "li",
+      "source_text": "[MC-313144](https://bugs.mojang.com/browse/MC-313144) - upgradeWorld.progress.type.regions displays as a raw translation key",
+      "translated_text": "[MC-313144](https://bugs.mojang.com/browse/MC-313144) - `upgradeWorld.progress.type.regions`的显示方式为原始的翻译键",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0274",
+      "type": "li",
+      "source_text": "[MC-313163](https://bugs.mojang.com/browse/MC-313163) - Ice balls can damage a perched ender dragon, unlike similar projectiles",
+      "translated_text": "[MC-313163] - 冰球可以伤害栖息在天空中的末影龙，这与类似的投射物不同",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0275",
+      "type": "li",
+      "source_text": "[MC-313175](https://bugs.mojang.com/browse/MC-313175) - Arguments after /execute positioned over can no longer be parsed",
+      "translated_text": "[MC-313175](https://bugs.mojang.com/browse/MC-313175) - 在`/execute`命令后使用的参数无法再被解析",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0276",
+      "type": "li",
+      "source_text": "[MC-313181](https://bugs.mojang.com/browse/MC-313181) - The string type of string arguments is serialized to a field called type , conflicting with the argument type itself in the data generator report",
+      "translated_text": "[MC-313181](https://bugs.mojang.com/browse/MC-313181) - 字符串类型的参数在序列化时会存储到一个名为 `type` 的字段中，这与数据生成器报告中的参数类型本身存在冲突",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0277",
+      "type": "li",
+      "source_text": "[MC-313186](https://bugs.mojang.com/browse/MC-313186) - Water bottles stacked higher than 1 give back 2 glass bottles per 1 use when converting dirt to mud",
+      "translated_text": "[MC-313186] - 当将泥土转化为淤泥时，堆叠超过 1 个的水瓶每次使用会返回 2 个玻璃瓶",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0278",
+      "type": "li",
+      "source_text": "[MC-313188](https://bugs.mojang.com/browse/MC-313188) - /schedule can schedule functions for negative times now",
+      "translated_text": "[MC-313188] - 现在可以安排在负时间执行的函数",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0279",
+      "type": "li",
+      "source_text": "[MC-313189](https://bugs.mojang.com/browse/MC-313189) - /say and /msg produce unsigned system messages now",
+      "translated_text": "[MC-313189] - 命令 `/say` 和 `/msg` 现在会生成无签名的系统消息",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0280",
+      "type": "li",
+      "source_text": "[MC-313196](https://bugs.mojang.com/browse/MC-313196) - Lava and powder snow fog no longer render when the camera is just above the surface",
+      "translated_text": "[MC-313196] - 当摄像机正上方位于熔岩或粉雪区域时，这些效果将不再显示",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0281",
+      "type": "li",
+      "source_text": "[MC-313197](https://bugs.mojang.com/browse/MC-313197) - Unknown ID errors in commands show a raw \"ResourceKey[...]\"",
+      "translated_text": "[MC-313197] - 命令中出现的未知 ID 错误会显示原始的 `ResourceKey[...]`",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0282",
+      "type": "li",
+      "source_text": "[MC-313207](https://bugs.mojang.com/browse/MC-313207) - Invalid text components and styles in commands show an internal \"exceptionType is null\" error",
+      "translated_text": "[MC-313207](https://bugs.mojang.com/browse/MC-313207) - 在命令中使用无效的文本组件和样式时，会显示“exceptionType is null”的内部错误",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0283",
+      "type": "li",
+      "source_text": "[MC-313210](https://bugs.mojang.com/browse/MC-313210) - The game crashes when a resource pack fails to load",
+      "translated_text": "[MC-313210](https://bugs.mojang.com/browse/MC-313210) - 当资源包加载失败时，游戏会崩溃",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0284",
+      "type": "li",
+      "source_text": "[MC-313212](https://bugs.mojang.com/browse/MC-313212) - /execute (if|unless) (blocks|data) commands no longer redirect back to execute",
+      "translated_text": "[MC-313212](https://bugs.mojang.com/browse/MC-313212) - /execute (if|unless) (blocks|data) 命令不再会重定向到 execute 功能",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0285",
+      "type": "li",
+      "source_text": "[MC-313246](https://bugs.mojang.com/browse/MC-313246) - The chunk_source_stats debug overlay entry can no longer be used",
+      "translated_text": "[MC-313246](https://bugs.mojang.com/browse/MC-313246) - /chunk_source_stats 调试叠加层信息已无法使用",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0286",
+      "type": "h2",
+      "source_text": "Get the Snapshot",
+      "translated_text": "获取快照",
+      "meta": {}
+    },
+    {
+      "id": "b0287",
+      "type": "p",
+      "source_text": "Snapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.",
+      "translated_text": "Minecraft: Java版支持快照功能。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“Installations”选项卡中启用快照功能。",
+      "meta": {}
+    },
+    {
+      "id": "b0288",
+      "type": "p",
+      "source_text": "**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**",
+      "translated_text": "**测试版本可能会损坏你的世界，请备份数据，或者将测试版本放在与主世界不同的文件夹中运行。**",
+      "meta": {}
+    },
+    {
+      "id": "b0289",
+      "type": "p",
+      "source_text": "Cross-platform server jar:",
+      "translated_text": "跨平台服务器 JAR 文件：",
+      "meta": {}
+    },
+    {
+      "id": "b0290",
+      "type": "li",
+      "source_text": "[Minecraft server jar](https://piston-data.mojang.com/v1/objects/d713516162441e0961e1ccfb85d8feeb01b50fd6/server.jar)",
+      "translated_text": "[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/d713516162441e0961e1ccfb85d8feeb01b50fd6/server.jar)",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0291",
+      "type": "p",
+      "source_text": "Report bugs here:",
+      "translated_text": "请在这里报告漏洞：",
+      "meta": {}
+    },
+    {
+      "id": "b0292",
+      "type": "li",
+      "source_text": "[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !",
+      "translated_text": "[Minecraft 错误跟踪页面](https://bugs.mojang.com/projects/MC/summary)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    },
+    {
+      "id": "b0293",
+      "type": "p",
+      "source_text": "Want to give feedback?",
+      "translated_text": "想提供反馈吗？",
+      "meta": {}
+    },
+    {
+      "id": "b0294",
+      "type": "li",
+      "source_text": "For any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+      "translated_text": "如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊聊天，欢迎加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)！",
+      "meta": {
+        "indent_level": 0,
+        "list_type": "ul"
+      }
+    }
+  ],
+  "content": "**Update**: We have now released 26.4 Snapshot 10, fixing a crash in the Multiplayer screen.\n\nFixed bugs in 26.4 Snapshot 10\n\n[MC-313265](https://bugs.mojang.com/browse/MC-313265)  - The game crashes when scrolling through the multiplayer menu\n\nOriginal article:\n\nMinecraft 26.4 Snapshot 9\n\n26.4 Snapshot 9 is here, bringing data-driven dispensers, Vulkan as the default graphics backend, and a new setting to fine-tune your fog. We've also made improvements to keyboard navigation and narration, alongside a few other tweaks and fixes!\n\nHappy mining!\n\nChanges\n\nAdded a Repeat Recipe/Trade keybind that repeats the last recipe or trade used\n\nAdded a separate \"Improved Fog\" video setting that allows to control the Improved Fog feature independently of the \"Improved Transparency\" video setting\n\nVulkan is now the default graphics backend, rather than being randomized, and is no longer considered experimental\n\n**Developer's Note**: *The plan is to ship 26.4 with Vulkan graphics API being the default one unless any critical issues are discovered before the full release*\n\nA Separate \"Improved Fog\" Video Setting\n\nSeparated the \"Improved Fog\" video setting from the \"Improved Transparency\"\n\nTurning it on together with the \"Improved Transparency\" will behave the same way as the previous Snapshot with \"Improved Transparency\" enabled: both sky and clouds will be blended into the terrain render distance fog\n\nTurning it on without \"Improved Transparency\" will only blend the sky but not the clouds\n\nYou can now use \"Improved Transparency\" without \"Improved Fog\" if you don't like the effect\n\nThe performance impact of \"Improved Fog\" is minimal, but it may be noticeable on lower-end hardware\n\nThe setting is enabled by default\n\nIt is disabled on the \"Fast\" graphics preset and enabled on the \"Fancy\" and \"Fabulous\" graphics presets\n\nMinor Tweaks to Blocks, Items and Entities\n\nThe random boost time for using a Carrot or Warped Fungus on a Stick while riding a Pig or Strider respectively is now between 7 and 35 seconds\n\nSounds\n\nFire and Soul Fire now use the extinguish sound as their block break sound, including when their supporting block is removed\n\nUI\n\nRecipe Book tabs now show their category as a tooltip\n\nRecipes in the Recipe Book are now highlighted when hovered or focused\n\nFriends\n\nImproved the reliability and speed of friend availability updates\n\nAccessibility\n\nGameplay Screen Keyboard Navigation\n\nThe Recipe Book can now be used with the keyboard\n\nTab moves between the tab buttons, search box, filter button, recipes, and page buttons\n\nEnter/Space on a recipe places it in the crafting grid, and holding Shift places as many as possible\n\nControl + Enter on a recipe opens the popup of alternative recipes, like right-clicking\n\nThe arrow keys move within the popup, and Escape or Tab closes it\n\nRepeating the last selected recipe has moved from Space and Enter to the new Repeat Recipe/Trade key (R by default), and holding Shift still places as many as possible\n\nThe Repeat Recipe/Trade key also repeats the last selected trade in the Villager and Wandering Trader screens\n\nThe Creative Inventory can now be used with the keyboard\n\nGameplay Screen Narration\n\nThe narrator now reads out the Recipe Book\n\nRecipes are narrated with their result and their column and row in the grid\n\nThe tabs, search box, and filter button are narrated with their names\n\nThe page buttons narrate the current page\n\nRecipes in the alternative recipes popup are narrated with their position, and the narrator mentions that Escape closes it\n\nThe narrator now reads out the Creative Inventory\n\nTabs are narrated with their name and position\n\nItems are narrated with their column and row in the grid\n\nTechnical Changes\n\nThe Data Pack version is now 128.0\n\nThe Resource Pack version is now 104.0\n\nNetwork Protocol\n\nModified Login Protocol\n\nChanged encryption key establishment procedure\n\nDedicated Server Properties\n\nAdded key-rotation-period-seconds field\n\nDetermines the minimum duration after which server keys (used for establishing new connections) will be recreated\n\nIf set to 0 a unique (i.e. ephemeral) key will be used for every connection\n\nDefault value: 60\n\nData Pack Versions 122.0 through 128.0\n\nDispense behaviors are now data-driven\n\nCommands\n\nAdded support for local arguments in 2D coordinates\n\nArguments in form of ^<left> ^<forwards> are now accepted in commands that take 2D coordinates:\n\nChunk coordinates in forceload\n\nspreadplayers <center>\n\nworldborder center <pos>\n\nOnly takes into account player rotation around Y axis (as opposed to interpreting that as ^<left> ^0 ^<forwards> and casting to XZ plane)\n\nDispense Behaviors\n\nA new registry folder: dispense_behavior. Each file is a list of behaviors that describe a sequence of behaviors to attempt when dispensing an item. Unless otherwise noted, behaviors are tried in sequence until one succeeds.\n\nEach entry has a type field specifying a dispense behavior type as described below, possibly with type-specific additional fields.\n\nVanilla entries:\n\nminecraft:armor_stand - Used for Armor Stands\n\nminecraft:boat - Used for all types of Boats, Chest Boats, Rafts and Chest Rafts\n\nminecraft:bone_meal - Used for Bone Meal\n\nminecraft:brush - Used for Brushes\n\nminecraft:carved_pumpkin - Used for Carved Pumpkins\n\nminecraft:chest - Used for Chests (note: only default Chests, not Trapped, Copper or other types of Chests)\n\nminecraft:default - Used for any items without another specified behavior\n\nminecraft:default_projectile - Used for all types of Arrows, all types of Eggs, Snow Balls and Ice Balls\n\nminecraft:dropper - Used for all item types by Droppers\n\nminecraft:empty_bucket - Used for empty Buckets\n\nminecraft:equipment - Used for all types of equippables except Carved Pumpkins and Wither Skeleton Skulls\n\nminecraft:filled_bucket - Used for all types of Buckets with any contents\n\nminecraft:fire_charge - Used for Fire Charges\n\nminecraft:firework_rocket - Used for all Firework Rockets\n\nminecraft:flint_and_steel - Used for Flint & Steel\n\nminecraft:glass_bottle - Used for empty Glass Bottles\n\nminecraft:glowstone - Used for Glowstone Blocks\n\nminecraft:honeycomb - Used for Honeycombs\n\nminecraft:minecart - Used for all types of Minecarts\n\nminecraft:potion - Used for Potions (note: only default Potions, not Splash or Lingering)\n\nminecraft:shears - Used for Shears\n\nminecraft:shulker_box - Used for all Shulker Boxes\n\nminecraft:spawn_egg - Used for all Spawn Eggs\n\nminecraft:thrown_potion - Used for Splash Potions and Lingering Potions\n\nminecraft:tnt - Used for TNT Blocks\n\nminecraft:wind_charge - Used for Wind Charges\n\nminecraft:wither_skeleton_skull - Used for Wither Skeleton Skulls\n\nDispense Behavior Types\n\nminecraft:brush_armadillo\n\nBrushes an Armadillo in front of the Dispenser\n\nNo additional fields\n\nminecraft:charge_respawn_anchor\n\nCharges a Respawn Anchor in front of the Dispenser\n\nIf the Respawn Anchor is already fully charged, no further behaviors are tried\n\nNo additional fields\n\nminecraft:convert_to_mud\n\nConverts the block in front of the Dispenser to Mud in case it has the #minecraft:convertible_to_mud block tag.\n\nThe item needs to contain a Water potion, otherwise it fails\n\nNo additional fields\n\nminecraft:drop_item\n\nThe item is dropped as an item entity\n\nNo additional fields\n\nminecraft:empty_bucket\n\nEmpties the bucket in front of the Dispenser\n\nThe item needs to be a bucket, otherwise it fails\n\nNo additional fields\n\nminecraft:equip\n\nEquips the item onto a living entity in front of the Dispenser\n\nThe item must be equippable onto a slot of the entity\n\nNo additional fields\n\nminecraft:equip_chest\n\nEquips a Chest onto a tamed mob that can carry a Chest in front of the Dispenser\n\nNo additional fields\n\nminecraft:equip_sulfur_cube\n\nGives the item to a Sulfur Cube in front of the Dispenser\n\nThe item needs to be in the #minecraft:sulfur_cube_swallowable item tag, otherwise it fails\n\nNo additional fields\n\nminecraft:fill_bottle\n\nFills the bottle from the block in front\n\nNo additional fields\n\nminecraft:fill_bucket\n\nPicks up a fluid in front of the Dispenser, filling the bucket\n\nNo additional fields\n\nminecraft:grow_plant\n\nGrows a plant in front of the Dispenser\n\nNo additional fields\n\nminecraft:ignite\n\nIgnites the block in front of the Dispenser\n\nNo additional fields\n\nminecraft:insert_into_container\n\nInserts the item into a container in front of the Dispenser\n\nNo additional fields\n\nminecraft:place_armor_stand\n\nPlaces an Armor Stand in front of the Dispenser\n\nNo additional fields\n\nminecraft:place_block\n\nPlaces the item as a block in front of the Dispenser\n\nThe item needs to be a block item, otherwise it fails\n\nNo additional fields\n\nminecraft:place_boat\n\nPlaces a Boat on water in front of the Dispenser\n\nThe entity type is determined by the minecraft:entity_data component of the item, and needs to be a Boat, Chest Boat, Raft or Chest Raft\n\nFor any other entity type, the action fails\n\nNo additional fields\n\nminecraft:place_minecart\n\nPlaces a Minecart on rails in front of the Dispenser\n\nThe entity type is determined by the minecraft:entity_data component of the item, and needs to be a Minecart\n\nFor any other entity type, the action fails\n\nNo additional fields\n\nminecraft:shear\n\nShears a mob or harvests a beehive in front of the Dispenser\n\nNo additional fields\n\nminecraft:shoot_projectile\n\nShoots the item as a projectile\n\nThe item needs to be a projectile item, such as an Arrow or Snowball\n\nAdditional fields:\n\noffset - vector of 3 doubles, the offset of the spawn position of the projectile from the center of the Dispenser\n\nscale - double, how far from the offset position to spawn the projectile, along the direction of the Dispenser\n\nuncertainty - non-negative float, the inaccuracy of the shot\n\npower - non-negative float, the velocity of the shot\n\nsound - optional object, the sound to play when shooting (defaults to minecraft:block.dispenser.launch with volume 1.0 and pitch 1.2 )\n\nsound - Sound Event to play\n\nvolume - float provider, the volume of the sound\n\npitch - float provider, the pitch of the sound\n\nminecraft:spawn_golem_from_carved_pumpkin\n\nCompletes a Golem in front of the Dispenser\n\nNo additional fields\n\nminecraft:spawn_mob\n\nSpawns the entity defined by the minecraft:entity_data component in front of the Dispenser\n\nNo additional fields\n\nminecraft:spawn_tnt\n\nSpawns Primed TNT in front of the Dispenser\n\nNo additional fields\n\nminecraft:transform_block\n\nTransforms the block in front of the Dispenser using a Block Transformer\n\nAdditional field:\n\ntransformer - Namespaced ID of the Block Transformer to use\n\nminecraft:spawn_wither_from_wither_skeleton_skull\n\nCompletes a Wither in front of the Dispenser\n\nNo additional fields\n\nData Components\n\nAdded minecraft:dispense_behavior\n\nDetermines what happens when the item is dispensed from a Dispenser.\n\nFormat: Namespaced ID of a dispense_behavior registry entry or an inline list of Dispense Behaviors\n\nminecraft:entity_data\n\nBoat and Minecart items now have this component by default, determining which entity is placed when the item is used or dispensed\n\nEntity types that do not match the type requirement result in the action failing\n\nBlock Transformers\n\nAdded block transformer minecraft:honeycomb\n\nUsed to wax blocks (currently only from dispensers)\n\nParticles\n\nChanged minecraft:current_down\n\nAdded new field radius - float, the radius around the position to spawn the particle at\n\nChanged minecraft:bubble_column_up\n\nAdded optional field pop_chance - float between 0.0 and 1.0, the chance that the particle will spawn a pop particle and play a pop sound once at the end of its lifecycle\n\nIf omitted, defaults to 0.0\n\nDialogs\n\nThe game will now show red text and a warning tooltip if the user appears to be entering an email address into a dialog input field\n\nResource Pack Versions 98.0 through 104.0\n\nCertain language keys can no longer be replaced by resource packs:\n\nAll keys beginning with menu.custom_options\n\nAll keys beginning with menu.custom_screen_info\n\nUI Sprites\n\nAdded new UI textures:\n\nrecipe_book/slot_highlight_back.png\n\nrecipe_book/slot_highlight_front.png\n\nShaders & Post-process Effects\n\ncore/terrain.fsh was modified to support the separate \"Improved Fog\" video setting\n\nFixed bugs in 26.4 Snapshot 9\n\n[MC-11739](https://bugs.mojang.com/browse/MC-11739) - Moving the scroll bar in the Creative mode inventory with the left mouse button and releasing it over the \"Survival Inventory\" tab switches to that tab\n\n[MC-93384](https://bugs.mojang.com/browse/MC-93384) - Bubbles appear at the feet of drowning mobs\n\n[MC-126913](https://bugs.mojang.com/browse/MC-126913) - Misleading error message when using local coordinates where they are not allowed\n\n[MC-132067](https://bugs.mojang.com/browse/MC-132067) - Bubble popping sounds and particles aren't produced at the top of bubble columns\n\n[MC-146740](https://bugs.mojang.com/browse/MC-146740) - Magma bubble column particles are misaligned\n\n[MC-150635](https://bugs.mojang.com/browse/MC-150635) - EntityCatSplitFix does not properly retain the newly set Trusting tag during datafixing\n\n[MC-152331](https://bugs.mojang.com/browse/MC-152331) - The barrier icon in the Spectator mode hotbar widgets does not use the updated texture\n\n[MC-172634](https://bugs.mojang.com/browse/MC-172634) - Argument types contain syntactically incorrect examples\n\n[MC-179165](https://bugs.mojang.com/browse/MC-179165) - Releasing the left mouse button over tabs in the Creative mode inventory clicks them even if the click started elsewhere\n\n[MC-182892](https://bugs.mojang.com/browse/MC-182892) - The clocks and compasses within the Creative mode inventory are functional\n\n[MC-183680](https://bugs.mojang.com/browse/MC-183680) - Recipe book buttons are not keyboard-navigable\n\n[MC-191033](https://bugs.mojang.com/browse/MC-191033) - The textures of the Spectator mode hotbar widgets used for teleportation do not use the updated texture of eyes of ender\n\n[MC-196142](https://bugs.mojang.com/browse/MC-196142) - Basalt delta particles always move northwest, unlike in Bedrock Edition\n\n[MC-227327](https://bugs.mojang.com/browse/MC-227327) - Dragon fireballs can collide with the ender dragon itself, resulting in floating area effect clouds\n\n[MC-233818](https://bugs.mojang.com/browse/MC-233818) - Recipe book previews do not display their tooltips when hovered over while the recipe book is closed\n\n[MC-233889](https://bugs.mojang.com/browse/MC-233889) - Hovering over tabs in the recipe book doesn't display any tooltips\n\n[MC-240966](https://bugs.mojang.com/browse/MC-240966) - Lava particles don't glow, unlike dripping obsidian tear particles\n\n[MC-247234](https://bugs.mojang.com/browse/MC-247234) - Splash and bubble particles produced when coming into contact with flowing water are displayed slightly too high\n\n[MC-254668](https://bugs.mojang.com/browse/MC-254668) - Pressing Escape on the death screen's title screen warning respawns the player\n\n[MC-261386](https://bugs.mojang.com/browse/MC-261386) - Tabs in the Creative mode inventory inconsistently react to the mouse being released\n\n[MC-270414](https://bugs.mojang.com/browse/MC-270414) - Growing area effect clouds that collide with water create bubble and splash particles\n\n[MC-276133](https://bugs.mojang.com/browse/MC-276133) - Cannot close the inventory after clicking a recipe in the recipe book with the \"Open/Close Inventory\" key bind bound to Enter\n\n[MC-304749](https://bugs.mojang.com/browse/MC-304749) - The mouse cursor doesn't change to the pointing hand shape when hovering over recipes in the recipe book\n\n[MC-310401](https://bugs.mojang.com/browse/MC-310401) - Phantoms can attack through corners\n\n[MC-312243](https://bugs.mojang.com/browse/MC-312243) - Some strings are missing an article before an adjective that follows a verb, unlike similar strings\n\n[MC-312250](https://bugs.mojang.com/browse/MC-312250) - Some lead closed caption strings aren't in the correct tense, unlike similar strings\n\n[MC-312252](https://bugs.mojang.com/browse/MC-312252) - Some error strings introduce the invalid value with a colon instead of surrounding it with single quotes, unlike similar strings\n\n[MC-312255](https://bugs.mojang.com/browse/MC-312255) - Some chunk generation labels on the debug overlay are abbreviated, unlike similar labels\n\n[MC-312258](https://bugs.mojang.com/browse/MC-312258) - Some descriptive tooltip and error message strings lack a period, unlike similar strings\n\n[MC-312260](https://bugs.mojang.com/browse/MC-312260) - Some friends list narration strings are missing articles and possessive determiners\n\n[MC-312291](https://bugs.mojang.com/browse/MC-312291) - Some jigsaw block tooltip strings are improperly capitalized, unlike similar strings\n\n[MC-312299](https://bugs.mojang.com/browse/MC-312299) - The subtitles.entity.generic.death string is formatted inconsistently\n\n[MC-312365](https://bugs.mojang.com/browse/MC-312365) - Worlds' icons in the world selection screen briefly show the missing texture when returning from another screen\n\n[MC-312649](https://bugs.mojang.com/browse/MC-312649) - Ice crystals don't use the strict_cutout mipmap strategy, unlike amethyst clusters\n\n[MC-312673](https://bugs.mojang.com/browse/MC-312673) - The narrator reads the recipe book button and tabs as \"button\" without providing any context\n\n[MC-312753](https://bugs.mojang.com/browse/MC-312753) - /item uses the wrong evaluation order for filtered and limit_slots slot sources\n\n[MC-312766](https://bugs.mojang.com/browse/MC-312766) - Fire still does not make its extinguishing sound when water flows into it\n\n[MC-312826](https://bugs.mojang.com/browse/MC-312826) - /kill fails to kill the target if it recently survived 3.4028235E38+ damage due to the Resistance effect\n\n[MC-312903](https://bugs.mojang.com/browse/MC-312903) - /item selects fewer slots than expected with nested limit_slots slot sources inside a group slot source\n\n[MC-312940](https://bugs.mojang.com/browse/MC-312940) - The sounds of fire charges being shot from dispensers are controlled by the \"Hostile Mobs\" sound category instead of \"Blocks\"\n\n[MC-312941](https://bugs.mojang.com/browse/MC-312941) - The sounds of fireworks being shot from dispensers are controlled by the \"Friendly Mobs\" sound category instead of \"Blocks\"\n\n[MC-312967](https://bugs.mojang.com/browse/MC-312967) - Implicit empty-slot filtering in /item modify makes slot selection differ from all other commands\n\n[MC-313021](https://bugs.mojang.com/browse/MC-313021) - /item override leaves destination slots unchanged when the source selects no slots\n\n[MC-313067](https://bugs.mojang.com/browse/MC-313067) - Snowballs can now apply knockback to players while they're blocking\n\n[MC-313082](https://bugs.mojang.com/browse/MC-313082) - Debug messages for toggling chunk boundaries and entity hitboxes are displayed in chat when the \"Reduced Debug Info\" option is enabled\n\n[MC-313083](https://bugs.mojang.com/browse/MC-313083) - The debug shortcut for copying your location still functions when the \"Reduced Debug Info\" option is enabled\n\n[MC-313086](https://bugs.mojang.com/browse/MC-313086) - The player inventory model no longer looks at the cursor correctly when the player's scale attribute is modified\n\n[MC-313090](https://bugs.mojang.com/browse/MC-313090) - Pressing Space or Enter no longer refills items in the trading UI\n\n[MC-313109](https://bugs.mojang.com/browse/MC-313109) - /rotate no longer properly rotates mobs\n\n[MC-313126](https://bugs.mojang.com/browse/MC-313126) - The oversized chunk warning produced by RegionFile contains a mismatched brace\n\n[MC-313141](https://bugs.mojang.com/browse/MC-313141) - The speed boost from using a carrot on a stick on a pig or a warped fungus on a stick on a strider is not saved to NBT\n\n[MC-313144](https://bugs.mojang.com/browse/MC-313144) - upgradeWorld.progress.type.regions displays as a raw translation key\n\n[MC-313163](https://bugs.mojang.com/browse/MC-313163) - Ice balls can damage a perched ender dragon, unlike similar projectiles\n\n[MC-313175](https://bugs.mojang.com/browse/MC-313175) - Arguments after /execute positioned over can no longer be parsed\n\n[MC-313181](https://bugs.mojang.com/browse/MC-313181) - The string type of string arguments is serialized to a field called type , conflicting with the argument type itself in the data generator report\n\n[MC-313186](https://bugs.mojang.com/browse/MC-313186) - Water bottles stacked higher than 1 give back 2 glass bottles per 1 use when converting dirt to mud\n\n[MC-313188](https://bugs.mojang.com/browse/MC-313188) - /schedule can schedule functions for negative times now\n\n[MC-313189](https://bugs.mojang.com/browse/MC-313189) - /say and /msg produce unsigned system messages now\n\n[MC-313196](https://bugs.mojang.com/browse/MC-313196) - Lava and powder snow fog no longer render when the camera is just above the surface\n\n[MC-313197](https://bugs.mojang.com/browse/MC-313197) - Unknown ID errors in commands show a raw \"ResourceKey[...]\"\n\n[MC-313207](https://bugs.mojang.com/browse/MC-313207) - Invalid text components and styles in commands show an internal \"exceptionType is null\" error\n\n[MC-313210](https://bugs.mojang.com/browse/MC-313210) - The game crashes when a resource pack fails to load\n\n[MC-313212](https://bugs.mojang.com/browse/MC-313212) - /execute (if|unless) (blocks|data) commands no longer redirect back to execute\n\n[MC-313246](https://bugs.mojang.com/browse/MC-313246) - The chunk_source_stats debug overlay entry can no longer be used\n\nGet the Snapshot\n\nSnapshots are available for Minecraft: Java Edition. To install the Snapshot, open up the [Minecraft Launcher](https://www.minecraft.net/content/minecraft-net/language-masters/download) and enable snapshots in the \"Installations\" tab.\n\n**Testing versions can corrupt your world, so please backup and/or run them in a different folder from your main worlds.**\n\nCross-platform server jar:\n\n[Minecraft server jar](https://piston-data.mojang.com/v1/objects/d713516162441e0961e1ccfb85d8feeb01b50fd6/server.jar)\n\nReport bugs here:\n\n[Minecraft issue tracker](https://bugs.mojang.com/projects/MC/summary) !\n\nWant to give feedback?\n\nFor any feedback and suggestions, head over to the [Feedback site](https://feedback.minecraft.net/) . If you're feeling chatty, join us over at the [official Minecraft Discord](https://discordapp.com/invite/minecraft) .",
+  "translated_content": "**更新**：我们现已发布了26.4 Snapshot 10版本，修复了多人模式界面中的一个崩溃问题。\n\n修复了26.4 Snapshot 10中的漏洞。\n\n[MC-313265](https://bugs.mojang.com/browse/MC-313265) - 在浏览多人模式菜单时游戏会崩溃。\n\n原文文章：\n\nMinecraft 26.4 Snapshot 9\n\n26.4 Snapshot 9现已发布，带来了数据驱动的分配器、Vulkan作为默认的图形后端，以及一个用于微调雾效的新设置。我们还改进了键盘导航和游戏旁白，并进行了其他一些调整和修复！\n\n快乐采矿！\n\n更改内容\n\n新增了“重复配方/交易”键绑定功能，可以重复使用上一次使用的配方或交易指令。\n\n新增了一个独立的“优化雾效”设置，允许用户独立于“优化透明度”设置来控制雾效功能\n\nVulkan 现在已成为默认的图形后端，不再随机选择，并且不再被视为实验性技术\n\n**开发者注**：计划将 Vulkan 图形 API 设为默认后端进行发布，除非在正式发布前发现任何严重问题\n\n新增了一个独立的“优化雾效”设置\n\n将“优化雾效”设置与“优化透明度”设置分开\n\n如果同时启用“优化雾效”和“优化透明度”，其行为将与之前的版本相同：天空和云层都会融入地形渲染的雾效中\n\n如果未启用“改进透明度”（Improved Transparency），则只会使天空颜色混合，但云层不会发生变化\n\n如果你不喜欢“改进雾效”（Improved Fog）的效果，现在也可以单独使用“改进透明度”\n\n“改进雾效”对性能的影响很小，但在低端硬件上可能会稍微明显一些\n\n该设置默认是启用的\n\n在“快速”（Fast）图形预设中该效果是禁用的，而在“华丽”（Fancy）和“惊艳”（Fabulous）图形预设中则是启用的\n\n对方块、物品和实体的些许调整\n\n现在在骑猪或炽足兽（Strider）时，使用“胡萝卜”或“扭曲真菌棒”（Carrot or Warped Fungus on a Stick）的随机效果持续时间在7到35秒之间\n\n音效相关调整\n\n火焰（Fire）和灵魂之火（Soul Fire）现在在摧毁自身时使用同样的熄灭音效\n\n用户界面（UI）\n\n配方书的标签现在会以工具提示的形式显示其类别\n\n现在当鼠标悬停或选中配方书中的配方时，这些配方会被高亮显示\n\n好友系统\n\n提高了好友状态更新的可靠性和速度\n\n可访问性（Accessibility）\n\n游戏玩法屏幕的键盘导航\n\n现在可以使用键盘来操作配方书\n\n按 Tab 键可以在标签按钮、搜索框、筛选按钮、配方列表和页面按钮之间切换\n\n在配方上输入或按空格键会将其放入制作格中；按住 Shift 键可以一次性放入多个配方\n\n在配方上按下 Control + Enter 会弹出替代配方窗口，效果与右键点击相同\n\n使用箭头键可以在窗口内移动；按下 Escape 或 Tab 键可以关闭窗口\n\n重复上一个选中的配方的方式已从使用空格键和 Enter 键改为新的按键（默认为 R 键）；按住 Shift 键可以一次性重复尽可能多的配方\n\n重复配方/交易按键也可以在村民和流浪商人界面中重复上一次的交易操作\n\n现在可以通过键盘操作创意库存（Creative Inventory）\n\n游戏画面的旁白系统\n\n旁白现在会念出配方书的名称\n\n配方会在游戏中被朗读，并同时说明其在网格中的列和行位置\n\n标签页、搜索框和过滤按钮的名称也会在游戏中被朗读\n\n页面上的按钮会描述当前页面的功能\n\n替代配方弹窗中的配方会附带它们的位置信息，同时会有语音提示‘Escape’可以关闭该弹窗\n\n现在会有语音为玩家读取创意物品栏的内容\n\n标签页会通过它们的名称和位置来进行描述\n\n物品会按照它们在网格中的列和行进行命名\n\n技术性变更\n\n数据包的版本现在更新为128.0\n\n资源包的版本现在更新为104.0\n\n网络协议进行了修改\n\n登录协议也经过了修改\n\n修改了加密密钥的生成流程\n\n专用服务器属性\n\n添加了‘key-rotation-period-seconds’字段\n\n用于指定服务器密钥（用于建立新连接）在被重新生成之前的最小持续时间\n\n如果设置为0，则每次连接都会使用一个唯一的（即临时的）密钥\n\n默认值：60\n\n数据包版本122.0至128.0\n\n现在分配行为是由数据驱动的\n\n命令\n\n增加了对2D坐标中本地参数的支持\n\n现在，接受以 ^<left> ^<forwards> 形式给出的参数，这些参数用于需要二维坐标的命令中。\n\n强制加载（forceload）中的区块坐标\n\nspreadplayers <center>\n\n世界边界中心 <pos>\n\n仅考虑玩家围绕 Y 轴的旋转（而不是将其解释为 ^<left> ^0 ^<forwards> 并转换到 XZ 平面）\n\n分配物品行为（Dispense Behaviors）\n\n新增了一个注册表文件夹：dispense_behavior。每个文件都包含一系列行为描述，用于在分配物品时尝试执行这些行为。除非另有说明，否则会按顺序尝试这些行为，直到其中一种成功。\n\n每个条目都有一个类型字段，用于指定分配行为类型（如下所述），可能还包含特定类型的附加字段。\n\n基础（Vanilla）条目：\n\nminecraft:armor_stand - 用于放置护甲\n\nminecraft:boat - 用于所有类型的船只、箱型船只、木筏和箱型木筏\n\nminecraft:bone_meal - 用于制作骨粉\n\nminecraft:brush - 用于绘制（或清理）方块\n\nminecraft:carved_pumpkin - 用于制作雕刻南瓜\n\nminecraft:chest - 用于放置箱子（注意：仅适用于默认类型的箱子，不包括陷阱箱子、铜箱或其他类型的箱子）\n\nminecraft:default - 用于没有其他指定用途的物品\n\nminecraft:default_projectile - 用于所有类型的箭、鸡蛋、雪球和冰球\n\nminecraft:dropper - 用于通过掉落器释放所有类型的物品\n\nminecraft:empty_bucket - 用于表示空桶\n\nminecraft:equipment - 用于所有类型的装备，except Carved Pumpkins 和 Wither Skeleton Skulls\n\nminecraft:filled_bucket - 用于装有任何内容物的所有类型的桶\n\nminecraft:fire_charge - 用于火种\n\nminecraft:firework_rocket - 用于所有类型的烟花火箭\n\nminecraft:flint_and_steel - 用于打火石与钢铁\n\nminecraft:glass_bottle - 用于空玻璃瓶\n\nminecraft:glowstone - 用于发光石块\n\nminecraft:honeycomb - 用于蜂巢\n\nminecraft:minecart - 用于所有类型的矿车\n\nminecraft:potion - 用于药水（注：仅限默认药水，不包括溅射药水和持续药水）\n\nminecraft:shears - 用于剪切工具\n\nminecraft:shulker_box - 用于所有孙克箱\n\nminecraft:spawn_egg - 用于所有重生蛋\n\nminecraft:thrown_potion - 用于 splash 药水和 lingering 药水\n\nminecraft:tnt - 用于 TNT 块\n\nminecraft:wind_charge - 用于风元素充能\n\nminecraft:wither_skeleton_skull - 用于凋零骷髅的头部\n\n分配行为类型\n\nminecraft:brush_armadillo\n\n在分配器前刷出一只犰狳\n\n无额外字段\n\nminecraft:charge_respawn_anchor\n\n在散布器前为重生锚充电\n\n如果重生锚已经充满电，则不再尝试其他操作\n\n无额外字段\n\nminecraft:convert_to_mud\n\n如果散布器前方的方块带有#minecraft:convertible_to_mud标签，将其转换为泥块\n\n该物品需要包含一瓶水药剂，否则操作会失败\n\n无额外字段\n\nminecraft:drop_item\n\n该物品将以物品实体的形式掉落\n\n无额外字段\n\nminecraft:empty_bucket\n\n清空分配器前面的桶\n\n该物品必须是桶，否则操作会失败\n\n无额外字段\n\nminecraft:equip\n\n将物品装备到分配器前面的生物身上\n\n该物品必须可以装备到生物的某个位置上\n\n无额外字段\n\nminecraft:equip_chest\n\n将箱子装备到已经被驯服的怪物身上，这样怪物就可以在分配器前携带箱子\n\n没有其他字段\n\nminecraft:equip_sulfur_cube\n\n将物品交给分配器前面的硫方怪\n\n物品必须带有 #minecraft:sulfur_cube_swallowable 标签，否则操作会失败\n\n没有其他字段\n\nminecraft:fill_bottle\n\n从前面的方块中取水填充瓶子\n\n没有其他字段\n\nminecraft:fill_bucket\n\n从分配器前拿起一种流体，然后将其填入桶中\n\n无其他字段\n\nminecraft:grow_plant\n\n在分配器前种植一株植物\n\n无其他字段\n\nminecraft:ignite\n\n点燃分配器前的方块\n\n无其他字段\n\nminecraft:insert_into_container\n\n将物品放入分配器前面的容器中\n\n无附加字段\n\nminecraft:place_armor_stand\n\n在分配器前面放置一个盔甲架\n\n无附加字段\n\nminecraft:place_block\n\n将物品以方块的形式放置在分配器前面\n\n物品必须是方块形式，否则操作会失败\n\n无附加字段\n\nminecraft:place_boat\n\n将一艘船放在分配器前方的水平水面上\n\n实体的类型由物品的 `minecraft:entity_data` 组件决定，必须是船（Boat）、箱子船（Chest Boat）、筏子（Raft）或箱子筏子（Chest Raft）\n\n对于其他任何类型的实体，该操作将失败\n\n没有额外的字段\n\nminecraft:place_minecart\n\n将一辆矿车（Minecart）放在分配器前方的轨道上\n\n实体的类型由物品的 `minecraft:entity_data` 组件决定，必须是矿车（Minecart）\n\n对于其他任何类型的实体，该操作将失败\n\n没有额外的字段\n\nminecraft:shear\n\n在分配器（Dispenser）前剪切怪物或采集蜂巢\n\n无额外字段\n\nminecraft:shoot_projectile\n\n将物品作为投射物发射\n\n发射的物品必须是投射物，例如箭或雪球\n\n额外字段：\n\noffset - 一个包含3个双精度浮点数的向量，表示投射物起始位置相对于分配器中心的位置偏移量\n\nscale - 一个双精度浮点数，表示投射物从偏移位置开始沿分配器方向延伸的距离\n\nuncertainty - 一个非负浮点数，表示射击的精度误差\n\npower - 一个非负浮点数，表示射击的速度\n\n声音 - 可选对象，表示射击时播放的声音（默认值为 `minecraft:block.dispenser.launch`，音量为 1.0，音调为 1.2）\n\n声音 - 用于播放的声音事件\n\n音量 - 浮点数类型，表示声音的音量\n\n音调 - 浮点数类型，表示声音的音调\n\nminecraft:spawn_golem_from_carved_pumpkin\n\n在分配器（Dispenser）前生成魔像（Golem）\n\n无其他字段\n\nminecraft:spawn_mob\n\n在分配器前生成由 `minecraft:entity_data` 组件定义的实体\n\n无其他字段\n\n生成TNT\n\n在分配器前方生成已设置的TNT\n\n无其他字段\n\n转换方块\n\n使用方块转换器转换分配器前方的方块\n\n附加字段：\n\ntransformer - 要使用的方块转换器的命名空间ID\n\n从凋零骷髅头生成凋灵\n\n在分配器前方完成凋零过程\n\n无其他字段\n\n数据组件\n\n新增了 `minecraft:dispense_behavior`\n\n用于确定物品从分配器中分发时会发生什么\n\n格式：分配行为注册表的命名空间ID，或分配行为的内联列表\n\n`minecraft:entity_data`\n\n现在船和矿车物品默认具有此组件，用于确定使用或分发物品时放置的是哪个实体\n\n如果实体类型不符合要求，操作将失败\n\n方块转换器\n\n新增了方块转换器 `minecraft:honeycomb`\n\n用于给方块涂蜡（目前仅通过分配器实现）\n\n粒子效果\n\n修改了 minecraft:current_down\n\n新增了 radius 字段（类型为 float）：表示粒子生成位置周围的半径\n\n修改了 minecraft:bubble_column_up\n\n新增了 pop_chance 字段（类型为 float，范围在 0.0 到 1.0 之间）：表示粒子在其生命周期结束后有几率生成一个“pop”粒子并播放一个音效\n\n如果省略该字段，其默认值为 0.0\n\n对话框\n\n如果用户在对话框输入框中输入电子邮件地址，游戏将显示红色文本和警告提示\n\n资源包版本 98.0 至 104.0\n\n某些语言设置无法再通过资源包进行更改\n\n所有以 `menu.custom_options` 开头的键\n\n所有以 `menu.custom_screen_info` 开头的键\n\nUI 精灵图片\n\n添加了新的 UI 纹理\n\nrecipe_book/slot_highlight_back.png\n\nrecipe_book/slot_highlight_front.png\n\n着色器和后期处理效果\n\n修改了 `core/terrain.fsh` 文件，以支持单独的 \"改进的雾效\" 视频设置\n\n修复了 26.4 快照 9 中的错误\n\n[MC-11739](https://bugs.mojang.com/browse/MC-11739) - 在创意模式库存中使用左键移动滚动条，然后在 \"生存模式库存\" 选项卡上释放鼠标会切换到该选项卡\n\n[MC-93384](https://bugs.mojang.com/browse/MC-93384) - 溺水的怪物脚下会出现气泡\n\n[MC-126913](https://bugs.mojang.com/browse/MC-126913) - 在不允许使用局部坐标的地方显示误导性的错误信息\n\n[MC-132067](https://bugs.mojang.com/browse/MC-132067) - 气泡列顶部没有发出气泡破裂的声音和生成相应的粒子效果\n\n[MC-146740](https://bugs.mojang.com/browse/MC-146740) - 岩浆气泡列的粒子效果不对齐\n\n[MC-150635] - EntityCatSplitFix 在数据修复过程中无法正确保留新设置的“Trusting”标签\n\n[MC-152331] - 观察者模式的热键栏图标没有使用更新的纹理\n\n[MC-172634](https://bugs.mojang.com/browse/MC-172634) - 参数类型中包含语法错误的示例\n\n[MC-179165](https://bugs.mojang.com/browse/MC-179165) - 在创造模式（Creative mode）的物品栏中，将鼠标左键移到标签上会触发点击，即使点击操作最初是在其他位置开始的\n\n[MC-182892] - 创造模式物品栏中的时钟和指南针可以正常使用\n\n[MC-183680] - 食谱书按钮无法通过键盘进行导航\n\n[MC-191033] - 观战模式（Spectator mode）热键栏中用于传送的图标所使用的纹理没有更新为末影生物（Ender）的眼睛纹理\n\n[MC-196142] - 玄武岩三角洲（Basalt delta）的颗粒总是向西北方向移动，这与基岩版（Bedrock Edition）的行为不同\n\n[MC-227327] - 龙火球可以与末影龙本身发生碰撞，导致区域效果云漂浮在空气中\n\n[MC-233818] - 当食谱书关闭时，将鼠标悬停在食谱书上时不会显示其工具提示\n\n[MC-233889] - 将鼠标悬停在食谱书的标签上时不会显示任何工具提示\n\n[MC-240966] - 熔岩颗粒不会发光，而滴落的黑曜石泪颗粒则会发光\n\n[MC-247234] - 与流动的水接触时产生的溅泼和水泡颗粒显示位置略高\n\n[MC-254668](https://bugs.mojang.com/browse/MC-254668) - 在死亡界面或标题界面上按下 Esc 键会导致玩家重新生成\n\n[MC-261386](https://bugs.mojang.com/browse/MC-261386) - 创造模式下物品栏中的标签对鼠标释放的操作反应不一致\n\n[MC-270414](https://bugs.mojang.com/browse/MC-270414) - 当生长区域效果云与水面碰撞时，会产生气泡和溅水效果\n\n[MC-276133] - 如果将 \"打开/关闭物品栏\" 的快捷键绑定到 Enter 键，点击配方书中的配方后无法关闭物品栏\n\n[MC-304749] - 将鼠标悬停在配方书中的配方上时，鼠标指针不会变成指向手的形状\n\n[MC-310401](https://bugs.mojang.com/browse/MC-310401) - 鬼魂可以穿过角落进行攻击\n\n[MC-312243](https://bugs.mojang.com/browse/MC-312243) - 一些字符串在动词后面的形容词前缺少冠词，这与类似的字符串不同\n\n[MC-312250](https://bugs.mojang.com/browse/MC-312250) - 一些引导性字幕字符串的时态不正确，这与类似的字符串不同\n\n[MC-312252](https://bugs.mojang.com/browse/MC-312252) - 一些错误提示字符串使用了冒号而不是单引号来标注无效值，这与类似的字符串不同\n\n[MC-312255](https://bugs.mojang.com/browse/MC-312255) - 调试界面中的一些区块生成标签被缩写，这与类似的标签不同\n\n[MC-312258](https://bugs.mojang.com/browse/MC-312258) - 一些描述性工具提示和错误消息字符串缺少句点，与类似的字符串不同\n\n[MC-312260](https://bugs.mojang.com/browse/MC-312260) - 一些好友列表的描述文本中缺少冠词和所有格修饰词\n\n[MC-312291](https://bugs.mojang.com/browse/MC-312291) - 一些拼图方块的工具提示字符串大小写不正确，与类似的字符串不同\n\n[MC-312299](https://bugs.mojang.com/browse/MC-312299) - 字幕中的 entitygeneric.death 字符串格式不一致\n\n[MC-312365](https://bugs.mojang.com/browse/MC-312365) - 在世界选择屏幕中，从其他屏幕返回时，世界的图标会短暂显示缺失的纹理\n\n[MC-312649] - 冰晶不适用严格的‘cutout mipmap’策略，这与紫水晶簇不同\n\n[MC-312673] - 解说员将食谱书按钮和标签页读作“button”，而没有提供任何上下文\n\n[MC-312753] - /item 对过滤后的物品源和限定栏物品源使用了错误的评估顺序\n\n[MC-312766] - 当水流入火源时，火仍然不会发出熄灭的声音\n\n[MC-312826] - /kill 命令无法杀死目标，如果目标最近因“Resistance”效果而承受了超过 3.4028235E38 的伤害\n\n[MC-312903] - 当在组槽源中嵌套 limit_slots 槽源时，/item 命令选择的槽位数量少于预期\n\n[MC-312940] - 从分配器中发射的火弹音效被归类为“Hostile Mobs” sound 类别，而非“Blocks”类别\n\n[MC-312941] - 从分配器中发射的烟花音效被归类为“Friendly Mobs” sound 类别，而非“Blocks”类别\n\n[MC-312967] - /item modify 命令中的隐式空槽过滤机制导致槽位选择与其他命令的结果不同\n\n[MC-313021] - 当来源没有选择任何槽位时，/item override 命令不会改变目标槽位的状态\n\n[MC-313067] - 雪球在玩家阻挡时现在可以对玩家造成击退效果\n\n[MC-313082] - 当启用“简化调试信息”选项时，切换区块边界和实体碰撞盒的调试信息会显示在聊天框中\n\n[MC-313083] - 即使启用“简化调试信息”选项，复制玩家位置的调试快捷键仍然有效\n\n[MC-313086] - 当修改玩家的缩放属性时，玩家物品栏模型不再正确显示光标位置\n\n[MC-313090] - 现在按空格键或回车键不会重新填充交易界面中的物品\n\n[MC-313109](https://bugs.mojang.com/browse/MC-313109) - `/rotate`命令不再能够正确旋转怪物\n\n[MC-313126](https://bugs.mojang.com/browse/MC-313126) - `RegionFile`产生的过大区块警告中存在括号不匹配的问题\n\n[MC-313141](https://bugs.mojang.com/browse/MC-313141) - 用胡萝卜或扭曲真菌制成的‘武器’给猪或炽足兽使用后带来的速度提升效果不会保存到NBT文件中\n\n[MC-313144](https://bugs.mojang.com/browse/MC-313144) - `upgradeWorld.progress.type.regions`的显示方式为原始的翻译键\n\n[MC-313163] - 冰球可以伤害栖息在天空中的末影龙，这与类似的投射物不同\n\n[MC-313175](https://bugs.mojang.com/browse/MC-313175) - 在`/execute`命令后使用的参数无法再被解析\n\n[MC-313181](https://bugs.mojang.com/browse/MC-313181) - 字符串类型的参数在序列化时会存储到一个名为 `type` 的字段中，这与数据生成器报告中的参数类型本身存在冲突\n\n[MC-313186] - 当将泥土转化为淤泥时，堆叠超过 1 个的水瓶每次使用会返回 2 个玻璃瓶\n\n[MC-313188] - 现在可以安排在负时间执行的函数\n\n[MC-313189] - 命令 `/say` 和 `/msg` 现在会生成无签名的系统消息\n\n[MC-313196] - 当摄像机正上方位于熔岩或粉雪区域时，这些效果将不再显示\n\n[MC-313197] - 命令中出现的未知 ID 错误会显示原始的 `ResourceKey[...]`\n\n[MC-313207](https://bugs.mojang.com/browse/MC-313207) - 在命令中使用无效的文本组件和样式时，会显示“exceptionType is null”的内部错误\n\n[MC-313210](https://bugs.mojang.com/browse/MC-313210) - 当资源包加载失败时，游戏会崩溃\n\n[MC-313212](https://bugs.mojang.com/browse/MC-313212) - /execute (if|unless) (blocks|data) 命令不再会重定向到 execute 功能\n\n[MC-313246](https://bugs.mojang.com/browse/MC-313246) - /chunk_source_stats 调试叠加层信息已无法使用\n\n获取快照\n\nMinecraft: Java版支持快照功能。要安装快照，请打开 [Minecraft 启动器](https://www.minecraft.net/content/minecraft-net/language-masters/download)，并在“Installations”选项卡中启用快照功能。\n\n**测试版本可能会损坏你的世界，请备份数据，或者将测试版本放在与主世界不同的文件夹中运行。**\n\n跨平台服务器 JAR 文件：\n\n[Minecraft 服务器 JAR 文件](https://piston-data.mojang.com/v1/objects/d713516162441e0961e1ccfb85d8feeb01b50fd6/server.jar)\n\n请在这里报告漏洞：\n\n[Minecraft 错误跟踪页面](https://bugs.mojang.com/projects/MC/summary)！\n\n想提供反馈吗？\n\n如有任何反馈或建议，请访问[反馈网站](https://feedback.minecraft.net/)。如果你想聊聊天，欢迎加入我们的[Minecraft 官方 Discord 频道](https://discordapp.com/invite/minecraft)！",
+  "source": "minecraft_api"
+}

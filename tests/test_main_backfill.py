@@ -1,5 +1,6 @@
 """test_main_backfill.py — 登录/发帖失败后补发 output 里已生成但未发布的文章"""
 import json
+import os
 
 import pytest
 
@@ -13,6 +14,7 @@ class FakePoster:
     def __init__(self, config):
         self.config = config
         self.posted = []
+        self.records = []
         FakePoster.instances.append(self)
 
     def login(self):
@@ -21,6 +23,7 @@ class FakePoster:
     def post_news_file(self, stem, txt_path, json_path, save_dir,
                        no_image=False, attach_json=True):
         self.posted.append(stem)
+        self.records.append((stem, txt_path, json_path))
         return f"https://example.invalid/{stem}"
 
 
@@ -41,6 +44,15 @@ def _seed(save_dir, stem):
 def _write_posted(save_dir, stems=()):
     (save_dir / ".posted.json").write_text(
         json.dumps(sorted(stems), ensure_ascii=False), encoding="utf-8")
+
+
+def _assert_paths_match_stems(tmp_path, records):
+    """补发队列里的路径必须是真实存在、且与 stem 同名的 .txt/.json。"""
+    assert records
+    for stem, txt_path, json_path in records:
+        assert txt_path == str(tmp_path / f"{stem}.txt")
+        assert json_path == str(tmp_path / f"{stem}.json")
+        assert os.path.isfile(txt_path) and os.path.isfile(json_path)
 
 
 @pytest.fixture
@@ -70,7 +82,9 @@ class TestBackfillQueue:
         result = main.run_post([("news_new", new_txt, new_json)], config)
 
         assert result["success"] == 2
-        assert FakePoster.instances[-1].posted == ["news_new", "news_old"]
+        poster_inst = FakePoster.instances[-1]
+        assert poster_inst.posted == ["news_new", "news_old"]
+        _assert_paths_match_stems(tmp_path, poster_inst.records)
         assert json.loads((tmp_path / ".posted.json").read_text(encoding="utf-8")) == [
             "news_new", "news_old",
         ]
@@ -115,9 +129,9 @@ class TestUnpostedDiscovery:
         _seed(tmp_path, "b")
         _seed(tmp_path, "c")
 
-        stems = [stem for stem, _, _ in main._collect_unposted(str(tmp_path), {"c"})]
+        items = main._collect_unposted(str(tmp_path), {"c"})
 
-        assert stems == ["b"]
+        assert items == [("b", str(tmp_path / "b.txt"), str(tmp_path / "b.json"))]
 
     def test_has_unposted_mcbbs_respects_switches(self, env):
         tmp_path, config = env
@@ -139,4 +153,37 @@ class TestUnpostedDiscovery:
 
         main.run_post_only(config)
 
-        assert FakePoster.instances[-1].posted == ["news_a"]
+        poster_inst = FakePoster.instances[-1]
+        assert poster_inst.posted == ["news_a"]
+        _assert_paths_match_stems(tmp_path, poster_inst.records)
+
+
+class TestConfigPath:
+    def test_run_post_uses_selected_config_path(self, env, monkeypatch):
+        tmp_path, config = env
+        new_txt, new_json = _seed(tmp_path, "news_new")
+        captured = {}
+
+        def fake_loader(config_path=None):
+            captured["path"] = config_path
+            return {"base_url": "https://www.mcbbs.co", "forum_fid": 45}
+
+        monkeypatch.setattr(poster, "load_poster_config", fake_loader)
+        main.run_post([("news_new", new_txt, new_json)], config, config_path="custom.json")
+
+        assert captured["path"] == "custom.json"
+
+    def test_run_post_only_uses_selected_config_path(self, env, monkeypatch):
+        tmp_path, config = env
+        _seed(tmp_path, "news_new")
+        _write_posted(tmp_path)
+        captured = {}
+
+        def fake_loader(config_path=None):
+            captured["path"] = config_path
+            return {"base_url": "https://www.mcbbs.co", "forum_fid": 45}
+
+        monkeypatch.setattr(poster, "load_poster_config", fake_loader)
+        main.run_post_only(config, config_path="custom.json")
+
+        assert captured["path"] == "custom.json"

@@ -549,7 +549,8 @@ def _build_publish_queue(processed: list, save_dir: str, posted: set, config: di
     return queue
 
 
-def run_post(processed: list, config: dict, no_image: bool = False, no_json: bool = False) -> dict:
+def run_post(processed: list, config: dict, no_image: bool = False, no_json: bool = False,
+             config_path: str | None = None) -> dict:
     """执行发布流程
 
     Returns:
@@ -564,7 +565,7 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
         log_warning("[发布] MCBBS 发布未启用（config.json 中 mcbbs.enabled = false），跳过发帖")
         return result
 
-    mcbbs_config = load_poster_config()
+    mcbbs_config = load_poster_config(config_path)
     save_dir = config["output"]["save_dir"]
     poster_state_file = os.path.join(save_dir, ".posted.json")
     posted = load_posted(poster_state_file)
@@ -611,14 +612,14 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
     return result
 
 
-def run_post_only(config: dict) -> dict:
+def run_post_only(config: dict, config_path: str | None = None) -> dict:
     """仅发布 output 目录中未发布的文件"""
     from poster import MCBBSPoster, load_posted, load_poster_config, save_posted
 
     result = {"success": 0, "failed": 0, "urls": []}
     started = time.monotonic()
 
-    mcbbs_config = load_poster_config()
+    mcbbs_config = load_poster_config(config_path)
     if not config.get("mcbbs", {}).get("enabled", False):
         log_warning("[发布] MCBBS 发布未启用（config.json 中 mcbbs.enabled = false）")
         return result
@@ -1182,7 +1183,7 @@ def main():
     try:
         if args.post_only:
             if args.publish in ("all", "mcbbs"):
-                result = run_post_only(config)
+                result = run_post_only(config, config_path=args.config)
                 stats["posted"] = result["success"]
                 stats["post_failed"] = result["failed"]
             if args.publish in ("all", "bilibili"):
@@ -1243,7 +1244,8 @@ def _publish_all(processed: list, config: dict, args, publish_target: str, stats
     if publish_target in ("all", "mcbbs"):
         if mcbbs_enabled:
             log_section("开始发布到 MCBBS")
-            result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json)
+            result = run_post(processed, config, no_image=args.no_image, no_json=args.no_json,
+                              config_path=args.config)
             stats["posted"] = result["success"]
             stats["post_failed"] = result["failed"]
         else:

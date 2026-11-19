@@ -716,7 +716,12 @@ class TestReconcileBold:
         first = poster_obj.session.posts[0][1]["data"]
         assert (first["moderate[]"], first["highlight_color"]) == ("6808", "4")
 
-    def test_dry_run_only_lists_actions(self, tmp_path):
+    def test_dry_run_only_lists_actions(self, tmp_path, monkeypatch):
+        logged = []
+        monkeypatch.setattr(
+            poster, "log_info",
+            lambda message, *args, **kwargs: logged.append(message % args if args else message),
+        )
         path = _write_records(tmp_path, {})
         poster_obj = self._poster(self._rows())
 
@@ -726,6 +731,10 @@ class TestReconcileBold:
         assert stats["bolded"] == 0
         assert stats["unbolded"] == 0
         assert _read_records(path) == {}
+        # 只看「没发请求」不够：预演要真的把动作列出来，「先 --dry-run 看清单」才不是空话
+        actions = [line for line in logged if "[Dry Run]" in line and " | " in line]
+        assert any("加粗 | tid=6808" in line for line in actions), actions
+        assert any("取消加粗 | tid=6773" in line for line in actions), actions
 
     def test_unknown_version_line_is_skipped(self, tmp_path):
         path = _write_records(tmp_path, {})

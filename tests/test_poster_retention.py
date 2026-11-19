@@ -417,15 +417,17 @@ class TestIndexHistoryAgeGate:
         """登记时把版块列表上的真实发帖日期写进 posted_at，别让老帖按登记时间算年龄。"""
         recent = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
         poster_obj = self._poster(tmp_path, recent)
+        # 日期相对当前时间取一天前：写死日期过 30 天就会「自己超龄」，用例跟着变红
+        posted_day = time.strftime("%Y-%m-%d", time.gmtime(time.time() - 86400))
         poster_obj.fetch_forum_threads = lambda pages=3: [
             poster.ForumThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
-                               typeid=4, color="#3C9D40", bold=False, posted="2026-11-10"),
+                               typeid=4, color="#3C9D40", bold=False, posted=posted_day),
         ]
 
         poster_obj.index_history(str(tmp_path))
 
         record = _read_records(str(tmp_path / ".mcbbs_threads.json"))["news_a"]
-        assert record["posted_at"] == "2026-11-10T00:00:00"
+        assert record["posted_at"] == f"{posted_day}T00:00:00"
 
     def test_struck_thread_invalidates_existing_record(self, tmp_path):
         """帖子被打了删除线（已删/测试稿），已有的 legacy 登记也要作废。"""

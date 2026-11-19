@@ -432,7 +432,10 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict
     """
     started = time.monotonic()
     save_dir = config["output"]["save_dir"]
-    os.makedirs(save_dir, exist_ok=True)
+    if not dry_run:
+        # dry-run 是只读探测（README / CONTRIBUTING 都这么承诺），连目录都不该建：
+        # 在还没跑过的新部署上，凭空出现一个空 output/ 会让「到底跑没跑过」失真
+        os.makedirs(save_dir, exist_ok=True)
 
     all_news = _fetch_all_news(config)
     if stats is not None:

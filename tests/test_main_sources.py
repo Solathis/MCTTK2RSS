@@ -106,3 +106,25 @@ class TestDryRunDoesNotWriteState:
 
         assert not (out / ".posted.json").exists(), "dry-run 不该把现有产物标成已发布"
 
+
+class TestDryRunDoesNotTouchFilesystem:
+    """`--dry-run` 连输出目录都不该建（README / CONTRIBUTING 都承诺它「只读」）。"""
+
+    def test_dry_run_does_not_create_output_dir(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(main, "_fetch_all_news", lambda config: _news())
+        save_dir = tmp_path / "output"
+        state_file = tmp_path / ".state.json"
+        state_file.write_text(
+            json.dumps({"posted_urls": [], "last_run": None}), encoding="utf-8")
+
+        assert main.run_scrape(_config(tmp_path), str(state_file), dry_run=True) == []
+
+        assert not save_dir.exists(), "dry-run 不该在磁盘上留下输出目录"
+
+    def test_real_run_creates_output_dir(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(main, "_fetch_all_news", lambda config: [])
+
+        main.run_scrape(_config(tmp_path), str(tmp_path / ".state.json"))
+
+        assert (tmp_path / "output").is_dir()
+

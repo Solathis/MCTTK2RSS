@@ -1604,6 +1604,10 @@ class MCBBSPoster:
                 record["color"] = color or record.get("color", "")
                 record["last_error"] = "" if ok else reason
                 record["updated_at"] = _timestamp()
+                if action == "bold" and ok:
+                    # 上过色就不再是「历史未处理」：免得 --highlight-legacy 再刷一遍
+                    record["state"] = "done"
+                    record["highlighted_at"] = _timestamp()
         self._save_records(records_path, records)
         log_info("[加粗收敛] %d 组 | 加粗 %d | 取消加粗 %d | 失败 %d | 跳过 %d",
                  stats["groups"], stats["bolded"], stats["unbolded"],

@@ -653,6 +653,8 @@ class TestReconcileBold:
         records = _read_records(path)
         assert records["news_snapshot_9"]["bold"] is True
         assert records["news_snapshot_8"]["bold"] is False
+        # 上过色就不再是 legacy，否则 --highlight-legacy 会再刷一遍
+        assert records["news_snapshot_9"]["state"] == "done"
 
     def test_release_and_preview_keep_one_bold_each(self, tmp_path):
         """同分类里正式版（6336/6737）与测试版（6808/6812）各留一篇，别互相顶掉。"""

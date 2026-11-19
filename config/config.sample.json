@@ -139,7 +139,22 @@
       "commentary": 16,
       "normal": 16
     },
-    "attach_json": true
+    "attach_json": true,
+    "highlight": {
+      "enabled": true,
+      "colors": {
+        "java_release": "#EE1B2E",
+        "java_snapshot": "#3C9D40",
+        "java_prerelease": "#3C9D40",
+        "java_rc": "#3C9D40",
+        "bedrock_release": "#EE1B2E",
+        "bedrock_beta": "#3C9D40",
+        "normal": "#EC1282"
+      },
+      "bold_types": ["java_release", "bedrock_release"],
+      "max_attempts": 6,
+      "max_age_hours": 168
+    }
   },
   "bilibili": {
     "enabled": false,

@@ -56,6 +56,7 @@ MCTTK/
 │   ├── .state.json            # 处理状态（URL 级别去重）
 │   ├── .posted.json           # MCBBS 发布状态
 │   ├── .posted_bili.json      # B站专栏投稿状态
+│   ├── .mcbbs_threads.json    # MCBBS 帖子记录（tid / 高亮 / 审核状态）
 │   ├── news_*.json            # 翻译后的文章数据
 │   ├── news_*.txt             # BBCode 格式（用于 MCBBS）
 │   ├── news_*.md              # Markdown 格式
@@ -150,6 +151,48 @@ cp config/config.sample.json config/config.json   # Windows PowerShell: Copy-Ite
   }
 }
 ```
+
+帖子高亮默认开启（`mcbbs.highlight`）。站点对新主题一律进审核，审核中的帖子在
+Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每轮运行先匿名探测帖子页
+（404 = 还没过审），确认过审后再登录设置高亮/加粗。色值按版规「二、高亮设定」，
+不在 Discuz 色板内的色值会被跳过（记录里会写原因）。`commentary`（时评）按版规
+一般不高亮，默认不配颜色即可：
+
+```json
+{
+  "mcbbs": {
+    "highlight": {
+      "enabled": true,
+      "colors": { "java_release": "#EE1B2E", "java_snapshot": "#3C9D40" },
+      "bold_types": ["java_release", "bedrock_release"],
+      "max_attempts": 6,
+      "max_age_hours": 168
+    }
+  }
+}
+```
+
+`colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 里的类型
+会加粗，且新帖高亮成功后会**自动取消同类型旧帖的加粗**（同色重提交、只把样式位
+清零）；`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+
+默认色值对应幻翼块讯版规「二、高亮设定」：
+
+| 新闻类型 | 版规分类 | 色值 |
+| --- | --- | --- |
+| `java_release` / `bedrock_release` | 版本资讯（正式版，最新版本加粗） | `#EE1B2E` |
+| `java_snapshot` / `java_prerelease` / `java_rc` / `bedrock_beta` | 版本资讯（快照/测试版） | `#3C9D40` |
+| `normal`（兜底，块讯） | 块讯 / 基岩块讯 | `#EC1282` |
+| `commentary` | 时评（一般不高亮） | 不配颜色 |
+
+高亮状态记在 `output/.mcbbs_threads.json`（`state` 取 `pending` / `done` / `gave_up` /
+`legacy`），与「发没发」的 `output/.posted.json` 分开：
+
+- 发帖成功只写一条 `pending`，帖子 ID 拿不到时靠「我的帖子」按标题补齐
+- 每轮运行先游客探测帖子页：仍在审核不算重试，超过 `max_attempts`/`max_age_hours` 才放弃
+- 只有确实过审了才会登录，避免多跑验证码
+- 历史帖用 `poster.py --index-history` 只登记成 `legacy`（不动论坛），
+  再用 `--highlight-legacy N` 限量挑最近的几篇真正上色
 
 如果需要发布到 B站专栏，先用扫码工具拿登录 cookie（不用手动开 F12 复制）：
 
@@ -247,6 +290,16 @@ python main.py --publish none
 # 发布时跳过图片上传 / JSON 附件（只对 MCBBS 生效）
 python main.py --no-image
 python main.py --no-json
+
+# 只补帖子高亮（审核已通过的帖子），不发帖
+python poster.py --highlight-only
+
+# 把「我的帖子」里对得上 output 产物的历史帖登记为 legacy（只写本地记录，不动论坛）
+python poster.py --index-history
+
+# 把最近 3 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看清单）
+python poster.py --highlight-legacy 3 --dry-run
+python poster.py --highlight-legacy 3
 ```
 
 ## 日志
@@ -597,8 +650,14 @@ python converter.py news.json --markdown-only
   - `login()` — 登录 MCBBS（验证码流程内最多尝试 5 次；整体登录失败会按 `retry.login` 换新会话重试）
   - `upload_image(path)` — 上传图片附件
   - `upload_file(path)` — 上传普通文件附件（如 JSON）
-  - `post_thread(title, message)` — 发帖
-  - `post_news_file(stem, txt, json, dir)` — 发布单个新闻文件（含图片和 JSON 附件）
+  - `post_thread(title, message)` — 发帖，返回 `PostResult`（帖子地址、帖子 ID、是否需要审核）
+  - `post_news_file(stem, txt, json, dir)` — 发布单个新闻文件（含图片和 JSON 附件），
+    成功后按 `mcbbs.highlight` 登记待补高亮
+  - `highlight_thread(tid, color, bold)` — 设置标题高亮（`bold=False` 即取消加粗、保留颜色）
+  - `fetch_my_threads()` — 拉「我的帖子」列表（含待审核项），用于补帖子 ID
+  - `index_history(dir)` / `promote_legacy(records, n)` — 历史帖登记与限量提升
+  - `process_pending_highlights(records)` — 补高亮：游客探测过审 → 需要才登录 → 上色/改加粗
+- `thread_is_public(base, tid)` — 游客视角探测帖子是否对外可见（`True`/`False`/`None` 探测失败）
 
 ### bili/poster.py
 
@@ -792,7 +851,14 @@ git push origin v1.0.0
     "password": "",
     "captcha_answer": "",
     "attach_json": true,
-    "sortid_map": {}
+    "sortid_map": {},
+    "highlight": {
+      "enabled": true,
+      "colors": { "java_release": "#EE1B2E", "normal": "#EC1282" },
+      "bold_types": ["java_release", "bedrock_release"],
+      "max_attempts": 6,
+      "max_age_hours": 168
+    }
   },
   "bilibili": {
     "enabled": false,
@@ -905,7 +971,8 @@ git push origin v1.0.0
 - **状态重置**：删除 `output/.state.json` 后会重新处理所有新闻；删除 `output/.posted.json`
   后会重新发布所有已翻译文件（`retry.backfill_unposted` 开着时下一次全流程就会补发）；删除
   `output/.posted_bili.json` 后会先把现有文章重新记为「已投稿」做基线（一篇都不投），
-  要真补投就用 `--post-only --bili-backfill`
+  要真补投就用 `--post-only --bili-backfill`。删除 `output/.mcbbs_threads.json` 只是丢掉
+  高亮的追踪记录（已发出去的帖子不受影响），但发帖后还没补上高亮的帖子就找不回来了
 
 ## 许可证
 

@@ -35,22 +35,63 @@ def load_posted(state_file: str) -> set:
     return set()
 
 
-def save_posted(state_file: str, posted: set) -> None:
-    """写入「已发布」记录。排序后落盘，diff 才稳定。
+def _atomic_write_json(path: str, payload, tmp_prefix: str) -> None:
+    """原子写 JSON。排序/裁剪由调用方负责，这里只管落盘方式。
 
     先写同目录临时文件再 os.replace：直接 `open(..., "w")` 会先把文件截断，
-    这时进程被 kill / 断电就留下半截 JSON，下次 load_posted 直接 json 解析炸掉。
+    这时进程被 kill / 断电就留下半截 JSON，下次读取直接 json 解析炸掉。
     """
-    directory = os.path.dirname(os.path.abspath(state_file))
-    fd, tmp_path = tempfile.mkstemp(prefix=".posted-", suffix=".tmp", dir=directory)
+    directory = os.path.dirname(os.path.abspath(path))
+    fd, tmp_path = tempfile.mkstemp(prefix=tmp_prefix, suffix=".tmp", dir=directory)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(sorted(posted), f, ensure_ascii=False, indent=2)
-        os.replace(tmp_path, state_file)
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_path, path)
     except BaseException:
         with contextlib.suppress(OSError):
             os.remove(tmp_path)
         raise
+
+
+def save_posted(state_file: str, posted: set) -> None:
+    """写入「已发布」记录。排序后落盘，diff 才稳定。"""
+    _atomic_write_json(state_file, sorted(posted), ".posted-")
+
+
+# ── MCBBS 帖子记录（发帖之后：tid、高亮、审核状态）──────
+
+THREAD_RECORDS_NAME = ".mcbbs_threads.json"
+
+
+def thread_records_path(save_dir: str) -> str:
+    """帖子记录文件路径。
+
+    和 `.posted.json`（发了没发）是两个语义：这里记的是「发出去之后怎么样了」，
+    比如帖子 ID、有没有过审、高亮提交过什么颜色。
+    """
+    return os.path.join(save_dir, THREAD_RECORDS_NAME)
+
+
+def load_thread_records(path: str) -> dict:
+    """读取帖子记录（stem → 记录 dict）；文件缺失或内容损坏都返回空 dict。
+
+    记录只用于补高亮和排障：读不到最多多花一次请求重新对齐，不值得让整轮发布
+    因为一个坏文件停下来，所以这里不抛异常（`load_posted` 抛，是因为它决定发不发）。
+    """
+    if not os.path.isfile(path):
+        return {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def save_thread_records(path: str, records: dict) -> None:
+    """写入帖子记录。按 stem 排序后落盘，diff 才稳定。"""
+    ordered = {stem: records[stem] for stem in sorted(records)}
+    _atomic_write_json(path, ordered, ".threadrecords-")
 
 MODULE_TYPE_MAP = {
     'module_java_snapshot_header': 'java_snapshot',

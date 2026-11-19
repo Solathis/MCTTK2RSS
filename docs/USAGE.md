@@ -5,7 +5,8 @@
 
 **目录**：[快速开始](#快速开始) · [日志](#日志) · [新闻来源](#新闻来源) ·
 [新闻类型过滤](#新闻类型过滤) · [模块系统](#模块系统) · [智能词汇表](#智能词汇表) ·
-[智能去重机制](#智能去重机制) · [配置参考](#配置参考) · [注意事项](#注意事项)
+[智能去重机制](#智能去重机制) · [用 GitHub Actions 定时跑](#用-github-actions-定时跑可选需要自己接) ·
+[配置参考](#配置参考) · [注意事项](#注意事项)
 
 ## 快速开始
 
@@ -646,6 +647,33 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
 1. **连续去重**：去除相邻的重复 block
 2. **大段重复检测**：检测连续 5 个以上 block 的重复序列，移除整段重复内容
 3. **长文本去重**：对超过 80 字符的长文本进行跟踪，15 个 block 内再次出现则认为是异常重复（列表项除外）
+
+## 用 GitHub Actions 定时跑（可选，需要自己接）
+
+**官方推荐的定时方式是容器 + `output` 卷**（`scheduler.py`，见
+[docs/DOCKER.md](DOCKER.md)），因为 Actions 的 runner 是临时的：每次运行都从仓库全新
+checkout 一份，而 `output/` 与四个状态文件都**不入库**（见上面「注意事项」里的状态文件说明）。
+
+这带来一个很隐蔽的坑：
+
+- Runner 上不存在 `output/.state.json`，`main.py` 会按**首次运行**处理 —— 把本次抓到的
+  所有新闻标记为已处理，然后直接结束；
+- 于是工作流是绿的、日志里「首次运行，已标记 N 条」，但**一篇都不会翻译、也不会发布**；
+  下一次运行又从头来一遍，永远发不出东西。
+
+所以用 Actions 定时跑，必须自己解决状态持久化，可选做法：
+
+| 做法 | 说明 |
+| --- | --- |
+| 把状态文件提交回仓库 | 老办法：跑完 `git add -f output/.state.json output/.posted.json && git commit -m "chore: update state [skip ci]" && git push`。注意这些文件已被 `.gitignore` 忽略，`git add` 必须带 `-f`；仓库里那份历史状态就是这么做出来的，后来随着 workflow 停用而停在旧值 |
+| artifact / cache | 用 `actions/upload-artifact` + `download-artifact`（跨 run 取回较绕）或 `actions/cache`（有淘汰策略）保存 `output/` 的状态文件 |
+| 独立状态分支 / 外部存储 | 把状态目录指到另一个分支或对象存储，工作流只读写状态，不碰主仓库历史 |
+
+无论选哪种，`.state.json`（哪些 URL 处理过）和 `.posted.json`（哪些产物发过）都必须跨 run
+留存；只保留产出文件、不保留状态，就会出现上面「每次都是首次运行」或者「每次都重复发布」。
+
+`CONTRIBUTING.md` 的「持续集成与发版」写了仓库自带的两个工作流只做 CI 与发布，定时抓取
+不在其中；`scrape.yml.BAK` 是早期那套 Actions 定时抓取的备份，已停用。
 
 ## 配置参考
 

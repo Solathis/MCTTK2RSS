@@ -602,6 +602,18 @@ class TestForumThreadsParser:
         row = poster._parse_forum_threads(html)[0]
         assert (row.typeid, row.color, row.bold) == (20, "#EE1B2E", True)
 
+    def test_reads_rows_from_later_pages(self):
+        """翻到第 2 页时标题链接变成 thread-6720-1-2.html，只认 -1-1 会把整页读空。"""
+        html = (
+            '<tbody id="normalthread_6720"><tr><th class="new">'
+            '<em>[<a href="forum.php?mod=forumdisplay&amp;fid=45&amp;filter=typeid'
+            '&amp;typeid=16">块讯</a>]</em> '
+            '<a href="thread-6720-1-2.html" style="color: #EC1282;" class="s xst">旧帖</a>'
+            "</th></tr></tbody>"
+        )
+        row = poster._parse_forum_threads(html)[0]
+        assert (row.tid, row.typeid, row.color, row.bold) == (6720, 16, "#EC1282", False)
+
     def test_unknown_markup_returns_empty(self):
         assert poster._parse_forum_threads("<html>no rows</html>") == []
 

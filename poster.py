@@ -184,7 +184,9 @@ def _timestamp() -> str:
 
 _MY_THREAD_ANCHOR_RE = re.compile(r"<a\b([^>]*)>(.*?)</a>", re.S | re.I)
 _TID_IN_ANCHOR_RE = re.compile(
-    r'href="(?:forum\.php\?mod=viewthread&(?:amp;)?tid=(\d+)|thread-(\d+)-1-1\.html)'
+    # 标题链接的页码部分会跟着列表页走（第 2 页是 thread-6720-1-2.html），
+    # 早期只认 -1-1 时整页都当"没有标题"，版块列表只能读到第 1 页。
+    r'href="(?:forum\.php\?mod=viewthread&(?:amp;)?tid=(\d+)|thread-(\d+)-\d+-\d+\.html)'
 )
 _FORUM_LINK_RE = re.compile(
     r'forum\.php\?mod=forumdisplay&(?:amp;)?fid=(\d+)[^"]*"[^>]*>([^<]{1,40})</a>', re.I

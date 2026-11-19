@@ -321,6 +321,64 @@ def detect_module_type(message: str, title: str) -> str | None:
     return classify_article_type(title, chinese=True, fallback=None)
 
 
+def _resolve_news_type(message: str, original_title: str, translated_title: str) -> str:
+    """分类优先级：BBCode 里的 [module_*] 标签 → 英文标题关键词 → 中文标题关键词 → normal。
+
+    同时被「发帖」和「历史登记」两条路径使用：同一篇帖子在两处的分类必须一致，
+    否则登记的颜色和下次重算的颜色会打架。
+    """
+    for title in (original_title, translated_title):
+        module_type = detect_module_type(message, title) if title else None
+        if module_type:
+            return module_type
+    return "normal"
+
+
+def _scan_output_titles(save_dir: str) -> dict[str, str]:
+    """扫 output 里的新闻 JSON，返回 {归一后标题: stem}。
+
+    帖子标题是「译文标题 + [AI翻译]」，早期帖子可能没有后缀，所以两种写法都收。
+    专栏正文产物（*.opus.json）不是新闻元数据，跳过。
+    """
+    titles: dict[str, str] = {}
+    for json_path in sorted(glob.glob(os.path.join(save_dir, "*.json"))):
+        stem = os.path.splitext(os.path.basename(json_path))[0]
+        if stem.startswith(".") or stem.endswith(".opus"):
+            continue
+        try:
+            with open(json_path, encoding="utf-8") as f:
+                meta = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        for key in ("translated_title", "title"):
+            value = (meta.get(key) or "").strip()
+            if not value:
+                continue
+            for candidate in (f"{value} [AI翻译]", value):
+                titles.setdefault(_normalize_title(candidate), stem)
+    return titles
+
+
+def _local_news_type(save_dir: str, stem: str) -> str:
+    """按产物反推一篇新闻的分类（BBCode 在就用标签，否则只看标题）。"""
+    json_path = os.path.join(save_dir, stem + ".json")
+    try:
+        with open(json_path, encoding="utf-8") as f:
+            meta = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return "normal"
+    txt_path = os.path.join(save_dir, stem + ".txt")
+    message = ""
+    if os.path.isfile(txt_path):
+        with open(txt_path, encoding="utf-8") as f:
+            message = f.read()
+    return _resolve_news_type(
+        message,
+        (meta.get("title") or "").strip(),
+        (meta.get("translated_title") or "").strip(),
+    )
+
+
 def insert_image_bbcode(message: str, aid: str) -> str:
     img_tag = f"[align=center][attachimg]{aid}[/attachimg][/align]"
     idx = message.find(IMG_INSERT_BEFORE)
@@ -1015,6 +1073,7 @@ class MCBBSPoster:
             url = f"{self.base_url}/home.php?mod=space&do=thread&view=me&type=thread"
             if page > 1:
                 url += f"&page={page}"
+                time.sleep(1)  # 翻页放慢一点，别把列表页当接口刷
             response = self.session.get(url, timeout=LOGIN_TIMEOUT)
             response.raise_for_status()
             page_threads = _parse_my_threads(response.text)
@@ -1204,6 +1263,83 @@ class MCBBSPoster:
         except OSError:
             log_warning("    ⚠ 帖子记录写入失败: %s", records_path, exc_info=True)
 
+    def index_history(self, save_dir: str, pages: int = 15) -> dict:
+        """把「我的帖子」里对得上本地产物的历史帖登记成 legacy，不动论坛。
+
+        历史帖从来没有高亮记录。如果直接登记成 pending，下一轮会把整版帖子一次
+        刷上颜色（几百条管理记录）；所以这里只登记，想真上色再用 --highlight-legacy
+        限量提升。
+        """
+        stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0, "no_color": 0}
+        threads = self.fetch_my_threads(pages=pages)
+        stats["threads"] = len(threads)
+        if not threads:
+            return stats
+
+        records_path = thread_records_path(save_dir)
+        records = load_thread_records(records_path)
+        titles = _scan_output_titles(save_dir)
+        colors = self.highlight.get("colors") or {}
+
+        for tid, thread_title in threads:
+            stem = titles.get(_normalize_title(thread_title))
+            if not stem:
+                continue
+            stats["matched"] += 1
+            if stem in records:
+                stats["skipped"] += 1
+                continue
+
+            news_type = _local_news_type(save_dir, stem)
+            color = colors.get(news_type, "")
+            if not color:
+                stats["no_color"] += 1
+                log_debug("    → 跳过历史登记（类型没有高亮色）: %s（%s）", stem, news_type)
+                continue
+            records[stem] = {
+                "tid": tid,
+                "fid": self.forum_fid,
+                "url": f"{self.base_url}/thread-{tid}-1-1.html",
+                "title": thread_title,
+                "news_type": news_type,
+                "color": color,
+                "bold": False,
+                "state": "legacy",
+                "posted_at": "",
+                "updated_at": _timestamp(),
+                "attempts": 0,
+                "last_error": "",
+                "tid_source": "历史登记",
+            }
+            stats["recorded"] += 1
+
+        if stats["recorded"]:
+            self._save_records(records_path, records)
+        log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条 | 已有记录 %d 条 | 无色跳过 %d 条",
+                 stats["threads"], stats["matched"], stats["recorded"],
+                 stats["skipped"], stats["no_color"])
+        return stats
+
+    def promote_legacy(self, records_path: str, limit: int) -> int:
+        """把最近的 N 条历史登记提升成待补高亮；真正的上色交给补高亮流程。"""
+        records = load_thread_records(records_path)
+        legacy = [(stem, rec) for stem, rec in records.items() if rec.get("state") == "legacy"]
+        legacy.sort(key=lambda item: int(item[1].get("tid") or 0), reverse=True)
+
+        promoted = 0
+        for stem, rec in legacy[:max(limit, 0)]:
+            if not rec.get("tid") or not rec.get("color"):
+                log_warning("    ⚠ 跳过历史登记（缺帖子 ID 或色值）: %s", stem)
+                continue
+            rec["state"] = "pending"
+            rec["attempts"] = 0
+            rec["last_error"] = ""
+            rec["updated_at"] = _timestamp()
+            promoted += 1
+            log_info("    → 提升为待高亮: %s（tid=%s）", stem, rec.get("tid"))
+        self._save_records(records_path, records)
+        return promoted
+
     def _register_highlight(self, stem: str, news_dir: str, result: PostResult,
                             news_type: str, title: str) -> None:
         """登记这篇帖子的高亮意图，发帖时不动手。
@@ -1296,14 +1432,7 @@ class MCBBSPoster:
 
         # 检测分类（同时检测英文和中文标题，避免关键词丢失）
         original_title = meta.get("title", "").strip()
-        # 先用英文标题检测
-        module_type = detect_module_type(message, original_title) if original_title else None
-        # 如果英文标题检测失败，再用中文标题检测
-        if not module_type:
-            module_type = detect_module_type(message, title)
-        # 如果无法检测到类型，使用 "normal" 作为默认分类
-        if not module_type:
-            module_type = "normal"
+        module_type = _resolve_news_type(message, original_title, title)
         sortid = self.sortid_map.get(module_type)
         if sortid:
             cat_name = _CATEGORY_GROUP.get(module_type, "未知")
@@ -1324,6 +1453,66 @@ class MCBBSPoster:
 
 # ── CLI 入口 ─────────────────────────────────────────
 
+def _preview_records(records_path: str, state: str, limit: int | None = None) -> int:
+    """打印指定状态的帖子记录（--dry-run 用），返回条数。"""
+    records = [rec for rec in load_thread_records(records_path).values()
+               if rec.get("state") == state]
+    records.sort(key=lambda rec: int(rec.get("tid") or 0), reverse=True)
+    if limit is not None:
+        records = records[:max(limit, 0)]
+    for rec in records:
+        log_info("  %s | tid=%s | %s %s%s | %s",
+                 rec.get("title", ""), rec.get("tid"), rec.get("news_type", ""),
+                 rec.get("color", ""), "（加粗）" if rec.get("bold") else "",
+                 rec.get("last_error", ""))
+    log_info("[Dry Run] state=%s 共 %d 条", state, len(records))
+    return len(records)
+
+
+def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> int:
+    """--highlight-only / --index-history / --highlight-legacy 的入口，都不发帖。"""
+    if not os.path.isdir(news_dir):
+        log_error(f"[!] 新闻目录不存在: {news_dir}")
+        return 1
+
+    if args.index_history and args.dry_run:
+        log_info("[Dry Run] --index-history 要登录读「我的帖子」，去掉 --dry-run 再跑")
+        return 0
+    if args.index_history and (not config.get("username") or not config.get("password")):
+        log_error("[!] 未配置 MCBBS 账号密码！请设置 .env 的 MCBBS_USERNAME / MCBBS_PASSWORD")
+        return 1
+
+    poster = MCBBSPoster(config)
+
+    if args.index_history:
+        try:
+            poster.login()
+        except Exception as e:
+            log_error(f"[!] 登录失败: {e}")
+            return 1
+        poster.index_history(news_dir)
+        return 0
+
+    if args.highlight_legacy is not None:
+        if args.dry_run:
+            _preview_records(records_path, "legacy", args.highlight_legacy)
+            return 0
+        promoted = poster.promote_legacy(records_path, args.highlight_legacy)
+        log_info("[高亮] 已提升 %d 条历史登记为待补高亮", promoted)
+
+    if args.dry_run:
+        _preview_records(records_path, "pending")
+        log_info("[Dry Run] 以上是待补高亮队列，未做任何论坛操作")
+        return 0
+
+    try:
+        poster.process_pending_highlights(records_path)
+    except Exception as e:
+        log_error(f"[!] 补高亮失败: {e}")
+        return 1
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="MCBBS 新闻自动发帖（含图片上传）")
     parser.add_argument("files", nargs="*", help="指定要发布的文件（stem）")
@@ -1332,6 +1521,12 @@ def main():
     parser.add_argument("--no-image", action="store_true", help="跳过图片上传")
     parser.add_argument("--no-json", action="store_true", help="跳过 JSON 附件上传")
     parser.add_argument("--fid", type=int, help="覆盖版块 ID")
+    parser.add_argument("--highlight-only", action="store_true",
+                        help="只处理待补高亮（审核已通过的帖子），不发帖")
+    parser.add_argument("--index-history", action="store_true",
+                        help="把「我的帖子」里对得上 output 产物的历史帖登记为 legacy（只写本地记录）")
+    parser.add_argument("--highlight-legacy", type=int, metavar="N",
+                        help="把最近 N 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看）")
     args = parser.parse_args()
 
     config = load_poster_config()
@@ -1340,6 +1535,9 @@ def main():
 
     news_dir = args.dir
     state_file = os.path.join(news_dir, ".posted.json")
+
+    if args.highlight_only or args.index_history or args.highlight_legacy is not None:
+        sys.exit(_run_highlight_cli(args, config, news_dir, thread_records_path(news_dir)))
 
     if not config["username"] or not config["password"]:
         log_error("[!] 未配置 MCBBS 账号密码！请设置 config.json 中的 mcbbs 部分")

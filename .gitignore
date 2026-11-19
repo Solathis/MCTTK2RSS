@@ -12,6 +12,7 @@ output/*.html
 
 # 注意：.posted.json *会* 被 git 跟踪
 # 注意：.state.json 不会 被 git 跟踪
+# 注意：.mcbbs_threads.json（帖子高亮/审核记录）不会 被 git 跟踪
 
 # 配置文件：本地配置不入库（模板见 config/config.sample.json），备份文件同样不入库
 # config/modules_config.json 与 config/config.sample.json 仍然入库

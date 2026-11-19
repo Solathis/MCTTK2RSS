@@ -14,6 +14,12 @@ OK_RESPONSE = "<script>succeedhandle_mods('u',{},{});</script>"
 FAIL_RESPONSE = "<script>errorhandle_mods('抱歉，您没有权限执行此操作', {});</script>"
 
 
+@pytest.fixture(autouse=True)
+def _no_sleep(monkeypatch):
+    """翻页/重试的 sleep 在测试里没有意义，直接跳过。"""
+    monkeypatch.setattr(poster.time, "sleep", lambda *_: None)
+
+
 class FakeResponse:
     def __init__(self, text="", status_code=200):
         self.text = text

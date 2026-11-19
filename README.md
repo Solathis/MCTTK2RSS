@@ -4,7 +4,7 @@
 
 # 矿译通
 
-**Minecraft Translation Toolkit**
+**MineCraft Translation ToolKit**
 
 Minecraft 官方资讯 → 中文社区，一条自动化流水线
 
@@ -13,18 +13,27 @@ Minecraft 官方资讯 → 中文社区，一条自动化流水线
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/Docker-ghcr.io-2496ED?logo=docker&logoColor=white)](https://github.com/jiubook/MCTTK/pkgs/container/mcttk)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html)
+[![MCBBS紀念版2群](https://img.shields.io/badge/MCBBS紀念版2群-1020121333-orange.svg?logo=qq)](https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=cWimZfaBzg4kpFrpt9G9yErBqBuarD6z&authKey=sjcLaLvI%2B2fvv6sAIugP4Jj1Z8HsnJB%2FZ1rya%2Bfa%2BTWUxfh1CL0x3AOAC3hbPORm&noverify=0&group_code=1020121333)
 
 </div>
 
 ## 项目简介
 
-Minecraft 的官方资讯散落在好几个来源：官网 API、Feedback 反馈站、版本清单。而每种新闻
-（Java 快照 / 预发布 / RC / 正式版、基岩版更新 / 测试版、块讯、时评）在中文社区又有各自的
-译名习惯、排版模板和发帖要求。长期维护这类资讯，真正耗时的往往不是翻译那几段，而是反复的
-采集、术语核对、格式调整、发帖以及之后的标题维护。
+Minecraft 的官方资讯散落在好几个来源：**1.官网 API、2.Feedback 反馈站、3.版本清单**
 
-矿译通把这些重复劳动串成一条流水线自动跑：**抓取 → 术语约束下的 AI 翻译 → 按类型排版 →
-发布到 MCBBS 与 B站专栏 → 按版规维护标题高亮**。内容维护者只需要关心译文质量和资讯本身。
+而每种新闻在中文社区又有各自的译名习惯、排版模板和发帖要求。
+
+`（Java 快照 / 预发布 / RC / 正式版、基岩版更新 / 测试版、块讯、时评）`
+
+长期维护这类资讯，真正耗时的往往不是翻译那几段，而是反复的采集、术语核对、格式调整、发帖以及之后的标题维护。
+
+---
+
+矿译通把这些重复劳动串成一条流水线自动跑：
+
+**抓取 → 术语约束下的 AI 翻译 → 按类型排版 →发布到 MCBBS 与 B站专栏 → 按版规维护标题高亮**
+
+内容维护者只需要关心译文质量和资讯本身。
 
 ## 工作流程
 
@@ -118,6 +127,21 @@ flowchart LR
 四条版本线（Java 正式版 / Java 测试版 / 基岩版正式版 / 基岩版测试版）各有一篇加粗；新版本
 发出来后，旧的会自动取消加粗 —— 这是版规「最新版本加粗」在 Discuz 里的实现方式。
 每次设置高亮都会在站上留一条「本主题由 newspaper 设置高亮」的版主记录，这是 Discuz 的机制。
+
+### 发布：B站专栏
+
+同一份产物不只发论坛，也能直接投成专栏（`bilibili.renderer: opus` 走新版编辑器的段落正文）：
+
+| 专栏 | 分类 |
+| --- | --- |
+| [Minecraft 预览版 26.70.26 更新日志 [AI翻译]](https://www.bilibili.com/opus/1271848285796040706) | 基岩版资讯（测试版） |
+| [Minecraft 26.4 快照 9 [AI翻译]](https://www.bilibili.com/opus/1271709700077912068) | Java版资讯（测试版） |
+| [Minecraft 26.4 快照 8 [AI翻译]](https://www.bilibili.com/opus/1270805265844797465) | Java版资讯（测试版） |
+
+专栏和论坛帖走两套互斥的正文渲染器（`bili/html.py` / `bili/opus.py`）：段落边界一致，但
+B站那套会把原文对照刷成灰字放在译文下面、把外链降级成「文字（URL）」—— 站内点外链会先弹
+「离开 B站」的拦截页，所以只保留项目署名的链接。投稿前可以用 `tools/preview_bili_html.py`
+在本地预览排版。
 
 ## 快速开始
 

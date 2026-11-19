@@ -136,6 +136,42 @@ class TestConfigStructure:
         assert isinstance(mcbbs["base_url"], str)
         assert mcbbs["base_url"].startswith("https://")
 
+    def test_mcbbs_highlight_structure(self, config):
+        """highlight 是带默认值的嵌套段，本地 config.json 允许只写想改的键。"""
+        if "mcbbs" not in config:
+            return
+        highlight = config["mcbbs"].get("highlight")
+        if highlight is None:
+            return
+        assert isinstance(highlight, dict)
+        if "enabled" in highlight:
+            assert isinstance(highlight["enabled"], bool)
+        if "colors" in highlight:
+            assert isinstance(highlight["colors"], dict)
+            for news_type, color in highlight["colors"].items():
+                assert isinstance(news_type, str) and news_type
+                assert isinstance(color, str) and color.startswith("#"), f"色值必须是 #RRGGBB: {color}"
+        if "bold_types" in highlight:
+            assert isinstance(highlight["bold_types"], list)
+            for news_type in highlight["bold_types"]:
+                assert isinstance(news_type, str) and news_type
+        for key in ("max_attempts", "max_age_hours"):
+            if key in highlight:
+                assert isinstance(highlight[key], int) and highlight[key] > 0, f"highlight.{key} 必须是正整数"
+
+    def test_mcbbs_highlight_defaults_match_poster_module(self):
+        """模板里的 highlight 键必须与 poster.DEFAULT_HIGHLIGHT 对齐。
+
+        这一段的默认值写在 poster 里（main 侧不读 mcbbs 段），模板少一个键，
+        新用户就会静默用上模块默认值，看不出差异。
+        """
+        from poster import DEFAULT_HIGHLIGHT
+
+        sample = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        highlight = sample["mcbbs"]["highlight"]
+        assert set(highlight) == set(DEFAULT_HIGHLIGHT)
+        assert set(highlight["colors"]) == set(DEFAULT_HIGHLIGHT["colors"])
+
     def test_bilibili_structure(self, config):
         """本地 config.json 允许只写想改的键（其余由 DEFAULT_CONFIG 补齐），
 

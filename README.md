@@ -151,6 +151,30 @@ cp config/config.sample.json config/config.json   # Windows PowerShell: Copy-Ite
 }
 ```
 
+帖子高亮默认开启（`mcbbs.highlight`）。站点对新主题一律进审核，审核中的帖子在
+Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每轮运行先匿名探测帖子页
+（404 = 还没过审），确认过审后再登录设置高亮/加粗。色值按版规「二、高亮设定」，
+不在 Discuz 色板内的色值会被跳过（记录里会写原因）。`commentary`（时评）按版规
+一般不高亮，默认不配颜色即可：
+
+```json
+{
+  "mcbbs": {
+    "highlight": {
+      "enabled": true,
+      "colors": { "java_release": "#EE1B2E", "java_snapshot": "#3C9D40" },
+      "bold_types": ["java_release", "bedrock_release"],
+      "max_attempts": 6,
+      "max_age_hours": 168
+    }
+  }
+}
+```
+
+`colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 里的类型
+会加粗，且新帖高亮成功后会**自动取消同类型旧帖的加粗**（同色重提交、只把样式位
+清零）；`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+
 如果需要发布到 B站专栏，先用扫码工具拿登录 cookie（不用手动开 F12 复制）：
 
 ```bash
@@ -792,7 +816,14 @@ git push origin v1.0.0
     "password": "",
     "captcha_answer": "",
     "attach_json": true,
-    "sortid_map": {}
+    "sortid_map": {},
+    "highlight": {
+      "enabled": true,
+      "colors": { "java_release": "#EE1B2E", "normal": "#EC1282" },
+      "bold_types": ["java_release", "bedrock_release"],
+      "max_attempts": 6,
+      "max_age_hours": 168
+    }
   },
   "bilibili": {
     "enabled": false,

@@ -20,13 +20,23 @@ import os
 import re
 import sys
 import time
+from copy import deepcopy
 from dataclasses import dataclass
 from urllib.parse import quote, unquote
 
 import requests
 
 from log_setup import current_log_path, log_debug, log_error, log_info, log_warning, setup_logging
-from utils import CONFIG_DIR, MODULE_TYPE_MAP, find_image, load_posted, save_posted
+from utils import (
+    CONFIG_DIR,
+    MODULE_TYPE_MAP,
+    find_image,
+    load_posted,
+    load_thread_records,
+    save_posted,
+    save_thread_records,
+    thread_records_path,
+)
 
 # ── 配置 ─────────────────────────────────────────────
 
@@ -60,6 +70,62 @@ _TID_URL_RE = re.compile(r"thread-(\d+)-1-1")
 _TID_QUERY_RE = re.compile(r"[?&](?:amp;)?tid=(\d+)")
 
 
+# Discuz 的标题高亮色板（forum_colorarray）。下标就是要提交的 highlight_color，
+# 色值与版规「二、高亮设定」里写的完全一致，所以配置用色值、代码翻译成色号。
+_HIGHLIGHT_COLORS = {
+    "#EE1B2E": 1,
+    "#EE5023": 2,
+    "#996600": 3,
+    "#3C9D40": 4,
+    "#2897C5": 5,
+    "#2B65B7": 6,
+    "#8F2A90": 7,
+    "#EC1282": 8,
+}
+
+# 高亮默认值：色号取自幻翼块讯版规「二、高亮设定」，commentary（时评）按版规一般不高亮。
+DEFAULT_HIGHLIGHT = {
+    "enabled": True,
+    "colors": {
+        "java_release": "#EE1B2E",
+        "java_snapshot": "#3C9D40",
+        "java_prerelease": "#3C9D40",
+        "java_rc": "#3C9D40",
+        "bedrock_release": "#EE1B2E",
+        "bedrock_beta": "#3C9D40",
+        "normal": "#EC1282",
+    },
+    "bold_types": ["java_release", "bedrock_release"],
+    "max_attempts": 6,
+    "max_age_hours": 168,
+}
+
+
+def highlight_color_index(color: str) -> int | None:
+    """把配置里的色值翻成 Discuz 的高亮色号；不在色板内返回 None。"""
+    return _HIGHLIGHT_COLORS.get((color or "").strip().upper())
+
+
+def _merge_highlight(raw) -> dict:
+    """合并 mcbbs.highlight：colors 逐项覆盖，其余键只认合法类型，非法值保持默认。"""
+    merged = deepcopy(DEFAULT_HIGHLIGHT)
+    if not isinstance(raw, dict):
+        return merged
+    if isinstance(raw.get("enabled"), bool):
+        merged["enabled"] = raw["enabled"]
+    colors = raw.get("colors")
+    if isinstance(colors, dict):
+        merged["colors"].update({str(k): v for k, v in colors.items() if isinstance(v, str)})
+    bold_types = raw.get("bold_types")
+    if isinstance(bold_types, list):
+        merged["bold_types"] = [str(item) for item in bold_types]
+    for key in ("max_attempts", "max_age_hours"):
+        value = raw.get(key)
+        if isinstance(value, int) and not isinstance(value, bool):
+            merged[key] = value
+    return merged
+
+
 @dataclass(frozen=True)
 class PostResult:
     """一次发帖的结果。
@@ -89,6 +155,28 @@ def _find_redirect(html: str) -> str:
     return targets[0] if targets else ""
 
 
+_MODERATION_ERROR_RE = re.compile(r"errorhandle_\w+\(\s*'((?:[^'\\]|\\.)*)'")
+
+
+def _parse_moderation_result(html: str) -> tuple[bool, str]:
+    """解析 forum.php?mod=topicadmin 的 ajax 返回，给出 (是否成功, 失败原因)。
+
+    Discuz 只在 inajax=1 且请求带 redirect 时才把成功写成 succeedhandle_mods(...)，
+    失败一律走 errorhandle_mods(站点提示语)。两者都不出现，说明站点改版或会话失效；
+    旧实现只认 succeedhandle，所以即使高亮成功也会被判成失败。
+    """
+    text = html or ""
+    if "succeedhandle" in text:
+        return True, ""
+    match = _MODERATION_ERROR_RE.search(text)
+    if match:
+        return False, match.group(1).replace("\\'", "'")[:200]
+    message = re.search(r'id="messagetext"[^>]*>(.*?)</div>', text, re.S)
+    if message:
+        return False, re.sub(r"<[^>]+>", "", message.group(1)).strip()[:200]
+    return False, f"未识别的管理操作响应（{len(text)} 字节）"
+
+
 # ── 配置加载 ─────────────────────────────────────────
 
 def load_poster_config(config_path: str = None) -> dict:
@@ -104,6 +192,7 @@ def load_poster_config(config_path: str = None) -> dict:
         "captcha_answer": "",
         "sortid_map": {},
         "login_retry": dict(DEFAULT_LOGIN_RETRY),
+        "highlight": deepcopy(DEFAULT_HIGHLIGHT),
     }
 
     if os.path.exists(config_path):
@@ -114,6 +203,8 @@ def load_poster_config(config_path: str = None) -> dict:
             for key in cfg:
                 if key in mcbbs and mcbbs[key]:
                     cfg[key] = mcbbs[key]
+            # highlight 是带默认值的嵌套段，整体覆盖会把默认色板冲掉，单独合并
+            cfg["highlight"] = _merge_highlight(mcbbs.get("highlight"))
             # 登录重试参数在顶层 retry 段（与 retry.translation / retry.download 并列）
             login_retry = (full_config.get("retry") or {}).get("login") or {}
             for key in DEFAULT_LOGIN_RETRY:
@@ -521,6 +612,7 @@ class MCBBSPoster:
         self.captcha_answer = config.get("captcha_answer", "")
         self.sortid_map = config.get("sortid_map", {})
         self.login_retry = dict(config.get("login_retry") or {})
+        self.highlight = _merge_highlight(config.get("highlight"))
         self.session = None
         self.formhash = None
 
@@ -773,6 +865,105 @@ class MCBBSPoster:
 
         raise RuntimeError(f"发帖结果不明: {getattr(response, 'url', '')}")
 
+    def _ensure_formhash(self) -> str:
+        """取一个可用的 formhash：登录后首页会下发，换会话或久未动手时得重取。"""
+        if self.formhash:
+            return self.formhash
+        r = self.session.get(f"{self.base_url}/forum.php", timeout=LOGIN_TIMEOUT)
+        r.raise_for_status()
+        self.formhash = extract_formhash(r.text)
+        return self.formhash
+
+    def highlight_thread(self, tid: int, color: str, bold: bool = False,
+                         fid: int | None = None) -> tuple[bool, str]:
+        """给帖子设置标题高亮，返回 (是否成功, 失败原因)。
+
+        Discuz 只允许版块版主操作，且对审核中（displayorder < 0）的帖子直接跳过；
+        两种情况都会落到 errorhandle，这里把站点提示原样带出去，由调用方决定重试
+        还是放弃。加粗取消也走同一条路：同色 + 样式位 0 = 保留颜色、去掉加粗。
+        """
+        if not self.session:
+            raise RuntimeError("未登录，请先调用 login()")
+        color_index = highlight_color_index(color)
+        if not color_index:
+            return False, f"色值不在 Discuz 色板内: {color}"
+
+        forum_id = fid or self.forum_fid
+        thread_url = f"{self.base_url}/thread-{tid}-1-1.html"
+        payload = {
+            "formhash": self._ensure_formhash(),
+            "fid": str(forum_id),
+            # 没有 redirect 时站点不会回 succeedhandle，成功也会被当成失败
+            "redirect": thread_url,
+            "handlekey": "mods",
+            "moderate[]": str(tid),
+            "operations[]": "highlight",
+            "highlight_color": str(color_index),
+            "highlight_style[1]": "1" if bold else "0",
+            "highlight_style[2]": "0",
+            "highlight_style[3]": "0",
+            "highlight_bgcolor": "",
+            "expirationhighlight": "",
+        }
+        action_url = (
+            f"{self.base_url}/forum.php?mod=topicadmin&action=moderate"
+            f"&optgroup=1&modsubmit=yes&infloat=yes&handlekey=mods&inajax=1"
+        )
+        # submitcheck 要求表单提交的 Referer 与站点同源（或为空），这里一并对齐
+        self.session.headers.update({"Referer": thread_url})
+        try:
+            response = self.session.post(action_url, data=payload, timeout=LOGIN_TIMEOUT)
+        finally:
+            self.session.headers.pop("Referer", None)
+        response.raise_for_status()
+
+        ok, reason = _parse_moderation_result(response.text)
+        if not ok:
+            log_warning(f"    ⚠ 高亮未生效（tid={tid}）: {reason}")
+        return ok, reason
+
+    def _register_highlight(self, stem: str, news_dir: str, result: PostResult,
+                            news_type: str, title: str) -> None:
+        """登记这篇帖子的高亮意图，发帖时不动手。
+
+        站点对新主题一律走审核，而审核中的帖子在 Discuz 里设置不了高亮，所以统一
+        先落一条 pending 记录，交给每轮的补高亮流程（匿名探测过审 → 登录 → 设置）。
+        """
+        if not self.highlight.get("enabled"):
+            return
+        color = (self.highlight.get("colors") or {}).get(news_type, "")
+        if not color:
+            log_debug("    → 类型 %s 没有配置高亮色，跳过登记", news_type)
+            return
+
+        path = thread_records_path(news_dir)
+        records = load_thread_records(path)
+        previous = records.get(stem) or {}
+        now = time.strftime("%Y-%m-%dT%H:%M:%S")
+        records[stem] = {
+            "tid": result.tid or previous.get("tid"),
+            "fid": self.forum_fid,
+            "url": result.url if result.url.startswith("http") else previous.get("url", ""),
+            "title": title,
+            "news_type": news_type,
+            "color": color,
+            "bold": news_type in (self.highlight.get("bold_types") or []),
+            "state": "pending",
+            "posted_at": previous.get("posted_at") or now,
+            "updated_at": now,
+            "attempts": previous.get("attempts", 0),
+            "last_error": "",
+        }
+        try:
+            save_thread_records(path, records)
+        except OSError:
+            log_warning("    ⚠ 高亮登记写入失败（不影响发帖）", exc_info=True)
+            return
+
+        tid_hint = f"tid={result.tid}" if result.tid else "帖子 ID 待从列表补齐"
+        bold_hint = "（加粗）" if records[stem]["bold"] else ""
+        log_info(f"    → 已登记待补高亮: {news_type} {color}{bold_hint}，{tid_hint}")
+
     def post_news_file(self, stem: str, txt_path: str, json_path: str,
                        news_dir: str, no_image: bool = False,
                        attach_json: bool = True) -> str:
@@ -838,8 +1029,10 @@ class MCBBSPoster:
         else:
             log_warning(f"    ⚠ 警告: 未找到分类 {module_type} 的 sortid 配置")
 
-        return self.post_thread(title, message,
-                                attachment_ids=attachment_ids, sortid=sortid).url
+        result = self.post_thread(title, message,
+                                  attachment_ids=attachment_ids, sortid=sortid)
+        self._register_highlight(stem, news_dir, result, module_type, title)
+        return result.url
 
 
 # ── 状态管理 ─────────────────────────────────────────

@@ -1409,6 +1409,16 @@ class MCBBSPoster:
             known.add(tid)
             log_info("    → 补齐帖子 ID: %s → tid=%s（%s）", stem, tid, source)
 
+    def _bold_category_typeids(self) -> set[int]:
+        """`bold_types` 覆盖到的版块分类（typeid）。
+
+        只有这些分类才做「同一分类只留最新一篇加粗」的收敛；块讯之类的帖子即使
+        被人工加过粗，也不该因为我们给别的帖子上色而被顺手取消。
+        """
+        typeids = {self.sortid_map.get(news_type)
+                   for news_type in (self.highlight.get("bold_types") or [])}
+        return {typeid for typeid in typeids if isinstance(typeid, int)}
+
     def _unbold_older_versions(self, records: dict, current: dict) -> int:
         """同一分类里只保留最新一篇加粗：按版块列表的真实现状取消其它加粗。
 
@@ -1417,7 +1427,9 @@ class MCBBSPoster:
         被人工改过，只有列表里那个 font-weight: bold 才算数。
         """
         typeid = current.get("typeid")
-        if not typeid:
+        if not typeid or typeid not in self._bold_category_typeids():
+            return 0
+        if not current.get("bold"):
             return 0
         try:
             threads = self.fetch_forum_threads(pages=3)
@@ -1576,6 +1588,51 @@ class MCBBSPoster:
                  stats["threads"], stats["matched"], stats["recorded"], stats["site_bold"],
                  stats["skipped"], stats["refreshed"],
                  stats["recycled"], stats["excluded"], stats["no_color"])
+        return stats
+
+    def highlight_status(self, records_path: str, pages: int = 3) -> dict:
+        """对照站点现状检查每篇记录的颜色与加粗（只读，不改论坛）。
+
+        高亮样式只渲染在版块列表里，所以「到底生效了没有」只能拿列表来比：
+        这里逐条打印「记录 vs 站点」，想验证某次操作是否成功直接看这个。
+        """
+        records = load_thread_records(records_path)
+        stats = {"checked": 0, "same": 0, "different": 0, "missing": 0}
+        if not records:
+            log_info("[状态] 还没有帖子记录（先发一篇或跑 --index-history）")
+            return stats
+
+        try:
+            site_rows = {row.tid: row for row in self.fetch_forum_threads(pages=pages)}
+        except requests.RequestException as e:
+            log_error("[状态] 读版块列表失败: %s", e)
+            return stats
+
+        for stem, rec in sorted(records.items()):
+            tid = rec.get("tid")
+            if not tid:
+                continue
+            stats["checked"] += 1
+            row = site_rows.get(int(tid))
+            if row is None:
+                stats["missing"] += 1
+                log_info("  ? %s | tid=%s | 前 %d 页里没有（未过审/已删除/更靠后）",
+                         rec.get("title") or stem, tid, pages)
+                continue
+            site_color = row.color or "无颜色"
+            site_bold = "加粗" if row.bold else "不加粗"
+            rec_color = rec.get("color") or "无颜色"
+            rec_bold = "加粗" if rec.get("bold") else "不加粗"
+            same = site_color.upper() == rec_color.upper() and site_bold == rec_bold
+            if same:
+                stats["same"] += 1
+            else:
+                stats["different"] += 1
+            log_info("  %s | tid=%s | 记录 %s %s | 站点 %s %s | %s",
+                     "一致" if same else "不一致", tid, rec_color, rec_bold,
+                     site_color, site_bold, rec.get("title") or stem)
+        log_info("[状态] 检查 %d 条 | 一致 %d | 不一致 %d | 没找到 %d",
+                 stats["checked"], stats["same"], stats["different"], stats["missing"])
         return stats
 
     def _refresh_legacy(self, record: dict, site_row, colors: dict) -> bool:
@@ -1753,10 +1810,11 @@ def _preview_records(records_path: str, state: str, limit: int | None = None) ->
     if limit is not None:
         records = records[:max(limit, 0)]
     for rec in records:
-        log_info("  %s | tid=%s | %s %s%s | %s",
-                 rec.get("title", ""), rec.get("tid"), rec.get("news_type", ""),
-                 rec.get("color", ""), "（加粗）" if rec.get("bold") else "",
-                 rec.get("last_error", ""))
+        color = rec.get("color") or ""
+        index = highlight_color_index(color)
+        color_hint = f"{color}（色号 {index}）" if index else (color or "无颜色")
+        log_info("  tid=%s | %s | %s | %s | %s", rec.get("tid"), color_hint,
+                 "加粗" if rec.get("bold") else "不加粗", state, rec.get("title", ""))
     log_info("[Dry Run] state=%s 共 %d 条", state, len(records))
     return len(records)
 
@@ -1772,6 +1830,34 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         return 1
 
     poster = MCBBSPoster(config)
+
+    if args.highlight_status:
+        poster.highlight_status(records_path)
+        return 0
+
+    if args.highlight_stem:
+        records = load_thread_records(records_path)
+        record = records.get(args.highlight_stem)
+        if record is None:
+            log_error("[!] 记录里没有这篇：%s", args.highlight_stem)
+            return 1
+        if args.bold:
+            record["bold"] = True
+        elif args.no_bold:
+            record["bold"] = False
+        if args.dry_run:
+            color = record.get("color") or ""
+            log_info("[Dry Run] 将提交: tid=%s | %s（色号 %s）| %s | %s",
+                     record.get("tid"), color, highlight_color_index(color),
+                     "加粗" if record.get("bold") else "不加粗", record.get("title", ""))
+            return 0
+        record["state"] = "pending"
+        record["attempts"] = 0
+        record["last_error"] = ""
+        record["updated_at"] = _timestamp()
+        save_thread_records(records_path, records)
+        log_info("[高亮] 已把 %s 标记为待补高亮（tid=%s）",
+                 args.highlight_stem, record.get("tid"))
 
     if args.index_history:
         try:
@@ -1818,6 +1904,14 @@ def main():
                         help="把「我的帖子」里对得上 output 产物的历史帖登记为 legacy（只写本地记录）")
     parser.add_argument("--highlight-legacy", type=int, metavar="N",
                         help="把最近 N 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看）")
+    parser.add_argument("--highlight-status", action="store_true",
+                        help="对照站点现有颜色/加粗检查本地记录（只读，不改论坛）")
+    parser.add_argument("--highlight-stem", metavar="STEM",
+                        help="只补这一篇的高亮（单篇验证用，配合 --bold/--no-bold 可强制样式）")
+    parser.add_argument("--bold", action="store_true",
+                        help="配合 --highlight-stem：这次强制加粗")
+    parser.add_argument("--no-bold", action="store_true",
+                        help="配合 --highlight-stem：这次强制不加粗")
     args = parser.parse_args()
 
     config = load_poster_config()
@@ -1827,7 +1921,8 @@ def main():
     news_dir = args.dir
     state_file = os.path.join(news_dir, ".posted.json")
 
-    if args.highlight_only or args.index_history or args.highlight_legacy is not None:
+    if (args.highlight_only or args.index_history or args.highlight_status
+            or args.highlight_stem or args.highlight_legacy is not None):
         sys.exit(_run_highlight_cli(args, config, news_dir, thread_records_path(news_dir)))
 
     if not config["username"] or not config["password"]:

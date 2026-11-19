@@ -195,6 +195,22 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 补高亮阶段还会用帖子页面的面包屑复核一次版块（帖子过审后被移动/删除的情况），
 命中排除名单的直接标记为 `dropped`，不会再去提交高亮。
 
+**怎么验证高亮是否真的生效**：高亮样式只渲染在版块列表里，所以直接对照列表看：
+
+```bash
+# 记录 vs 站点，逐条打「一致/不一致」（只读，不登录）
+python poster.py --highlight-status
+
+# 单篇试色 + 试加粗：先 --dry-run 看色号，再真跑，然后重新跑一次 --highlight-status
+python poster.py --highlight-stem news_xxx --bold --dry-run
+python poster.py --highlight-stem news_xxx --bold
+python poster.py --highlight-status
+```
+
+输出形如 `一致 | tid=6808 | 记录 #3C9D40 加粗 | 站点 #3C9D40 加粗 | 标题`；
+不一致就是没生效或被人改过。也可以直接打开版块列表看标题链接的
+`style="font-weight: bold;color: #3C9D40;"`。
+
 默认色值对应幻翼块讯版规「二、高亮设定」：
 
 | 新闻类型 | 版规分类 | 色值 |
@@ -323,6 +339,14 @@ python poster.py --index-history
 # 把最近 3 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看清单）
 python poster.py --highlight-legacy 3 --dry-run
 python poster.py --highlight-legacy 3
+
+# 对照站点现有颜色/加粗检查本地记录（只读，不改论坛）
+python poster.py --highlight-status
+
+# 单篇验证：只补这一篇，可强制样式；先 --dry-run 看要提交的色号与加粗位
+python poster.py --highlight-stem news_xxx --bold --dry-run
+python poster.py --highlight-stem news_xxx --bold
+python poster.py --highlight-stem news_xxx --no-bold
 ```
 
 ## 日志

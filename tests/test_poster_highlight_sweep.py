@@ -94,6 +94,7 @@ def _write_records(tmp_path, records) -> str:
 def _make_poster(session=None) -> MCBBSPoster:
     poster_obj = MCBBSPoster({
         "base_url": BASE, "forum_fid": 45, "username": "newspaper", "password": "secret",
+        "sortid_map": {"java_snapshot": 4, "java_release": 4, "bedrock_beta": 20},
     })
     poster_obj.session = session
     poster_obj.formhash = FORMHASH
@@ -512,6 +513,31 @@ class TestUnboldOlderVersions:
         """没有分类信息时没法判断「同一分类」，宁可不取消。"""
         monkeypatch.setattr(poster, "probe_thread", _visible)
         path = _write_records(tmp_path, {"news_new": _record(tid=7000, bold=True)})
+        poster_obj = self._poster_with_rows(self._rows((6900, 4, "#3C9D40", True)))
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["unbolded"] == 0
+        assert len(poster_obj.session.posts) == 1
+
+    def test_non_bold_category_skips_scan(self, tmp_path, monkeypatch):
+        """块讯（typeid 16）不在 bold_types 覆盖的分类里，别去动别人的加粗。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {
+            "news_new": _record(tid=7000, news_type="normal", color="#EC1282",
+                                bold=True, typeid=16),
+        })
+        poster_obj = self._poster_with_rows(self._rows((6900, 16, "#2B65B7", True)))
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["unbolded"] == 0
+        assert len(poster_obj.session.posts) == 1
+
+    def test_current_not_bold_skips_scan(self, tmp_path, monkeypatch):
+        """自己都没加粗，就没必要去收敛同分类的加粗。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {"news_new": _record(tid=7000, bold=False, typeid=4)})
         poster_obj = self._poster_with_rows(self._rows((6900, 4, "#3C9D40", True)))
 
         stats = poster_obj.process_pending_highlights(path)

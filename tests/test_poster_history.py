@@ -320,10 +320,59 @@ class TestPromoteLegacy:
         assert _read_records(path)["news_1"]["state"] == "legacy"
 
 
+class TestHighlightStatus:
+    """--highlight-status：把记录和站点现状摆在一起，给「到底生效了没」用。"""
+
+    def test_reports_match_and_mismatch(self, tmp_path, monkeypatch):
+        _write_records(tmp_path, {
+            "news_a": _legacy(tid=6808, color="#3C9D40", bold=True),
+            "news_b": _legacy(tid=6773, color="#3C9D40", bold=True),
+        })
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [
+                                poster.ForumThread(6808, "a", typeid=4,
+                                                   color="#3C9D40", bold=True),
+                                poster.ForumThread(6773, "b", typeid=4,
+                                                   color="#3C9D40", bold=False)])
+
+        stats = _make_poster().highlight_status(str(tmp_path / ".mcbbs_threads.json"))
+
+        assert stats["checked"] == 2
+        assert stats["same"] == 1
+        assert stats["different"] == 1
+        assert stats["missing"] == 0
+
+    def test_missing_thread_is_counted(self, tmp_path, monkeypatch):
+        _write_records(tmp_path, {"news_a": _legacy(tid=6808, color="#3C9D40")})
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [])
+
+        stats = _make_poster().highlight_status(str(tmp_path / ".mcbbs_threads.json"))
+
+        assert stats["missing"] == 1
+
+    def test_empty_records(self, tmp_path):
+        stats = _make_poster().highlight_status(str(tmp_path / ".mcbbs_threads.json"))
+        assert stats == {"checked": 0, "same": 0, "different": 0, "missing": 0}
+
+    def test_forum_list_failure_is_reported(self, tmp_path, monkeypatch):
+        _write_records(tmp_path, {"news_a": _legacy(tid=6808)})
+
+        def boom(self, pages=3):
+            raise poster.requests.ConnectionError("boom")
+
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads", boom)
+
+        stats = _make_poster().highlight_status(str(tmp_path / ".mcbbs_threads.json"))
+
+        assert stats["checked"] == 0
+
+
 class TestHighlightCli:
     def _args(self, **overrides):
-        base = {"index_history": False, "highlight_legacy": None,
-                "highlight_only": True, "dry_run": False}
+        base = {"index_history": False, "highlight_legacy": None, "highlight_stem": None,
+                "highlight_only": True, "highlight_status": False,
+                "bold": False, "no_bold": False, "dry_run": False}
         base.update(overrides)
         return argparse.Namespace(**base)
 
@@ -378,4 +427,77 @@ class TestHighlightCli:
         code = poster._run_highlight_cli(self._args(index_history=True, dry_run=False),
                                          {"username": "", "password": ""},
                                          str(tmp_path), str(tmp_path / ".mcbbs_threads.json"))
+        assert code == 1
+
+    def test_highlight_status_needs_no_login(self, tmp_path, monkeypatch):
+        called = []
+
+        class FakePoster:
+            def __init__(self, config):
+                pass
+
+            def highlight_status(self, records_path, pages=3):
+                called.append(records_path)
+                return {"checked": 0}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        code = poster._run_highlight_cli(self._args(highlight_only=False, highlight_status=True),
+                                         {"username": "", "password": ""},
+                                         str(tmp_path), str(tmp_path / ".mcbbs_threads.json"))
+
+        assert code == 0
+        assert called == [str(tmp_path / ".mcbbs_threads.json")]
+
+    def test_highlight_stem_marks_one_record(self, tmp_path, monkeypatch):
+        """单篇验证：--highlight-stem 只把这一条改成 pending，并可按 --bold 强制样式。"""
+        calls = []
+
+        class FakePoster:
+            def __init__(self, config):
+                pass
+
+            def process_pending_highlights(self, records_path):
+                calls.append(records_path)
+                return {"pending": 1, "highlighted": 1}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+        _write_records(tmp_path, {
+            "news_a": _legacy(tid=6808, state="legacy", bold=False),
+            "news_b": _legacy(tid=6773, state="legacy"),
+        })
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_stem="news_a", bold=True),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        records = _read_records(records_path)
+        assert records["news_a"]["state"] == "pending"
+        assert records["news_a"]["bold"] is True
+        assert records["news_b"]["state"] == "legacy"
+        assert calls == [records_path]
+
+    def test_highlight_stem_dry_run_writes_nothing(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(poster, "MCBBSPoster", lambda config: type(
+            "P", (), {"process_pending_highlights": lambda self, path: {}})())
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+        _write_records(tmp_path, {"news_a": _legacy(tid=6808, state="legacy")})
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_stem="news_a", dry_run=True),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        assert _read_records(records_path)["news_a"]["state"] == "legacy"
+
+    def test_highlight_stem_unknown_reports_error(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(poster, "MCBBSPoster", lambda config: type("P", (), {})())
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+        _write_records(tmp_path, {"news_a": _legacy()})
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_stem="nope"),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
         assert code == 1

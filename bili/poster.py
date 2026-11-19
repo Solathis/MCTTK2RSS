@@ -31,7 +31,7 @@ import urllib3
 
 from bili.wbi import image_keys, sign_params
 from log_setup import log_debug, log_info, log_warning
-from utils import PROJECT_ROOT
+from utils import PROJECT_ROOT, http_verify
 
 # config 里允许 verify_ssl=false（自签代理 / 杀软做 TLS 解密），与 scraper.py 同口径：
 # 关掉随之而来的 InsecureRequestWarning，否则每发一个请求就刷一屏警告
@@ -445,7 +445,8 @@ class BilibiliPoster:
         self.http_cfg = http_config or {}
         self.cookies = load_cookies(self.cfg)
         self.timeout = int(self.http_cfg.get("timeout") or DEFAULT_TIMEOUT)
-        self.verify = self.http_cfg.get("verify_ssl", True)
+        # 与 scraper.py 共用同一判定：ca_bundle 优先，没配才看 verify_ssl
+        self.verify = http_verify(self.http_cfg)
         self.session = session or build_session(self.http_cfg, self.cookies)
         self.mid = None
         self.uname = ""

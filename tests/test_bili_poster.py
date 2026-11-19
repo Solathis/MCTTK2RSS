@@ -170,6 +170,16 @@ class TestCookies:
         assert bili_cfg["category_id"] == 4
         assert http_cfg == {"timeout": 30}
 
+    def test_verify_follows_ca_bundle(self):
+        """与 scraper.py 同口径：配了 ca_bundle 就用它，别再拿 verify_ssl=True 去撞证书。"""
+        poster = BilibiliPoster(
+            {"cookie_file": ""},
+            {"verify_ssl": True, "ca_bundle": "C:/certs/corp-ca.pem"},
+            session=FakeSession(),
+        )
+
+        assert poster.verify == "C:/certs/corp-ca.pem"
+
 
 # ── 登录 ─────────────────────────────────────────────
 

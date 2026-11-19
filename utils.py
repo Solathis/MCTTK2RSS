@@ -123,6 +123,20 @@ MODULE_TYPE_MAP = {
 }
 
 
+def http_verify(http_config: dict | None):
+    """requests / curl_cffi 的 verify 参数：`ca_bundle` 优先，其次 `verify_ssl`。
+
+    `ca_bundle` 是 TLS 解密环境（公司代理、杀毒软件）里唯一「既保留校验又连得通」的
+    办法，只认 `verify_ssl` 会让它形同虚设。配置文件里写明「ca_bundle 优先于
+    verify_ssl」，所以两条路径必须是同一个判定，不能各写一遍。
+    """
+    config = http_config or {}
+    ca_bundle = config.get("ca_bundle") or ""
+    if ca_bundle:
+        return ca_bundle
+    return bool(config.get("verify_ssl", True))
+
+
 def load_dotenv(project_dir: str = None) -> None:
     """加载同目录下的 .env 文件到环境变量（已存在的变量不覆盖）"""
     if project_dir is None:

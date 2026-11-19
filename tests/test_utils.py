@@ -7,6 +7,7 @@ import pytest
 import utils
 from utils import (
     find_image,
+    http_verify,
     load_dotenv,
     load_posted,
     load_thread_records,
@@ -14,6 +15,21 @@ from utils import (
     save_thread_records,
     thread_records_path,
 )
+
+
+class TestHttpVerify:
+    """`ca_bundle` 与 `verify_ssl` 的优先级只能有一处判定，否则抓取端与发帖端会各认一套。"""
+
+    def test_ca_bundle_takes_precedence(self):
+        assert http_verify({"verify_ssl": True, "ca_bundle": "C:/certs/corp.pem"}) == \
+            "C:/certs/corp.pem"
+
+    def test_verify_ssl_false_disables_check(self):
+        assert http_verify({"verify_ssl": False}) is False
+
+    def test_default_is_verification_on(self):
+        assert http_verify({}) is True
+        assert http_verify(None) is True
 
 
 class TestLoadDotenv:

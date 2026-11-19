@@ -528,17 +528,64 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ### 平台差异
 
-- 当前共用（`"platform": "all"`）：开头署名、各类型开头说明、结尾开源协议。
+- 当前共用（`"platform": "all"`）：各类型开头说明、结尾开源协议。
 - MCBBS 独占：结尾的「实用链接 / 如何游玩 / 想了解更多资讯」等模块，里面全是 MCBBS 站内链接。
 - 专栏独占：`module_bili_footer`（外部来源与更新条目追踪），B站 读者不关心 MCBBS 版块，所以单独写了一份官方站点链接。
   该模块**已默认开启**：超链接降级成 `文字（URL）` 之后，这组来源在正文里既看得到名字也看得到地址
   （原先因为 B站 剥链接、只剩名字而暂时关掉，见 [`archive/2026-11-15-bilibili-column.md`](archive/2026-11-15-bilibili-column.md) §9.2、§9.7）。
   内容里因此不再写 `[url]`，直接用「名称：地址」的纯文本，两种正文模型渲染出来一致。
+- 开头署名拆成两份：`module_sign`（`mcbbs`）与 `module_sign_bili`（`bilibili`），平台互斥。
+  专栏那份**只把项目地址挂成链接**，deepseek / MiMo 只写名字：这两个工具主页在专栏里会被降级成
+  「deepseek（https://www.deepseek.com/）」，实测把「动态-专栏」约 90 字的预览窗口整段吃掉，
+  读者只看到千篇一律的 AI 提示
+  （见 [`archive/2026-11-19-bilibili专栏-开头摘要实测.txt`](archive/2026-11-19-bilibili专栏-开头摘要实测.txt)）；
+  论坛那份保持三个 `[url]` 可点链接不变。`platform` 若写成 `all`，两份会同时在专栏生效、署名打印两遍。
 
 渲染专栏正文时，模块里的 BBCode 会被降级：粗体、列表保留（`[b]`→`<strong>`、`[list]`→`<ul>`），
 链接只有项目署名还保留成 `<a>` / link 节点，其余一律降级成 `文字（URL）`；
 表格/彩色/浮动/图标和 `[size=0px]` 隐藏文本会被丢弃——专栏没有这些等价物，留着只会显示成脏标签或
 把「本帖来自www.mcbbs.co」这类隐藏文字曝光出来。
+
+### 专栏开头摘要
+
+B站「动态-专栏」只预览正文开头约 90 字（实测 93 字，见
+[`archive/2026-11-19-bilibili专栏-开头摘要实测.txt`](archive/2026-11-19-bilibili专栏-开头摘要实测.txt)），
+署名模块排在最前面时，读者每次看到的都是同一句「本文 AI 翻译……」提示，正文一个字都露不出来。
+所以**专栏**正文最前面会加一行 `摘要：…`（粗体标签 + 一句中文摘要）。这一行只由
+`convert_to_bili_html` / `convert_to_bili_opus` 产出，MCBBS 的 BBCode / Markdown 里没有摘要。
+
+- **怎么生成**：翻译全部完成后，把标题 + 译文（跳过图片/代码块，最多 `summary.input_max_chars` 字）
+  发给同一个翻译 API 总结一句，写进 JSON 的 `translated_summary` 字段。摘要只在 Python 侧联网时
+  才可能生成，转换器不联网，所以不能等排版时再算。`bilibili.enabled` 为 `false` 时**完全不生成**——
+  摘要没有使用者，不为每篇文章白花一次调用。
+- **兜底**：摘要请求失败（含 `translate_text` 兜不住的请求异常）、返回为空，或 `summary.enabled`
+  为 `false` 时，退回本地截取：优先正文前几段 `p` 块，整篇只有列表/标题时退而取这些块——
+  摘要粗糙可以接受，开头空着不行，**任何情况下都不能因此跳过整篇文章**。这条兜底路径才按字数截
+  （它本身就是一段截取）。
+- **顺序**：摘要 → 开头模块（署名等）→ 标题 → 元信息 → 正文。摘要必须第一个，「动态-专栏」才会显示它。
+- **渲染**：摘要按纯文本处理（`**摘要：**` + 内容直接交给 Markdown 渲染器），**不走模块那套
+  BBCode→Markdown 解析**，否则模型输出里的 `[url=…]`、`[b]` 会被当成排版指令。
+- **老产物**：已有的 JSON 没有 `translated_summary`，重跑转换照旧开头，不会报错也不会补造；
+  想让旧稿也有摘要，得重跑一次翻译（或在 JSON 里手写该字段后重跑转换）。
+- 同一个字段也会作为 B站 草稿的 `summary`（`bilibili.summary_max_chars` 截断，B站 字段本身的长度限制），
+  专栏列表与搜索里显示的就是它，而不是正文开头。
+- 字数配置写错（如 `"max_chars": "80字"`）时按默认值处理并告警，不会把文章的翻译成果一起丢掉。
+
+```json
+"summary": {
+  "enabled": true,
+  "min_chars": 40,
+  "max_chars": 80,
+  "input_max_chars": 6000
+}
+```
+
+`min_chars` / `max_chars` 只是**写进提示词的提醒**（`输出长度参考：40～80 个字符…不是硬限制`），
+程序不按字数硬切：**只给上限时模型容易拿「26.4 快照 9 发布。」这类一句话应付**，字数合规但等于没说，
+所以下限用来逼它把版本号与主要改动写进去；而更新日志重构后常常一篇文章塞进一堆改动，
+长一点的摘要也比被切成半句有用（「动态-专栏」预览本来只显示开头约 90 字，长出来的部分读者在动态里看不到）。
+超过 `max_chars` 时按原样使用并在日志里记一行；短于 `min_chars` 时照用，只留 debug 日志。
+提示词本身只写内容与风格要求（`prompts.summarize_system`），字数由这两个配置项注入，改配置即生效。
 
 ## 智能词汇表
 
@@ -726,6 +773,12 @@ git diff --cached --quiet || {
     "max_tokens": 10000,
     "timeout": 120
   },
+  "prompts": {
+    "translate_text_default": "…",
+    "translate_blocks_system": "…",
+    "translate_title_system": "…",
+    "summarize_system": "…"
+  },
   "minecraft_api": {
     "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
     "pageSize": 5,
@@ -828,6 +881,12 @@ git diff --cached --quiet || {
     "translation_workers": 3,
     "batch_max_chars": 1000,
     "batch_max_items": 10
+  },
+  "summary": {
+    "enabled": true,
+    "min_chars": 40,
+    "max_chars": 80,
+    "input_max_chars": 6000
   }
 }
 ```
@@ -852,6 +911,10 @@ git diff --cached --quiet || {
 - **专栏投放范围**：`bilibili.publish_types`（默认版本发布类）与 `bilibili.exclude_sources`
   （默认排除 `feedback`）在投稿前过滤，官方 API 的快讯、时评与论坛式更新日志不会进专栏。
   两项留空即不过滤，被跳过的文章会在日志里逐条说明原因
+- **专栏开头摘要**：译文最前面会有一行 `摘要：…`，由翻译完成后的一次 API 总结生成
+  （`summary` 段与 `prompts.summarize_system`，见[专栏开头摘要](#专栏开头摘要)）。
+  关掉 `summary.enabled` 或 API 总结失败时退回正文前几段截取。
+  已有的旧 JSON 没有 `translated_summary`，补摘要需要重跑翻译
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
   改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`

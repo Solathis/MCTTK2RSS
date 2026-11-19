@@ -613,6 +613,15 @@ class TestHelpers:
         assert BilibiliPoster._build_summary(data, 100) == "第一段 第二段"
         assert BilibiliPoster._build_summary(data, 0) == ""
 
+    def test_summary_prefers_translated_summary(self):
+        """有翻译阶段写好的摘要就用它，别再拿正文开头凑一句。"""
+        data = {
+            "translated_summary": "26.4 快照 9 加入数据驱动发射器。",
+            "blocks": [{"type": "p", "translated_text": "挖矿愉快！"}],
+        }
+        assert BilibiliPoster._build_summary(data, 100) == "26.4 快照 9 加入数据驱动发射器。"
+        assert len(BilibiliPoster._build_summary(data, 10)) == 10
+
 
 # ── eva3 段落模型（renderer=opus） ──────────────────
 

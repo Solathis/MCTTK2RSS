@@ -2,9 +2,18 @@
   "default_modules": [
     {
       "id": "module_sign",
-      "title": "工具署名",
-      "platform": "all",
+      "title": "工具署名（论坛）",
+      "platform": "mcbbs",
       "content": "[size=2][b]【本文Ai翻译及Ai排版借助了： [url=https://github.com/jiubook/MCTTK]MCTTK[/url]、[url=https://www.deepseek.com/]deepseek[/url]、[url=https://aistudio.xiaomimimo.com/]MiMo[/url]等工具 】[/b][/size]",
+      "position": "start",
+      "order": 1001,
+      "enabled": true
+    },
+    {
+      "id": "module_sign_bili",
+      "title": "工具署名（专栏）",
+      "platform": "bilibili",
+      "content": "[size=2][b]【本文Ai翻译及Ai排版借助了： [url=https://github.com/jiubook/MCTTK]MCTTK[/url]、deepseek、MiMo等工具 】[/b][/size]",
       "position": "start",
       "order": 1001,
       "enabled": true

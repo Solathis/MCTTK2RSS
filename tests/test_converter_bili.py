@@ -240,6 +240,39 @@ class TestConvertToBiliHtml:
         assert "<script>" not in out
         assert "&lt;script&gt;" in out
 
+    def test_summary_leads_before_modules(self):
+        """摘要排在最前面：「动态-专栏」只预览开头约 90 字，署名模块不能占住它。"""
+        modules = {
+            "default_modules": [{
+                "id": "module_sign", "position": "start", "order": 1, "enabled": True,
+                "platform": "all", "content": "署名在摘要之后",
+            }],
+            "custom_modules": [],
+        }
+        data = self._data()
+        data["translated_summary"] = "26.4 快照 9 加入数据驱动发射器。"
+        out = J2MMConverter(modules).convert_to_bili_html(data)
+
+        lines = out.splitlines()
+        assert lines[0] == "<p><strong>摘要：</strong>26.4 快照 9 加入数据驱动发射器。</p>"
+        assert lines[1] == "<p>署名在摘要之后</p>"
+
+    def test_without_summary_no_lead_paragraph(self):
+        """老 JSON 没有 translated_summary：照旧开头，不补造也不报错。"""
+        out = self.conv.convert_to_bili_html(self._data(blocks=[_block("p", "Hello", "你好")]))
+        assert "摘要：" not in out
+        assert out.startswith("<h1>测试标题</h1>")
+
+    def test_summary_bbcode_stays_literal(self):
+        """摘要是生成的文字，不能被模块那套 BBCode 解析成排版/链接。"""
+        data = self._data()
+        data["translated_summary"] = "[b]粗[/b] [url=https://a.com]工具[/url]"
+        out = self.conv.convert_to_bili_html(data)
+
+        assert "[b]粗[/b]" in out
+        assert "[url=https://a.com]工具[/url]" in out
+        assert '<a href="https://a.com">' not in out
+
 
 # ── 模块内容 BBCode → HTML ──────────────────────────
 

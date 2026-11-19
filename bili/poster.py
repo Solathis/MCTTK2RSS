@@ -774,9 +774,16 @@ class BilibiliPoster:
 
     @staticmethod
     def _build_summary(data: dict, limit: int) -> str:
-        """摘要取正文前若干字：B站首页列表会显示，纯文本、不带标签。"""
+        """摘要取正文前若干字：B站首页列表会显示，纯文本、不带标签。
+
+        有翻译阶段写好的 translated_summary 就直接用它——它才是"这篇讲了什么"；
+        取不到（老 JSON 没重跑翻译）才退回正文开头。
+        """
         if limit <= 0:
             return ""
+        lead = re.sub(r"\s+", " ", str(data.get("translated_summary") or "")).strip()
+        if lead:
+            return lead[:limit]
         parts = []
         total = 0
         for block in data.get("blocks") or []:

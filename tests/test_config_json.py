@@ -155,7 +155,7 @@ class TestConfigStructure:
             assert isinstance(highlight["bold_types"], list)
             for news_type in highlight["bold_types"]:
                 assert isinstance(news_type, str) and news_type
-        for key in ("max_attempts", "max_age_hours"):
+        for key in ("max_attempts", "max_age_hours", "max_age_days"):
             if key in highlight:
                 assert isinstance(highlight[key], int) and highlight[key] > 0, f"highlight.{key} 必须是正整数"
 

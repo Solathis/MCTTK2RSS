@@ -115,6 +115,7 @@ DEFAULT_HIGHLIGHT = {
     "exclude_forums": ["块讯回收区"],
     "max_attempts": 6,
     "max_age_hours": 168,
+    "max_age_days": 30,
 }
 
 
@@ -151,7 +152,7 @@ def _merge_highlight(raw) -> dict:
             item for item in exclude_forums
             if not isinstance(item, bool) and isinstance(item, (int, str))
         ]
-    for key in ("max_attempts", "max_age_hours"):
+    for key in ("max_attempts", "max_age_hours", "max_age_days"):
         value = raw.get(key)
         if isinstance(value, int) and not isinstance(value, bool):
             merged[key] = value
@@ -187,9 +188,37 @@ def _find_redirect(html: str) -> str:
     return targets[0] if targets else ""
 
 
+# 记录里的时间戳格式（ISO 风格、秒级、本地时间），发帖时间/登记时间/更新时间共用
+TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%S"
+
+
 def _timestamp() -> str:
     """记录用的本地时间戳（秒级，ISO 风格，便于人眼与排序）。"""
-    return time.strftime("%Y-%m-%dT%H:%M:%S")
+    return time.strftime(TIMESTAMP_FORMAT)
+
+
+def _parse_timestamp(text: str) -> float | None:
+    """解析记录里的时间戳，解析不了返回 None。"""
+    try:
+        return time.mktime(time.strptime(text or "", TIMESTAMP_FORMAT))
+    except (TypeError, ValueError):
+        return None
+
+
+def _record_time(record: dict) -> float | None:
+    """记录的「起点」时间：优先发帖时间，其次登记时间。
+
+    刻意不看 `updated_at` —— 它每轮都被刷新，拿它算年龄等于永不过期（这正是审核中的
+    帖子被无限重试的原因）。两个字段都没有的老记录由 `_prune_records` 补一次
+    `registered_at`，从那一次开始算年龄。
+    """
+    return (_parse_timestamp(record.get("posted_at") or "")
+            or _parse_timestamp(record.get("registered_at") or ""))
+
+
+def _records_digest(records: dict) -> str:
+    """记录内容的指纹：这一轮没改动就不重写文件（每小时一轮，别每次都动磁盘）。"""
+    return json.dumps(records, ensure_ascii=False, sort_keys=True)
 
 
 _MY_THREAD_ANCHOR_RE = re.compile(r"<a\b([^>]*)>(.*?)</a>", re.S | re.I)
@@ -232,6 +261,9 @@ class ThreadProbe:
 
 _FORUM_ROW_RE = re.compile(r'<tbody id="normalthread_(\d+)"', re.I)
 _FORUM_TYPE_RE = re.compile(r"typeid=(\d+)[^>]*>([^<]{1,20})</a>")
+# 发帖日期在第一个 class="by" 单元格里：近期的写成 title="2026-11-18"，
+# 早一些的写成 <span>2026-11-4</span>（月和日不补零）
+_POSTED_DATE_RE = re.compile(r'<td class="by">.*?(\d{4})-(\d{1,2})-(\d{1,2})', re.S | re.I)
 _STYLE_ATTR_RE = re.compile(r'style="([^"]*)"', re.I)
 _COLOR_HEX_RE = re.compile(r"color:\s*(#[0-9A-Fa-f]{6})")
 _BOLD_CSS_RE = re.compile(r"font-weight:\s*bold", re.I)
@@ -242,7 +274,9 @@ class ForumThread:
     """版块列表里的一行：tid、标题、分类，以及它当前的高亮状态。
 
     版块列表是唯一能看到「颜色 + 是否加粗」的地方（标题链接上的内联 style），
-    「我的帖子」页只有标题，帖子页本身不渲染高亮样式。
+    「我的帖子」页只有标题，帖子页本身不渲染高亮样式。posted 是列表上显示的发帖
+    日期（YYYY-MM-DD），用来判断帖子本身是否已经过期——注意列表默认按最后回复排序，
+    行序不代表发帖时间。
     """
 
     tid: int
@@ -251,6 +285,7 @@ class ForumThread:
     type_name: str = ""
     color: str = ""
     bold: bool = False
+    posted: str = ""
 
 
 def _parse_forum_threads(html: str) -> list[ForumThread]:
@@ -284,6 +319,7 @@ def _parse_forum_threads(html: str) -> list[ForumThread]:
 
         color_match = _COLOR_HEX_RE.search(style)
         type_match = _FORUM_TYPE_RE.search(block)
+        posted_match = _POSTED_DATE_RE.search(block)
         threads.append(ForumThread(
             tid=int(row.group(1)),
             title=title,
@@ -291,6 +327,8 @@ def _parse_forum_threads(html: str) -> list[ForumThread]:
             type_name=_normalize_title(type_match.group(2)) if type_match else "",
             color=color_match.group(1).upper() if color_match else "",
             bold=bool(_BOLD_CSS_RE.search(style)),
+            posted=(f"{int(posted_match.group(1)):04d}-{int(posted_match.group(2)):02d}-"
+                    f"{int(posted_match.group(3)):02d}") if posted_match else "",
         ))
     return threads
 
@@ -590,6 +628,39 @@ def _local_news_type(save_dir: str, stem: str) -> str:
         (meta.get("title") or "").strip(),
         (meta.get("translated_title") or "").strip(),
     )
+
+
+_ISO_DATE_RE = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
+_STEM_MONTH_RE = re.compile(
+    r"(\d{1,2})_(January|February|March|April|May|June|July|August|September|"
+    r"October|November|December)_(\d{4})")
+_MONTHS = ("January", "February", "March", "April", "May", "June", "July",
+           "August", "September", "October", "November", "December")
+
+
+def _artifact_release_time(save_dir: str, stem: str) -> float | None:
+    """产物的发布时间：先读 JSON 的 release_date，其次从文件名里的日期推。
+
+    只给「多久以前的事就不用管了」这条判断用，时区差几个小时无所谓。两者都没有就
+    返回 None（例如早期产物），调用方按「无法判断」处理，不因为算不出年龄就误杀。
+    """
+    json_path = os.path.join(save_dir, stem + ".json")
+    try:
+        with open(json_path, encoding="utf-8") as f:
+            release = (json.load(f).get("release_date") or "").strip()
+    except (OSError, json.JSONDecodeError):
+        release = ""
+    iso = _ISO_DATE_RE.search(release) or _ISO_DATE_RE.search(stem)
+    if iso:
+        year, month, day = (int(part) for part in iso.groups())
+        with contextlib.suppress(ValueError, OverflowError):
+            return time.mktime((year, month, day, 0, 0, 0, 0, 0, -1))
+    named = _STEM_MONTH_RE.search(stem)
+    if named:
+        day, month_name, year = int(named.group(1)), named.group(2), int(named.group(3))
+        with contextlib.suppress(ValueError, OverflowError):
+            return time.mktime((year, _MONTHS.index(month_name) + 1, day, 0, 0, 0, 0, 0, -1))
+    return None
 
 
 def insert_image_bbcode(message: str, aid: str) -> str:
@@ -1337,8 +1408,9 @@ class MCBBSPoster:
         绝大多数「还没过审」的项，省掉一轮验证码。返回统计供日志汇总。
         """
         stats = {"pending": 0, "highlighted": 0, "unbolded": 0, "gave_up": 0,
-                 "failed": 0, "dropped": 0}
+                 "failed": 0, "dropped": 0, "stale": 0}
         records = load_thread_records(records_path)
+        before = _records_digest(records)
         pending = {stem: rec for stem, rec in records.items() if rec.get("state") == "pending"}
         if not pending:
             return stats
@@ -1356,6 +1428,21 @@ class MCBBSPoster:
             if not tid:
                 if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
                     stats["gave_up"] += 1
+                continue
+            if self._too_old(rec, now):
+                # 太老的帖子不再管：既不探测也不上色，省掉每轮白跑一个请求
+                rec["state"] = "gave_up"
+                rec["last_error"] = f"超过 {self._max_age_days()} 天仍未补上高亮，不再处理"
+                rec["updated_at"] = _timestamp()
+                stats["stale"] += 1
+                log_info("    → 已过期，不再补高亮: %s（tid=%s）", rec.get("title", stem), tid)
+                continue
+            if self._expired(rec, now):
+                # 等审核已经超过 max_age_hours：同样不再探测，免得每轮为一个死帖花一次请求
+                rec["state"] = "gave_up"
+                rec["last_error"] = "等待审核超时，已放弃"
+                rec["updated_at"] = _timestamp()
+                stats["gave_up"] += 1
                 continue
             probe = probe_thread(self.base_url, int(tid))
             if probe.visible is None:
@@ -1410,11 +1497,16 @@ class MCBBSPoster:
                     stats["unbolded"] += self._unbold_older_versions(records, rec)
         finally:
             # 探测/登记结果无论如何都要落盘：登录失败也不该把上一轮的进展丢掉
-            self._save_records(records_path, records)
+            pruned = self._prune_records(records)
+            if pruned or _records_digest(records) != before:
+                self._save_records(records_path, records)
 
         log_info("[高亮] 待补 %d 篇 | 已设置 %d | 取消加粗 %d | 放弃 %d | 失败 %d | 跳过 %d",
                  stats["pending"], stats["highlighted"], stats["unbolded"],
                  stats["gave_up"], stats["failed"], stats["dropped"])
+        if stats["stale"]:
+            log_info("[高亮] 另有 %d 篇超过 %d 天未补上，已放弃",
+                     stats["stale"], self._max_age_days())
         return stats
 
     def _resolve_tids(self, records: dict, missing: dict) -> None:
@@ -1597,6 +1689,7 @@ class MCBBSPoster:
                           "url": f"{self.base_url}/thread-{row.tid}-1-1.html",
                           "title": row.title, "forum_name": "", "news_type": "manual",
                           "color": color, "bold": True, "state": "done", "posted_at": "",
+                          "registered_at": _timestamp(),
                           "attempts": 0, "last_error": "", "tid_source": "加粗收敛"}
                 records[f"tid_{row.tid}"] = record
             if record is not None:
@@ -1643,16 +1736,87 @@ class MCBBSPoster:
             return True
         return False
 
-    def _expired(self, rec: dict, now: float) -> bool:
-        """记录是否已经超过等待上限（按发帖时间算）。"""
-        max_hours = self.highlight.get("max_age_hours") or 0
-        try:
-            posted = time.mktime(time.strptime(rec.get("posted_at") or "", "%Y-%m-%dT%H:%M:%S"))
-        except (TypeError, ValueError):
+    def _max_age_days(self) -> int:
+        """多久以前的帖子就不再管（0 表示不限）。"""
+        value = self.highlight.get("max_age_days")
+        return int(value) if isinstance(value, int) and not isinstance(value, bool) else 0
+
+    def _stale_artifact(self, released: float | None) -> bool:
+        """产物的发布时间是否已经超出处理期限；时间未知时当作没过期。"""
+        max_days = self._max_age_days()
+        if released is None or not max_days:
             return False
-        return bool(max_hours) and (now - posted) > max_hours * 3600
+        return (time.time() - released) > max_days * 86400
+
+    def _stale_thread(self, site_row, released: float | None) -> bool:
+        """帖子是否过期：优先看版块列表上的发帖日期，取不到才退回产物日期。
+
+        必须以帖子日期为准：旧文章被重新发一遍时产物日期很老，但帖子是今天发的，
+        照样该上色。版块列表默认按最后回复排序，所以不能拿行的位置当代替。
+        """
+        posted = getattr(site_row, "posted", "") or ""
+        started = _parse_timestamp(f"{posted}T00:00:00") if posted else released
+        if started is None:
+            return False
+        return self._stale_artifact(started)
+
+    def _drop_stale_legacy(self, records: dict, save_dir: str, site_rows: dict) -> int:
+        """删掉已经过期的 legacy 登记，返回条数。
+
+        legacy 记录的本意是「历史帖还没上色，随时可以提升」；老到超出窗口之后
+        这条记录就只是一行永远用不上的数据。待办（pending）和加粗中的记录不动。
+        """
+        dropped = 0
+        for stem in list(records):
+            record = records[stem]
+            if record.get("state") != "legacy" or record.get("bold"):
+                continue
+            site_row = site_rows.get(record.get("tid"))
+            if self._stale_thread(site_row, _artifact_release_time(save_dir, stem)):
+                records.pop(stem, None)
+                dropped += 1
+        return dropped
+
+    def _too_old(self, rec: dict, now: float) -> bool:
+        """记录是否已经超出处理期限；算不出年龄的一律当作没过期。"""
+        max_days = self._max_age_days()
+        started = _record_time(rec)
+        if not max_days or started is None:
+            return False
+        return (now - started) > max_days * 86400
+
+    def _expired(self, rec: dict, now: float) -> bool:
+        """记录是否已经超过「等审核」的上限（按发帖/登记时间算，不是更新时间）。"""
+        max_hours = self.highlight.get("max_age_hours") or 0
+        started = _record_time(rec)
+        if not max_hours or started is None:
+            return False
+        return (now - started) > max_hours * 3600
+
+    def _prune_records(self, records: dict, now: float | None = None) -> int:
+        """删掉过期且不再需要的记录，返回删除条数。
+
+        记录留着只为了「待办」和「以后还能撤销/对照」；一旦帖子老到不再处理，留一条
+        记录只会让文件越长越大、让 --highlight-status 充满「没找到」。三条豁免：
+        `pending` 是待办；加粗中的帖子要留着才能随时取消加粗；算不出年龄的老记录
+        不敢删。给缺时间戳的记录补一次 registered_at，从这一刻开始算年龄。
+        """
+        moment = now if now is not None else time.time()
+        max_days = self._max_age_days()
+        dropped = 0
+        for stem in list(records):
+            rec = records[stem]
+            if not rec.get("registered_at") and not rec.get("posted_at"):
+                rec["registered_at"] = rec.get("updated_at") or _timestamp()
+            if not max_days or rec.get("state") == "pending" or rec.get("bold"):
+                continue
+            if self._too_old(rec, moment):
+                records.pop(stem, None)
+                dropped += 1
+        return dropped
 
     def _save_records(self, records_path: str, records: dict) -> None:
+        self._prune_records(records)
         try:
             save_thread_records(records_path, records)
         except OSError:
@@ -1667,7 +1831,8 @@ class MCBBSPoster:
         排除版块里的帖子一律不登记。
         """
         stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0, "refreshed": 0,
-                 "no_color": 0, "recycled": 0, "excluded": 0, "site_bold": 0}
+                 "no_color": 0, "recycled": 0, "excluded": 0, "site_bold": 0, "expired": 0,
+                 "pruned": 0}
         threads = self.fetch_my_threads(pages=pages)
         stats["threads"] = len(threads)
         if not threads:
@@ -1684,6 +1849,12 @@ class MCBBSPoster:
         except requests.RequestException as e:
             log_warning("    ⚠ 读版块列表失败，历史登记的颜色/加粗回退到配置值: %s", e)
             site_rows = {}
+        # 版块列表带每行的发帖日期：过期判断以它为准（产物日期只做兜底）
+        try:
+            site_rows = {row.tid: row for row in self.fetch_forum_threads(pages=pages)}
+        except requests.RequestException as e:
+            log_warning("    ⚠ 读版块列表失败，历史登记的颜色/加粗回退到配置值: %s", e)
+            site_rows = {}
 
         for item in threads:
             stem = titles.get(_normalize_title(item.title))
@@ -1691,6 +1862,11 @@ class MCBBSPoster:
                 continue
             stats["matched"] += 1
             site_row = site_rows.get(item.tid)
+            if self._stale_thread(site_row, _artifact_release_time(save_dir, stem)):
+                stats["expired"] += 1
+                log_debug("    → 跳过历史登记（已超过 %d 天）: %s",
+                          self._max_age_days(), stem)
+                continue
             if item.recy:
                 stats["recycled"] += 1
                 log_info("    → 跳过历史登记（标题带删除线）: %s", item.title)
@@ -1728,6 +1904,7 @@ class MCBBSPoster:
                 "bold": bool(site_row.bold) if site_row else False,
                 "state": "legacy",
                 "posted_at": "",
+                "registered_at": _timestamp(),
                 "updated_at": _timestamp(),
                 "attempts": 0,
                 "last_error": "",
@@ -1742,16 +1919,20 @@ class MCBBSPoster:
                          "（站点已加粗）" if site_row and site_row.bold else "",
                          item.forum_name or "版块未知")
 
-        if (stats["recorded"] or stats["refreshed"]) and not dry_run:
+        if not dry_run:
+            stats["pruned"] = self._drop_stale_legacy(records, save_dir, site_rows)
+        if (stats["recorded"] or stats["refreshed"] or stats["pruned"]) and not dry_run:
             self._save_records(records_path, records)
         for name, fid in sorted({(item.forum_name, item.forum_fid)
                                  for item in threads if item.forum_name}):
             log_debug("    · 列表出现的版块: %s（fid=%s）", name, fid)
         log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条（其中站点已加粗 %d 条）| "
-                 "已有记录 %d 条（刷新 %d 条）| 删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
+                 "已有记录 %d 条（刷新 %d 条）| 删除线跳过 %d 条 | 排除版块跳过 %d 条 | "
+                 "无色跳过 %d 条 | 过期跳过 %d 条 | 清理过期登记 %d 条",
                  stats["threads"], stats["matched"], stats["recorded"], stats["site_bold"],
                  stats["skipped"], stats["refreshed"],
-                 stats["recycled"], stats["excluded"], stats["no_color"])
+                 stats["recycled"], stats["excluded"], stats["no_color"], stats["expired"],
+                 stats["pruned"])
         return stats
 
     def highlight_status(self, records_path: str, pages: int = 3) -> dict:
@@ -1866,6 +2047,7 @@ class MCBBSPoster:
             "bold": news_type in (self.highlight.get("bold_types") or []),
             "state": "pending",
             "posted_at": previous.get("posted_at") or now,
+            "registered_at": previous.get("registered_at") or now,
             "updated_at": now,
             "attempts": previous.get("attempts", 0),
             "last_error": "",
@@ -2056,6 +2238,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
             "bold": True if args.bold else (False if args.no_bold else bool(record.get("bold"))),
             "state": "pending",
             "posted_at": record.get("posted_at") or _timestamp(),
+            "registered_at": record.get("registered_at") or _timestamp(),
             "updated_at": _timestamp(),
             "attempts": 0,
             "last_error": "",

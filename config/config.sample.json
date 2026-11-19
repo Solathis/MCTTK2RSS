@@ -161,7 +161,8 @@
       ],
       "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
-      "max_age_hours": 168
+      "max_age_hours": 168,
+      "max_age_days": 30
     }
   },
   "bilibili": {

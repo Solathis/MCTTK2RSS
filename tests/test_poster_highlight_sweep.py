@@ -352,7 +352,7 @@ class TestSweep:
         poster_obj = _make_poster(None)
         stats = poster_obj.process_pending_highlights(str(tmp_path / ".mcbbs_threads.json"))
         assert stats == {"pending": 0, "highlighted": 0, "unbolded": 0,
-                         "gave_up": 0, "failed": 0, "dropped": 0}
+                         "gave_up": 0, "failed": 0, "dropped": 0, "stale": 0}
         assert poster_obj.session is None
 
     def test_network_error_while_highlighting_counts_failure(self, tmp_path, monkeypatch):
@@ -777,6 +777,28 @@ class TestForumThreadsParser:
         )
         row = poster._parse_forum_threads(html)[0]
         assert (row.tid, row.typeid, row.color, row.bold) == (6720, 16, "#EC1282", False)
+
+    def test_reads_posted_date_from_first_by_cell(self):
+        """发帖日期在第一列；近期写成 title 属性，早一些的直接是文本。"""
+        html = (
+            '<tbody id="normalthread_6816"><tr><th class="new">'
+            '<em>[<a href="forum.php?mod=forumdisplay&amp;fid=45&amp;filter=typeid'
+            '&amp;typeid=16">块讯</a>]</em> '
+            '<a href="thread-6816-1-1.html" class="s xst">新帖</a></th>'
+            '<td class="by"><cite><a href="space-uid-182761.html">newspaper</a></cite>'
+            '<em><span><span title="2026-11-18">昨天 19:09</span></span></em></td>'
+            '<td class="by"><cite><a href="space-username-x.html">某人</a></cite>'
+            '<em><span>2026-11-19</span></em></td></tr></tbody>'
+        )
+        assert poster._parse_forum_threads(html)[0].posted == "2026-11-18"
+
+    def test_posted_date_without_padding(self):
+        html = (
+            '<tbody id="normalthread_6720"><tr><th class="new">'
+            '<a href="thread-6720-1-2.html" class="s xst">旧帖</a></th>'
+            '<td class="by"><em><span>2026-11-4</span></em></td></tr></tbody>'
+        )
+        assert poster._parse_forum_threads(html)[0].posted == "2026-11-04"
 
     def test_unknown_markup_returns_empty(self):
         assert poster._parse_forum_threads("<html>no rows</html>") == []

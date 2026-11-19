@@ -70,7 +70,9 @@ flowchart LR
 
 - **三类来源**：官方 API、Feedback 反馈站（走 Zendesk 公开 API，失败回退页面解析）、
   Piston 版本清单（补齐 Java 版本日志）
-- **URL 级去重**：`output/.state.json` 记录处理状态，同一篇文章不会重复翻译或重复发布
+- **URL 级去重**：`output/.state.json` 记录处理状态，同一篇文章不会重复翻译、重复发布
+  （前提是同一个输出目录只跑一个实例；并发跑同一目录，或发帖成功后、记账前进程被杀，
+  这一条不成立）
 - **失败可重试**：解析或翻译失败只记次数、不标记已处理，下一轮接着做，超过上限才放弃
 - **首次运行保护**：第一轮把所有现有新闻标为已处理，只处理此后新增的内容
 
@@ -152,11 +154,13 @@ B站那套会把原文对照刷成灰字放在译文下面、把外链降级成�
 # 1. 装依赖（可选扩展：--extra captcha 验证码识别 / --extra feedback Feedback 抓取）
 uv sync --extra captcha --extra feedback
 
-# 2. 配置：复制模板后填 API Key 与账号
+# 2. 配置：复制模板，然后改 openai_compat 的 host / model，再填 API Key 与账号
 cp config/config.sample.json config/config.json     # Windows: copy
 cp .env.sample .env                                  # 放 OPENAI_API_KEY / MCBBS_USERNAME / MCBBS_PASSWORD
+#   模板里的 host 是 api.example.com 占位符：main.py 见到 example 会当成
+#   「翻译 API 未配置」直接退出，必须换成自己的服务商地址
 
-# 3. 先空跑看看能抓到什么（不翻译、不发帖）
+# 3. 先空跑看看能抓到什么（不翻译、不发帖、不写状态）
 uv run python main.py --dry-run
 
 # 4. 正式跑一轮：抓取 → 翻译 → 转换 → 发布
@@ -184,8 +188,11 @@ docker compose up -d --build           # 容器化运行，默认每小时一轮
 ## 注意事项
 
 - **配置与凭据**：`config/config.json`、`.env` 都在 `.gitignore` 里，请从模板复制；
-  API Key 与论坛密码建议只放在 `.env`
-- **无授权不要真跑发布**：`--dry-run` 只探测不落盘；真要验证发布请用测试目录
+  API Key 与论坛密码建议只放在 `.env`。`http.verify_ssl` 默认开着，别为了绕过证书错误关掉它
+  （翻译请求带着 API key），优先配 `http.ca_bundle`
+- **无授权不要真跑发布**：`--dry-run` 只探测（不翻译、不发帖、不写状态）；想连发布链路一起
+  试又没有真站点，就把配置里的 `mcbbs.enabled` / `bilibili.enabled` 关掉 —— 只换 `--dir`
+  换输出目录**不会**阻止往线上论坛发帖
 - **状态文件**：`output/.state.json`（已处理的新闻）、`.posted.json`（已发布的）、
   `.posted_bili.json`（已投稿的）、`.mcbbs_threads.json`（高亮追踪）—— 删除语义见
   [docs/USAGE.md](docs/USAGE.md#注意事项)

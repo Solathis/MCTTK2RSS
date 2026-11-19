@@ -42,16 +42,21 @@ uv run pytest tests/ -q
 ### 本地跑起来
 
 ```bash
-uv run python main.py --dry-run        # 只探测新新闻，不翻译不发帖（默认用这个验证）
-uv run python main.py --scrape-only    # 抓取 + 翻译 + 转换，不发帖
+uv run python main.py --dry-run        # 只探测新新闻：不翻译、不发帖、不写状态（默认用这个验证）
+uv run python main.py --scrape-only    # 抓取 + 翻译 + 转换：会真调翻译 API 并写产物与状态
 uv run python main.py --post-only      # 只发 output/ 里还没发的
 uv run python scheduler.py             # 定时循环（容器默认入口）
 docker compose config -q               # 编排语法自检
 ```
 
 配置与全部 CLI 参数见 [docs/USAGE.md](docs/USAGE.md)。**没有明确授权时不要真实发帖、
-不要真实调用翻译 API 消耗额度**：验证一律用 `--dry-run` / `--scrape-only`，或测试里的
-fake session。
+不要真实调用翻译 API 消耗额度**：
+
+- 只想确认「抓取链路通不通」→ 用 `--dry-run`，它只读；
+- `--scrape-only` **不是**免费验证：它会真实调用翻译 API（消耗额度）、写出产物并推进
+  `.state.json`，只在确实要生成内容时用；
+- 要验证翻译/发布逻辑，用测试里的 fake session，或 `--post-only` 前先把
+  `mcbbs.enabled` / `bilibili.enabled` 关掉（`--dir` 只改输出目录，不阻止发帖）。
 
 ## 项目结构
 
@@ -433,9 +438,22 @@ PR 描述必须包含五段，缺一段就是不合格 PR：
 
 ## 持续集成与发版
 
-### CI 定时任务
+### 仓库自带的两个工作流
 
-在仓库 Settings → Secrets and variables → Actions 中添加：
+`.github/workflows/` 里只有两个**启用**的工作流：
+
+| 文件 | 触发 | 作用 |
+| --- | --- | --- |
+| `ci.yml` | PR 到 `main`、push 到 `main` / `ruffcheck`，以及被 `release.yml` 复用 | `ruff check` + `pytest` |
+| `release.yml` | 推 `v*` tag | 门禁 → 推 GHCR → 离线包 → Release |
+
+**定时抓取不在 GitHub Actions 里跑**：日常运行交给容器里的 `scheduler.py`
+（`docker compose up -d` 之后的默认入口，`MCTTK_INTERVAL` 控制间隔）。仓库里有一个
+`scrape.yml.BAK`，它是早期用 Actions 定时跑抓取的备份文件 —— GitHub 不认 `.BAK` 后缀，
+所以它不会触发任何任务，改它也不会有任何效果。
+
+要自己接 Actions 定时抓取，需要新建一个带 `schedule` / `workflow_dispatch` 的 workflow，
+并在仓库 Settings → Secrets and variables → Actions 里配好：
 
 | Secret 名称 | 说明 |
 |---|---|
@@ -446,7 +464,6 @@ PR 描述必须包含五段，缺一段就是不合格 PR：
 | `BILI_SESSDATA` | B站登录 cookie（启用专栏发布时需要） |
 | `BILI_JCT` | B站 csrf 令牌，与 `BILI_SESSDATA` 同一登录会话 |
 
-Workflow 默认每 6 小时运行一次（UTC 0:00, 6:00, 12:00, 18:00），也可手动触发。
 PR 只跑 `ruff check` + `pytest`；这两个以外的检查不要偷偷加进 PR 流水线。
 
 ### 发布版本（打 tag 自动出镜像 + Release）

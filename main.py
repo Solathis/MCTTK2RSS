@@ -65,6 +65,7 @@ from utils import (
     load_dotenv,
     load_posted,
     load_thread_records,
+    save_json_atomic,
     save_posted,
     thread_records_path,
 )
@@ -127,8 +128,9 @@ def save_state(state_file: str, state: dict):
     state["last_run"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     # 确保目录存在
     os.makedirs(os.path.dirname(state_file) or ".", exist_ok=True)
-    with open(state_file, "w", encoding="utf-8") as f:
-        json.dump(state, f, ensure_ascii=False, indent=2)
+    # 原子写：写盘期间被 kill 不会留下半截 JSON，否则下次运行按「首次运行」处理，
+    # 把当前新闻全部记成已处理（一篇都没发布，见 docs/USAGE.md 的 Actions 一节）
+    save_json_atomic(state_file, state, ".state-")
     log_debug("[状态] 已写入 %s（已处理 %d 条）", state_file, len(state.get("posted_urls", [])))
 
 

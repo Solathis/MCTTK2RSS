@@ -58,6 +58,16 @@ def save_posted(state_file: str, posted: set) -> None:
     _atomic_write_json(state_file, sorted(posted), ".posted-")
 
 
+def save_json_atomic(path: str, payload, tmp_prefix: str = ".json-") -> None:
+    """给别的模块用的原子写 JSON 入口（键顺序、排序由调用方负责）。
+
+    直接用 `json.dump(open(..., "w"))` 会在写之前先截断文件：进程在这一瞬间被杀
+    （容器重启、CI 超时、断电）就留下半截 JSON。`.state.json` 读坏了会被当成
+    「首次运行」，整轮新闻直接被记成已处理 —— 所以这条路径也必须原子写。
+    """
+    _atomic_write_json(path, payload, tmp_prefix)
+
+
 # ── MCBBS 帖子记录（发帖之后：tid、高亮、审核状态）──────
 
 THREAD_RECORDS_NAME = ".mcbbs_threads.json"

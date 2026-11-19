@@ -107,14 +107,15 @@ flowchart LR
 
 | 帖子 | 分类 | 标题样式 |
 | --- | --- | --- |
-| [Minecraft 26.4 快照 9 [AI翻译]](https://www.mcbbs.co/thread-6808-1-1.html) | Java版资讯 | 🟩 绿 `#3C9D40` + **加粗**（该线最新） |
-| [Minecraft Java版 26.3 [AI翻译]](https://www.mcbbs.co/thread-6336-1-1.html) | Java版资讯 | 🟥 红 `#EE1B2E` + **加粗**（该线最新） |
-| [Minecraft 预览版 26.70.26 更新日志 [AI翻译]](https://www.mcbbs.co/thread-6812-1-1.html) | 基岩版资讯 | 🟩 绿 `#3C9D40` + **加粗**（该线最新） |
-| [Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]](https://www.mcbbs.co/thread-6737-1-1.html) | 基岩版资讯 | 🟥 红 `#EE1B2E` + **加粗**（该线最新） |
-| [TwitchCon 揭晓 2027 年首个游戏更新的特色内容 [AI翻译]](https://www.mcbbs.co/thread-6816-1-1.html) | 块讯 | 🟪 粉 `#EC1282`，不加粗 |
+| [Minecraft 26.4 快照 9 [AI翻译]](https://www.mcbbs.co/thread-6808-1-1.html) | Java版资讯 | 🟩 `#3C9D40` + **加粗** |
+| [Minecraft Java版 26.3 [AI翻译]](https://www.mcbbs.co/thread-6336-1-1.html) | Java版资讯 | 🟥 `#EE1B2E` + **加粗** |
+| [Minecraft 预览版 26.70.26 更新日志 [AI翻译]](https://www.mcbbs.co/thread-6812-1-1.html) | 基岩版资讯 | 🟩 `#3C9D40` + **加粗** |
+| [Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]](https://www.mcbbs.co/thread-6737-1-1.html) | 基岩版资讯 | 🟥 `#EE1B2E` + **加粗** |
+| [TwitchCon 揭晓 2027 年首个游戏更新的特色内容 [AI翻译]](https://www.mcbbs.co/thread-6816-1-1.html) | 块讯 | 🟪 `#EC1282`，不加粗 |
 
 四条版本线（Java 正式版 / Java 测试版 / 基岩版正式版 / 基岩版测试版）各有一篇加粗；新版本
 发出来后，旧的会自动取消加粗 —— 这是版规「最新版本加粗」在 Discuz 里的实现方式。
+每次设置高亮都会在站上留一条「本主题由 newspaper 设置高亮」的版主记录，这是 Discuz 的机制。
 
 ## 快速开始
 

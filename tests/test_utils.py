@@ -5,7 +5,15 @@ import os
 import pytest
 
 import utils
-from utils import find_image, load_dotenv, load_posted, save_posted
+from utils import (
+    find_image,
+    load_dotenv,
+    load_posted,
+    load_thread_records,
+    save_posted,
+    save_thread_records,
+    thread_records_path,
+)
 
 
 class TestLoadDotenv:
@@ -92,6 +100,38 @@ class TestPostedState:
 
         assert load_posted(path) == {"old"}
         assert [item.name for item in tmp_path.iterdir()] == [".posted.json"]
+
+
+class TestThreadRecords:
+    """发帖之后的记录：读不到不能影响发布，写坏了不能留下半截文件。"""
+
+    def test_missing_file_returns_empty(self, tmp_path):
+        assert load_thread_records(str(tmp_path / "nope.json")) == {}
+
+    def test_round_trip_sorted(self, tmp_path):
+        path = tmp_path / ".mcbbs_threads.json"
+        records = {"news_b": {"tid": 2}, "news_a": {"tid": 1}}
+        save_thread_records(str(path), records)
+        assert load_thread_records(str(path)) == records
+        assert list(json.loads(path.read_text(encoding="utf-8"))) == ["news_a", "news_b"]
+
+    def test_corrupt_file_does_not_raise(self, tmp_path):
+        path = tmp_path / ".mcbbs_threads.json"
+        path.write_text('{"news_a": ', encoding="utf-8")
+        assert load_thread_records(str(path)) == {}
+
+    def test_non_dict_payload_returns_empty(self, tmp_path):
+        path = tmp_path / ".mcbbs_threads.json"
+        path.write_text('["news_a"]', encoding="utf-8")
+        assert load_thread_records(str(path)) == {}
+
+    def test_write_leaves_no_temp_file(self, tmp_path):
+        path = str(tmp_path / ".mcbbs_threads.json")
+        save_thread_records(path, {"news_a": {}})
+        assert [item.name for item in tmp_path.iterdir()] == [".mcbbs_threads.json"]
+
+    def test_path_named_after_records(self, tmp_path):
+        assert os.path.basename(thread_records_path(str(tmp_path))) == ".mcbbs_threads.json"
 
 
 class TestFindImage:

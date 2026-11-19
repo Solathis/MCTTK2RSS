@@ -20,6 +20,7 @@ import os
 import re
 import sys
 import time
+from dataclasses import dataclass
 from urllib.parse import quote, unquote
 
 import requests
@@ -50,6 +51,42 @@ IMG_INSERT_BEFORE = "[align=center][size=5][b]NEWS[/b]"
 
 # 登录重试默认值，config.json 的 retry.login 可以覆盖（见 load_poster_config）
 DEFAULT_LOGIN_RETRY = {"max_attempts": 3, "wait_seconds": 10}
+
+# 发帖响应的跳转地址有三种写法：静态化地址 thread-123-1-1.html、查询串
+# forum.php?mod=viewthread&tid=123，以及弹窗脚本里被转义的 window.location.href =\'...\'。
+# 旧实现只认第一种且要求引号不被转义，于是"进审核"的帖子永远拿不到帖子 ID。
+_REDIRECT_JS_RE = re.compile(r"window\.location\.href\s*=\s*\\?'([^']+?)\\?'")
+_TID_URL_RE = re.compile(r"thread-(\d+)-1-1")
+_TID_QUERY_RE = re.compile(r"[?&](?:amp;)?tid=(\d+)")
+
+
+@dataclass(frozen=True)
+class PostResult:
+    """一次发帖的结果。
+
+    帖子 ID 与「要不要审核」必须一起带出来：Discuz 对 displayorder < 0（审核中）
+    的帖子拒绝设置高亮，而这类响应往往又不带可用的帖子地址。少了这两个值，
+    审核中的帖子就再也补不上高亮了。
+    """
+
+    url: str
+    tid: int | None = None
+    needs_audit: bool = False
+
+
+def _extract_tid(text: str) -> int | None:
+    """从地址或页面片段里取帖子 ID。"""
+    match = _TID_URL_RE.search(text or "") or _TID_QUERY_RE.search(text or "")
+    return int(match.group(1)) if match else None
+
+
+def _find_redirect(html: str) -> str:
+    """取发帖响应里脚本跳转的目标地址；优先带帖子 ID 的那一条。"""
+    targets = [match.group(1) for match in _REDIRECT_JS_RE.finditer(html or "")]
+    for target in targets:
+        if _extract_tid(target):
+            return target
+    return targets[0] if targets else ""
 
 
 # ── 配置加载 ─────────────────────────────────────────
@@ -661,8 +698,8 @@ class MCBBSPoster:
         return aid
 
     def post_thread(self, title: str, message: str,
-                    attachment_ids: list = None, sortid: int = None) -> str:
-        """发帖，返回帖子 URL"""
+                    attachment_ids: list = None, sortid: int = None) -> PostResult:
+        """发帖，返回 PostResult（帖子地址、帖子 ID、是否需审核）"""
         if not self.session:
             raise RuntimeError("未登录，请先调用 login()")
 
@@ -703,39 +740,38 @@ class MCBBSPoster:
                 data[f"attachnew[{aid}][description]"] = ""
 
         self.session.headers.update({"Referer": newthread_url})
-        r = self.session.post(post_url, data=data, allow_redirects=False)
-        self.session.headers.pop("Referer", None)
+        try:
+            r = self.session.post(post_url, data=data, allow_redirects=False)
+        finally:
+            self.session.headers.pop("Referer", None)
         r.raise_for_status()
 
-        # 提取帖子 URL
-        js_match = re.search(
-            r"window\.location\.href\s*=\s*'([^']+thread-\d+-1-1[^']*)'", r.text
-        )
-        if js_match:
-            relative_url = js_match.group(1)
-            full_url = f"{self.base_url}/{relative_url.lstrip('./')}"
-            if "需要审核" in r.text:
-                log_info(f"    ✓ 发帖成功（需审核）: {full_url}")
-            else:
-                log_info(f"    ✓ 发帖成功: {full_url}")
-            return full_url
+        return self._parse_post_response(r)
 
-        for source in (r.headers.get("Location", ""), r.url):
-            tid_match = re.search(r"thread-(\d+)-1-1", source)
-            if tid_match:
-                full_url = f"{self.base_url}/thread-{tid_match.group(1)}-1-1.html"
-                log_info(f"    ✓ 发帖成功: {full_url}")
-                return full_url
+    def _parse_post_response(self, response) -> PostResult:
+        """解析发帖响应：帖子 URL、帖子 ID，以及是否进了审核。"""
+        html = getattr(response, "text", "") or ""
+        headers = getattr(response, "headers", None) or {}
+        needs_audit = "需要审核" in html or "通过审核后才能显示" in html
 
-        if "需要审核" in r.text or "通过审核" in r.text:
-            log_info("    ✓ 发帖成功（需审核）")
-            return "(需审核)"
+        sources = [_find_redirect(html), headers.get("Location", ""), getattr(response, "url", "")]
+        for source in sources:
+            tid = _extract_tid(source)
+            if tid:
+                url = f"{self.base_url}/thread-{tid}-1-1.html"
+                log_info(f"    ✓ 发帖成功{'（需审核）' if needs_audit else ''}: {url}")
+                return PostResult(url, tid, needs_audit)
 
-        err = re.search(r'id="messagetext"[^>]*>(.*?)</div>', r.text, re.S)
+        if needs_audit:
+            # 审核中的帖子通常没有可用的跳转地址，帖子 ID 只能过后从「我的帖子」里补
+            log_info("    ✓ 发帖成功（需审核，响应里没有帖子 ID，稍后按列表补齐）")
+            return PostResult("(需审核)", None, True)
+
+        err = re.search(r'id="messagetext"[^>]*>(.*?)</div>', html, re.S)
         if err:
             raise RuntimeError(f"发帖失败: {re.sub(r'<[^>]+>', '', err.group(1)).strip()[:200]}")
 
-        raise RuntimeError(f"发帖结果不明: {r.url}")
+        raise RuntimeError(f"发帖结果不明: {getattr(response, 'url', '')}")
 
     def post_news_file(self, stem: str, txt_path: str, json_path: str,
                        news_dir: str, no_image: bool = False,
@@ -802,7 +838,8 @@ class MCBBSPoster:
         else:
             log_warning(f"    ⚠ 警告: 未找到分类 {module_type} 的 sortid 配置")
 
-        return self.post_thread(title, message, attachment_ids=attachment_ids, sortid=sortid)
+        return self.post_thread(title, message,
+                                attachment_ids=attachment_ids, sortid=sortid).url
 
 
 # ── 状态管理 ─────────────────────────────────────────

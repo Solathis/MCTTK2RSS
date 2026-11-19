@@ -215,7 +215,8 @@ class TestHighlightRegistration:
         assert record["tid"] is None
         assert record["news_type"] == "java_snapshot"
         assert record["color"] == "#3C9D40"
-        assert record["bold"] is False
+        # 快照属于「版本资讯」，按版规最新版本加粗
+        assert record["bold"] is True
         assert record["fid"] == 45
         assert record["title"] == "Minecraft 26.4 快照 9 [AI翻译]"
         assert record["posted_at"]

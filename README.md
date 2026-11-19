@@ -164,7 +164,10 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
     "highlight": {
       "enabled": true,
       "colors": { "java_release": "#EE1B2E", "java_snapshot": "#3C9D40" },
-      "bold_types": ["java_release", "bedrock_release"],
+      "bold_types": [
+        "java_release", "java_snapshot", "java_prerelease",
+        "java_rc", "bedrock_release", "bedrock_beta"
+      ],
       "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
       "max_age_hours": 168
@@ -173,10 +176,15 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 }
 ```
 
-`colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 里的类型
-会加粗，且新帖高亮成功后会**自动取消同类型旧帖的加粗**（同色重提交、只把样式位
-清零）；`exclude_forums` 是永不回填高亮的版块，写名字（按"包含"匹配）或 `fid`
-（按精确匹配）；`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+`colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 列出的类型
+会加粗，默认是全部「版本资讯」（Java 版资讯 / 基岩版资讯两个分类），块讯不加粗；
+`exclude_forums` 是永不回填高亮的版块，写名字（按"包含"匹配）或 `fid`（按精确匹配）；
+`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+
+**加粗按分类收敛**：版规是「最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」
+的机制。所以每给一篇新版本帖加粗后，程序会读版块列表（那是唯一能看到高亮样式的地方）
+把**同一分类里其它仍然加粗的帖子**改回不加粗 —— 判断依据是站点上真实的
+`font-weight: bold`，不是本地记录，这样历史帖、手工加过粗的帖子也能一起收敛。
 
 历史登记（`--index-history`）会直接跳过两类帖子：
 
@@ -191,10 +199,12 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 
 | 新闻类型 | 版规分类 | 色值 |
 | --- | --- | --- |
-| `java_release` / `bedrock_release` | 版本资讯（正式版，最新版本加粗） | `#EE1B2E` |
+| `java_release` / `bedrock_release` | 版本资讯（正式版） | `#EE1B2E` |
 | `java_snapshot` / `java_prerelease` / `java_rc` / `bedrock_beta` | 版本资讯（快照/测试版） | `#3C9D40` |
 | `normal`（兜底，块讯） | 块讯 / 基岩块讯 | `#EC1282` |
 | `commentary` | 时评（一般不高亮） | 不配颜色 |
+
+加粗只发生在版本资讯（`bold_types` 默认全量），且同一分类里只保留最新一篇加粗。
 
 高亮状态记在 `output/.mcbbs_threads.json`（`state` 取 `pending` / `done` / `gave_up` /
 `dropped` / `legacy`），与「发没发」的 `output/.posted.json` 分开：
@@ -203,7 +213,7 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 - 每轮运行先游客探测帖子页：仍在审核不算重试，超过 `max_attempts`/`max_age_hours` 才放弃
 - 只有确实过审了才会登录，避免多跑验证码
 - 历史帖用 `poster.py --index-history` 只登记成 `legacy`（不动论坛），
-  再用 `--highlight-legacy N` 限量挑最近的几篇真正上色
+  颜色与是否加粗取自版块列表的现状，再用 `--highlight-legacy N` 限量挑最近的几篇真正上色
 
 如果需要发布到 B站专栏，先用扫码工具拿登录 cookie（不用手动开 F12 复制）：
 

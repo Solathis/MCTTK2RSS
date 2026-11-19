@@ -16,6 +16,12 @@ def _no_sleep(monkeypatch):
     monkeypatch.setattr(poster.time, "sleep", lambda *_: None)
 
 
+@pytest.fixture(autouse=True)
+def _no_forum_scan(monkeypatch):
+    """历史登记会读版块列表拿真实颜色/加粗；测试里默认给空列表，避免真联网。"""
+    monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads", lambda self, pages=15: [])
+
+
 def _make_poster(session=None) -> MCBBSPoster:
     poster_obj = MCBBSPoster({
         "base_url": BASE, "forum_fid": 45, "username": "newspaper", "password": "secret",
@@ -187,6 +193,63 @@ class TestIndexHistory:
 
         assert stats["recorded"] == 1
         assert not (tmp_path / ".mcbbs_threads.json").exists()
+
+
+class TestIndexHistorySiteState:
+    """历史登记的颜色和加粗必须取自版块列表的现状，不能写死 false。"""
+
+    def test_uses_site_colour_and_bold(self, tmp_path, monkeypatch):
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 8")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                                                forum_name="幻翼块讯")])
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [
+                                poster.ForumThread(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                                                   typeid=4, type_name="Java版资讯",
+                                                   color="#3C9D40", bold=True)])
+
+        stats = _make_poster().index_history(str(tmp_path))
+
+        record = _read_records(tmp_path / ".mcbbs_threads.json")["news_a"]
+        assert record["color"] == "#3C9D40"
+        assert record["bold"] is True
+        assert record["typeid"] == 4
+        assert stats["site_bold"] == 1
+
+    def test_forum_list_failure_falls_back_to_config(self, tmp_path, monkeypatch):
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 8")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6773, "Minecraft 26.4 快照 8 [AI翻译]")])
+
+        def boom(self, pages=3):
+            raise poster.requests.ConnectionError("boom")
+
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads", boom)
+
+        _make_poster().index_history(str(tmp_path))
+
+        record = _read_records(tmp_path / ".mcbbs_threads.json")["news_a"]
+        assert record["color"] == "#3C9D40"   # 配置里的默认色
+        assert record["bold"] is False
+
+    def test_unhighlighted_thread_keeps_config_colour(self, tmp_path, monkeypatch):
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 8")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6773, "Minecraft 26.4 快照 8 [AI翻译]")])
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [
+                                poster.ForumThread(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                                                   typeid=4)])
+
+        _make_poster().index_history(str(tmp_path))
+
+        record = _read_records(tmp_path / ".mcbbs_threads.json")["news_a"]
+        assert record["color"] == "#3C9D40"
+        assert record["bold"] is False
 
 
 class TestPromoteLegacy:

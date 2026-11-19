@@ -20,6 +20,12 @@ def _no_sleep(monkeypatch):
     monkeypatch.setattr(poster.time, "sleep", lambda *_: None)
 
 
+@pytest.fixture(autouse=True)
+def _no_forum_scan(monkeypatch):
+    """取消旧版加粗要读版块列表；测试里默认给空列表，避免真联网。"""
+    monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads", lambda self, pages=3: [])
+
+
 class FakeResponse:
     def __init__(self, text="", status_code=200):
         self.text = text
@@ -445,54 +451,133 @@ class TestTidResolution:
         assert list(log_dir.glob("mcbbs_my-threads_*.html")), "解析失败时应把列表页落盘"
 
 
-class TestUnboldPredecessors:
-    def test_new_release_unbolds_previous_one(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "probe_thread", _visible)
-        session = SweepSession()
-        path = _write_records(tmp_path, {
-            "news_new": _record(tid=7000, news_type="java_release", color="#EE1B2E", bold=True),
-            "news_old": _record(tid=6900, news_type="java_release", color="#EE1B2E",
-                                bold=True, state="done"),
-        })
+class TestUnboldOlderVersions:
+    """同一分类里只保留最新一篇加粗，判断依据是版块列表里的真实状态。"""
 
-        stats = _make_poster(session).process_pending_highlights(path)
+    def _rows(self, *rows):
+        return [poster.ForumThread(tid=tid, title=f"t{tid}", typeid=typeid,
+                                   color=color, bold=bold)
+                for tid, typeid, color, bold in rows]
+
+    def _poster_with_rows(self, rows):
+        poster_obj = _make_poster(SweepSession())
+        poster_obj.fetch_forum_threads = lambda pages=3: rows
+        return poster_obj
+
+    def test_unbolds_other_bold_threads_in_same_category(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {
+            "news_new": _record(tid=7000, news_type="java_release",
+                                color="#EE1B2E", bold=True, typeid=4),
+            "news_old": _record(tid=6900, news_type="java_snapshot",
+                                color="#3C9D40", bold=True, state="done", typeid=4),
+        })
+        poster_obj = self._poster_with_rows(self._rows(
+            (7000, 4, "#EE1B2E", True),
+            (6900, 4, "#3C9D40", True),
+            (6700, 20, "#EE1B2E", True),   # 另一个分类，不动
+            (6600, 4, "", False),          # 本来就不加粗
+        ))
+
+        stats = poster_obj.process_pending_highlights(path)
 
         assert stats["highlighted"] == 1
         assert stats["unbolded"] == 1
-        assert _read_records(path)["news_old"]["bold"] is False
+        session = poster_obj.session
+        assert len(session.posts) == 2
         unbold_data = session.posts[1][1]["data"]
         assert unbold_data["moderate[]"] == "6900"
-        assert unbold_data["highlight_color"] == "1"
+        assert unbold_data["highlight_color"] == "4"
         assert unbold_data["highlight_style[1]"] == "0"
+        assert _read_records(path)["news_old"]["bold"] is False
 
-    def test_other_types_untouched(self, tmp_path, monkeypatch):
+    def test_recordless_bold_thread_still_unbolded(self, tmp_path, monkeypatch):
+        """站点上手工加粗、本地没有记录的历史帖同样要取消加粗。"""
         monkeypatch.setattr(poster, "probe_thread", _visible)
-        session = SweepSession()
         path = _write_records(tmp_path, {
-            "news_new": _record(tid=7000, news_type="java_release", color="#EE1B2E", bold=True),
-            "news_old": _record(tid=6900, news_type="java_snapshot", color="#3C9D40",
-                                bold=True, state="done"),
+            "news_new": _record(tid=7000, news_type="java_release",
+                                color="#EE1B2E", bold=True, typeid=4),
         })
+        poster_obj = self._poster_with_rows(self._rows(
+            (7000, 4, "#EE1B2E", True),
+            (6500, 4, "#3C9D40", True),
+        ))
 
-        stats = _make_poster(session).process_pending_highlights(path)
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["unbolded"] == 1
+        assert poster_obj.session.posts[1][1]["data"]["moderate[]"] == "6500"
+
+    def test_no_typeid_skips_scan(self, tmp_path, monkeypatch):
+        """没有分类信息时没法判断「同一分类」，宁可不取消。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {"news_new": _record(tid=7000, bold=True)})
+        poster_obj = self._poster_with_rows(self._rows((6900, 4, "#3C9D40", True)))
+
+        stats = poster_obj.process_pending_highlights(path)
 
         assert stats["unbolded"] == 0
-        assert len(session.posts) == 1
-        assert _read_records(path)["news_old"]["bold"] is True
+        assert len(poster_obj.session.posts) == 1
 
-    def test_non_bold_new_post_unbolds_nothing(self, tmp_path, monkeypatch):
+    def test_forum_list_failure_is_not_fatal(self, tmp_path, monkeypatch):
         monkeypatch.setattr(poster, "probe_thread", _visible)
-        session = SweepSession()
         path = _write_records(tmp_path, {
-            "news_new": _record(tid=7000),
-            "news_old": _record(tid=6900, news_type="java_snapshot", color="#3C9D40",
-                                bold=True, state="done"),
+            "news_new": _record(tid=7000, news_type="java_release",
+                                color="#EE1B2E", bold=True, typeid=4),
         })
+        poster_obj = _make_poster(SweepSession())
 
-        stats = _make_poster(session).process_pending_highlights(path)
+        def boom(pages=3):
+            raise poster.requests.ConnectionError("boom")
 
+        poster_obj.fetch_forum_threads = boom
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["highlighted"] == 1
         assert stats["unbolded"] == 0
-        assert _read_records(path)["news_old"]["bold"] is True
+
+
+class TestForumThreadsParser:
+    """版块列表是唯一能看到高亮样式的地方：标题链接上的内联 style。"""
+
+    def _row(self, tid, title, typeid=4, type_name="Java版资讯", style=""):
+        style_attr = f' style="{style}"' if style else ""
+        return (
+            f'<tbody id="normalthread_{tid}"><tr><th class="new">'
+            f'<em>[<a href="forum.php?mod=forumdisplay&amp;fid=45&amp;filter=typeid'
+            f'&amp;typeid={typeid}">{type_name}</a>]</em> '
+            f'<a href="thread-{tid}-1-1.html"{style_attr} class="s xst">{title}</a>'
+            f"</th><td class=\"num\"><a href=\"thread-{tid}-1-1.html\">3</a></td></tr></tbody>"
+        )
+
+    def test_reads_colour_and_bold_from_inline_style(self):
+        html = self._row(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                         style="font-weight: bold;color: #3C9D40;")
+        row = poster._parse_forum_threads(html)[0]
+        assert (row.tid, row.typeid, row.color, row.bold) == (6773, 4, "#3C9D40", True)
+        assert row.type_name == "Java版资讯"
+        assert row.title == "Minecraft 26.4 快照 8 [AI翻译]"
+
+    def test_plain_thread_has_no_highlight(self):
+        row = poster._parse_forum_threads(self._row(6800, "普通帖子"))[0]
+        assert (row.color, row.bold) == ("", False)
+
+    def test_coloured_but_not_bold(self):
+        html = self._row(6801, "只有颜色", style="color: #EC1282;")
+        row = poster._parse_forum_threads(html)[0]
+        assert row.color == "#EC1282"
+        assert row.bold is False
+
+    def test_other_category_typeid(self):
+        html = self._row(6737, "Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]",
+                         typeid=20, type_name="基岩版资讯",
+                         style="font-weight: bold;color: #EE1B2E;")
+        row = poster._parse_forum_threads(html)[0]
+        assert (row.typeid, row.color, row.bold) == (20, "#EE1B2E", True)
+
+    def test_unknown_markup_returns_empty(self):
+        assert poster._parse_forum_threads("<html>no rows</html>") == []
 
 
 class TestMainWiring:

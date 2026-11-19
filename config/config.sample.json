@@ -151,7 +151,14 @@
         "bedrock_beta": "#3C9D40",
         "normal": "#EC1282"
       },
-      "bold_types": ["java_release", "bedrock_release"],
+      "bold_types": [
+        "java_release",
+        "java_snapshot",
+        "java_prerelease",
+        "java_rc",
+        "bedrock_release",
+        "bedrock_beta"
+      ],
       "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
       "max_age_hours": 168

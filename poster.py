@@ -103,7 +103,14 @@ DEFAULT_HIGHLIGHT = {
         "bedrock_beta": "#3C9D40",
         "normal": "#EC1282",
     },
-    "bold_types": ["java_release", "bedrock_release"],
+    "bold_types": [
+        "java_release",
+        "java_snapshot",
+        "java_prerelease",
+        "java_rc",
+        "bedrock_release",
+        "bedrock_beta",
+    ],
     "exclude_forums": ["块讯回收区"],
     "max_attempts": 6,
     "max_age_hours": 168,
@@ -209,6 +216,71 @@ class ThreadProbe:
     visible: bool | None
     forum_fid: int | None = None
     crumb: str = ""
+
+
+_FORUM_ROW_RE = re.compile(r'<tbody id="normalthread_(\d+)"', re.I)
+_FORUM_TYPE_RE = re.compile(r"typeid=(\d+)[^>]*>([^<]{1,20})</a>")
+_STYLE_ATTR_RE = re.compile(r'style="([^"]*)"', re.I)
+_COLOR_HEX_RE = re.compile(r"color:\s*(#[0-9A-Fa-f]{6})")
+_BOLD_CSS_RE = re.compile(r"font-weight:\s*bold", re.I)
+
+
+@dataclass(frozen=True)
+class ForumThread:
+    """版块列表里的一行：tid、标题、分类，以及它当前的高亮状态。
+
+    版块列表是唯一能看到「颜色 + 是否加粗」的地方（标题链接上的内联 style），
+    「我的帖子」页只有标题，帖子页本身不渲染高亮样式。
+    """
+
+    tid: int
+    title: str
+    typeid: int | None = None
+    type_name: str = ""
+    color: str = ""
+    bold: bool = False
+
+
+def _parse_forum_threads(html: str) -> list[ForumThread]:
+    """解析版块列表：按 normalthread_<tid> 分块，取标题、分类与内联高亮样式。
+
+    一个块里有好几个指向同一帖子的链接（文件夹图标、标题、回复数），图标那个没有
+    文字也没有样式，所以这里挑第一个「有实际标题文字」的锚点，高亮样式只认它。
+    """
+    page = html or ""
+    rows = list(_FORUM_ROW_RE.finditer(page))
+    threads: list[ForumThread] = []
+    for index, row in enumerate(rows):
+        end = rows[index + 1].start() if index + 1 < len(rows) else len(page)
+        block = page[row.end():end]
+
+        title = ""
+        style = ""
+        for anchor in _MY_THREAD_ANCHOR_RE.finditer(block):
+            attrs, inner = anchor.group(1), anchor.group(2)
+            if not _TID_IN_ANCHOR_RE.search(attrs):
+                continue
+            text = _normalize_title(inner)
+            if not text or text.isdigit():
+                continue
+            title = text
+            style_match = _STYLE_ATTR_RE.search(attrs)
+            style = style_match.group(1) if style_match else ""
+            break
+        if not title:
+            continue
+
+        color_match = _COLOR_HEX_RE.search(style)
+        type_match = _FORUM_TYPE_RE.search(block)
+        threads.append(ForumThread(
+            tid=int(row.group(1)),
+            title=title,
+            typeid=int(type_match.group(1)) if type_match else None,
+            type_name=_normalize_title(type_match.group(2)) if type_match else "",
+            color=color_match.group(1).upper() if color_match else "",
+            bold=bool(_BOLD_CSS_RE.search(style)),
+        ))
+    return threads
 
 
 def _normalize_title(text: str) -> str:
@@ -1187,6 +1259,35 @@ class MCBBSPoster:
                     threads.append(item)
         return threads
 
+    def fetch_forum_threads(self, pages: int = 3) -> list[ForumThread]:
+        """读版块列表里每篇帖子的当前高亮状态（公开页面，不需要登录态）。
+
+        高亮样式只渲染在版块列表里，所以判断「谁现在是加粗的」只能看这里；
+        取前几页就够——版本资讯都在最新发布的那几页。
+        """
+        threads: list[ForumThread] = []
+        seen: set[int] = set()
+        with requests.Session() as session:
+            session.headers.update({"User-Agent": UA})
+            for page in range(1, max(pages, 1) + 1):
+                if page > 1:
+                    time.sleep(1)  # 翻页放慢一点，别把列表页当接口刷
+                url = f"{self.base_url}/forum.php?mod=forumdisplay&fid={self.forum_fid}&page={page}"
+                response = session.get(url, timeout=LOGIN_TIMEOUT)
+                response.raise_for_status()
+                page_threads = _parse_forum_threads(response.text)
+                if page == 1 and not page_threads:
+                    path = _dump_threads_html(response.text)
+                    log_warning("    ⚠ 版块列表没有解析出任何帖子（页面已存: %s）", path or "落盘失败")
+                    break
+                if not page_threads:
+                    break
+                for item in page_threads:
+                    if item.tid not in seen:
+                        seen.add(item.tid)
+                        threads.append(item)
+        return threads
+
     def process_pending_highlights(self, records_path: str) -> dict:
         """补上待高亮的帖子：先匿名探测过审，需要时才登录动手。
 
@@ -1264,7 +1365,7 @@ class MCBBSPoster:
                     rec["updated_at"] = _timestamp()
                     rec["last_error"] = ""
                     stats["highlighted"] += 1
-                    stats["unbolded"] += self._unbold_predecessors(records, rec)
+                    stats["unbolded"] += self._unbold_older_versions(records, rec)
         finally:
             # 探测/登记结果无论如何都要落盘：登录失败也不该把上一轮的进展丢掉
             self._save_records(records_path, records)
@@ -1308,46 +1409,52 @@ class MCBBSPoster:
             known.add(tid)
             log_info("    → 补齐帖子 ID: %s → tid=%s（%s）", stem, tid, source)
 
-    def _unbold_predecessors(self, records: dict, current: dict) -> int:
-        """新帖上色后，把同类型旧帖的加粗取消（保留颜色）。返回处理条数。
+    def _unbold_older_versions(self, records: dict, current: dict) -> int:
+        """同一分类里只保留最新一篇加粗：按版块列表的真实现状取消其它加粗。
 
-        版规要求「版本资讯最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」
-        的机制：只能在新版本上色成功后，用同色 + 样式位 0 把上一版改回不加粗。
+        版规是「最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」的机制。
+        这里以站点列表为准而不是以本地记录为准：历史帖可能从来没进过记录，也可能
+        被人工改过，只有列表里那个 font-weight: bold 才算数。
         """
-        if not current.get("bold"):
+        typeid = current.get("typeid")
+        if not typeid:
             return 0
-        max_attempts = int(self.highlight.get("max_attempts") or 0)
-        done = 0
-        for stem, rec in records.items():
-            if rec is current or rec.get("tid") == current.get("tid"):
-                continue
-            if rec.get("news_type") != current.get("news_type"):
-                continue
-            if rec.get("state") != "done" or not rec.get("bold") or not rec.get("tid"):
-                continue
+        try:
+            threads = self.fetch_forum_threads(pages=3)
+        except requests.RequestException as e:
+            log_warning("    ⚠ 读版块列表失败，本轮不取消旧版加粗: %s", e)
+            return 0
 
+        done = 0
+        for row in threads:
+            if row.typeid != typeid or row.tid == current.get("tid") or not row.bold:
+                continue
+            record = self._record_for_tid(records, row.tid)
+            fallback = (self.highlight.get("colors") or {}).get("normal", "")
+            color = row.color or (record or {}).get("color") or fallback
             try:
-                ok, reason = self.highlight_thread(
-                    int(rec["tid"]), rec.get("color", ""), bold=False, fid=rec.get("fid"),
-                )
+                ok, reason = self.highlight_thread(row.tid, color, bold=False)
             except requests.RequestException as e:
                 ok, reason = False, f"取消加粗请求失败: {e}"
-            rec["updated_at"] = _timestamp()
             if ok:
-                rec["bold"] = False
-                rec["last_error"] = ""
                 done += 1
-                log_info("    → 已取消旧帖加粗: %s（tid=%s）", stem, rec["tid"])
-                continue
-
-            rec["unbold_attempts"] = int(rec.get("unbold_attempts") or 0) + 1
-            rec["last_error"] = f"取消加粗失败: {reason}"
-            if max_attempts and rec["unbold_attempts"] >= max_attempts:
-                rec["bold"] = False
-                log_warning("    ⚠ 取消旧帖加粗多次失败，已放弃: %s（%s）", stem, reason)
+                log_info("    → 已取消旧版加粗: %s（tid=%s）", row.title, row.tid)
             else:
-                log_warning("    ⚠ 取消旧帖加粗失败，下轮重试: %s（%s）", stem, reason)
+                log_warning("    ⚠ 取消旧版加粗失败: %s（%s）", row.title, reason)
+            if record is not None:
+                record["updated_at"] = _timestamp()
+                record["bold"] = False if ok else record.get("bold", False)
+                record["color"] = color or record.get("color", "")
+                record["last_error"] = "" if ok else f"取消加粗失败: {reason}"
         return done
+
+    @staticmethod
+    def _record_for_tid(records: dict, tid: int) -> dict | None:
+        """按帖子 ID 找本地记录（历史帖很可能没有记录，返回 None）。"""
+        for record in records.values():
+            if record.get("tid") == tid:
+                return record
+        return None
 
     def _count_attempt(self, rec: dict, reason: str, now: float) -> bool:
         """记一次失败尝试，返回是否该放弃（次数或等待时间超限）。"""
@@ -1384,7 +1491,7 @@ class MCBBSPoster:
         排除版块里的帖子一律不登记。
         """
         stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0,
-                 "no_color": 0, "recycled": 0, "excluded": 0}
+                 "no_color": 0, "recycled": 0, "excluded": 0, "site_bold": 0}
         threads = self.fetch_my_threads(pages=pages)
         stats["threads"] = len(threads)
         if not threads:
@@ -1395,6 +1502,12 @@ class MCBBSPoster:
         titles = _scan_output_titles(save_dir)
         colors = self.highlight.get("colors") or {}
         exclude = self.highlight.get("exclude_forums") or []
+        # 颜色与加粗只有版块列表看得到：登记时以站点现状为准，别写死成 false
+        try:
+            site_rows = {row.tid: row for row in self.fetch_forum_threads(pages=pages)}
+        except requests.RequestException as e:
+            log_warning("    ⚠ 读版块列表失败，历史登记的颜色/加粗回退到配置值: %s", e)
+            site_rows = {}
 
         for item in threads:
             stem = titles.get(_normalize_title(item.title))
@@ -1415,7 +1528,9 @@ class MCBBSPoster:
                 continue
 
             news_type = _local_news_type(save_dir, stem)
-            color = colors.get(news_type, "")
+            site_row = site_rows.get(item.tid)
+            site_color = site_row.color if site_row else ""
+            color = site_color or colors.get(news_type, "")
             if not color:
                 stats["no_color"] += 1
                 log_debug("    → 跳过历史登记（类型没有高亮色）: %s（%s）", stem, news_type)
@@ -1423,12 +1538,13 @@ class MCBBSPoster:
             records[stem] = {
                 "tid": item.tid,
                 "fid": item.forum_fid or self.forum_fid,
+                "typeid": (site_row.typeid if site_row else None) or self.sortid_map.get(news_type),
                 "url": f"{self.base_url}/thread-{item.tid}-1-1.html",
                 "title": item.title,
                 "forum_name": item.forum_name,
                 "news_type": news_type,
                 "color": color,
-                "bold": False,
+                "bold": bool(site_row.bold) if site_row else False,
                 "state": "legacy",
                 "posted_at": "",
                 "updated_at": _timestamp(),
@@ -1437,19 +1553,23 @@ class MCBBSPoster:
                 "tid_source": "历史登记",
             }
             stats["recorded"] += 1
+            if site_row and site_row.bold:
+                stats["site_bold"] += 1
             if dry_run:
-                log_info("    · 将登记: %s | tid=%s | %s %s | %s",
-                         stem, item.tid, news_type, color, item.forum_name or "版块未知")
+                log_info("    · 将登记: %s | tid=%s | %s %s%s | %s",
+                         stem, item.tid, news_type, color,
+                         "（站点已加粗）" if site_row and site_row.bold else "",
+                         item.forum_name or "版块未知")
 
         if stats["recorded"] and not dry_run:
             self._save_records(records_path, records)
         for name, fid in sorted({(item.forum_name, item.forum_fid)
                                  for item in threads if item.forum_name}):
             log_debug("    · 列表出现的版块: %s（fid=%s）", name, fid)
-        log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条 | 已有记录 %d 条 | "
-                 "删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
-                 stats["threads"], stats["matched"], stats["recorded"], stats["skipped"],
-                 stats["recycled"], stats["excluded"], stats["no_color"])
+        log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条（其中站点已加粗 %d 条）| "
+                 "已有记录 %d 条 | 删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
+                 stats["threads"], stats["matched"], stats["recorded"], stats["site_bold"],
+                 stats["skipped"], stats["recycled"], stats["excluded"], stats["no_color"])
         return stats
 
     def promote_legacy(self, records_path: str, limit: int) -> int:
@@ -1493,6 +1613,7 @@ class MCBBSPoster:
         records[stem] = {
             "tid": result.tid or previous.get("tid"),
             "fid": self.forum_fid,
+            "typeid": self.sortid_map.get(news_type),
             "url": result.url if result.url.startswith("http") else previous.get("url", ""),
             "title": title,
             "news_type": news_type,

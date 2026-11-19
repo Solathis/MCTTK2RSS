@@ -221,6 +221,19 @@ def _records_digest(records: dict) -> str:
     return json.dumps(records, ensure_ascii=False, sort_keys=True)
 
 
+def _bold_applied(record: dict) -> bool:
+    """记录里的 `bold` 是不是「站点上真的加粗着」，而不是登记时的意图。
+
+    `_register_highlight` 按 news_type 直接把 `bold` 写成 True，所以一条从没提交成功、
+    后来被判成 gave_up / stale 的待办记录也会带着 `bold=True`。拿它当「加粗中」的凭据，
+    这类记录就永远不会被清理。真上过色的记录有两个来源：`_submit_highlight` 成功时写的
+    `highlighted_at`，或者 `--index-history` 从版块列表抄下来的 legacy 登记。
+    """
+    if not record.get("bold"):
+        return False
+    return bool(record.get("highlighted_at")) or record.get("state") == "legacy"
+
+
 def _waiting_since(record: dict) -> float | None:
     """「等审核」的起算点：登记（或被重新提升）的时间，不是发帖时间。
 
@@ -1910,8 +1923,9 @@ class MCBBSPoster:
 
         记录留着只为了「待办」和「以后还能撤销/对照」；一旦帖子老到不再处理，留一条
         记录只会让文件越长越大、让 --highlight-status 充满「没找到」。三条豁免：
-        `pending` 是待办；加粗中的帖子要留着才能随时取消加粗；算不出年龄的老记录
-        不敢删。给缺时间戳的记录补一次 registered_at，从这一刻开始算年龄。
+        `pending` 是待办；**站点上真加粗过的**帖子要留着才能随时取消加粗（判据见
+        `_bold_applied`，登记时写下的 bold 不算）；算不出年龄的老记录不敢删。给缺时间戳
+        的记录补一次 registered_at，从这一刻开始算年龄。
         """
         moment = now if now is not None else time.time()
         max_days = self._max_age_days()
@@ -1920,7 +1934,7 @@ class MCBBSPoster:
             rec = records[stem]
             if not rec.get("registered_at") and not rec.get("posted_at"):
                 rec["registered_at"] = rec.get("updated_at") or _timestamp()
-            if not max_days or rec.get("state") == "pending" or rec.get("bold"):
+            if not max_days or rec.get("state") == "pending" or _bold_applied(rec):
                 continue
             if self._too_old(rec, moment):
                 records.pop(stem, None)

@@ -219,8 +219,13 @@ class TestPrune:
                                   registered_at=_days_ago(40)),
             "old_done": _record(state="done", posted_at=_days_ago(40),
                                 registered_at=_days_ago(40)),
+            # 真上过色：highlighted_at 是成功提交时才写的，留着才能随时取消加粗
             "old_bold": _record(state="done", bold=True, posted_at=_days_ago(400),
-                                registered_at=_days_ago(400)),
+                                registered_at=_days_ago(400),
+                                highlighted_at=_days_ago(400)),
+            # 只登记过、从没提交成功：bold 只是意图，不该让它永久留在账本里
+            "old_gave_up": _record(state="gave_up", bold=True, posted_at=_days_ago(400),
+                                   registered_at=_days_ago(400)),
             "old_pending": _record(state="pending", posted_at=_days_ago(40),
                                    registered_at=_days_ago(40)),
             "fresh_done": _record(state="done", posted_at=_days_ago(3),
@@ -230,8 +235,17 @@ class TestPrune:
 
         dropped = poster_obj._prune_records(records)
 
-        assert dropped == 2
+        assert dropped == 3
         assert set(records) == {"old_bold", "old_pending", "fresh_done"}
+
+    def test_retired_pending_record_is_not_kept_forever(self):
+        """pending + bold 被判 gave_up 后一直留在记录里，是这条规则曾经的漏网之鱼。"""
+        records = {"news_x": _record(state="gave_up", bold=True,
+                                     posted_at=_days_ago(40), registered_at=_days_ago(40))}
+        poster_obj = _make_poster({"max_age_days": 30})
+
+        assert poster_obj._prune_records(records) == 1
+        assert records == {}
 
     def test_stamps_registered_at_for_legacy_records(self):
         """老记录没有 registered_at，补一次作为计时起点，不直接删。"""

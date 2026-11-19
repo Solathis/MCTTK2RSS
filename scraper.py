@@ -97,6 +97,14 @@ DEFAULT_CONFIG = {
         ),
         "translate_title_system": (
             "请将 Minecraft 新闻标题翻译成简体中文。要求：保留版本号/编号/专有名词的拼写，只输出译文标题。"
+        ),
+        "summarize_system": (
+            "你是 Minecraft 新闻编辑。下面是已翻译成简体中文的一篇文章，请写一句话摘要，用于专栏开头。\n"
+            "要求：\n"
+            "1. 只输出摘要本身：不要「摘要：」前缀、不要引号、不要解释\n"
+            "2. 直接写内容，不要用「本文」「这篇文章」开头\n"
+            "3. 说清这篇更新/活动最重要的内容与版本号，让人看完就知道讲了什么\n"
+            "4. 使用 Minecraft 官方中文译名"
         )
     },
     "minecraft_api": {
@@ -155,6 +163,20 @@ DEFAULT_CONFIG = {
         "verify": True,
         "verify_max_rounds": 1,
         "verify_max_items": 20,
+    },
+    "summary": {
+        # 专栏开头的「摘要：…」（写进 JSON 的 translated_summary，只由 B站专栏渲染器使用）：
+        # 「动态-专栏」的预览窗口实测只有约 90 字，署名模块占满之后读者每次看到的都是
+        # 同一句 AI 提示；摘要放在最前面，预览里才有内容。
+        "enabled": True,
+        # 下面两个数字只是**提示**（追加进提示词），程序不按字数硬切：重构时一篇文章
+        # 常常塞进一堆改动，长摘要比被切成半句话有用。80 给「摘要：」与预览窗口留了余量。
+        # 下限防「一句话应付」：只给上限时模型会给「26.4 快照 9 发布。」这种等于没说的摘要
+        "min_chars": 40,
+        "max_chars": 80,
+        # 送给总结 API 的正文上限：长更新日志的中段对一句话摘要边际收益递减，
+        # 输入越长越容易撞超时 / max_tokens 截断
+        "input_max_chars": 6000,
     },
     # B站专栏投稿（bili/poster.py 读取）。键集合必须与 bili.poster.DEFAULT_BILI_CONFIG
     # 一致，tests/test_config_json.py 会比对，避免两处默认值漂移。
@@ -1345,11 +1367,13 @@ def process_feedback_news(news_item: dict, config: dict) -> dict:
     log_info("[Feedback] 正文解析: %d 个内容块（发布日期 %s）",
              len(blocks), article_content.get("posted_date") or "-")
     translate_blocks(blocks, config=config)
+    summary = summarize_translated(blocks, title=translated_title, config=config)
     log_info("[Feedback] 单篇处理完成，用时 %s", _elapsed(article_started))
 
     return {
         "title": title_to_translate,
         "translated_title": translated_title,
+        "translated_summary": summary,
         "release_date": article_content.get("posted_date", ""),
         "url": full_url,
         "section": news_item.get('section', ''),
@@ -2304,6 +2328,131 @@ def translate_blocks(blocks: list, config=None, glossary=None) -> list:
     return blocks
 
 
+# ── 摘要 ─────────────────────────────────────────────
+
+# 图片/代码块进了摘要输入只会让模型去描述版面，正文段落才有"这篇讲了什么"
+_SUMMARY_SKIP_TYPES = ("img", "pre", "code")
+_SUMMARY_BREAKS = "。！？；"
+
+
+def _summary_text(blocks: list, limit: int, types: tuple[str, ...] | None = None) -> str:
+    """把译文块拼成一段文本，攒到 limit 字符为止。
+
+    types=None 表示"只跳过图片/代码块"（喂给 API 的输入），给具体类型时只取那几种
+    （本地兜底只要 p 块：标题、列表项读起来不像一句话）。
+    """
+    if limit <= 0:
+        return ""
+    parts = []
+    total = 0
+    for block in blocks or []:
+        btype = str(block.get("type") or "").lower()
+        if types is None:
+            if btype in _SUMMARY_SKIP_TYPES:
+                continue
+        elif btype not in types:
+            continue
+        text = (block.get("translated_text") or block.get("source_text") or "").strip()
+        if not text:
+            continue
+        parts.append(re.sub(r"\s+", " ", text))
+        total += len(text)
+        if total >= limit:
+            break
+    return " ".join(parts)[:limit]
+
+
+def _clean_summary(text: str) -> str:
+    """把模型返回的摘要清成一行纯文本：去代码围栏、去「摘要：」前缀、去包裹引号。
+
+    模型很爱把摘要写回成「摘要：……」或整段带引号的样子，这些都会原样出现在
+    预览窗口里，所以在这里统一剥掉。
+    """
+    text = str(text or "").strip()
+    text = re.sub(r"^```[a-zA-Z]*\s*", "", text)
+    text = re.sub(r"\s*```$", "", text).strip()
+    text = re.sub(r"^(?:文章)?摘要\s*[:：]\s*", "", text)
+    text = text.strip().strip("\"'“”‘’「」").strip()
+    return re.sub(r"\s+", " ", text)
+
+
+def _clip_summary(text: str, limit: int) -> str:
+    """本地兜底的截取：优先在句末 / 逗号处断开，不把半句话塞进预览窗口。
+
+    只给「正文截取」这条兜底路径用；API 生成的摘要不裁（见 summarize_translated）。
+    """
+    if limit <= 0 or not text:
+        return ""
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    cut = max(head.rfind(ch) for ch in _SUMMARY_BREAKS + "，")
+    # 断点太靠前（只剩半句）就不如直接截断，避免摘要短得看不出内容
+    if cut + 1 >= max(1, int(limit * 0.6)):
+        return head[:cut + 1]
+    return head.rstrip()
+
+
+def _local_summary(blocks: list, limit: int) -> str:
+    """不调 API 的兜底摘要：取正文前几段 p 块（标题/列表项读起来不像一句话）。"""
+    return _clip_summary(_summary_text(blocks, limit, types=("p",)), limit)
+
+
+def summarize_translated(blocks: list, title: str = "", config=None) -> str:
+    """把整篇译文压成一句摘要（写进 JSON 的 translated_summary）。
+
+    为什么在翻译阶段做：摘要要出现在正文最前面，而 Python 侧的转换器不联网，
+    只能在翻译完成、拿到整篇译文时生成。为什么交给 API 而不是本地截第一段：
+    更新日志的第一段经常是「挖矿愉快！」这类寒暄，本地截取拼不出"这篇讲了什么"。
+    API 不可用、返回为空或关了 summary.enabled 时退回本地截取——摘要粗糙可以接受，
+    开头空着不行。
+    """
+    cfg = config or _get_cfg()
+    summary_cfg = cfg.get("summary") or {}
+    limit = int(summary_cfg.get("max_chars", 80) or 0)
+    if limit <= 0 or not blocks:
+        return ""
+
+    if not summary_cfg.get("enabled", True):
+        summary = _local_summary(blocks, limit)
+        log_info("[摘要] 已关闭 API 总结，改用正文截取（%d 字）: %s", len(summary), summary)
+        return summary
+
+    excerpt = _summary_text(blocks, int(summary_cfg.get("input_max_chars", 6000) or 0))
+    if not excerpt:
+        return ""
+    # 上下限只是"提醒"，写进提示词让模型自己收敛，程序不按字数硬切：更新日志重构时
+    # 常常一篇文章塞进一堆改动，长一点的摘要也比被切成半句话有用（专栏预览本来
+    # 也只显示开头约 90 字，长出来的部分在预览里自然看不到）
+    floor = min(max(int(summary_cfg.get("min_chars", 0) or 0), 0), limit)
+    system_prompt = str((cfg.get("prompts") or {}).get("summarize_system") or "").strip()
+    if 0 < floor < limit:
+        system_prompt += (
+            f"\n输出长度参考：{floor}～{limit} 个字符（中文按字计），不是硬限制："
+            f"少于 {floor} 字说明关键内容没写全，要补上版本号与主要改动；"
+            f"多于 {limit} 字程序不会截断，但「动态-专栏」只预览开头约 90 字。"
+        )
+    else:
+        system_prompt += f"\n输出长度参考：{limit} 个字符左右（不是硬限制）。"
+    user_content = f"标题：{title}\n\n正文：\n{excerpt}" if title else f"正文：\n{excerpt}"
+
+    started = time.monotonic()
+    raw = translate_text(user_content, system_prompt=system_prompt, use_glossary=False, config=cfg)
+    summary = _clean_summary(raw or "")
+    if not summary:
+        summary = _local_summary(blocks, limit)
+        log_warning("[摘要] API 没给出可用摘要，改用正文截取（%d 字）: %s", len(summary), summary)
+        return summary
+    if len(summary) > limit:
+        # 不裁：超上限的摘要照样整条用，只是预览里会被平台从中间截断
+        log_info("[摘要] 比参考上限 %d 字长（实际 %d 字），按原样使用", limit, len(summary))
+    elif floor and len(summary) < floor:
+        log_debug("[摘要] 比参考下限 %d 字短（实际 %d 字），先照用", floor, len(summary))
+
+    log_info("[摘要] 完成（%d 字，用时 %s）: %s", len(summary), _elapsed(started), summary)
+    return summary
+
+
 # ── 内容提取 ─────────────────────────────────────────
 
 def blocks_to_plaintext(blocks: list, field: str = "source_text") -> str:
@@ -2470,6 +2619,7 @@ def process_article(news_item: dict, config=None) -> dict:
     # 翻译内容
     blocks = article_data.get("blocks", [])
     translate_blocks(blocks, config=cfg)
+    summary = summarize_translated(blocks, title=translated_title, config=cfg)
 
     source_content = blocks_to_plaintext(blocks, field="source_text")
     translated_content = blocks_to_plaintext(blocks, field="translated_text")
@@ -2479,6 +2629,7 @@ def process_article(news_item: dict, config=None) -> dict:
     return {
         "title": title_to_translate,
         "translated_title": translated_title,
+        "translated_summary": summary,
         "release_date": article_data.get("release_date") or news_item.get("release_date", ""),
         "url": news_item.get("url", ""),
         "author": news_item.get("author", ""),

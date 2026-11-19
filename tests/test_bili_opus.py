@@ -492,6 +492,28 @@ class TestConvertToBiliOpus:
         paras = J2MMConverter(modules).convert_to_bili_opus(self._data())
         assert _words(paras[0]) == "署名"
 
+    def test_summary_is_the_first_paragraph(self):
+        """摘要必须排在署名模块与标题之前：「动态-专栏」只预览开头约 90 字。"""
+        modules = {
+            "default_modules": [{
+                "id": "module_sign", "position": "start", "order": 1, "enabled": True,
+                "platform": "all", "content": "署名在摘要之后",
+            }],
+            "custom_modules": [],
+        }
+        data = self._data()
+        data["translated_summary"] = "26.4 快照 9 加入数据驱动发射器。"
+        paras = J2MMConverter(modules).convert_to_bili_opus(data)
+
+        assert _words(paras[0]) == "摘要：26.4 快照 9 加入数据驱动发射器。"
+        assert _words(paras[1]) == "署名在摘要之后"
+        assert paras[0]["text"]["nodes"][0]["word"]["style"] == {"bold": True}
+
+    def test_without_summary_no_lead_paragraph(self):
+        data = self._data(blocks=[_block("p", "Hello", "你好")])
+        paras = self.conv.convert_to_bili_opus(data)
+        assert all("摘要：" not in _words(p) for p in paras)
+
 
 # ── 两套渲染器的契约 ─────────────────────────────────
 

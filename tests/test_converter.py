@@ -425,3 +425,11 @@ class TestJ2MMConverter:
         assert conv._get_modules("start") == []
         assert conv._get_modules("end") == []
         assert conv._get_modules("custom") == []
+
+    def test_summary_is_bilibili_only(self):
+        """摘要是专栏专属：论坛的 BBCode / Markdown 产物里不能出现。"""
+        data = self._make_data()
+        data["translated_summary"] = "26.4 快照 9 加入数据驱动发射器。"
+
+        assert "摘要" not in self.conv.convert_to_bbcode(data)
+        assert "摘要" not in self.conv.convert_to_markdown(data)

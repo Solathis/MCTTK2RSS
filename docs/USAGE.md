@@ -546,6 +546,41 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 表格/彩色/浮动/图标和 `[size=0px]` 隐藏文本会被丢弃——专栏没有这些等价物，留着只会显示成脏标签或
 把「本帖来自www.mcbbs.co」这类隐藏文字曝光出来。
 
+### 专栏开头摘要
+
+B站「动态-专栏」只预览正文开头约 90 字（实测 93 字，见
+[`archive/2026-11-19-bilibili专栏-开头摘要实测.txt`](archive/2026-11-19-bilibili专栏-开头摘要实测.txt)），
+署名模块排在最前面时，读者每次看到的都是同一句「本文 AI 翻译……」提示，正文一个字都露不出来。
+所以**专栏**正文最前面会加一行 `摘要：…`（粗体标签 + 一句中文摘要）。这一行只由
+`convert_to_bili_html` / `convert_to_bili_opus` 产出，MCBBS 的 BBCode / Markdown 里没有摘要。
+
+- **怎么生成**：翻译全部完成后，把标题 + 译文（跳过图片/代码块，最多 `summary.input_max_chars` 字）
+  发给同一个翻译 API 总结一句，写进 JSON 的 `translated_summary` 字段。摘要只在 Python 侧联网时
+  才可能生成，转换器不联网，所以不能等排版时再算。
+- **兜底**：API 不可用、返回为空，或 `summary.enabled` 为 `false` 时，退回「正文前几段 `p` 块」的
+  本地截取——摘要粗糙可以接受，开头空着不行。这条兜底路径才按字数截（它就是一段截取）。
+- **顺序**：摘要 → 开头模块（署名等）→ 标题 → 元信息 → 正文。摘要必须第一个，「动态-专栏」才会显示它。
+- **老产物**：已有的 JSON 没有 `translated_summary`，重跑转换照旧开头，不会报错也不会补造；
+  想让旧稿也有摘要，得重跑一次翻译（或在 JSON 里手写该字段后重跑转换）。
+- 同一个字段也会作为 B站 草稿的 `summary`（`bilibili.summary_max_chars` 截断，B站 字段本身的长度限制），
+  专栏列表与搜索里显示的就是它，而不是正文开头。
+
+```json
+"summary": {
+  "enabled": true,
+  "min_chars": 40,
+  "max_chars": 80,
+  "input_max_chars": 6000
+}
+```
+
+`min_chars` / `max_chars` 只是**写进提示词的提醒**（`输出长度参考：40～80 个字符…不是硬限制`），
+程序不按字数硬切：**只给上限时模型容易拿「26.4 快照 9 发布。」这类一句话应付**，字数合规但等于没说，
+所以下限用来逼它把版本号与主要改动写进去；而更新日志重构后常常一篇文章塞进一堆改动，
+长一点的摘要也比被切成半句有用（「动态-专栏」预览本来只显示开头约 90 字，长出来的部分读者在动态里看不到）。
+超过 `max_chars` 时按原样使用并在日志里记一行；短于 `min_chars` 时照用，只留 debug 日志。
+提示词本身只写内容与风格要求（`prompts.summarize_system`），字数由这两个配置项注入，改配置即生效。
+
 ## 智能词汇表
 
 词汇表分两层，**同名条目以手写层为准**：
@@ -732,6 +767,12 @@ git diff --cached --quiet || {
     "max_tokens": 10000,
     "timeout": 120
   },
+  "prompts": {
+    "translate_text_default": "…",
+    "translate_blocks_system": "…",
+    "translate_title_system": "…",
+    "summarize_system": "…"
+  },
   "minecraft_api": {
     "search_url": "https://net-secondary.web.minecraft-services.net/api/v1.0/zh-cn/search",
     "pageSize": 5,
@@ -834,6 +875,12 @@ git diff --cached --quiet || {
     "translation_workers": 3,
     "batch_max_chars": 1000,
     "batch_max_items": 10
+  },
+  "summary": {
+    "enabled": true,
+    "min_chars": 40,
+    "max_chars": 80,
+    "input_max_chars": 6000
   }
 }
 ```
@@ -858,6 +905,10 @@ git diff --cached --quiet || {
 - **专栏投放范围**：`bilibili.publish_types`（默认版本发布类）与 `bilibili.exclude_sources`
   （默认排除 `feedback`）在投稿前过滤，官方 API 的快讯、时评与论坛式更新日志不会进专栏。
   两项留空即不过滤，被跳过的文章会在日志里逐条说明原因
+- **专栏开头摘要**：译文最前面会有一行 `摘要：…`，由翻译完成后的一次 API 总结生成
+  （`summary` 段与 `prompts.summarize_system`，见[专栏开头摘要](#专栏开头摘要)）。
+  关掉 `summary.enabled` 或 API 总结失败时退回正文前几段截取。
+  已有的旧 JSON 没有 `translated_summary`，补摘要需要重跑翻译
 - **专栏超链接**：只保留项目署名 `github.com/jiubook/MCTTK`，其余外链降级为纯文本
   `文字（URL）`（B站 点外链会先进「离开 B站」拦截页，实测比不给链接更糟）。
   改策略见 `bili/__init__.py` 的 `SIGNATURE_HOST` / `SIGNATURE_PATH` 与 `degrade_link()`

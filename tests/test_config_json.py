@@ -55,7 +55,8 @@ class TestConfigStructure:
 
     def test_prompts_keys(self, config):
         prompts = config["prompts"]
-        for key in ["translate_text_default", "translate_blocks_system", "translate_title_system"]:
+        for key in ["translate_text_default", "translate_blocks_system", "translate_title_system",
+                    "summarize_system"]:
             assert key in prompts, f"prompts 缺少键: {key}"
             assert isinstance(prompts[key], str) and len(prompts[key]) > 0
 
@@ -115,6 +116,16 @@ class TestConfigStructure:
         assert isinstance(g.get("verify", True), bool)
         assert isinstance(g.get("verify_max_rounds", 1), int) and g["verify_max_rounds"] >= 0
         assert isinstance(g.get("verify_max_items", 20), int) and g["verify_max_items"] > 0
+
+    def test_summary_structure(self, config):
+        if "summary" not in config:
+            return
+        s = config["summary"]
+        assert isinstance(s.get("enabled", True), bool)
+        for key in ("max_chars", "input_max_chars"):
+            assert isinstance(s[key], int) and s[key] > 0, f"summary.{key} 必须是正整数"
+        assert isinstance(s.get("min_chars", 0), int) and s["min_chars"] >= 0
+        assert s.get("min_chars", 0) < s["max_chars"], "summary 的下限必须小于上限"
 
     def test_news_types_structure(self, config):
         if "news_types" not in config:

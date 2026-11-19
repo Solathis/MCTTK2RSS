@@ -1629,15 +1629,23 @@ class MCBBSPoster:
                 if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
                     log_warning("    ⚠ 放弃补高亮（找不到帖子）: %s", rec.get("title") or stem)
 
-    def _bold_category_typeids(self) -> set[int]:
-        """`bold_types` 覆盖到的版块分类（typeid）。
+    def _bold_group_keys(self) -> set[tuple[int, str]]:
+        """`bold_types` 覆盖到的 (分类, 版本线) 组合，收敛只在这些组里发生。
 
-        只有这些分类才做「同一分类同一条版本线只留最新一篇加粗」的收敛；块讯之类的
-        帖子即使被人工加过粗，也不该因为我们给别的帖子上色而被顺手取消。
+        只按分类（typeid）过滤不够：`java_release` 和 `java_snapshot` 都落在 typeid 4，
+        但正式版和测试版是两条独立的版本线。用户把 `bold_types` 收窄成「只要正式版」
+        之后，按分类过滤仍会去加粗测试版的最新帖、取消测试版旧帖的加粗 —— 配置等于
+        没生效；块讯之类的分类即使被人手工加粗，也不该因为我们给别的帖上色而被顺手取消。
         """
-        typeids = {self.sortid_map.get(news_type)
-                   for news_type in (self.highlight.get("bold_types") or [])}
-        return {typeid for typeid in typeids if isinstance(typeid, int)}
+        keys: set[tuple[int, str]] = set()
+        for news_type in self.highlight.get("bold_types") or []:
+            typeid = self.sortid_map.get(news_type)
+            family = _bold_family("", news_type)
+            if isinstance(typeid, int) and family:
+                keys.add((typeid, family))
+            else:
+                log_debug("    · bold_types 里的 %s 没配上 sortid_map 分类，不参与收敛", news_type)
+        return keys
 
     def _converge_bold(self, records: dict, rows: list[ForumThread], *,
                        dry_run: bool = False, allow_bold: bool = True) -> dict:
@@ -1651,21 +1659,26 @@ class MCBBSPoster:
         后处理的旧版会把先处理的新版取消掉。判断依据是列表现状（font-weight）而不是
         本地记录——历史帖可能没进过记录，也可能被人改过。
 
-        `allow_bold=False` 只取消更旧的加粗、不补加粗（补高亮流程用这个模式，免得
-        捎带手改动与本次无关的版本线）；补加粗失败时整组保持原样，避免把一条版本线
+        `allow_bold=False` 只取消更旧的加粗、不补加粗（补高亮流程用这个模式）：最新
+        那篇还没加粗的组整组不动，最新那篇已经加粗的组仍会清掉多出来的旧加粗 ——
+        所以一次补高亮也可能顺带收敛别的版本线，这是「一条线只留一篇加粗」的既定
+        语义，而不是只动本次碰过的那一组。补加粗失败时整组保持原样，避免把一条版本线
         弄成「一篇都不加粗」。
         """
         stats = {"groups": 0, "bolded": 0, "unbolded": 0, "failed": 0, "skipped": 0}
-        version_typeids = self._bold_category_typeids()
+        group_keys = self._bold_group_keys()
         groups: dict[tuple[int, str], list[ForumThread]] = {}
         for row in rows or []:
-            if row.typeid not in version_typeids:
-                continue
             family = _bold_family(row.title, (self._record_for_tid(records, row.tid) or {})
                                   .get("news_type", ""))
             if not family:
                 stats["skipped"] += 1
                 log_debug("    · 认不出版本线，跳过: %s（tid=%s）", row.title, row.tid)
+                continue
+            if (row.typeid, family) not in group_keys:
+                stats["skipped"] += 1
+                log_debug("    · 这条版本线不在 bold_types 里，跳过: %s（tid=%s）",
+                          row.title, row.tid)
                 continue
             groups.setdefault((row.typeid, family), []).append(row)
 

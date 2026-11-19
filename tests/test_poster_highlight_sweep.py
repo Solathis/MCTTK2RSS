@@ -94,7 +94,8 @@ def _write_records(tmp_path, records) -> str:
 def _make_poster(session=None) -> MCBBSPoster:
     poster_obj = MCBBSPoster({
         "base_url": BASE, "forum_fid": 45, "username": "newspaper", "password": "secret",
-        "sortid_map": {"java_snapshot": 4, "java_release": 4, "bedrock_beta": 20},
+        "sortid_map": {"java_snapshot": 4, "java_release": 4,
+                       "bedrock_beta": 20, "bedrock_release": 20},
     })
     poster_obj.session = session
     poster_obj.formhash = FORMHASH
@@ -735,6 +736,19 @@ class TestReconcileBold:
         stats = poster_obj.reconcile_bold(path)
 
         assert stats["groups"] == 0
+        assert poster_obj.session.posts == []
+
+    def test_unconfigured_version_line_is_ignored(self, tmp_path):
+        """bold_types 收窄到只要正式版时，测试版那条线不该被加粗或取消加粗。"""
+        path = _write_records(tmp_path, {})
+        poster_obj = self._poster(self._rows())
+        poster_obj.highlight["bold_types"] = ["java_release", "bedrock_release"]
+
+        stats = poster_obj.reconcile_bold(path)
+
+        assert stats["groups"] == 2
+        assert stats["bolded"] == 0, "快照/预览这两篇不在 bold_types 里，不该被补加粗"
+        assert stats["unbolded"] == 0, "测试版线的旧帖也不该被我们的收敛顺手动到"
         assert poster_obj.session.posts == []
 
 

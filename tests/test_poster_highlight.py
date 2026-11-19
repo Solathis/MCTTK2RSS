@@ -304,6 +304,20 @@ class TestHighlightConfig:
         assert cfg["highlight"]["colors"]["java_release"] == "#EE1B2E"
         assert cfg["highlight"]["max_attempts"] == poster.DEFAULT_HIGHLIGHT["max_attempts"]
 
+    def test_config_with_bom_keeps_mcbbs_settings(self, tmp_path):
+        """带 BOM 的 config.json 不能让 mcbbs 段整段回落默认值（账号、版块、色板全丢）。"""
+        config_path = tmp_path / "config.json"
+        config_path.write_text(
+            json.dumps({"mcbbs": {"forum_fid": 45, "highlight": {"enabled": False}}}),
+            encoding="utf-8-sig",
+        )
+
+        cfg = poster.load_poster_config(str(config_path))
+
+        assert cfg["forum_fid"] == 45
+        assert cfg["highlight"]["enabled"] is False
+
+
     def test_bad_types_fall_back_to_defaults(self):
         merged = poster._merge_highlight({
             "enabled": "yes",

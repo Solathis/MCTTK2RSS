@@ -200,3 +200,29 @@ class TestResponseFormatFallback:
 
         # 显式只要 gzip：避免网关返回 zstd 时 requests 解不开错误体
         assert captured["headers"]["Accept-Encoding"] == "gzip"
+
+
+class TestTlsVerify:
+    """翻译请求带着 bearer API key，verify 必须跟着 http.ca_bundle 走。"""
+
+    def _captured_verify(self, monkeypatch, http_cfg):
+        captured = {}
+
+        def fake_post(url, json=None, headers=None, **kwargs):
+            captured.update(kwargs)
+            return _ok("{}")
+
+        monkeypatch.setattr(scraper.requests, "post", fake_post)
+        scraper.translate_text("hello", config=_cfg(http=http_cfg), glossary={}, use_glossary=False)
+        return captured.get("verify")
+
+    def test_ca_bundle_is_passed_as_verify(self, monkeypatch):
+        """TLS 解密环境只配 ca_bundle 时，翻译请求不能还拿 verify_ssl=True 去撞证书。"""
+        verify = self._captured_verify(monkeypatch, {
+            "verify_ssl": True, "ca_bundle": "C:/certs/corp-ca.pem",
+        })
+
+        assert verify == "C:/certs/corp-ca.pem"
+
+    def test_verify_ssl_false_still_opts_out(self, monkeypatch):
+        assert self._captured_verify(monkeypatch, {"verify_ssl": False}) is False

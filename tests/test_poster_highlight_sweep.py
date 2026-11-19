@@ -94,7 +94,8 @@ def _write_records(tmp_path, records) -> str:
 def _make_poster(session=None) -> MCBBSPoster:
     poster_obj = MCBBSPoster({
         "base_url": BASE, "forum_fid": 45, "username": "newspaper", "password": "secret",
-        "sortid_map": {"java_snapshot": 4, "java_release": 4, "bedrock_beta": 20},
+        "sortid_map": {"java_snapshot": 4, "java_release": 4,
+                       "bedrock_beta": 20, "bedrock_release": 20},
     })
     poster_obj.session = session
     poster_obj.formhash = FORMHASH
@@ -715,7 +716,12 @@ class TestReconcileBold:
         first = poster_obj.session.posts[0][1]["data"]
         assert (first["moderate[]"], first["highlight_color"]) == ("6808", "4")
 
-    def test_dry_run_only_lists_actions(self, tmp_path):
+    def test_dry_run_only_lists_actions(self, tmp_path, monkeypatch):
+        logged = []
+        monkeypatch.setattr(
+            poster, "log_info",
+            lambda message, *args, **kwargs: logged.append(message % args if args else message),
+        )
         path = _write_records(tmp_path, {})
         poster_obj = self._poster(self._rows())
 
@@ -725,6 +731,10 @@ class TestReconcileBold:
         assert stats["bolded"] == 0
         assert stats["unbolded"] == 0
         assert _read_records(path) == {}
+        # 只看「没发请求」不够：预演要真的把动作列出来，「先 --dry-run 看清单」才不是空话
+        actions = [line for line in logged if "[Dry Run]" in line and " | " in line]
+        assert any("加粗 | tid=6808" in line for line in actions), actions
+        assert any("取消加粗 | tid=6773" in line for line in actions), actions
 
     def test_unknown_version_line_is_skipped(self, tmp_path):
         path = _write_records(tmp_path, {})
@@ -735,6 +745,19 @@ class TestReconcileBold:
         stats = poster_obj.reconcile_bold(path)
 
         assert stats["groups"] == 0
+        assert poster_obj.session.posts == []
+
+    def test_unconfigured_version_line_is_ignored(self, tmp_path):
+        """bold_types 收窄到只要正式版时，测试版那条线不该被加粗或取消加粗。"""
+        path = _write_records(tmp_path, {})
+        poster_obj = self._poster(self._rows())
+        poster_obj.highlight["bold_types"] = ["java_release", "bedrock_release"]
+
+        stats = poster_obj.reconcile_bold(path)
+
+        assert stats["groups"] == 2
+        assert stats["bolded"] == 0, "快照/预览这两篇不在 bold_types 里，不该被补加粗"
+        assert stats["unbolded"] == 0, "测试版线的旧帖也不该被我们的收敛顺手动到"
         assert poster_obj.session.posts == []
 
 

@@ -65,6 +65,7 @@ from utils import (
     load_dotenv,
     load_posted,
     load_thread_records,
+    save_json_atomic,
     save_posted,
     thread_records_path,
 )
@@ -127,8 +128,9 @@ def save_state(state_file: str, state: dict):
     state["last_run"] = time.strftime("%Y-%m-%dT%H:%M:%S")
     # 确保目录存在
     os.makedirs(os.path.dirname(state_file) or ".", exist_ok=True)
-    with open(state_file, "w", encoding="utf-8") as f:
-        json.dump(state, f, ensure_ascii=False, indent=2)
+    # 原子写：写盘期间被 kill 不会留下半截 JSON，否则下次运行按「首次运行」处理，
+    # 把当前新闻全部记成已处理（一篇都没发布，见 docs/USAGE.md 的 Actions 一节）
+    save_json_atomic(state_file, state, ".state-")
     log_debug("[状态] 已写入 %s（已处理 %d 条）", state_file, len(state.get("posted_urls", [])))
 
 
@@ -411,7 +413,8 @@ def _load_modules_config() -> dict | None:
     """读取 config/modules_config.json；缺失时返回 None，转换器会退回内置默认模块。"""
     modules_cfg_path = os.path.join(CONFIG_DIR, "modules_config.json")
     if os.path.isfile(modules_cfg_path):
-        with open(modules_cfg_path, encoding="utf-8") as f:
+        # utf-8-sig：这份配置也是人手工编辑的，带 BOM 时 json.load 会直接抛错
+        with open(modules_cfg_path, encoding="utf-8-sig") as f:
             log_debug("[主] 已加载模块配置: %s", modules_cfg_path)
             return json.load(f)
     log_debug("[主] 未找到模块配置，将使用内置默认模块: %s", modules_cfg_path)
@@ -430,7 +433,10 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict
     """
     started = time.monotonic()
     save_dir = config["output"]["save_dir"]
-    os.makedirs(save_dir, exist_ok=True)
+    if not dry_run:
+        # dry-run 是只读探测（README / CONTRIBUTING 都这么承诺），连目录都不该建：
+        # 在还没跑过的新部署上，凭空出现一个空 output/ 会让「到底跑没跑过」失真
+        os.makedirs(save_dir, exist_ok=True)
 
     all_news = _fetch_all_news(config)
     if stats is not None:

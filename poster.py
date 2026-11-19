@@ -221,6 +221,19 @@ def _records_digest(records: dict) -> str:
     return json.dumps(records, ensure_ascii=False, sort_keys=True)
 
 
+def _bold_applied(record: dict) -> bool:
+    """记录里的 `bold` 是不是「站点上真的加粗着」，而不是登记时的意图。
+
+    `_register_highlight` 按 news_type 直接把 `bold` 写成 True，所以一条从没提交成功、
+    后来被判成 gave_up / stale 的待办记录也会带着 `bold=True`。拿它当「加粗中」的凭据，
+    这类记录就永远不会被清理。真上过色的记录有两个来源：`_submit_highlight` 成功时写的
+    `highlighted_at`，或者 `--index-history` 从版块列表抄下来的 legacy 登记。
+    """
+    if not record.get("bold"):
+        return False
+    return bool(record.get("highlighted_at")) or record.get("state") == "legacy"
+
+
 def _waiting_since(record: dict) -> float | None:
     """「等审核」的起算点：登记（或被重新提升）的时间，不是发帖时间。
 
@@ -553,7 +566,9 @@ def load_poster_config(config_path: str = None) -> dict:
 
     if os.path.exists(config_path):
         try:
-            with open(config_path, encoding="utf-8") as f:
+            # utf-8-sig：与 scraper.load_config 同口径。带 BOM 的配置在这里读失败
+            # 会静默回落默认值（账号、版块、色板全丢），发帖阶段才发现就太晚了
+            with open(config_path, encoding="utf-8-sig") as f:
                 full_config = json.load(f)
             mcbbs = full_config.get("mcbbs", {})
             for key in cfg:
@@ -1627,15 +1642,23 @@ class MCBBSPoster:
                 if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
                     log_warning("    ⚠ 放弃补高亮（找不到帖子）: %s", rec.get("title") or stem)
 
-    def _bold_category_typeids(self) -> set[int]:
-        """`bold_types` 覆盖到的版块分类（typeid）。
+    def _bold_group_keys(self) -> set[tuple[int, str]]:
+        """`bold_types` 覆盖到的 (分类, 版本线) 组合，收敛只在这些组里发生。
 
-        只有这些分类才做「同一分类同一条版本线只留最新一篇加粗」的收敛；块讯之类的
-        帖子即使被人工加过粗，也不该因为我们给别的帖子上色而被顺手取消。
+        只按分类（typeid）过滤不够：`java_release` 和 `java_snapshot` 都落在 typeid 4，
+        但正式版和测试版是两条独立的版本线。用户把 `bold_types` 收窄成「只要正式版」
+        之后，按分类过滤仍会去加粗测试版的最新帖、取消测试版旧帖的加粗 —— 配置等于
+        没生效；块讯之类的分类即使被人手工加粗，也不该因为我们给别的帖上色而被顺手取消。
         """
-        typeids = {self.sortid_map.get(news_type)
-                   for news_type in (self.highlight.get("bold_types") or [])}
-        return {typeid for typeid in typeids if isinstance(typeid, int)}
+        keys: set[tuple[int, str]] = set()
+        for news_type in self.highlight.get("bold_types") or []:
+            typeid = self.sortid_map.get(news_type)
+            family = _bold_family("", news_type)
+            if isinstance(typeid, int) and family:
+                keys.add((typeid, family))
+            else:
+                log_debug("    · bold_types 里的 %s 没配上 sortid_map 分类，不参与收敛", news_type)
+        return keys
 
     def _converge_bold(self, records: dict, rows: list[ForumThread], *,
                        dry_run: bool = False, allow_bold: bool = True) -> dict:
@@ -1649,21 +1672,26 @@ class MCBBSPoster:
         后处理的旧版会把先处理的新版取消掉。判断依据是列表现状（font-weight）而不是
         本地记录——历史帖可能没进过记录，也可能被人改过。
 
-        `allow_bold=False` 只取消更旧的加粗、不补加粗（补高亮流程用这个模式，免得
-        捎带手改动与本次无关的版本线）；补加粗失败时整组保持原样，避免把一条版本线
+        `allow_bold=False` 只取消更旧的加粗、不补加粗（补高亮流程用这个模式）：最新
+        那篇还没加粗的组整组不动，最新那篇已经加粗的组仍会清掉多出来的旧加粗 ——
+        所以一次补高亮也可能顺带收敛别的版本线，这是「一条线只留一篇加粗」的既定
+        语义，而不是只动本次碰过的那一组。补加粗失败时整组保持原样，避免把一条版本线
         弄成「一篇都不加粗」。
         """
         stats = {"groups": 0, "bolded": 0, "unbolded": 0, "failed": 0, "skipped": 0}
-        version_typeids = self._bold_category_typeids()
+        group_keys = self._bold_group_keys()
         groups: dict[tuple[int, str], list[ForumThread]] = {}
         for row in rows or []:
-            if row.typeid not in version_typeids:
-                continue
             family = _bold_family(row.title, (self._record_for_tid(records, row.tid) or {})
                                   .get("news_type", ""))
             if not family:
                 stats["skipped"] += 1
                 log_debug("    · 认不出版本线，跳过: %s（tid=%s）", row.title, row.tid)
+                continue
+            if (row.typeid, family) not in group_keys:
+                stats["skipped"] += 1
+                log_debug("    · 这条版本线不在 bold_types 里，跳过: %s（tid=%s）",
+                          row.title, row.tid)
                 continue
             groups.setdefault((row.typeid, family), []).append(row)
 
@@ -1895,8 +1923,9 @@ class MCBBSPoster:
 
         记录留着只为了「待办」和「以后还能撤销/对照」；一旦帖子老到不再处理，留一条
         记录只会让文件越长越大、让 --highlight-status 充满「没找到」。三条豁免：
-        `pending` 是待办；加粗中的帖子要留着才能随时取消加粗；算不出年龄的老记录
-        不敢删。给缺时间戳的记录补一次 registered_at，从这一刻开始算年龄。
+        `pending` 是待办；**站点上真加粗过的**帖子要留着才能随时取消加粗（判据见
+        `_bold_applied`，登记时写下的 bold 不算）；算不出年龄的老记录不敢删。给缺时间戳
+        的记录补一次 registered_at，从这一刻开始算年龄。
         """
         moment = now if now is not None else time.time()
         max_days = self._max_age_days()
@@ -1905,7 +1934,7 @@ class MCBBSPoster:
             rec = records[stem]
             if not rec.get("registered_at") and not rec.get("posted_at"):
                 rec["registered_at"] = rec.get("updated_at") or _timestamp()
-            if not max_days or rec.get("state") == "pending" or rec.get("bold"):
+            if not max_days or rec.get("state") == "pending" or _bold_applied(rec):
                 continue
             if self._too_old(rec, moment):
                 records.pop(stem, None)
@@ -2291,6 +2320,17 @@ def _preview_records(records_path: str, state: str, limit: int | None = None) ->
     return len(records)
 
 
+def _targeted_exit_code(stats: dict) -> int:
+    """单篇高亮命令的退出码：只有「真的设上了」才算成功。
+
+    `failed` 只统计站点拒绝/请求出错那两类；记录过期（stale）、等审核超时（gave_up）、
+    落在排除版块（dropped）都不加 `failed`，只判它会让没生效的单篇验证也以 0 退出，
+    在脚本里等于谎报成功。
+    """
+    applied = int(stats.get("highlighted") or 0)
+    return 0 if applied and not stats.get("failed") else 1
+
+
 def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> int:
     """--highlight-only / --index-history / --highlight-legacy 的入口，都不发帖。"""
     if not os.path.isdir(news_dir):
@@ -2346,7 +2386,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         except Exception as e:
             log_error(f"[!] 补高亮失败: {e}")
             return 1
-        return 0 if stats["failed"] == 0 else 1
+        return _targeted_exit_code(stats)
 
     if args.highlight_tid:
         if not highlight_color_index(args.color or ""):
@@ -2411,7 +2451,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         except Exception as e:
             log_error(f"[!] 补高亮失败: {e}")
             return 1
-        return 0 if stats["failed"] == 0 else 1
+        return _targeted_exit_code(stats)
 
     if args.index_history:
         try:

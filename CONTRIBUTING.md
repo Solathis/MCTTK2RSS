@@ -452,6 +452,11 @@ PR 描述必须包含五段，缺一段就是不合格 PR：
 `scrape.yml.BAK`，它是早期用 Actions 定时跑抓取的备份文件 —— GitHub 不认 `.BAK` 后缀，
 所以它不会触发任何任务，改它也不会有任何效果。
 
+真要用 Actions 定时跑，必须先解决**状态与产物的持久化**：runner 是临时的、`output/`
+（产物 + 四份状态文件）都不入库，缺 `.state.json` 时每次运行都会被当成「首次运行」，
+跑绿了也一篇都发不出去；只留状态不留产物，发布失败的文章就再也没法补发。
+原因与几种可选做法见 [docs/USAGE.md](docs/USAGE.md#用-github-actions-定时跑可选需要自己接)。
+
 要自己接 Actions 定时抓取，需要新建一个带 `schedule` / `workflow_dispatch` 的 workflow，
 并在仓库 Settings → Secrets and variables → Actions 里配好：
 

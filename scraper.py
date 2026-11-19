@@ -26,7 +26,7 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from utils import CONFIG_DIR, GLOSSARY_DIR
+from utils import CONFIG_DIR, GLOSSARY_DIR, http_verify
 
 # 导入日志模块
 try:
@@ -989,11 +989,11 @@ class FeedbackScraper:
         # curl_cffi 自带 certifi 信任库，不走系统证书存储。
         # 代理 / VPN / 杀毒软件做 TLS 解密时，其根证书不在 certifi 里，
         # 就会报 curl: (60) unable to get local issuer certificate。
-        # 这里沿用 http.verify_ssl：false 时跳过校验，http.ca_bundle 可指定自定义 CA。
+        # 判定与 requests 那几条路径共用 utils.http_verify：ca_bundle 优先，否则看 verify_ssl。
         http_config = config.get('http', {})
         self.ca_bundle = http_config.get('ca_bundle') or ''
         self.verify_ssl = http_config.get('verify_ssl', True)
-        self.verify = self.ca_bundle or bool(self.verify_ssl)
+        self.verify = http_verify(http_config)
 
     def fetch_page(self, url, referer=None, max_retries=3):
         full_url = urljoin(self.base_url, url)
@@ -1591,7 +1591,9 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
     model = cfg["openai_compat"]["model"]
     max_tokens = int(cfg["openai_compat"].get("max_tokens", 10000))
     timeout = int(cfg["openai_compat"].get("timeout", 120))
-    verify_ssl = cfg["http"]["verify_ssl"]
+    # 翻译请求带着 bearer API key，这里的 verify 必须是 ca_bundle/verify_ssl 的统一判定，
+    # 否则配了 ca_bundle 的 TLS 解密环境会在这一步直接证书报错
+    verify = http_verify(cfg["http"])
     max_retries = int(cfg.get("retry", {}).get("translation", {}).get("max_retries", 3))
     proxies = _make_proxies(cfg)
 
@@ -1639,7 +1641,7 @@ def translate_text(text, system_prompt=None, use_glossary=True, config=None, glo
             call_started = time.monotonic()
             response = requests.post(
                 api_url, json=payload, headers=headers,
-                timeout=timeout, verify=verify_ssl, proxies=proxies
+                timeout=timeout, verify=verify, proxies=proxies
             )
             # 服务端不支持该结构化输出方式时立即降级，不占用重试次数
             if current_format and _is_response_format_rejected(response):
@@ -1704,7 +1706,7 @@ def get_latest_news_list(page_size=None, config=None):
         call_started = time.monotonic()
         response = requests.get(
             api_url, params=params, headers=headers,
-            timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
+            timeout=int(cfg["http"].get("timeout", 120)), verify=http_verify(cfg["http"]), proxies=proxies
         )
         response.raise_for_status()
         result = response.json()
@@ -1802,7 +1804,7 @@ def get_java_news_from_manifest(config=None):
         response = requests.get(
             manifest_url, headers=_make_headers(cfg),
             timeout=int(cfg["http"].get("timeout", 120)),
-            verify=cfg["http"]["verify_ssl"], proxies=_make_proxies(cfg)
+            verify=http_verify(cfg["http"]), proxies=_make_proxies(cfg)
         )
         response.raise_for_status()
         versions = response.json().get("versions", [])
@@ -1862,7 +1864,7 @@ def parse_article_page(article_url, config=None):
         call_started = time.monotonic()
         response = requests.get(
             article_url, headers=headers,
-            timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"], proxies=proxies
+            timeout=int(cfg["http"].get("timeout", 120)), verify=http_verify(cfg["http"]), proxies=proxies
         )
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
@@ -2339,7 +2341,7 @@ def download_header_image(image_url, save_path, config=None):
             log_debug("[下载] 头图请求: %s", image_url)
             response = requests.get(
                 image_url, headers=headers,
-                timeout=int(cfg["http"].get("timeout", 120)), verify=cfg["http"]["verify_ssl"],
+                timeout=int(cfg["http"].get("timeout", 120)), verify=http_verify(cfg["http"]),
                 proxies=proxies, stream=True
             )
             response.raise_for_status()

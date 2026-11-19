@@ -156,6 +156,30 @@ class TestCookies:
         assert bili_cfg["max_inline_images"] == 20  # 默认值仍在
         assert http_cfg == {"timeout": 30}
 
+    def test_load_config_tolerates_bom(self, tmp_path):
+        """带 BOM 的 config.json 不能整段回落默认值（否则 bilibili 开关等于没配）。"""
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps({
+            "bilibili": {"enabled": True, "category_id": 4},
+            "http": {"timeout": 30},
+        }), encoding="utf-8-sig")
+
+        bili_cfg, http_cfg = load_bili_config(str(path))
+
+        assert bili_cfg["enabled"] is True
+        assert bili_cfg["category_id"] == 4
+        assert http_cfg == {"timeout": 30}
+
+    def test_verify_follows_ca_bundle(self):
+        """与 scraper.py 同口径：配了 ca_bundle 就用它，别再拿 verify_ssl=True 去撞证书。"""
+        poster = BilibiliPoster(
+            {"cookie_file": ""},
+            {"verify_ssl": True, "ca_bundle": "C:/certs/corp-ca.pem"},
+            session=FakeSession(),
+        )
+
+        assert poster.verify == "C:/certs/corp-ca.pem"
+
 
 # ── 登录 ─────────────────────────────────────────────
 

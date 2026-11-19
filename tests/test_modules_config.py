@@ -4,6 +4,7 @@
 （无效值按 mcbbs 处理），所以这里把结构约束钉住。
 """
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -54,6 +55,26 @@ class TestModulesConfig:
         """专栏与论坛都必须至少有一个模块，否则头尾会整段消失。"""
         platforms = {m.get("platform", "mcbbs") for m in modules}
         assert "all" in platforms or {"mcbbs", "bilibili"} <= platforms
+
+    def test_sign_module_only_links_the_project_on_bilibili(self, modules):
+        """专栏署名的模块只留项目地址的超链接。
+
+        专栏把非署名外链降级成「文字（URL）」，工具主页这类对读者没有信息增量的
+        地址会把开头版面整段吃掉（实测 2026-11-19「动态-专栏」只显示约 90 字）；
+        论坛版面里这些 [url] 是正常的可点链接，所以两边各用一份。
+        """
+        from bili import is_signature_link
+
+        sign = next(m for m in modules if m.get("id") == "module_sign_bili")
+        assert sign.get("platform") == "bilibili", "专栏署名必须是专栏专用模块"
+        urls = re.findall(r"\[url=([^\]]+)\]", sign.get("content") or "")
+        assert urls, "署名模块至少要保留项目地址"
+        assert all(is_signature_link(url) for url in urls), f"署名模块出现了非署名外链: {urls}"
+
+    def test_forum_sign_module_stays_on_mcbbs(self, modules):
+        """论坛那份署名不能漏到专栏：两份同时在专栏生效就会打印两遍署名。"""
+        sign = next(m for m in modules if m.get("id") == "module_sign")
+        assert sign.get("platform") == "mcbbs"
 
 
 class TestLoadModulesConfig:

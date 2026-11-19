@@ -528,12 +528,18 @@ Feedback 文章不受 `news_types` 过滤控制，由各 section 的 `enabled` �
 
 ### 平台差异
 
-- 当前共用（`"platform": "all"`）：开头署名、各类型开头说明、结尾开源协议。
+- 当前共用（`"platform": "all"`）：各类型开头说明、结尾开源协议。
 - MCBBS 独占：结尾的「实用链接 / 如何游玩 / 想了解更多资讯」等模块，里面全是 MCBBS 站内链接。
 - 专栏独占：`module_bili_footer`（外部来源与更新条目追踪），B站 读者不关心 MCBBS 版块，所以单独写了一份官方站点链接。
   该模块**已默认开启**：超链接降级成 `文字（URL）` 之后，这组来源在正文里既看得到名字也看得到地址
   （原先因为 B站 剥链接、只剩名字而暂时关掉，见 [`archive/2026-11-15-bilibili-column.md`](archive/2026-11-15-bilibili-column.md) §9.2、§9.7）。
   内容里因此不再写 `[url]`，直接用「名称：地址」的纯文本，两种正文模型渲染出来一致。
+- 开头署名拆成两份：`module_sign`（`mcbbs`）与 `module_sign_bili`（`bilibili`），平台互斥。
+  专栏那份**只把项目地址挂成链接**，deepseek / MiMo 只写名字：这两个工具主页在专栏里会被降级成
+  「deepseek（https://www.deepseek.com/）」，实测把「动态-专栏」约 90 字的预览窗口整段吃掉，
+  读者只看到千篇一律的 AI 提示
+  （见 [`archive/2026-11-19-bilibili专栏-开头摘要实测.txt`](archive/2026-11-19-bilibili专栏-开头摘要实测.txt)）；
+  论坛那份保持三个 `[url]` 可点链接不变。`platform` 若写成 `all`，两份会同时在专栏生效、署名打印两遍。
 
 渲染专栏正文时，模块里的 BBCode 会被降级：粗体、列表保留（`[b]`→`<strong>`、`[list]`→`<ul>`），
 链接只有项目署名还保留成 `<a>` / link 节点，其余一律降级成 `文字（URL）`；

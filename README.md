@@ -1,28 +1,125 @@
-# MinecraftTranslationToolkit
+<div align="center">
 
-MCTTK（矿译通）把 Minecraft 官方新闻全流程自动化：**爬取 → AI 翻译 → 格式转换 → 发布**。
-它盯几个固定的新闻来源，把新文章翻成中文、转成论坛与专栏能直接用的排版，再发到 MCBBS
-幻翼块讯和 B站专栏 —— 并且按版规自动设置标题高亮、按分类维护「最新版本加粗」。
+# ⛏️ 矿译通
 
-- 定时运行：容器里每小时一轮，也可以交给 GitHub Actions
-- 新闻来源：Minecraft 官方 API、Feedback 网站、Piston 版本清单
-- 发布目标：MCBBS 论坛帖（BBCode + 图片/JSON 附件）、B站专栏（HTML / opus 正文）
-- 失败可重试：处理失败的文章下次自动重试，超过上限才放弃
-- 安全去重：基于 URL 的状态追踪，不会重复爬取或重复发布
+**Minecraft Translation Toolkit**
 
-## 特性
+Minecraft 官方资讯 → 中文社区，一条自动化流水线
 
-- **智能翻译**：OpenAI 兼容接口 + 命中注入式术语表，保证译名一致；长文章分批、截断自动
-  拆分重试
-- **按类型排版**：Java 快照 / 预发布 / RC / 正式版、基岩版更新 / 测试版、块讯 / 时评，
-  各自套对应的头部与尾部模板（`config/modules_config.json`）
-- **自动发帖**：登录 MCBBS 发帖（含验证码识别），失败重试；发完自动补标题高亮
-- **高亮与加粗**：按版规「二、高亮设定」上色；按「Java/基岩 × 正式版/测试版」四条版本线
-  各自只保留最新一篇加粗
-- **类型过滤**：配置里指定只发布哪些类型的新闻
-- **首次运行保护**：首次运行会把现有新闻全部标记为已处理，避免一次性刷屏
+[![CI](https://github.com/jiubook/MCTTK/actions/workflows/ci.yml/badge.svg)](https://github.com/jiubook/MCTTK/actions/workflows/ci.yml)
+[![Release](https://github.com/jiubook/MCTTK/actions/workflows/release.yml/badge.svg)](https://github.com/jiubook/MCTTK/actions/workflows/release.yml)
+[![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](#)
+[![Docker](https://img.shields.io/badge/Docker-ghcr.io-2496ED?logo=docker&logoColor=white)](https://github.com/jiubook/MCTTK/pkgs/container/mcttk)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html)
+
+</div>
+
+## 项目简介
+
+Minecraft 的官方资讯散落在好几个来源：官网 API、Feedback 反馈站、版本清单。而每种新闻
+（Java 快照 / 预发布 / RC / 正式版、基岩版更新 / 测试版、块讯、时评）在中文社区又有各自的
+译名习惯、排版模板和发帖要求。长期维护这类资讯，真正耗时的往往不是翻译那几段，而是反复的
+采集、术语核对、格式调整、发帖以及之后的标题维护。
+
+矿译通把这些重复劳动串成一条流水线自动跑：**抓取 → 术语约束下的 AI 翻译 → 按类型排版 →
+发布到 MCBBS 与 B站专栏 → 按版规维护标题高亮**。内容维护者只需要关心译文质量和资讯本身。
+
+## 工作流程
+
+```mermaid
+flowchart LR
+  subgraph 来源
+    A1[Minecraft 官方 API]
+    A2[Feedback 反馈站]
+    A3[Piston 版本清单]
+  end
+  subgraph 处理
+    B[按 URL 合并去重<br/>跳过已处理] --> C[AI 翻译<br/>术语表命中注入<br/>结构化输出]
+    C --> D[排版转换<br/>BBCode / Markdown / 专栏正文]
+  end
+  subgraph 发布
+    E[MCBBS 论坛帖<br/>图片 + JSON 附件]
+    F[B站专栏<br/>HTML 或 opus 正文]
+    G[标题高亮<br/>按版规上色<br/>最新版本加粗]
+  end
+  A1 --> B
+  A2 --> B
+  A3 --> B
+  D --> E
+  D --> F
+  E --> G
+```
+
+失败的文章不会被记成「已处理」，下一轮自动重试；首次运行会把现有新闻全部标记为已处理，
+避免一次性刷屏 —— 这两条是无人值守运行的底线。
+
+## 核心特性
+
+### 采集与处理
+
+- **三类来源**：官方 API、Feedback 反馈站（走 Zendesk 公开 API，失败回退页面解析）、
+  Piston 版本清单（补齐 Java 版本日志）
+- **URL 级去重**：`output/.state.json` 记录处理状态，同一篇文章不会重复翻译或重复发布
+- **失败可重试**：解析或翻译失败只记次数、不标记已处理，下一轮接着做，超过上限才放弃
+- **首次运行保护**：第一轮把所有现有新闻标为已处理，只处理此后新增的内容
+
+### 翻译与排版
+
+- **术语一致**：手写覆盖层 + 自动词表层，按文章内容**命中注入**相关术语，不给模型塞整本词典
+- **长文可靠**：分批并发 + JSON Schema 结构化输出；返回被截断时自动拆分重试，而不是整批丢弃
+- **按类型排版**：Java 快照 / 预发布 / RC / 正式版、基岩版更新 / 测试版、块讯 / 时评
+  各套各的头部与尾部模板（`config/modules_config.json`）
+
+### 发布与状态管理
+
+- **双平台**：MCBBS 论坛帖（含验证码识别、图片与 JSON 附件）与 B站专栏（两套正文渲染器：
+  老接口 HTML / 新版编辑器 opus 段落）
+- **标题高亮**：按版规「二、高亮设定」自动上色；帖子还在审核时先落一条待办，过审后才动手，
+  失败按次数与时限放弃，不会无限重试
+- **最新版本加粗**：Java 版 / 基岩版 × 正式版 / 测试版 共四条版本线，各自只保留最新一篇加粗
+- **可对账**：`--highlight-status` 逐条比对「本地记录 vs 站点现状」，`--dry-run` 可预演整条链路
+
+## 效果展示
+
+### 翻译：从官方资讯到中文帖子
+
+以 `news_Minecraft_26.4_Snapshot_9` 为例（内容取自 `output/` 里的真实产物）：
+
+| | 内容 |
+| --- | --- |
+| 原始标题 | `Minecraft 26.4 Snapshot 9` |
+| 发布标题 | `Minecraft 26.4 快照 9 [AI翻译]` |
+
+> **原文**
+>
+> 26.4 Snapshot 9 is here, bringing data-driven dispensers, Vulkan as the default graphics
+> backend, and a new setting to fine-tune your fog. We've also made improvements to keyboard
+> navigation and narration, alongside a few other tweaks and fixes!
+
+> **译文**
+>
+> 26.4 快照 9 来了，带来了数据驱动的发射器、将 Vulkan 设为默认图形后端，以及一项可微调雾效的
+> 新设置。我们还改进了键盘导航与旁白功能，并附上其他一些调整与修复！
+
+### 发布：幻翼块讯版面上的真实结果
+
+下面这些帖子是工具自动发出、并按版规自动设置高亮的（链接可直接打开）：
+
+| 帖子 | 分类 | 标题样式 |
+| --- | --- | --- |
+| [Minecraft 26.4 快照 9 [AI翻译]](https://www.mcbbs.co/thread-6808-1-1.html) | Java版资讯 | 🟩 绿 `#3C9D40` + **加粗**（该线最新） |
+| [Minecraft Java版 26.3 [AI翻译]](https://www.mcbbs.co/thread-6336-1-1.html) | Java版资讯 | 🟥 红 `#EE1B2E` + **加粗**（该线最新） |
+| [Minecraft 预览版 26.70.26 更新日志 [AI翻译]](https://www.mcbbs.co/thread-6812-1-1.html) | 基岩版资讯 | 🟩 绿 `#3C9D40` + **加粗**（该线最新） |
+| [Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]](https://www.mcbbs.co/thread-6737-1-1.html) | 基岩版资讯 | 🟥 红 `#EE1B2E` + **加粗**（该线最新） |
+| [TwitchCon 揭晓 2027 年首个游戏更新的特色内容 [AI翻译]](https://www.mcbbs.co/thread-6816-1-1.html) | 块讯 | 🟪 粉 `#EC1282`，不加粗 |
+
+四条版本线（Java 正式版 / Java 测试版 / 基岩版正式版 / 基岩版测试版）各有一篇加粗；新版本
+发出来后，旧的会自动取消加粗 —— 这是版规「最新版本加粗」在 Discuz 里的实现方式。
 
 ## 快速开始
+
+**环境**：Python 3.13 + [uv](https://docs.astral.sh/uv/)；要容器化部署见
+[docs/DOCKER.md](docs/DOCKER.md)。
 
 ```bash
 # 1. 装依赖（可选扩展：--extra captcha 验证码识别 / --extra feedback Feedback 抓取）
@@ -35,22 +132,25 @@ cp .env.sample .env                                  # 放 OPENAI_API_KEY / MCBB
 # 3. 先空跑看看能抓到什么（不翻译、不发帖）
 uv run python main.py --dry-run
 
-# 4. 真正跑一轮：抓取 → 翻译 → 转换 → 发布
+# 4. 正式跑一轮：抓取 → 翻译 → 转换 → 发布
 uv run python main.py
 ```
 
-容器化部署（含离线部署）见 [docs/DOCKER.md](docs/DOCKER.md)：
+跑完看两处：`output/` 下的产物（`news_*.json` / `.txt` / `.md` / 头图）与
+`logs/mcttk_YYYY-MM-DD.log`（每轮抓了多少、翻了几篇、发到哪）。
 
 ```bash
-docker compose up -d --build     # 本地构建并启动
+uv run python main.py --scrape-only    # 只抓取 + 翻译，不发帖
+uv run python main.py --post-only      # 只发 output/ 里还没发的
+docker compose up -d --build           # 容器化运行，默认每小时一轮
 ```
 
 ## 文档
 
 | 文档 | 内容 |
 | --- | --- |
-| [docs/USAGE.md](docs/USAGE.md) | 完整用法：全部配置项、CLI 参数、日志、新闻来源、词汇表、注意事项 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南：环境与命令、代码规范、测试与验证、PR 标准、发版流程 |
+| [docs/USAGE.md](docs/USAGE.md) | 完整用法：全部配置项、CLI 参数、日志、新闻来源、词汇表、注意事项 |
 | [docs/DOCKER.md](docs/DOCKER.md) | Docker / 服务器部署、离线部署、镜像与版本说明 |
 | [docs/archive/](docs/archive/) | 历史设计与评审记录 |
 

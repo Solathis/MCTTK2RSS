@@ -22,6 +22,7 @@ import sys
 import time
 from copy import deepcopy
 from dataclasses import dataclass
+from html import unescape
 from urllib.parse import quote, unquote
 
 import requests
@@ -61,6 +62,11 @@ IMG_INSERT_BEFORE = "[align=center][size=5][b]NEWS[/b]"
 
 # 登录重试默认值，config.json 的 retry.login 可以覆盖（见 load_poster_config）
 DEFAULT_LOGIN_RETRY = {"max_attempts": 3, "wait_seconds": 10}
+
+# 登录链路的请求必须有超时：站点或网络挂住时，超时才能把它变成可重试的失败。
+# 这里是交互式登录，不用抓取链路的 http.timeout（那是有意给长下载留的余量）。
+# 列表页、高亮、过审探测这几条短请求也共用这个超时。
+LOGIN_TIMEOUT = 30
 
 # 发帖响应的跳转地址有三种写法：静态化地址 thread-123-1-1.html、查询串
 # forum.php?mod=viewthread&tid=123，以及弹窗脚本里被转义的 window.location.href =\'...\'。
@@ -153,6 +159,78 @@ def _find_redirect(html: str) -> str:
         if _extract_tid(target):
             return target
     return targets[0] if targets else ""
+
+
+def _timestamp() -> str:
+    """记录用的本地时间戳（秒级，ISO 风格，便于人眼与排序）。"""
+    return time.strftime("%Y-%m-%dT%H:%M:%S")
+
+
+_MY_THREAD_LINK_RE = re.compile(
+    r'href="((?:forum\.php\?mod=viewthread&(?:amp;)?tid=\d+|thread-\d+-1-1\.html)[^"]*)"'
+    r"[^>]*>(.*?)</a>",
+    re.S,
+)
+
+
+def _normalize_title(text: str) -> str:
+    """标题归一：去标签、反转义实体、压空白，用于和记录里的标题比对。"""
+    plain = re.sub(r"<[^>]+>", "", text or "")
+    return re.sub(r"\s+", " ", unescape(plain)).strip()
+
+
+def _parse_my_threads(html: str) -> list[tuple[int, str]]:
+    """从「我的帖子」列表里取 [(tid, 标题), ...]，同一 tid 只留第一次出现。
+
+    列表页每行都有多个指向同一帖子的链接（标题、回复数、最后回复），所以按 tid
+    去重；回复数/时间这类噪声文本也会被收进来，但标题匹配时自然会被忽略。
+    """
+    threads: list[tuple[int, str]] = []
+    seen: set[int] = set()
+    for match in _MY_THREAD_LINK_RE.finditer(html or ""):
+        tid = _extract_tid(match.group(1))
+        title = _normalize_title(match.group(2))
+        if not tid or not title or title.isdigit() or tid in seen:
+            continue
+        seen.add(tid)
+        threads.append((tid, title))
+    return threads
+
+
+def thread_is_public(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> bool | None:
+    """以游客身份探测帖子是否对外可见：True 可见 / False 不可见 / None 探测失败。
+
+    必须用不带 cookie 的会话：作者本人和版主都能看到审核中的帖子，拿登录态探测
+    会把「审核中」误判成「已过审」。Discuz 对审核中或已删除的帖子回 404 提示页。
+    """
+    url = f"{base_url}/thread-{tid}-1-1.html"
+    try:
+        with requests.Session() as session:
+            session.headers.update({"User-Agent": UA})
+            response = session.get(url, timeout=timeout)
+    except requests.RequestException:
+        log_debug("    过审探测失败: %s", url, exc_info=True)
+        return None
+    if response.status_code == 404:
+        return False
+    if response.status_code >= 400:
+        return None
+    return 'id="thread_subject"' in (response.text or "")
+
+
+def _dump_threads_html(html: str) -> str:
+    """把「我的帖子」页面落到日志目录，解析失败时用来对站点的自定义模板。"""
+    path = os.path.join(
+        _login_debug_dir(), f"mcbbs_my-threads_{time.strftime('%Y%m%d-%H%M%S')}.html"
+    )
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(_scrub_login_html(html or ""))
+    except OSError:
+        log_debug("    「我的帖子」页面落盘失败", exc_info=True)
+        return ""
+    return path
 
 
 _MODERATION_ERROR_RE = re.compile(r"errorhandle_\w+\(\s*'((?:[^'\\]|\\.)*)'")
@@ -269,10 +347,6 @@ _SECCODE_HASH_PATTERNS = (
 
 # 记日志/落盘时关注的页面标记，用来区分登录表单、验证码表单和风控页
 _LOGIN_MARKERS = ("formhash", "loginhash", "updateseccode", "seccodehash", "验证码", "messagetext")
-
-# 登录链路的请求必须有超时：站点或网络挂住时，超时才能把它变成可重试的失败。
-# 这里是交互式登录，不用抓取链路的 http.timeout（那是有意给长下载留的余量）。
-LOGIN_TIMEOUT = 30
 
 # 站点明确拒绝凭证的提示：重试只会加重失败计数，遇到就立即停手。
 # 注意不能把「验证码错误」放进来——那是 OCR 没认对，应该换一张继续试。
@@ -635,6 +709,11 @@ class MCBBSPoster:
         if not self.username or not self.password:
             raise RuntimeError("未配置 MCBBS 账号密码")
 
+        # 补高亮可能已经登录过了（它只在真要动手时才登录），这里别再跑一遍验证码
+        if self.session is not None and self.formhash:
+            log_info("[*] 复用已有的 MCBBS 会话")
+            return True
+
         max_attempts, wait_seconds = self._login_retry_policy()
         attempt = 0
         while True:
@@ -922,6 +1001,209 @@ class MCBBSPoster:
             log_warning(f"    ⚠ 高亮未生效（tid={tid}）: {reason}")
         return ok, reason
 
+    def fetch_my_threads(self, pages: int = 2) -> list[tuple[int, str]]:
+        """拉「我的帖子」列表，返回 [(tid, 标题), ...]；待审核的帖子也在里面。
+
+        待审核的帖子按 tid 倒序排在最前，但我们可能又发了几篇，所以留一点余量
+        （默认两页）。解析不出内容时把页面落盘，方便对上站点的自定义模板。
+        """
+        if not self.session:
+            raise RuntimeError("未登录，请先调用 login()")
+        threads: list[tuple[int, str]] = []
+        seen: set[int] = set()
+        for page in range(1, max(pages, 1) + 1):
+            url = f"{self.base_url}/home.php?mod=space&do=thread&view=me&type=thread"
+            if page > 1:
+                url += f"&page={page}"
+            response = self.session.get(url, timeout=LOGIN_TIMEOUT)
+            response.raise_for_status()
+            page_threads = _parse_my_threads(response.text)
+            if not page_threads:
+                if page == 1:
+                    path = _dump_threads_html(response.text)
+                    log_warning("    ⚠ 「我的帖子」没有解析出任何帖子（页面已存: %s）", path or "落盘失败")
+                break
+            for tid, title in page_threads:
+                if tid not in seen:
+                    seen.add(tid)
+                    threads.append((tid, title))
+        return threads
+
+    def process_pending_highlights(self, records_path: str) -> dict:
+        """补上待高亮的帖子：先匿名探测过审，需要时才登录动手。
+
+        站点对审核中的帖子拒绝高亮，所以探测这一步必须先做：不登录就能排除掉
+        绝大多数「还没过审」的项，省掉一轮验证码。返回统计供日志汇总。
+        """
+        stats = {"pending": 0, "highlighted": 0, "unbolded": 0, "gave_up": 0, "failed": 0}
+        records = load_thread_records(records_path)
+        pending = {stem: rec for stem, rec in records.items() if rec.get("state") == "pending"}
+        if not pending:
+            return stats
+        stats["pending"] = len(pending)
+
+        missing = {stem: rec for stem, rec in pending.items() if not rec.get("tid")}
+        if missing:
+            self._resolve_tids(records, missing)
+
+        now = time.time()
+        ready: list[str] = []
+        for stem, rec in pending.items():
+            tid = rec.get("tid")
+            if not tid:
+                if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
+                    stats["gave_up"] += 1
+                continue
+            visible = thread_is_public(self.base_url, int(tid))
+            if visible is None:
+                rec["last_error"] = "过审探测失败（网络异常，下轮重试）"
+                rec["updated_at"] = _timestamp()
+                continue
+            if not visible:
+                # 还在审核里不算一次失败：审核是人工的，多久都有可能
+                if self._expired(rec, now):
+                    rec["state"] = "gave_up"
+                    rec["last_error"] = "等待审核超时，已放弃"
+                    rec["updated_at"] = _timestamp()
+                    stats["gave_up"] += 1
+                else:
+                    rec["last_error"] = "仍在审核中"
+                continue
+            ready.append(stem)
+
+        try:
+            if ready:
+                if not self.session:
+                    self.login()
+                for stem in ready:
+                    rec = records[stem]
+                    try:
+                        ok, reason = self.highlight_thread(
+                            int(rec["tid"]), rec.get("color", ""),
+                            bold=bool(rec.get("bold")), fid=rec.get("fid"),
+                        )
+                    except requests.RequestException as e:
+                        ok, reason = False, f"高亮请求失败: {e}"
+                    if not ok:
+                        if self._count_attempt(rec, reason, now):
+                            stats["gave_up"] += 1
+                        else:
+                            stats["failed"] += 1
+                        continue
+                    rec["state"] = "done"
+                    rec["highlighted_at"] = _timestamp()
+                    rec["updated_at"] = _timestamp()
+                    rec["last_error"] = ""
+                    stats["highlighted"] += 1
+                    stats["unbolded"] += self._unbold_predecessors(records, rec)
+        finally:
+            # 探测/登记结果无论如何都要落盘：登录失败也不该把上一轮的进展丢掉
+            self._save_records(records_path, records)
+
+        log_info("[高亮] 待补 %d 篇 | 已设置 %d | 取消加粗 %d | 放弃 %d | 失败 %d",
+                 stats["pending"], stats["highlighted"], stats["unbolded"],
+                 stats["gave_up"], stats["failed"])
+        return stats
+
+    def _resolve_tids(self, records: dict, missing: dict) -> None:
+        """从「我的帖子」里补上发帖时没拿到的帖子 ID。
+
+        先按标题精确匹配；匹配不上再认领列表里唯一一条「比所有已知记录都新」的
+        帖子（标题被版主改过时靠这条兜底）。都不行就下轮再试。
+        """
+        try:
+            threads = self.fetch_my_threads()
+        except (requests.RequestException, RuntimeError) as e:
+            log_warning("    ⚠ 拉取「我的帖子」失败: %s", e)
+            return
+        if not threads:
+            log_warning("    ⚠ 「我的帖子」里没有任何可用条目，无法补齐帖子 ID")
+            return
+
+        by_title = {_normalize_title(title): tid for tid, title in threads}
+        known = {rec.get("tid") for rec in records.values() if rec.get("tid")}
+        newest = max(tid for tid, _title in threads)
+        for stem, rec in missing.items():
+            tid = by_title.get(_normalize_title(rec.get("title", "")))
+            source = "标题匹配"
+            if not tid and newest not in known:
+                tid, source = newest, "列表新增兜底"
+            if not tid:
+                continue
+            rec["tid"] = tid
+            rec["url"] = f"{self.base_url}/thread-{tid}-1-1.html"
+            rec["tid_source"] = source
+            rec["updated_at"] = _timestamp()
+            known.add(tid)
+            log_info("    → 补齐帖子 ID: %s → tid=%s（%s）", stem, tid, source)
+
+    def _unbold_predecessors(self, records: dict, current: dict) -> int:
+        """新帖上色后，把同类型旧帖的加粗取消（保留颜色）。返回处理条数。
+
+        版规要求「版本资讯最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」
+        的机制：只能在新版本上色成功后，用同色 + 样式位 0 把上一版改回不加粗。
+        """
+        if not current.get("bold"):
+            return 0
+        max_attempts = int(self.highlight.get("max_attempts") or 0)
+        done = 0
+        for stem, rec in records.items():
+            if rec is current or rec.get("tid") == current.get("tid"):
+                continue
+            if rec.get("news_type") != current.get("news_type"):
+                continue
+            if rec.get("state") != "done" or not rec.get("bold") or not rec.get("tid"):
+                continue
+
+            try:
+                ok, reason = self.highlight_thread(
+                    int(rec["tid"]), rec.get("color", ""), bold=False, fid=rec.get("fid"),
+                )
+            except requests.RequestException as e:
+                ok, reason = False, f"取消加粗请求失败: {e}"
+            rec["updated_at"] = _timestamp()
+            if ok:
+                rec["bold"] = False
+                rec["last_error"] = ""
+                done += 1
+                log_info("    → 已取消旧帖加粗: %s（tid=%s）", stem, rec["tid"])
+                continue
+
+            rec["unbold_attempts"] = int(rec.get("unbold_attempts") or 0) + 1
+            rec["last_error"] = f"取消加粗失败: {reason}"
+            if max_attempts and rec["unbold_attempts"] >= max_attempts:
+                rec["bold"] = False
+                log_warning("    ⚠ 取消旧帖加粗多次失败，已放弃: %s（%s）", stem, reason)
+            else:
+                log_warning("    ⚠ 取消旧帖加粗失败，下轮重试: %s（%s）", stem, reason)
+        return done
+
+    def _count_attempt(self, rec: dict, reason: str, now: float) -> bool:
+        """记一次失败尝试，返回是否该放弃（次数或等待时间超限）。"""
+        rec["attempts"] = int(rec.get("attempts") or 0) + 1
+        rec["last_error"] = reason
+        rec["updated_at"] = _timestamp()
+        max_attempts = int(self.highlight.get("max_attempts") or 0)
+        if (max_attempts and rec["attempts"] >= max_attempts) or self._expired(rec, now):
+            rec["state"] = "gave_up"
+            return True
+        return False
+
+    def _expired(self, rec: dict, now: float) -> bool:
+        """记录是否已经超过等待上限（按发帖时间算）。"""
+        max_hours = self.highlight.get("max_age_hours") or 0
+        try:
+            posted = time.mktime(time.strptime(rec.get("posted_at") or "", "%Y-%m-%dT%H:%M:%S"))
+        except (TypeError, ValueError):
+            return False
+        return bool(max_hours) and (now - posted) > max_hours * 3600
+
+    def _save_records(self, records_path: str, records: dict) -> None:
+        try:
+            save_thread_records(records_path, records)
+        except OSError:
+            log_warning("    ⚠ 帖子记录写入失败: %s", records_path, exc_info=True)
+
     def _register_highlight(self, stem: str, news_dir: str, result: PostResult,
                             news_type: str, title: str) -> None:
         """登记这篇帖子的高亮意图，发帖时不动手。
@@ -939,7 +1221,7 @@ class MCBBSPoster:
         path = thread_records_path(news_dir)
         records = load_thread_records(path)
         previous = records.get(stem) or {}
-        now = time.strftime("%Y-%m-%dT%H:%M:%S")
+        now = _timestamp()
         records[stem] = {
             "tid": result.tid or previous.get("tid"),
             "fid": self.forum_fid,

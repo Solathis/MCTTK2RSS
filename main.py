@@ -64,7 +64,9 @@ from utils import (
     find_image,
     load_dotenv,
     load_posted,
+    load_thread_records,
     save_posted,
+    thread_records_path,
 )
 
 # 项目根目录（源码所在目录；配置统一放 config/，路径由 utils.CONFIG_DIR 给出）
@@ -532,6 +534,28 @@ def _has_unposted_mcbbs(config: dict) -> bool:
     return bool(_collect_unposted(save_dir, posted))
 
 
+def _pending_highlights(save_dir: str) -> dict:
+    """待补高亮的记录：发帖登记过、但还没设上色的帖子（含还在审核的）。"""
+    records = load_thread_records(thread_records_path(save_dir))
+    return {stem: rec for stem, rec in records.items() if rec.get("state") == "pending"}
+
+
+def _has_pending_mcbbs_highlights(config: dict) -> bool:
+    """没有新文章时，是否还有待补高亮的帖子要处理。"""
+    if not (config.get("mcbbs") or {}).get("enabled", False):
+        return False
+    return bool(_pending_highlights(config["output"]["save_dir"]))
+
+
+def _sweep_highlights(poster, save_dir: str) -> dict:
+    """处理待补高亮的帖子。补高亮失败只记日志：它不该拖累本轮发帖。"""
+    try:
+        return poster.process_pending_highlights(thread_records_path(save_dir))
+    except Exception as e:  # noqa: BLE001 - 兜底，任何异常都要留在日志里
+        log_warning("[发布] 补高亮流程出错（不影响发帖）: %s", e, exc_info=True)
+        return {}
+
+
 def _build_publish_queue(processed: list, save_dir: str, posted: set, config: dict) -> list:
     """本轮要发布的文章 = 本轮新处理的 + 历史未发布的（受 retry.backfill_unposted 控制）。"""
     queue = list(processed)
@@ -571,14 +595,21 @@ def run_post(processed: list, config: dict, no_image: bool = False, no_json: boo
     posted = load_posted(poster_state_file)
 
     queue = _build_publish_queue(processed, save_dir, posted, config)
-    if not queue:
+    pending_highlights = _pending_highlights(save_dir)
+    if not queue and not pending_highlights:
         log_info("[发布] 没有需要发布的文章")
+        return result
+
+    poster = MCBBSPoster(mcbbs_config)
+    # 补高亮放在发帖之前：它只在确认过审后才登录，登录失败也不该拖累本轮发帖
+    _sweep_highlights(poster, save_dir)
+    if not queue:
+        log_info("[发布] 本轮没有新帖，只处理了待补高亮")
         return result
 
     log_info("[发布] 目标站点: %s | 版块 fid=%s | 待发布 %d 篇",
              mcbbs_config.get("base_url"), mcbbs_config.get("forum_fid"), len(queue))
 
-    poster = MCBBSPoster(mcbbs_config)
     login_started = time.monotonic()
     try:
         poster.login()
@@ -627,8 +658,10 @@ def run_post_only(config: dict, config_path: str | None = None) -> dict:
     save_dir = config["output"]["save_dir"]
 
     all_news = _collect_unposted(save_dir, set())
+    pending_highlights = _pending_highlights(save_dir)
 
-    if not all_news:
+    # 没有新帖但有待补高亮时也要往下走：高亮补做只需要登录，不发帖
+    if not all_news and not pending_highlights:
         log_warning("[发布] output 目录没有可发布的新闻文件（需要 .txt + 同名 .json）: %s", save_dir)
         return result
 
@@ -637,14 +670,19 @@ def run_post_only(config: dict, config_path: str | None = None) -> dict:
     posted = load_posted(poster_state_file)
     pending = [(s, t, j) for s, t, j in all_news if s not in posted]
 
-    if not pending:
+    if not pending and not pending_highlights:
         log_info("[发布] 所有 %d 个文件已发布过，无需处理", len(all_news))
+        return result
+
+    poster = MCBBSPoster(mcbbs_config)
+    _sweep_highlights(poster, save_dir)
+    if not pending:
+        log_info("[发布] 本轮没有待发布的文件，只处理了待补高亮")
         return result
 
     log_info("[发布] 待发布: %d 个（共 %d 个文件，已发布 %d 个）",
              len(pending), len(all_news), len(all_news) - len(pending))
 
-    poster = MCBBSPoster(mcbbs_config)
     login_started = time.monotonic()
     try:
         poster.login()
@@ -1201,8 +1239,11 @@ def main():
             processed = run_scrape(config, state_file, stats=stats)
             stats["processed"] = len(processed)
             publish_target = "none" if args.scrape_only else args.publish
-            # 没抓到新文章时也要跑发布，否则上次登录失败留下的文章永远补不上
-            can_backfill = publish_target in ("all", "mcbbs") and _has_unposted_mcbbs(config)
+            # 没抓到新文章时也要跑发布：登录失败留下的文章、以及审核过后才能补的
+            # 帖子高亮都在等下一轮，不靠新文章触发
+            has_mcbbs_work = (_has_unposted_mcbbs(config)
+                              or _has_pending_mcbbs_highlights(config))
+            can_backfill = publish_target in ("all", "mcbbs") and has_mcbbs_work
 
             if publish_target == "none":
                 if processed:
@@ -1213,7 +1254,7 @@ def main():
                 log_info("[主] 没有新内容需要处理")
             else:
                 if not processed:
-                    log_info("[主] 没有新内容，检查是否有上次未发布的文章需要补发")
+                    log_info("[主] 没有新内容，检查是否有未发布的文章或待补高亮需要处理")
                 _publish_all(processed, config, args, publish_target, stats)
 
     except SystemExit:

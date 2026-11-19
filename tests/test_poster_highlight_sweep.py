@@ -453,7 +453,7 @@ class TestTidResolution:
 
 
 class TestUnboldOlderVersions:
-    """同一分类里只保留最新一篇加粗，判断依据是版块列表里的真实状态。"""
+    """同一分类的同一条版本线只保留最新一篇加粗，依据是版块列表里的真实状态。"""
 
     def _rows(self, *rows):
         return [poster.ForumThread(tid=tid, title=f"t{tid}", typeid=typeid,
@@ -465,16 +465,16 @@ class TestUnboldOlderVersions:
         poster_obj.fetch_forum_threads = lambda pages=3: rows
         return poster_obj
 
-    def test_unbolds_other_bold_threads_in_same_category(self, tmp_path, monkeypatch):
+    def test_unbolds_other_bold_threads_on_same_version_line(self, tmp_path, monkeypatch):
         monkeypatch.setattr(poster, "probe_thread", _visible)
         path = _write_records(tmp_path, {
-            "news_new": _record(tid=7000, news_type="java_release",
-                                color="#EE1B2E", bold=True, typeid=4),
+            "news_new": _record(tid=7000, news_type="java_snapshot",
+                                color="#3C9D40", bold=True, typeid=4),
             "news_old": _record(tid=6900, news_type="java_snapshot",
                                 color="#3C9D40", bold=True, state="done", typeid=4),
         })
         poster_obj = self._poster_with_rows(self._rows(
-            (7000, 4, "#EE1B2E", True),
+            (7000, 4, "#3C9D40", True),
             (6900, 4, "#3C9D40", True),
             (6700, 20, "#EE1B2E", True),   # 另一个分类，不动
             (6600, 4, "", False),          # 本来就不加粗
@@ -492,17 +492,38 @@ class TestUnboldOlderVersions:
         assert unbold_data["highlight_style[1]"] == "0"
         assert _read_records(path)["news_old"]["bold"] is False
 
+    def test_release_and_snapshot_bold_coexist(self, tmp_path, monkeypatch):
+        """正式版和测试版是两条版本线：各自都能有加粗帖，别互相取消。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {
+            "news_snapshot": _record(tid=7000, news_type="java_snapshot",
+                                     color="#3C9D40", bold=True, typeid=4),
+        })
+        poster_obj = self._poster_with_rows([
+            poster.ForumThread(tid=7000, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=True),
+            poster.ForumThread(tid=6336, title="Minecraft Java版 26.3 [AI翻译]",
+                               typeid=4, color="#EE1B2E", bold=True),
+        ])
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["unbolded"] == 0
+        assert len(poster_obj.session.posts) == 1
+
     def test_recordless_bold_thread_still_unbolded(self, tmp_path, monkeypatch):
         """站点上手工加粗、本地没有记录的历史帖同样要取消加粗。"""
         monkeypatch.setattr(poster, "probe_thread", _visible)
         path = _write_records(tmp_path, {
-            "news_new": _record(tid=7000, news_type="java_release",
-                                color="#EE1B2E", bold=True, typeid=4),
+            "news_new": _record(tid=7000, news_type="java_snapshot",
+                                color="#3C9D40", bold=True, typeid=4),
         })
-        poster_obj = self._poster_with_rows(self._rows(
-            (7000, 4, "#EE1B2E", True),
-            (6500, 4, "#3C9D40", True),
-        ))
+        poster_obj = self._poster_with_rows([
+            poster.ForumThread(tid=7000, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=True),
+            poster.ForumThread(tid=6500, title="Minecraft 26.4 快照 3 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=True),
+        ])
 
         stats = poster_obj.process_pending_highlights(path)
 
@@ -562,6 +583,147 @@ class TestUnboldOlderVersions:
 
         assert stats["highlighted"] == 1
         assert stats["unbolded"] == 0
+
+
+class TestBoldFamily:
+    """「最新版本加粗」是按正式版/测试版两条线分开算的，先得把帖子归到哪条线上。"""
+
+    @pytest.mark.parametrize(("title", "news_type", "expected"), [
+        ("Minecraft 26.4 快照 9 [AI翻译]", "", "preview"),
+        ("Minecraft 26.3 候选版本 3 [AI翻译]", "", "preview"),
+        ("Minecraft 26.3 预发布版 [AI翻译]", "", "preview"),
+        ("Minecraft 26.3 Release Candidate 2 [AI翻译]", "", "preview"),
+        ("Minecraft 预览版 26.70.26 更新日志 [AI翻译]", "", "preview"),
+        ("Minecraft Preview 26.70.23 更新日志 [AI翻译]", "", "preview"),
+        ("Minecraft 基岩版 测试版 - 26.70.24 [AI翻译]", "", "preview"),
+        ("Minecraft Java版 26.3 [AI翻译]", "", "release"),
+        ("Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]", "", "release"),
+        ("Minecraft: 基岩版 26.20 更新日志 [AI翻译]", "", "release"),
+        ("Minecraft 26.3 [AI翻译]", "java_release", "release"),
+        ("Minecraft 26.3 [AI翻译]", "java_snapshot", "preview"),
+        ("块讯：某个活动 [AI翻译]", "", ""),
+    ])
+    def test_classifies_release_and_preview(self, title, news_type, expected):
+        assert poster._bold_family(title, news_type) == expected
+
+
+class TestReconcileBold:
+    """历史遗留的加粗：按版本线整体对一次账，每线只留最新一篇。"""
+
+    def _rows(self):
+        return [
+            poster.ForumThread(tid=6816, title="TwitchCon 揭晓 2027 年首个游戏更新 [AI翻译]",
+                               typeid=16, color="#EC1282", bold=False),
+            poster.ForumThread(tid=6812, title="Minecraft 预览版 26.70.26 更新日志 [AI翻译]",
+                               typeid=20, color="", bold=False),
+            poster.ForumThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="", bold=False),
+            poster.ForumThread(tid=6773, title="Minecraft 26.4 快照 8 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=True),
+            poster.ForumThread(tid=6772, title="新的观看时长挑战 [AI翻译]",
+                               typeid=16, color="#2B65B7", bold=True),
+            poster.ForumThread(tid=6737, title="Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]",
+                               typeid=20, color="#EE1B2E", bold=True),
+            poster.ForumThread(tid=6336, title="Minecraft Java版 26.3 [AI翻译]",
+                               typeid=4, color="#EE1B2E", bold=True),
+        ]
+
+    def _poster(self, rows):
+        poster_obj = _make_poster(SweepSession())
+        poster_obj.fetch_forum_threads = lambda pages=3: rows
+        return poster_obj
+
+    def test_bolds_newest_per_version_line_and_unbolds_older(self, tmp_path):
+        path = _write_records(tmp_path, {
+            "news_snapshot_9": _record(tid=6808, news_type="java_snapshot",
+                                       color="#3C9D40", bold=False, state="legacy", typeid=4),
+            "news_snapshot_8": _record(tid=6773, news_type="java_snapshot",
+                                       color="#3C9D40", bold=True, state="legacy", typeid=4),
+            "news_preview": _record(tid=6812, news_type="bedrock_beta",
+                                    color="#3C9D40", bold=False, state="legacy", typeid=20),
+        })
+        poster_obj = self._poster(self._rows())
+
+        stats = poster_obj.reconcile_bold(path)
+
+        assert (stats["bolded"], stats["unbolded"], stats["failed"]) == (2, 1, 0)
+        posted = [(call[1]["data"]["moderate[]"], call[1]["data"]["highlight_color"],
+                   call[1]["data"]["highlight_style[1]"]) for call in poster_obj.session.posts]
+        assert posted == [("6808", "4", "1"), ("6773", "4", "0"), ("6812", "4", "1")]
+        records = _read_records(path)
+        assert records["news_snapshot_9"]["bold"] is True
+        assert records["news_snapshot_8"]["bold"] is False
+
+    def test_release_and_preview_keep_one_bold_each(self, tmp_path):
+        """同分类里正式版（6336/6737）与测试版（6808/6812）各留一篇，别互相顶掉。"""
+        path = _write_records(tmp_path, {
+            "news_snapshot_9": _record(tid=6808, news_type="java_snapshot",
+                                       color="#3C9D40", bold=False, typeid=4),
+            "news_preview": _record(tid=6812, news_type="bedrock_beta",
+                                    color="#3C9D40", bold=False, typeid=20),
+        })
+        poster_obj = self._poster(self._rows())
+
+        poster_obj.reconcile_bold(path)
+
+        unbolded = [call[1]["data"]["moderate[]"] for call in poster_obj.session.posts
+                    if call[1]["data"]["highlight_style[1]"] == "0"]
+        assert unbolded == ["6773"]
+        assert "6336" not in unbolded and "6737" not in unbolded and "6772" not in unbolded
+
+    def test_four_version_lines_bold_independently(self, tmp_path):
+        """Java 正式版/测试版、基岩版正式版/测试版 = 4 个「最新」，可以同时加粗。"""
+        path = _write_records(tmp_path, {})
+        rows = [
+            # Java 版资讯（typeid 4）
+            poster.ForumThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=True),
+            poster.ForumThread(tid=6336, title="Minecraft Java版 26.3 [AI翻译]",
+                               typeid=4, color="#EE1B2E", bold=True),
+            # 基岩版资讯（typeid 20）
+            poster.ForumThread(tid=6812, title="Minecraft 预览版 26.70.26 更新日志 [AI翻译]",
+                               typeid=20, color="#3C9D40", bold=True),
+            poster.ForumThread(tid=6737, title="Minecraft: 基岩版 26.62 热修复更新日志 [AI翻译]",
+                               typeid=20, color="#EE1B2E", bold=True),
+        ]
+        poster_obj = self._poster(rows)
+
+        stats = poster_obj.reconcile_bold(path)
+
+        assert stats["groups"] == 4
+        assert poster_obj.session.posts == []
+
+    def test_falls_back_to_sibling_colour(self, tmp_path):
+        """最新那篇还没上过色、本地也没记录时，用同组其它帖的颜色。"""
+        path = _write_records(tmp_path, {})
+        poster_obj = self._poster(self._rows())
+
+        poster_obj.reconcile_bold(path)
+
+        first = poster_obj.session.posts[0][1]["data"]
+        assert (first["moderate[]"], first["highlight_color"]) == ("6808", "4")
+
+    def test_dry_run_only_lists_actions(self, tmp_path):
+        path = _write_records(tmp_path, {})
+        poster_obj = self._poster(self._rows())
+
+        stats = poster_obj.reconcile_bold(path, dry_run=True)
+
+        assert poster_obj.session.posts == []
+        assert stats["bolded"] == 0
+        assert stats["unbolded"] == 0
+        assert _read_records(path) == {}
+
+    def test_unknown_version_line_is_skipped(self, tmp_path):
+        path = _write_records(tmp_path, {})
+        poster_obj = self._poster([
+            poster.ForumThread(tid=6900, title="随便一个帖子", typeid=4, bold=True),
+        ])
+
+        stats = poster_obj.reconcile_bold(path)
+
+        assert stats["groups"] == 0
+        assert poster_obj.session.posts == []
 
 
 class TestForumThreadsParser:

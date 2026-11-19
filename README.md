@@ -181,10 +181,30 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 `exclude_forums` 是永不回填高亮的版块，写名字（按"包含"匹配）或 `fid`（按精确匹配）；
 `max_attempts` / `max_age_hours` 是补高亮的放弃条件。
 
-**加粗按分类收敛**：版规是「最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」
-的机制。所以每给一篇新版本帖加粗后，程序会读版块列表（那是唯一能看到高亮样式的地方）
-把**同一分类里其它仍然加粗的帖子**改回不加粗 —— 判断依据是站点上真实的
-`font-weight: bold`，不是本地记录，这样历史帖、手工加过粗的帖子也能一起收敛。
+**加粗按「分类 + 版本线」收敛，一共 4 个「最新」**：版规是「最新版本加粗」，而 Discuz
+的高亮没有「只对最新版生效」的机制。而且「最新」不是一个：Java 版资讯和基岩版资讯各算各的，
+每个分类里正式版和测试版也各算各的，所以同时有 4 篇加粗帖才是对的（两红两绿）：
+
+| 分组 | 加粗的那篇 | 颜色 | 现在的例子 |
+| --- | --- | --- | --- |
+| Java版资讯／正式版 | 最新的正式版 | `#EE1B2E` | `Minecraft Java版 26.3` |
+| Java版资讯／测试版 | 最新的快照/预发布/RC | `#3C9D40` | `Minecraft 26.4 快照 9` |
+| 基岩版资讯／正式版 | 最新的更新日志/热修复 | `#EE1B2E` | `Minecraft: 基岩版 26.62 热修复更新日志` |
+| 基岩版资讯／测试版 | 最新的预览版/测试版 | `#3C9D40` | `Minecraft 预览版 26.70.26 更新日志` |
+
+所以每给一篇新版本帖加粗后，程序会读版块列表（那是唯一能看到高亮样式的地方）把**同一分组里
+其它仍然加粗的帖子**改回不加粗 —— 判断依据是站点上真实的 `font-weight: bold`，不是本地记录，
+这样历史帖、手工加过粗的帖子也能一起收敛；跨分组的不动（给 Java 测试版加粗不会碰 Java 正式版）。
+「这篇属于正式版还是测试版」优先看记录的 `news_type`，站点列表里没有记录的帖子按标题认
+（快照/预览/测试/候选/预发布/preview/beta/snapshot 算测试版，Java版/基岩版 xx 更新日志、
+热修复算正式版）。
+
+历史遗留或人工改过的加粗用 `--reconcile-bold` 整体对一次账（可以反复跑）：
+
+```bash
+python poster.py --reconcile-bold --dry-run   # 只列出 4 组各自的最新和要做的动作
+python poster.py --reconcile-bold             # 真的改论坛
+```
 
 历史登记（`--index-history`）会直接跳过两类帖子：
 
@@ -220,7 +240,8 @@ python poster.py --highlight-status
 | `normal`（兜底，块讯） | 块讯 / 基岩块讯 | `#EC1282` |
 | `commentary` | 时评（一般不高亮） | 不配颜色 |
 
-加粗只发生在版本资讯（`bold_types` 默认全量），且同一分类里只保留最新一篇加粗。
+加粗只发生在版本资讯（`bold_types` 默认全量），且每个分组里只保留最新一篇加粗
+（见上面的 4 个「最新」）。
 
 高亮状态记在 `output/.mcbbs_threads.json`（`state` 取 `pending` / `done` / `gave_up` /
 `dropped` / `legacy`），与「发没发」的 `output/.posted.json` 分开：
@@ -342,6 +363,10 @@ python poster.py --highlight-legacy 3
 
 # 对照站点现有颜色/加粗检查本地记录（只读，不改论坛）
 python poster.py --highlight-status
+
+# 加粗整体对账：4 个分组（Java/基岩 × 正式版/测试版）各只留最新一篇加粗
+python poster.py --reconcile-bold --dry-run
+python poster.py --reconcile-bold
 
 # 单篇验证：只补这一篇，可强制样式；先 --dry-run 看要提交的色号与加粗位
 python poster.py --highlight-stem news_xxx --bold --dry-run
@@ -708,6 +733,9 @@ python converter.py news.json --markdown-only
   - `fetch_my_threads()` — 拉「我的帖子」列表（含待审核项），用于补帖子 ID
   - `index_history(dir)` / `promote_legacy(records, n)` — 历史帖登记与限量提升
   - `process_pending_highlights(records)` — 补高亮：游客探测过审 → 需要才登录 → 上色/改加粗
+  - `reconcile_bold(records, pages, dry_run)` — 按 4 个分组（Java/基岩 × 正式版/测试版）
+    各留最新一篇加粗，其余取消加粗
+  - `highlight_status(records)` — 记录与站点现状逐条对照（只读）
 - `probe_thread(base, tid)` — 游客视角探测帖子是否可见（`ThreadProbe.visible` 为
   `True`/`False`/`None` 探测失败），顺带取出面包屑里的版块 `fid` 与版块名，用于排除回收区
 

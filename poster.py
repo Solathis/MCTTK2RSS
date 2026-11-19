@@ -32,6 +32,7 @@ from utils import (
     CONFIG_DIR,
     MODULE_TYPE_MAP,
     PROJECT_ROOT,
+    classify_article_type,
     find_image,
     load_dotenv,
     load_posted,
@@ -115,6 +116,15 @@ DEFAULT_HIGHLIGHT = {
     "max_attempts": 6,
     "max_age_hours": 168,
 }
+
+
+# 版规「最新版本加粗」是按版本线分开算的，而且 Java 版和基岩版各算各的：
+# 一共 4 个「最新」——Java 正式版（红）、Java 测试版（绿）、基岩版正式版（红）、
+# 基岩版测试版（绿）。分类（typeid 4/20）本来就分开，所以收敛的分组键是
+# (typeid, 正式版/测试版)。站点列表里的行没有 news_type，按标题认（见 _bold_family）。
+_BOLD_RELEASE_TYPES = {"java_release", "bedrock_release"}
+_BOLD_PREVIEW_TYPES = {"java_snapshot", "java_prerelease", "java_rc", "bedrock_beta"}
+_FAMILY_NAMES = {"release": "正式版", "preview": "测试版"}
 
 
 def highlight_color_index(color: str) -> int | None:
@@ -356,6 +366,36 @@ def _forum_excluded(forum_name: str, forum_fid: int | None, exclude) -> str:
 
 _PROBE_CRUMB_RE = re.compile(r'<div id="pt"[^>]*>(.*?)</div>', re.S)
 _PROBE_FID_RE = re.compile(r"forum\.php\?mod=forumdisplay&(?:amp;)?fid=(\d+)")
+
+_PREVIEW_MARKERS = ("快照", "测试", "预览", "候选", "预发布",
+                    "snapshot", "preview", "beta", "candidate", "pre-release", "pre release")
+# 正式版的标题里没有统一词：Java 用「Java版 xx」，基岩版用「基岩版 xx 更新日志/热修复」。
+_RELEASE_MARKERS = ("java版", "正式版", "热修复", "更新日志", "release")
+
+
+def _bold_family(title: str, news_type: str = "") -> str:
+    """版本帖属于「正式版」还是「测试版」，认不出返回空串。
+
+    加粗是按这两条版本线分开收敛的（见 _unbold_older_versions / reconcile_bold），
+    所以标题和 news_type 两种来源都要能判。站点列表里的行没有 news_type，只能看标题：
+    先认测试版关键词（"Release Candidate" 里也有 release，必须先判它），再认正式版，
+    最后交给 classify_article_type 兜底（它认得只有版本号的那种老标题）。
+    """
+    if news_type in _BOLD_RELEASE_TYPES:
+        return "release"
+    if news_type in _BOLD_PREVIEW_TYPES:
+        return "preview"
+    text = (title or "").lower()
+    if any(marker in text for marker in _PREVIEW_MARKERS):
+        return "preview"
+    if any(marker in text for marker in _RELEASE_MARKERS):
+        return "release"
+    kind = classify_article_type(text, chinese=True, fallback="")
+    if kind in _BOLD_RELEASE_TYPES:
+        return "release"
+    if kind in _BOLD_PREVIEW_TYPES:
+        return "preview"
+    return ""
 
 
 def probe_thread(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> ThreadProbe:
@@ -1414,24 +1454,30 @@ class MCBBSPoster:
     def _bold_category_typeids(self) -> set[int]:
         """`bold_types` 覆盖到的版块分类（typeid）。
 
-        只有这些分类才做「同一分类只留最新一篇加粗」的收敛；块讯之类的帖子即使
-        被人工加过粗，也不该因为我们给别的帖子上色而被顺手取消。
+        只有这些分类才做「同一分类同一条版本线只留最新一篇加粗」的收敛；块讯之类的
+        帖子即使被人工加过粗，也不该因为我们给别的帖子上色而被顺手取消。
         """
         typeids = {self.sortid_map.get(news_type)
                    for news_type in (self.highlight.get("bold_types") or [])}
         return {typeid for typeid in typeids if isinstance(typeid, int)}
 
     def _unbold_older_versions(self, records: dict, current: dict) -> int:
-        """同一分类里只保留最新一篇加粗：按版块列表的真实现状取消其它加粗。
+        """同一分类的同一条版本线上，只保留最新一篇加粗。
 
-        版规是「最新版本加粗」，而 Discuz 的高亮没有「只对最新版生效」的机制。
-        这里以站点列表为准而不是以本地记录为准：历史帖可能从来没进过记录，也可能
-        被人工改过，只有列表里那个 font-weight: bold 才算数。
+        版规是「最新版本加粗」，而正式版和测试版是两条独立的版本线（正式版红色、
+        测试版绿色），Java 版和基岩版又各算各的——一共 4 个「最新」。所以收敛必须
+        按 (typeid, 正式版/测试版) 分组，否则给 Java 测试版加粗会顺手取消 Java 正式版
+        的加粗。这里以站点列表为准而不是以本地记录为准：历史帖可能从来没进过记录，
+        也可能被人工改过，只有列表里那个 font-weight: bold 才算数。
         """
         typeid = current.get("typeid")
         if not typeid or typeid not in self._bold_category_typeids():
             return 0
         if not current.get("bold"):
+            return 0
+        family = _bold_family(current.get("title", ""), current.get("news_type", ""))
+        if not family:
+            log_debug("    · 认不出版本线（正式版/测试版），本轮不收敛: %s", current.get("title", ""))
             return 0
         try:
             threads = self.fetch_forum_threads(pages=3)
@@ -1444,6 +1490,8 @@ class MCBBSPoster:
             if row.typeid != typeid or row.tid == current.get("tid") or not row.bold:
                 continue
             record = self._record_for_tid(records, row.tid)
+            if _bold_family(row.title, (record or {}).get("news_type", "")) != family:
+                continue
             fallback = (self.highlight.get("colors") or {}).get("normal", "")
             color = row.color or (record or {}).get("color") or fallback
             try:
@@ -1461,6 +1509,116 @@ class MCBBSPoster:
                 record["color"] = color or record.get("color", "")
                 record["last_error"] = "" if ok else f"取消加粗失败: {reason}"
         return done
+
+    def reconcile_bold(self, records_path: str, pages: int = 3, dry_run: bool = False) -> dict:
+        """按「分类 + 版本线」把加粗收敛成每类每线只有最新一篇，一共 4 组。
+
+        自动流程只在发帖/补高亮成功后顺带取消同线旧帖的加粗，够不着历史遗留和人工
+        改过的状态（例如 Java版资讯 里 26.3 正式版和 26.4 快照 8 同时加粗）。这条
+        命令以版块列表为准整体对一次账：4 组（Java 正式版/测试版、基岩版正式版/测试版）
+        各挑 tid 最大的一篇，没加粗的补上加粗和该组的颜色，比它旧的同组加粗帖取消
+        加粗。可以反复跑，结果一致。
+        """
+        stats = {"groups": 0, "bolded": 0, "unbolded": 0, "failed": 0, "skipped": 0}
+        records = load_thread_records(records_path)
+        try:
+            rows = self.fetch_forum_threads(pages=pages)
+        except requests.RequestException as e:
+            log_error("[加粗收敛] 读版块列表失败: %s", e)
+            return stats
+        if not rows:
+            log_error("[加粗收敛] 版块列表没有解析出任何帖子")
+            return stats
+
+        version_typeids = self._bold_category_typeids()
+        groups: dict[tuple[int, str], list[ForumThread]] = {}
+        for row in rows:
+            if row.typeid not in version_typeids:
+                continue
+            family = _bold_family(row.title, (self._record_for_tid(records, row.tid) or {})
+                                  .get("news_type", ""))
+            if not family:
+                stats["skipped"] += 1
+                log_debug("    · 认不出版本线，跳过: %s（tid=%s）", row.title, row.tid)
+                continue
+            groups.setdefault((row.typeid, family), []).append(row)
+
+        actions: list[tuple[str, ForumThread, str, str]] = []
+        for (typeid, family), group in sorted(groups.items()):
+            stats["groups"] += 1
+            group.sort(key=lambda item: item.tid)  # tid 递增 ≈ 发帖顺序，最后一篇最新
+            newest = group[-1]
+            label = f"{newest.type_name or f'typeid={typeid}'}／{_FAMILY_NAMES[family]}"
+            color = self._family_color(newest, group, records)
+            if not color:
+                stats["skipped"] += 1
+                log_warning("    ⚠ %s 认不出该用什么颜色，跳过: %s（tid=%s）",
+                            label, newest.title, newest.tid)
+                continue
+            log_info("    · %s: 最新是 tid=%s（%s）", label, newest.tid,
+                     "已加粗" if newest.bold else "待加粗")
+            if not newest.bold:
+                actions.append(("bold", newest, color, label))
+            for row in group:
+                if row.tid != newest.tid and row.bold:
+                    actions.append(("unbold", row, row.color or color, label))
+
+        if not actions:
+            log_info("[加粗收敛] %d 组都已是最新一篇加粗，本次不动手", stats["groups"])
+            return stats
+        if dry_run:
+            for action, row, color, label in actions:
+                log_info("  [Dry Run] %s | %s | tid=%s | %s | %s",
+                         label, "加粗" if action == "bold" else "取消加粗",
+                         row.tid, color, row.title)
+            log_info("[Dry Run] 加粗收敛共 %d 个动作（%d 组），未改论坛",
+                     len(actions), stats["groups"])
+            return stats
+
+        if not self.session:
+            self.login()
+        for action, row, color, label in actions:
+            try:
+                ok, reason = self.highlight_thread(row.tid, color, bold=action == "bold")
+            except requests.RequestException as e:
+                ok, reason = False, f"请求失败: {e}"
+            if ok:
+                stats["bolded" if action == "bold" else "unbolded"] += 1
+                log_info("    → 已%s: %s（tid=%s，%s）",
+                         "加粗" if action == "bold" else "取消加粗", row.title, row.tid, label)
+            else:
+                stats["failed"] += 1
+                log_warning("    ⚠ %s失败: %s（%s）", label,
+                            "加粗" if action == "bold" else "取消加粗", row.title, reason)
+            record = self._record_for_tid(records, row.tid)
+            if record is None and action == "bold" and ok:
+                # 站点上有条目但本地没登记（例如人工发的版本帖），补一条便于后续对账
+                record = {"tid": row.tid, "fid": self.forum_fid, "typeid": row.typeid,
+                          "url": f"{self.base_url}/thread-{row.tid}-1-1.html",
+                          "title": row.title, "forum_name": "", "news_type": "manual",
+                          "color": color, "bold": True, "state": "done", "posted_at": "",
+                          "attempts": 0, "last_error": "", "tid_source": "加粗收敛"}
+                records[f"tid_{row.tid}"] = record
+            if record is not None:
+                record["bold"] = (action == "bold") if ok else bool(record.get("bold"))
+                record["color"] = color or record.get("color", "")
+                record["last_error"] = "" if ok else reason
+                record["updated_at"] = _timestamp()
+        self._save_records(records_path, records)
+        log_info("[加粗收敛] %d 组 | 加粗 %d | 取消加粗 %d | 失败 %d | 跳过 %d",
+                 stats["groups"], stats["bolded"], stats["unbolded"],
+                 stats["failed"], stats["skipped"])
+        return stats
+
+    def _family_color(self, newest: ForumThread, group: list[ForumThread], records: dict) -> str:
+        """给一组版本帖定加粗时要用的色值：已经上过色的那份最可信。"""
+        record = self._record_for_tid(records, newest.tid) or {}
+        candidates = [newest.color, record.get("color", "")]
+        candidates += [row.color for row in group if row.tid != newest.tid]
+        for color in candidates:
+            if highlight_color_index(color):
+                return color
+        return ""
 
     @staticmethod
     def _record_for_tid(records: dict, tid: int) -> dict | None:
@@ -1837,6 +1995,14 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         poster.highlight_status(records_path)
         return 0
 
+    if args.reconcile_bold:
+        try:
+            poster.reconcile_bold(records_path, dry_run=args.dry_run)
+        except Exception as e:
+            log_error(f"[!] 加粗收敛失败: {e}")
+            return 1
+        return 0
+
     if args.highlight_stem:
         records = load_thread_records(records_path)
         record = records.get(args.highlight_stem)
@@ -1949,6 +2115,9 @@ def main():
                         help="把最近 N 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看）")
     parser.add_argument("--highlight-status", action="store_true",
                         help="对照站点现有颜色/加粗检查本地记录（只读，不改论坛）")
+    parser.add_argument("--reconcile-bold", action="store_true",
+                        help="按分类+版本线（正式版/测试版）各自只留最新一篇加粗（会真的改论坛，"
+                             "先配 --dry-run 看）")
     parser.add_argument("--highlight-stem", metavar="STEM",
                         help="只补这一篇的高亮（单篇验证用，配合 --bold/--no-bold 可强制样式）")
     parser.add_argument("--highlight-tid", type=int, metavar="TID",
@@ -1969,6 +2138,7 @@ def main():
     state_file = os.path.join(news_dir, ".posted.json")
 
     if (args.highlight_only or args.index_history or args.highlight_status
+            or args.reconcile_bold
             or args.highlight_stem or args.highlight_tid
             or args.highlight_legacy is not None):
         sys.exit(_run_highlight_cli(args, config, news_dir, thread_records_path(news_dir)))

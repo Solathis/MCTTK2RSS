@@ -1,6 +1,7 @@
 """test_poster_history.py — 历史帖登记（legacy）、限量提升与 CLI 补高亮入口"""
 import argparse
 import json
+import sys
 
 import pytest
 
@@ -368,11 +369,38 @@ class TestHighlightStatus:
         assert stats["checked"] == 0
 
 
+class TestMainDispatch:
+    """高亮相关的开关必须走补高亮入口，不能掉进「发帖」那条路。"""
+
+    def _run(self, monkeypatch, tmp_path, *flags):
+        calls = []
+        monkeypatch.setattr(sys, "argv", ["poster.py", "--dir", str(tmp_path), *flags])
+        # 账号留空：一旦走错到发帖路径会以「未配置账号密码」退出 1，
+        # 和补高亮入口的 0 区分得开
+        monkeypatch.setattr(poster, "load_poster_config", lambda *a, **k: {
+            "base_url": "https://www.mcbbs.co", "forum_fid": 45,
+            "username": "", "password": "", "sortid_map": {},
+        })
+        monkeypatch.setattr(poster, "_run_highlight_cli",
+                            lambda *args: calls.append(args) or 0)
+        with pytest.raises(SystemExit) as exit_info:
+            poster.main()
+        return exit_info.value.code, calls
+
+    @pytest.mark.parametrize("flag", ["--reconcile-bold", "--highlight-status",
+                                      "--highlight-only", "--index-history"])
+    def test_highlight_flags_go_to_highlight_cli(self, monkeypatch, tmp_path, flag):
+        code, calls = self._run(monkeypatch, tmp_path, flag)
+        assert code == 0
+        assert len(calls) == 1
+
+
 class TestHighlightCli:
     def _args(self, **overrides):
         base = {"index_history": False, "highlight_legacy": None, "highlight_stem": None,
                 "highlight_tid": None, "color": None, "highlight_only": True,
-                "highlight_status": False, "bold": False, "no_bold": False, "dry_run": False}
+                "highlight_status": False, "reconcile_bold": False, "bold": False,
+                "no_bold": False, "dry_run": False}
         base.update(overrides)
         return argparse.Namespace(**base)
 

@@ -1,5 +1,5 @@
 {
-  "_comment": "MCTTK 配置模板：复制为 config.json 后修改 host / model 并填入 api_key（或改用 .env 的 OPENAI_API_KEY）。config.json 已被 .gitignore 忽略，不会入库。",
+  "_comment": "MCTTK 配置模板：复制为 config.json 后**务必**把 openai_compat.host / model 改成你的服务商并填入 api_key（host 留着 example.com 会被程序当成未配置，直接退出）；api_key 也可以改用 .env 的 OPENAI_API_KEY。http.verify_ssl 默认 true，只有在内网 TLS 解密环境才考虑关掉，优先用 ca_bundle。config.json 已被 .gitignore 忽略，不会入库。",
   "openai_compat": {
     "host": "api.example.com",
     "endpoint": "/v1/chat/completions",
@@ -32,7 +32,7 @@
     }
   },
   "http": {
-    "verify_ssl": false,
+    "verify_ssl": true,
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "proxies": {
@@ -151,9 +151,18 @@
         "bedrock_beta": "#3C9D40",
         "normal": "#EC1282"
       },
-      "bold_types": ["java_release", "bedrock_release"],
+      "bold_types": [
+        "java_release",
+        "java_snapshot",
+        "java_prerelease",
+        "java_rc",
+        "bedrock_release",
+        "bedrock_beta"
+      ],
+      "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
-      "max_age_hours": 168
+      "max_age_hours": 168,
+      "max_age_days": 30
     }
   },
   "bilibili": {

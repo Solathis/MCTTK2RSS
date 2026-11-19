@@ -119,7 +119,9 @@ DEFAULT_CONFIG = {
         }
     },
     "http": {
-        "verify_ssl": False,
+        # 默认开着校验：翻译请求带着 bearer API key，关掉等于把密钥和正文交给中间的任何人。
+        # 内网 / 杀毒软件做 TLS 解密导致证书报错时，优先用 ca_bundle 指定它们的根证书。
+        "verify_ssl": True,
         # 自定义 CA 证书路径（.pem）。设置后优先于 verify_ssl，
         # 用于代理/杀毒软件做 TLS 解密、其根证书不在 certifi 中的场景
         "ca_bundle": "",
@@ -207,7 +209,10 @@ def load_config(config_path: str = None) -> dict:
     config = dict(DEFAULT_CONFIG)
     if os.path.exists(config_path):
         try:
-            with open(config_path, encoding="utf-8") as f:
+            # utf-8-sig：Windows 编辑器（记事本另存的「UTF-8」、老版 Visual Studio）会在
+            # 文件头写 BOM，用 utf-8 读会让 json.load 直接抛错、整份配置回落默认值，
+            # 用户只看到一句「未配置翻译 API」，完全看不出是 BOM 的锅
+            with open(config_path, encoding="utf-8-sig") as f:
                 user_config = json.load(f)
             config = _deep_merge(config, user_config)
         except (OSError, json.JSONDecodeError) as e:

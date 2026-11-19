@@ -83,3 +83,26 @@ class TestVersionManifestCandidates:
 
         posted = json.loads(Path(state_file).read_text(encoding="utf-8"))["posted_urls"]
         assert MANIFEST_URL in posted, "首次运行必须把版本清单候选一起标记，否则下次会补发历史文章"
+
+
+class TestDryRunDoesNotWriteState:
+    """`--dry-run` 必须真的只读：首次运行的基线一旦在 dry-run 落盘，真跑就什么都不做了。"""
+
+    def test_first_run_dry_run_leaves_state_untouched(self, tmp_path):
+        state_file = _state_file(tmp_path, {"posted_urls": [], "_first_run": True})
+        before = Path(state_file).read_text(encoding="utf-8")
+
+        assert main._filter_and_check_state(
+            _news(), _config(tmp_path), state_file, dry_run=True) is None
+
+        assert Path(state_file).read_text(encoding="utf-8") == before
+
+    def test_first_run_dry_run_does_not_touch_posted_json(self, tmp_path):
+        state_file = _state_file(tmp_path, {"posted_urls": [], "_first_run": True})
+        out = tmp_path / "output"
+        (out / "news_a.txt").write_text("body", encoding="utf-8")
+
+        main._filter_and_check_state(_news(), _config(tmp_path), state_file, dry_run=True)
+
+        assert not (out / ".posted.json").exists(), "dry-run 不该把现有产物标成已发布"
+

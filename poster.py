@@ -553,7 +553,9 @@ def load_poster_config(config_path: str = None) -> dict:
 
     if os.path.exists(config_path):
         try:
-            with open(config_path, encoding="utf-8") as f:
+            # utf-8-sig：与 scraper.load_config 同口径。带 BOM 的配置在这里读失败
+            # 会静默回落默认值（账号、版块、色板全丢），发帖阶段才发现就太晚了
+            with open(config_path, encoding="utf-8-sig") as f:
                 full_config = json.load(f)
             mcbbs = full_config.get("mcbbs", {})
             for key in cfg:

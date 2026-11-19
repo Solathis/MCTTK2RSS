@@ -156,6 +156,20 @@ class TestCookies:
         assert bili_cfg["max_inline_images"] == 20  # 默认值仍在
         assert http_cfg == {"timeout": 30}
 
+    def test_load_config_tolerates_bom(self, tmp_path):
+        """带 BOM 的 config.json 不能整段回落默认值（否则 bilibili 开关等于没配）。"""
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps({
+            "bilibili": {"enabled": True, "category_id": 4},
+            "http": {"timeout": 30},
+        }), encoding="utf-8-sig")
+
+        bili_cfg, http_cfg = load_bili_config(str(path))
+
+        assert bili_cfg["enabled"] is True
+        assert bili_cfg["category_id"] == 4
+        assert http_cfg == {"timeout": 30}
+
 
 # ── 登录 ─────────────────────────────────────────────
 

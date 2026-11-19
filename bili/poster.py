@@ -144,7 +144,8 @@ def load_bili_config(config_path: str = None) -> dict:
     http_cfg = {}
     if os.path.isfile(config_path):
         try:
-            with open(config_path, encoding="utf-8") as f:
+            # utf-8-sig：与 scraper.load_config 同口径，带 BOM 的配置不能被静默忽略
+            with open(config_path, encoding="utf-8-sig") as f:
                 full = json.load(f)
             bili.update(full.get("bilibili") or {})
             http_cfg = full.get("http") or {}

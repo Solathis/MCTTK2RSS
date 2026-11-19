@@ -54,3 +54,15 @@ class TestModulesConfig:
         """专栏与论坛都必须至少有一个模块，否则头尾会整段消失。"""
         platforms = {m.get("platform", "mcbbs") for m in modules}
         assert "all" in platforms or {"mcbbs", "bilibili"} <= platforms
+
+
+class TestLoadModulesConfig:
+    def test_bom_does_not_break_loading(self, tmp_path, monkeypatch):
+        """Windows 编辑器另存的 UTF-8 带 BOM，不能让读取直接抛错、整篇转换中断。"""
+        import main
+
+        path = tmp_path / "modules_config.json"
+        path.write_text(json.dumps({"default_modules": []}), encoding="utf-8-sig")
+        monkeypatch.setattr(main, "CONFIG_DIR", str(tmp_path))
+
+        assert main._load_modules_config() == {"default_modules": []}

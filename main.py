@@ -413,7 +413,8 @@ def _load_modules_config() -> dict | None:
     """读取 config/modules_config.json；缺失时返回 None，转换器会退回内置默认模块。"""
     modules_cfg_path = os.path.join(CONFIG_DIR, "modules_config.json")
     if os.path.isfile(modules_cfg_path):
-        with open(modules_cfg_path, encoding="utf-8") as f:
+        # utf-8-sig：这份配置也是人手工编辑的，带 BOM 时 json.load 会直接抛错
+        with open(modules_cfg_path, encoding="utf-8-sig") as f:
             log_debug("[主] 已加载模块配置: %s", modules_cfg_path)
             return json.load(f)
     log_debug("[主] 未找到模块配置，将使用内置默认模块: %s", modules_cfg_path)

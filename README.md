@@ -180,19 +180,22 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 `colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 列出的类型
 会加粗，默认是全部「版本资讯」（Java 版资讯 / 基岩版资讯两个分类），块讯不加粗；
 `exclude_forums` 是永不回填高亮的版块，写名字（按"包含"匹配）或 `fid`（按精确匹配）；
-`max_attempts` / `max_age_hours` 是补高亮的放弃条件（等审核超时就放弃，不再每轮探测）；
-`max_age_days` 是「多久以前的帖子根本不用管」，见下面的记录生命周期。
+`max_attempts` / `max_age_hours` 是补高亮的放弃条件（**等审核**超时就放弃，不再每轮探测，
+计时从登记/提升那一刻算，不是发帖时间）；`max_age_days` 是「多久以前的帖子根本不用管」，
+见下面的记录生命周期。`0` 在三个上限里都表示「不限」。
 
 **记录生命周期（`max_age_days`，默认 30 天）**：新闻有时效，一个月前的帖子再补高亮也没有
 意义，所以程序不会为它们做任何事：
 
 - 过期判断以**帖子自己的发帖日期**为准（版块列表每行都带），取不到才退回产物的
   `release_date` —— 旧文章被重新发一遍时帖子是新的，照样要上色；
-- `--index-history` 跳过过期帖子，不建记录；已经登记过、后来老掉的记录一并清掉；
+- `--index-history` 跳过过期帖子，不建记录；已经登记过、后来老掉的记录一并清掉
+  （标题带删除线的帖子连记录一起作废）；
 - 补高亮遇到过期的 `pending` 直接判 `gave_up`，**连探测都不发**；等审核超过
   `max_age_hours` 的同样先判放弃，不再每轮为一个死帖花一次请求；
 - 每次落盘前清理：窗口外的 `legacy` / `done` / `gave_up` / `dropped` 删掉。
-  **`pending` 和加粗中的记录永不删除** —— 前者是待办，后者要留着才能随时取消加粗；
+  **`pending`、加粗中的、以及站点上仍显示为加粗的记录永不删除** —— 待办不能丢，
+  加粗的要留着才能随时取消加粗；
 - 记录里没有时间戳的老记录会补一次 `registered_at`，从补上那一刻开始算年龄；
 - 这一轮什么都没改就不重写文件（每小时一轮，避免无意义的写盘）。
 
@@ -213,9 +216,14 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 所以每给一篇新版本帖加粗后，程序会读版块列表（那是唯一能看到高亮样式的地方）把**同一分组里
 其它仍然加粗的帖子**改回不加粗 —— 判断依据是站点上真实的 `font-weight: bold`，不是本地记录，
 这样历史帖、手工加过粗的帖子也能一起收敛；跨分组的不动（给 Java 测试版加粗不会碰 Java 正式版）。
+
+收敛是**整张列表一次算完再动手**（不是逐篇「谁刚加粗谁就是赢家」）：否则同一批里后处理的
+旧版会把先处理的新版取消掉，最后留下的反而是旧版。补加粗失败时整组保持原样，不会把一条版本线
+弄成「一篇都不加粗」；认不出颜色的帖子只保留原状，不会用兜底色顶替。
+
 「这篇属于正式版还是测试版」优先看记录的 `news_type`，站点列表里没有记录的帖子按标题认
-（快照/预览/测试/候选/预发布/preview/beta/snapshot 算测试版，Java版/基岩版 xx 更新日志、
-热修复算正式版）。
+（快照/预览/测试/候选/预发布/prerelease/preview/beta/snapshot 算测试版，Java版/基岩版 xx
+更新日志、热修复算正式版）。
 
 历史遗留或人工改过的加粗用 `--reconcile-bold` 整体对一次账（可以反复跑）：
 
@@ -236,10 +244,11 @@ python poster.py --reconcile-bold             # 真的改论坛
 **怎么验证高亮是否真的生效**：高亮样式只渲染在版块列表里，所以直接对照列表看：
 
 ```bash
-# 记录 vs 站点，逐条打「一致/不一致」（只读，不登录）
+# 记录 vs 站点，逐条打「一致/不一致」（只读，不登录；读不到版块列表时退出码非 0）
 python poster.py --highlight-status
 
 # 单篇试色 + 试加粗：先 --dry-run 看色号，再真跑，然后重新跑一次 --highlight-status
+# 只处理指定的这一篇，不会顺手提交队列里别的 pending
 python poster.py --highlight-stem news_xxx --bold --dry-run
 python poster.py --highlight-stem news_xxx --bold
 python poster.py --highlight-status
@@ -394,8 +403,10 @@ python poster.py --highlight-stem news_xxx --bold
 python poster.py --highlight-stem news_xxx --no-bold
 
 # 不依赖 output 产物，直接指定一篇帖子（色值必须给，取 Discuz 色板）
+# 不加 --bold/--no-bold 时沿用站上现状，不会把人工加粗的帖子取消加粗
 python poster.py --highlight-tid 6816 --color "#EC1282" --dry-run
 python poster.py --highlight-tid 6816 --color "#EC1282"
+python poster.py --highlight-tid 6772 --color "#2B65B7" --bold
 ```
 
 ## 日志

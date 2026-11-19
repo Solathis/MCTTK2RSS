@@ -200,6 +200,16 @@ class TestThreadProbe:
         assert probe.forum_fid == 45
         assert "幻翼块讯" in probe.crumb
 
+    def test_nested_breadcrumb_uses_deepest_forum(self, monkeypatch):
+        """面包屑有多级版块时取最后一级，否则排除子版块的规则永远匹配不上。"""
+        monkeypatch.setattr(poster.requests, "Session", lambda: SweepSession(
+            '<div id="pt"><a href="forum.php?mod=forumdisplay&amp;fid=44">幻翼块讯</a> '
+            '<a href="forum.php?mod=forumdisplay&amp;fid=46">块讯回收区</a></div>'
+            '<span id="thread_subject">标题</span>'))
+        probe = poster.probe_thread(BASE, 6808)
+        assert probe.forum_fid == 46
+        assert poster._forum_excluded(probe.crumb, probe.forum_fid, ["块讯回收区"])
+
     def test_404_means_not_visible(self, monkeypatch):
         class NotFoundSession(SweepSession):
             def get(self, url, **kwargs):
@@ -452,7 +462,7 @@ class TestTidResolution:
         assert list(log_dir.glob("mcbbs_my-threads_*.html")), "解析失败时应把列表页落盘"
 
 
-class TestUnboldOlderVersions:
+class TestConvergeBold:
     """同一分类的同一条版本线只保留最新一篇加粗，依据是版块列表里的真实状态。"""
 
     def _rows(self, *rows):
@@ -728,7 +738,153 @@ class TestReconcileBold:
         assert poster_obj.session.posts == []
 
 
-class TestForumThreadsParser:
+class TestConvergeBoldCore:
+    """`_converge_bold`：一次算完再动手，最新那篇失败别连累整组。"""
+
+    def _poster(self):
+        poster_obj = _make_poster(SweepSession())
+        poster_obj.sortid_map = {"java_snapshot": 4, "java_release": 4,
+                                 "bedrock_beta": 20, "bedrock_release": 20,
+                                 "normal": 16}
+        return poster_obj
+
+    def _rows(self, *rows):
+        return [poster.ForumThread(tid=tid, title=title, typeid=typeid, color=color, bold=bold)
+                for tid, title, typeid, color, bold in rows]
+
+    def test_older_version_never_wins(self, tmp_path):
+        """较旧的那篇后处理时不能把自己当赢家：只按 tid 最大的那篇算。"""
+        poster_obj = self._poster()
+        rows = self._rows(
+            (6900, "Minecraft 26.4 快照 8 [AI翻译]", 4, "#3C9D40", True),
+            (7000, "Minecraft 26.4 快照 9 [AI翻译]", 4, "#3C9D40", False),
+        )
+
+        stats = poster_obj._converge_bold({}, rows)
+
+        assert (stats["bolded"], stats["unbolded"]) == (1, 1)
+        posted = [(call[1]["data"]["moderate[]"], call[1]["data"]["highlight_style[1]"])
+                  for call in poster_obj.session.posts]
+        assert posted == [("7000", "1"), ("6900", "0")]
+
+    def test_older_bold_kept_when_newest_not_bold_and_allow_bold_false(self, tmp_path):
+        """allow_bold=False（补高亮流程用）：最新那篇没加粗就什么都不动。"""
+        poster_obj = self._poster()
+        rows = self._rows(
+            (6900, "Minecraft 26.4 快照 8 [AI翻译]", 4, "#3C9D40", True),
+            (7000, "Minecraft 26.4 快照 9 [AI翻译]", 4, "#3C9D40", False),
+        )
+
+        stats = poster_obj._converge_bold({}, rows, allow_bold=False)
+
+        assert (stats["bolded"], stats["unbolded"]) == (0, 0)
+        assert poster_obj.session.posts == []
+
+    def test_bold_failure_leaves_older_alone(self, tmp_path):
+        """最新那篇加粗失败时不要取消旧帖，否则整条版本线一个都不加粗。"""
+        poster_obj = self._poster()
+        poster_obj.session = SweepSession(highlight_responses=[
+            FakeResponse(FAIL_RESPONSE), FakeResponse(OK_RESPONSE)])
+        rows = self._rows(
+            (6900, "Minecraft 26.4 快照 8 [AI翻译]", 4, "#3C9D40", True),
+            (7000, "Minecraft 26.4 快照 9 [AI翻译]", 4, "#3C9D40", False),
+        )
+
+        stats = poster_obj._converge_bold({}, rows)
+
+        assert stats["failed"] == 1
+        assert stats["unbolded"] == 0
+        assert len(poster_obj.session.posts) == 1
+
+    def test_unbold_without_known_colour_is_skipped(self, tmp_path):
+        """认不出颜色就别动它：换成配置里的兜底色等于顺手改了人家的颜色。"""
+        poster_obj = self._poster()
+        rows = self._rows(
+            (6900, "Minecraft 26.4 快照 8 [AI翻译]", 4, "", True),
+            (7000, "Minecraft 26.4 快照 9 [AI翻译]", 4, "#3C9D40", True),
+        )
+
+        stats = poster_obj._converge_bold({}, rows)
+
+        assert stats["unbolded"] == 0
+        assert stats["skipped"] == 1
+        assert poster_obj.session.posts == []
+
+    def test_failed_action_does_not_rewrite_record_colour(self, tmp_path):
+        """操作失败时记录里的颜色保持原样，别让人以为站上已经改了。"""
+        poster_obj = self._poster()
+        poster_obj.session = SweepSession(highlight_responses=[FakeResponse(FAIL_RESPONSE)])
+        records = {"news_old": _record(tid=6900, color="#3C9D40", bold=True, typeid=4)}
+        rows = self._rows(
+            (6900, "Minecraft 26.4 快照 8 [AI翻译]", 4, "#3C9D40", True),
+            (7000, "Minecraft 26.4 快照 9 [AI翻译]", 4, "#3C9D40", True),
+        )
+
+        poster_obj._converge_bold(records, rows)
+
+        assert records["news_old"]["color"] == "#3C9D40"
+        assert records["news_old"]["bold"] is True
+
+    def test_prerelease_title_counts_as_preview(self, tmp_path):
+        poster_obj = self._poster()
+        rows = self._rows(
+            (6900, "Minecraft 26.3 prerelease [AI翻译]", 4, "#3C9D40", True),
+            (7000, "Minecraft Java版 26.3 [AI翻译]", 4, "#EE1B2E", True),
+        )
+
+        stats = poster_obj._converge_bold({}, rows, dry_run=True)
+
+        # 两条不同的版本线，各自一篇加粗，不该有任何动作
+        assert stats["groups"] == 2
+        assert stats["bolded"] == 0 and stats["unbolded"] == 0
+
+
+class TestSweepGuards:
+    def test_disabled_highlight_does_nothing(self, tmp_path, monkeypatch):
+        """mcbbs.highlight.enabled=false 时不该再登录动论坛。"""
+        def no_probe(*_args, **_kwargs):
+            raise AssertionError("关掉高亮就不该探测")
+
+        monkeypatch.setattr(poster, "probe_thread", no_probe)
+        path = _write_records(tmp_path, {"news_x": _record(tid=6816)})
+        poster_obj = _make_poster(SweepSession())
+        poster_obj.highlight["enabled"] = False
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["pending"] == 0
+        assert poster_obj.session.posts == []
+
+    def test_invalid_colour_retires_without_submitting(self, tmp_path, monkeypatch):
+        """色值不在色板里：登录提交也一定被拒，直接判放弃，别消耗重试次数。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {
+            "news_x": _record(tid=6816, color="#123456"),
+        })
+        poster_obj = _make_poster(SweepSession())
+
+        stats = poster_obj.process_pending_highlights(path)
+
+        assert stats["gave_up"] == 1
+        assert poster_obj.session.posts == []
+        assert "色板" in _read_records(path)["news_x"]["last_error"]
+
+    def test_only_processes_the_given_stem(self, tmp_path, monkeypatch):
+        """单篇验证不能把别的 pending 一起提交。"""
+        monkeypatch.setattr(poster, "probe_thread", _visible)
+        path = _write_records(tmp_path, {
+            "news_a": _record(tid=7000, url=f"{BASE}/thread-7000-1-1.html"),
+            "news_b": _record(tid=7001, url=f"{BASE}/thread-7001-1-1.html"),
+        })
+        poster_obj = _make_poster(SweepSession())
+
+        stats = poster_obj.process_pending_highlights(path, only="news_a")
+
+        assert stats["pending"] == 1
+        assert [call[1]["data"]["moderate[]"] for call in poster_obj.session.posts] == ["7000"]
+        records = _read_records(path)
+        assert records["news_a"]["state"] == "done"
+        assert records["news_b"]["state"] == "pending"
     """版块列表是唯一能看到高亮样式的地方：标题链接上的内联 style。"""
 
     def _row(self, tid, title, typeid=4, type_name="Java版资讯", style=""):
@@ -799,6 +955,16 @@ class TestForumThreadsParser:
             '<td class="by"><em><span>2026-11-4</span></em></td></tr></tbody>'
         )
         assert poster._parse_forum_threads(html)[0].posted == "2026-11-04"
+
+    def test_date_not_taken_from_reply_cell(self):
+        """第一个 by 单元格没有日期时，不能跨到第二个（最后回复）单元格去拿。"""
+        html = (
+            '<tbody id="normalthread_6720"><tr><th class="new">'
+            '<a href="thread-6720-1-2.html" class="s xst">被顶起来的老帖</a></th>'
+            '<td class="by"><cite><a href="space-uid-1.html">newspaper</a></cite></td>'
+            '<td class="by"><em><span>2026-11-19</span></em></td></tr></tbody>'
+        )
+        assert poster._parse_forum_threads(html)[0].posted == ""
 
     def test_unknown_markup_returns_empty(self):
         assert poster._parse_forum_threads("<html>no rows</html>") == []

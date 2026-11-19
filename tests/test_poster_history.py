@@ -466,7 +466,7 @@ class TestHighlightCli:
 
             def highlight_status(self, records_path, pages=3):
                 called.append(records_path)
-                return {"checked": 0}
+                return {"checked": 3, "same": 3, "different": 0, "missing": 0}
 
         monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
         code = poster._run_highlight_cli(self._args(highlight_only=False, highlight_status=True),
@@ -476,17 +476,37 @@ class TestHighlightCli:
         assert code == 0
         assert called == [str(tmp_path / ".mcbbs_threads.json")]
 
+    def test_highlight_status_fails_when_site_unreachable(self, tmp_path, monkeypatch):
+        """读不到版块列表时什么都没查，不能报成功。"""
+
+        class FakePoster:
+            def __init__(self, config):
+                pass
+
+            def highlight_status(self, records_path, pages=3):
+                return {"checked": 0, "same": 0, "different": 0, "missing": 0}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        code = poster._run_highlight_cli(self._args(highlight_only=False, highlight_status=True),
+                                         {"username": "", "password": ""},
+                                         str(tmp_path), str(tmp_path / ".mcbbs_threads.json"))
+
+        assert code == 1
+
     def test_highlight_stem_marks_one_record(self, tmp_path, monkeypatch):
-        """单篇验证：--highlight-stem 只把这一条改成 pending，并可按 --bold 强制样式。"""
+        """单篇验证：--highlight-stem 只把这一条改成 pending，并交给 only= 单篇处理。"""
         calls = []
 
         class FakePoster:
             def __init__(self, config):
                 pass
 
-            def process_pending_highlights(self, records_path):
-                calls.append(records_path)
-                return {"pending": 1, "highlighted": 1}
+            def _save_records(self, records_path, records):
+                poster.save_thread_records(records_path, records)
+
+            def process_pending_highlights(self, records_path, only=None):
+                calls.append((records_path, only))
+                return {"pending": 1, "highlighted": 1, "failed": 0}
 
         monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
         records_path = str(tmp_path / ".mcbbs_threads.json")
@@ -504,7 +524,8 @@ class TestHighlightCli:
         assert records["news_a"]["state"] == "pending"
         assert records["news_a"]["bold"] is True
         assert records["news_b"]["state"] == "legacy"
-        assert calls == [records_path]
+        # 只处理这一条：别的 pending 不跟着被提交
+        assert calls == [(records_path, "news_a")]
 
     def test_highlight_stem_dry_run_writes_nothing(self, tmp_path, monkeypatch):
         monkeypatch.setattr(poster, "MCBBSPoster", lambda config: type(
@@ -538,13 +559,17 @@ class TestHighlightCli:
             def __init__(self, config):
                 pass
 
+            def _save_records(self, records_path, records):
+                poster.save_thread_records(records_path, records)
+
             def fetch_forum_threads(self, pages=3):
                 return [poster.ForumThread(6816, "TwitchCon 揭晓 2027 年首个游戏更新",
-                                           typeid=16, color="", bold=False)]
+                                           typeid=16, color="", bold=False,
+                                           posted="2026-11-18")]
 
-            def process_pending_highlights(self, records_path):
-                calls.append(records_path)
-                return {"pending": 1, "highlighted": 1}
+            def process_pending_highlights(self, records_path, only=None):
+                calls.append((records_path, only))
+                return {"pending": 1, "highlighted": 1, "failed": 0}
 
         monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
         records_path = str(tmp_path / ".mcbbs_threads.json")
@@ -559,8 +584,71 @@ class TestHighlightCli:
         assert record["color"] == "#EC1282"
         assert record["bold"] is False
         assert record["typeid"] == 16
+        # 年龄按帖子真实的发帖日期算，不是「登记时间」
+        assert record["posted_at"] == "2026-11-18T00:00:00"
         assert record["state"] == "pending"
-        assert calls == [records_path]
+        assert calls == [(records_path, "tid_6816")]
+
+    def test_highlight_tid_keeps_existing_bold_without_override(self, tmp_path, monkeypatch):
+        """没给 --bold/--no-bold 时沿用站上现状，别把人工加粗的帖子取消加粗。"""
+        class FakePoster:
+            forum_fid = 45
+            base_url = BASE
+
+            def __init__(self, config):
+                pass
+
+            def _save_records(self, records_path, records):
+                poster.save_thread_records(records_path, records)
+
+            def fetch_forum_threads(self, pages=3):
+                return [poster.ForumThread(6772, "新的观看时长挑战 [AI翻译]",
+                                           typeid=16, color="#2B65B7", bold=True)]
+
+            def process_pending_highlights(self, records_path, only=None):
+                return {"pending": 1, "highlighted": 1, "failed": 0}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_tid=6772, color="#2B65B7"),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        assert _read_records(records_path)["tid_6772"]["bold"] is True
+
+    def test_highlight_tid_reuses_record_of_same_tid(self, tmp_path, monkeypatch):
+        """同一篇帖子已经按 stem 登记过，就复用它，别再建一条 tid_<n> 重复记录。"""
+        class FakePoster:
+            forum_fid = 45
+            base_url = BASE
+
+            def __init__(self, config):
+                pass
+
+            def _save_records(self, records_path, records):
+                poster.save_thread_records(records_path, records)
+
+            def fetch_forum_threads(self, pages=3):
+                return [poster.ForumThread(6816, "TwitchCon 揭晓 2027 年首个游戏更新",
+                                           typeid=16, color="", bold=False)]
+
+            def process_pending_highlights(self, records_path, only=None):
+                return {"pending": 1, "highlighted": 1, "failed": 0}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+        _write_records(tmp_path, {"news_twitchcon": _legacy(tid=6816, state="legacy")})
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_tid=6816, color="#EC1282"),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        records = _read_records(records_path)
+        assert set(records) == {"news_twitchcon"}
+        assert records["news_twitchcon"]["state"] == "pending"
 
     def test_highlight_tid_dry_run_writes_nothing(self, tmp_path, monkeypatch):
         class FakePoster:

@@ -154,7 +154,7 @@ def _merge_highlight(raw) -> dict:
         ]
     for key in ("max_attempts", "max_age_hours", "max_age_days"):
         value = raw.get(key)
-        if isinstance(value, int) and not isinstance(value, bool):
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
             merged[key] = value
     return merged
 
@@ -221,6 +221,17 @@ def _records_digest(records: dict) -> str:
     return json.dumps(records, ensure_ascii=False, sort_keys=True)
 
 
+def _waiting_since(record: dict) -> float | None:
+    """「等审核」的起算点：登记（或被重新提升）的时间，不是发帖时间。
+
+    这两个时间必须分开：历史帖的发帖时间可能是几个月前，`max_age_days` 用它判断
+    「值不值得管」，而 `max_age_hours` 判断的是「这次等待已经持续多久」，只能从登记算，
+    否则把一篇老帖提升上来就等于立刻超时。
+    """
+    return (_parse_timestamp(record.get("registered_at") or "")
+            or _parse_timestamp(record.get("posted_at") or ""))
+
+
 _MY_THREAD_ANCHOR_RE = re.compile(r"<a\b([^>]*)>(.*?)</a>", re.S | re.I)
 _TID_IN_ANCHOR_RE = re.compile(
     # 标题链接的页码部分会跟着列表页走（第 2 页是 thread-6720-1-2.html），
@@ -261,9 +272,11 @@ class ThreadProbe:
 
 _FORUM_ROW_RE = re.compile(r'<tbody id="normalthread_(\d+)"', re.I)
 _FORUM_TYPE_RE = re.compile(r"typeid=(\d+)[^>]*>([^<]{1,20})</a>")
-# 发帖日期在第一个 class="by" 单元格里：近期的写成 title="2026-11-18"，
-# 早一些的写成 <span>2026-11-4</span>（月和日不补零）
-_POSTED_DATE_RE = re.compile(r'<td class="by">.*?(\d{4})-(\d{1,2})-(\d{1,2})', re.S | re.I)
+# 发帖日期在**第一个** class="by" 单元格里；紧跟的第二个 by 单元格是「最后回复」，
+# 跨过去就会把被顶起来的老帖当成新帖。近期写成 title="2026-11-18"，早一些的直接是
+# <span>2026-11-4</span>（月和日不补零）。
+_POSTED_CELL_RE = re.compile(r'<td class="by">(?:(?!</td>).)*', re.S | re.I)
+_POSTED_DATE_RE = re.compile(r"(\d{4})-(\d{1,2})-(\d{1,2})")
 _STYLE_ATTR_RE = re.compile(r'style="([^"]*)"', re.I)
 _COLOR_HEX_RE = re.compile(r"color:\s*(#[0-9A-Fa-f]{6})")
 _BOLD_CSS_RE = re.compile(r"font-weight:\s*bold", re.I)
@@ -286,6 +299,16 @@ class ForumThread:
     color: str = ""
     bold: bool = False
     posted: str = ""
+
+
+def _posted_cell(block: str) -> str:
+    """取版块列表一行里第一个 class="by" 单元格的内容（发帖时间那一格）。
+
+    第二个 by 单元格是「最后回复」，被顶起来的老帖在那里是最新日期；只截到 `</td>`
+    才不会把回复时间当成发帖时间。
+    """
+    match = _POSTED_CELL_RE.search(block or "")
+    return match.group(0) if match else ""
 
 
 def _parse_forum_threads(html: str) -> list[ForumThread]:
@@ -319,7 +342,7 @@ def _parse_forum_threads(html: str) -> list[ForumThread]:
 
         color_match = _COLOR_HEX_RE.search(style)
         type_match = _FORUM_TYPE_RE.search(block)
-        posted_match = _POSTED_DATE_RE.search(block)
+        posted_match = _POSTED_DATE_RE.search(_posted_cell(block))
         threads.append(ForumThread(
             tid=int(row.group(1)),
             title=title,
@@ -406,7 +429,9 @@ _PROBE_CRUMB_RE = re.compile(r'<div id="pt"[^>]*>(.*?)</div>', re.S)
 _PROBE_FID_RE = re.compile(r"forum\.php\?mod=forumdisplay&(?:amp;)?fid=(\d+)")
 
 _PREVIEW_MARKERS = ("快照", "测试", "预览", "候选", "预发布",
-                    "snapshot", "preview", "beta", "candidate", "pre-release", "pre release")
+                    # "prerelease" 要单独列：它含 "release"，漏了就落进正式版那一组
+                    "snapshot", "preview", "beta", "candidate", "prerelease",
+                    "pre-release", "pre release")
 # 正式版的标题里没有统一词：Java 用「Java版 xx」，基岩版用「基岩版 xx 更新日志/热修复」。
 _RELEASE_MARKERS = ("java版", "正式版", "热修复", "更新日志", "release")
 
@@ -460,10 +485,12 @@ def probe_thread(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> Threa
         return ThreadProbe(False)
     block = _PROBE_CRUMB_RE.search(html)
     crumb_html = block.group(1) if block else ""
-    fid_match = _PROBE_FID_RE.search(crumb_html)
+    # 面包屑可能有多级版块（父版块在前）：排除规则针对帖子真正所在的那一级，
+    # 所以取最后一个 forumdisplay 链接，而不是第一个
+    fids = _PROBE_FID_RE.findall(crumb_html)
     return ThreadProbe(
         True,
-        forum_fid=int(fid_match.group(1)) if fid_match else None,
+        forum_fid=int(fids[-1]) if fids else None,
         crumb=_normalize_title(crumb_html),
     )
 
@@ -1401,100 +1428,28 @@ class MCBBSPoster:
                         threads.append(item)
         return threads
 
-    def process_pending_highlights(self, records_path: str) -> dict:
+    def process_pending_highlights(self, records_path: str, only: str | None = None) -> dict:
         """补上待高亮的帖子：先匿名探测过审，需要时才登录动手。
 
         站点对审核中的帖子拒绝高亮，所以探测这一步必须先做：不登录就能排除掉
         绝大多数「还没过审」的项，省掉一轮验证码。返回统计供日志汇总。
+        `only` 限定只处理某一条记录（单篇验证命令用），别顺手改到别的帖子。
         """
         stats = {"pending": 0, "highlighted": 0, "unbolded": 0, "gave_up": 0,
                  "failed": 0, "dropped": 0, "stale": 0}
         records = load_thread_records(records_path)
         before = _records_digest(records)
-        pending = {stem: rec for stem, rec in records.items() if rec.get("state") == "pending"}
-        if not pending:
-            return stats
-        stats["pending"] = len(pending)
-
-        missing = {stem: rec for stem, rec in pending.items() if not rec.get("tid")}
-        if missing:
-            self._resolve_tids(records, missing)
-
-        exclude = self.highlight.get("exclude_forums") or []
         now = time.time()
-        ready: list[str] = []
-        for stem, rec in pending.items():
-            tid = rec.get("tid")
-            if not tid:
-                if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
-                    stats["gave_up"] += 1
-                continue
-            if self._too_old(rec, now):
-                # 太老的帖子不再管：既不探测也不上色，省掉每轮白跑一个请求
-                rec["state"] = "gave_up"
-                rec["last_error"] = f"超过 {self._max_age_days()} 天仍未补上高亮，不再处理"
-                rec["updated_at"] = _timestamp()
-                stats["stale"] += 1
-                log_info("    → 已过期，不再补高亮: %s（tid=%s）", rec.get("title", stem), tid)
-                continue
-            if self._expired(rec, now):
-                # 等审核已经超过 max_age_hours：同样不再探测，免得每轮为一个死帖花一次请求
-                rec["state"] = "gave_up"
-                rec["last_error"] = "等待审核超时，已放弃"
-                rec["updated_at"] = _timestamp()
-                stats["gave_up"] += 1
-                continue
-            probe = probe_thread(self.base_url, int(tid))
-            if probe.visible is None:
-                rec["last_error"] = "过审探测失败（网络异常，下轮重试）"
-                rec["updated_at"] = _timestamp()
-                continue
-            if not probe.visible:
-                # 还在审核里不算一次失败：审核是人工的，多久都有可能
-                if self._expired(rec, now):
-                    rec["state"] = "gave_up"
-                    rec["last_error"] = "等待审核超时，已放弃"
-                    rec["updated_at"] = _timestamp()
-                    stats["gave_up"] += 1
-                else:
-                    rec["last_error"] = "仍在审核中"
-                continue
-            skipped = _forum_excluded(probe.crumb, probe.forum_fid, exclude)
-            if skipped:
-                # 被移动/删除到回收区、或者落在排除版块里的帖子，永远不该上高亮
-                rec["state"] = "dropped"
-                rec["last_error"] = skipped
-                rec["updated_at"] = _timestamp()
-                stats["dropped"] += 1
-                log_info("    → 跳过高亮（%s）: %s", skipped, rec.get("title", stem))
-                continue
-            ready.append(stem)
-
         try:
-            if ready:
-                if not self.session:
-                    self.login()
-                for stem in ready:
-                    rec = records[stem]
-                    try:
-                        ok, reason = self.highlight_thread(
-                            int(rec["tid"]), rec.get("color", ""),
-                            bold=bool(rec.get("bold")), fid=rec.get("fid"),
-                        )
-                    except requests.RequestException as e:
-                        ok, reason = False, f"高亮请求失败: {e}"
-                    if not ok:
-                        if self._count_attempt(rec, reason, now):
-                            stats["gave_up"] += 1
-                        else:
-                            stats["failed"] += 1
-                        continue
-                    rec["state"] = "done"
-                    rec["highlighted_at"] = _timestamp()
-                    rec["updated_at"] = _timestamp()
-                    rec["last_error"] = ""
-                    stats["highlighted"] += 1
-                    stats["unbolded"] += self._unbold_older_versions(records, rec)
+            if not self.highlight.get("enabled"):
+                # 关掉高亮之后不该再登录动论坛；待办原样留着，打开后继续
+                log_info("[高亮] 配置里已关闭高亮（mcbbs.highlight.enabled），本轮不处理")
+                return stats
+            pending = {stem: rec for stem, rec in records.items()
+                       if rec.get("state") == "pending" and (only is None or stem == only)}
+            stats["pending"] = len(pending)
+            if pending:
+                self._process_ready(records, pending, stats, now)
         finally:
             # 探测/登记结果无论如何都要落盘：登录失败也不该把上一轮的进展丢掉
             pruned = self._prune_records(records)
@@ -1509,30 +1464,153 @@ class MCBBSPoster:
                      stats["stale"], self._max_age_days())
         return stats
 
-    def _resolve_tids(self, records: dict, missing: dict) -> None:
+    def _process_ready(self, records: dict, pending: dict, stats: dict, now: float) -> None:
+        """把 pending 里已经可以动手的挑出来，登录后提交高亮。"""
+        exclude = self.highlight.get("exclude_forums") or []
+        missing = {}
+        for stem, rec in pending.items():
+            if rec.get("tid"):
+                continue
+            if self._too_old(rec, now):
+                # 年龄先判：过期记录不值得再为它跑一次「我的帖子」
+                self._retire(rec, stats, stale=True)
+                continue
+            missing[stem] = rec
+        if missing:
+            self._resolve_tids(records, missing, now)
+
+        ready: list[str] = []
+        for stem, rec in pending.items():
+            tid = rec.get("tid")
+            if not tid:
+                if self._expired(rec, now):
+                    self._retire(rec, stats)
+                continue
+            if self._too_old(rec, now):
+                self._retire(rec, stats, stale=True)
+                continue
+            if self._expired(rec, now):
+                # 等审核已经超过 max_age_hours：不再为这个死帖花一次请求
+                self._retire(rec, stats)
+                continue
+            if not highlight_color_index(rec.get("color", "")):
+                # 色值不在色板里：登录提交也一定被拒，别拿它消耗重试次数
+                self._retire(rec, stats, stale=False,
+                             reason=f"色值不在 Discuz 色板内: {rec.get('color') or '未配置'}")
+                continue
+            probe = probe_thread(self.base_url, int(tid))
+            if probe.visible is None:
+                rec["last_error"] = "过审探测失败（网络异常，下轮重试）"
+                rec["updated_at"] = _timestamp()
+                continue
+            if not probe.visible:
+                # 还在审核里不算一次失败：审核是人工的，多久都有可能
+                rec["last_error"] = "仍在审核中"
+                continue
+            skipped = _forum_excluded(probe.crumb, probe.forum_fid, exclude)
+            if skipped:
+                # 被移动/删除到回收区、或者落在排除版块里的帖子，永远不该上高亮
+                rec["state"] = "dropped"
+                rec["last_error"] = skipped
+                rec["updated_at"] = _timestamp()
+                stats["dropped"] += 1
+                log_info("    → 跳过高亮（%s）: %s", skipped, rec.get("title", stem))
+                continue
+            ready.append(stem)
+
+        if not ready:
+            return
+        if not self.session:
+            self.login()
+        for stem in ready:
+            rec = records[stem]
+            try:
+                ok, reason = self.highlight_thread(
+                    int(rec["tid"]), rec.get("color", ""),
+                    bold=bool(rec.get("bold")), fid=rec.get("fid"),
+                )
+            except requests.RequestException as e:
+                ok, reason = False, f"高亮请求失败: {e}"
+            if not ok:
+                if self._count_attempt(rec, reason, now):
+                    stats["gave_up"] += 1
+                else:
+                    stats["failed"] += 1
+                continue
+            rec["state"] = "done"
+            rec["highlighted_at"] = _timestamp()
+            rec["updated_at"] = _timestamp()
+            rec["last_error"] = ""
+            stats["highlighted"] += 1
+        # 收敛放在最后、整个 sweep 只读一次版块列表：逐篇去读会让请求数乘以篇数，
+        # 而且「最后处理的那篇」会变成赢家，而不是真正最新的那篇
+        stats["unbolded"] += self._converge_after_sweep(records)
+
+    def _retire(self, rec: dict, stats: dict, *, stale: bool = False,
+                reason: str = "") -> None:
+        """把一条记录判成放弃，并记到统计里。"""
+        rec["state"] = "gave_up"
+        if stale:
+            rec["last_error"] = f"超过 {self._max_age_days()} 天仍未补上高亮，不再处理"
+            stats["stale"] += 1
+            log_info("    → 已过期，不再补高亮: %s", rec.get("title") or "")
+        else:
+            rec["last_error"] = reason or "等待审核超时，已放弃"
+            stats["gave_up"] += 1
+            log_warning("    ⚠ 放弃补高亮: %s（%s）", rec.get("title") or "", rec["last_error"])
+        rec["updated_at"] = _timestamp()
+
+    def _converge_after_sweep(self, records: dict) -> int:
+        """补高亮之后收敛一次加粗：只取消「同组里比最新那篇更旧的」加粗帖。"""
+        try:
+            rows = self.fetch_forum_threads(pages=3)
+        except requests.RequestException as e:
+            log_warning("    ⚠ 读版块列表失败，本轮不取消旧版加粗: %s", e)
+            return 0
+        if not rows:
+            return 0
+        return self._converge_bold(records, rows, allow_bold=False)["unbolded"]
+
+    def _resolve_tids(self, records: dict, missing: dict, now: float) -> None:
         """从「我的帖子」里补上发帖时没拿到的帖子 ID。
 
-        先按标题精确匹配；匹配不上再认领列表里唯一一条「比所有已知记录都新」的
-        帖子（标题被版主改过时靠这条兜底）。都不行就下轮再试。
+        先按标题精确匹配；匹配不上再认领列表里唯一一条「比所有已知记录都新」的帖子
+        （标题被版主改过时靠这条兜底）。查询本身失败不算一次重试：网络抖动、没登录
+        都不该让记录滑向 gave_up。
         """
+        if not self.session:
+            # 「我的帖子」要登录态；真要补高亮也得登录，所以这里先登，登不上就当本轮
+            # 查不到（不记账），别让验证码问题把记录推向 gave_up
+            try:
+                self.login()
+            except (requests.RequestException, RuntimeError) as e:
+                log_warning("    ⚠ 补齐帖子 ID 需要登录，本轮跳过（不算失败）: %s", e)
+                return
         try:
             threads = self.fetch_my_threads()
         except (requests.RequestException, RuntimeError) as e:
-            log_warning("    ⚠ 拉取「我的帖子」失败: %s", e)
+            log_warning("    ⚠ 拉取「我的帖子」失败（下轮重试，不算失败）: %s", e)
             return
         if not threads:
             log_warning("    ⚠ 「我的帖子」里没有任何可用条目，无法补齐帖子 ID")
             return
 
-        # 删除线（回收站）的行不能拿来认领：它们要么已删、要么是撤掉 AI 翻译的旧稿
-        alive = [item for item in threads if not item.recy]
+        # 删除线（回收站）的行不能拿来认领：要么已删、要么是撤掉 AI 翻译的旧稿；
+        # 落在排除版块里的同理，否则补到 tid 之后又会被 dropped 掉
+        exclude = self.highlight.get("exclude_forums") or []
+        alive = [item for item in threads
+                 if not item.recy
+                 and not _forum_excluded(item.forum_name, item.forum_fid, exclude)]
         by_title = {_normalize_title(item.title): item.tid for item in alive}
         known = {rec.get("tid") for rec in records.values() if rec.get("tid")}
         newest = max((item.tid for item in alive), default=0)
+        resolved = 0
         for stem, rec in missing.items():
             tid = by_title.get(_normalize_title(rec.get("title", "")))
             source = "标题匹配"
-            if not tid and newest and newest not in known:
+            if not tid and len(missing) == 1 and newest and newest not in known:
+                # 只有「只差这一条、列表里也只有一个没被认领的新帖」时才猜；
+                # 多条待补时这么认领会把 A 的 tid 安到 B 头上
                 tid, source = newest, "列表新增兜底"
             if not tid:
                 continue
@@ -1541,7 +1619,13 @@ class MCBBSPoster:
             rec["tid_source"] = source
             rec["updated_at"] = _timestamp()
             known.add(tid)
+            resolved += 1
             log_info("    → 补齐帖子 ID: %s → tid=%s（%s）", stem, tid, source)
+        if not resolved:
+            # 列表查到了但一条都对不上：这才是真正「找不到这篇帖子」
+            for stem, rec in missing.items():
+                if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
+                    log_warning("    ⚠ 放弃补高亮（找不到帖子）: %s", rec.get("title") or stem)
 
     def _bold_category_typeids(self) -> set[int]:
         """`bold_types` 覆盖到的版块分类（typeid）。
@@ -1553,78 +1637,26 @@ class MCBBSPoster:
                    for news_type in (self.highlight.get("bold_types") or [])}
         return {typeid for typeid in typeids if isinstance(typeid, int)}
 
-    def _unbold_older_versions(self, records: dict, current: dict) -> int:
-        """同一分类的同一条版本线上，只保留最新一篇加粗。
+    def _converge_bold(self, records: dict, rows: list[ForumThread], *,
+                       dry_run: bool = False, allow_bold: bool = True) -> dict:
+        """按 (分类, 版本线) 把加粗收敛成每组只有最新一篇，返回统计。
 
         版规是「最新版本加粗」，而正式版和测试版是两条独立的版本线（正式版红色、
-        测试版绿色），Java 版和基岩版又各算各的——一共 4 个「最新」。所以收敛必须
-        按 (typeid, 正式版/测试版) 分组，否则给 Java 测试版加粗会顺手取消 Java 正式版
-        的加粗。这里以站点列表为准而不是以本地记录为准：历史帖可能从来没进过记录，
-        也可能被人工改过，只有列表里那个 font-weight: bold 才算数。
-        """
-        typeid = current.get("typeid")
-        if not typeid or typeid not in self._bold_category_typeids():
-            return 0
-        if not current.get("bold"):
-            return 0
-        family = _bold_family(current.get("title", ""), current.get("news_type", ""))
-        if not family:
-            log_debug("    · 认不出版本线（正式版/测试版），本轮不收敛: %s", current.get("title", ""))
-            return 0
-        try:
-            threads = self.fetch_forum_threads(pages=3)
-        except requests.RequestException as e:
-            log_warning("    ⚠ 读版块列表失败，本轮不取消旧版加粗: %s", e)
-            return 0
+        测试版绿色），Java 版和基岩版又各算各的——一共 4 个「最新」。所以收敛按
+        (typeid, 正式版/测试版) 分组，跨组永不互相取消。
 
-        done = 0
-        for row in threads:
-            if row.typeid != typeid or row.tid == current.get("tid") or not row.bold:
-                continue
-            record = self._record_for_tid(records, row.tid)
-            if _bold_family(row.title, (record or {}).get("news_type", "")) != family:
-                continue
-            fallback = (self.highlight.get("colors") or {}).get("normal", "")
-            color = row.color or (record or {}).get("color") or fallback
-            try:
-                ok, reason = self.highlight_thread(row.tid, color, bold=False)
-            except requests.RequestException as e:
-                ok, reason = False, f"取消加粗请求失败: {e}"
-            if ok:
-                done += 1
-                log_info("    → 已取消旧版加粗: %s（tid=%s）", row.title, row.tid)
-            else:
-                log_warning("    ⚠ 取消旧版加粗失败: %s（%s）", row.title, reason)
-            if record is not None:
-                record["updated_at"] = _timestamp()
-                record["bold"] = False if ok else record.get("bold", False)
-                record["color"] = color or record.get("color", "")
-                record["last_error"] = "" if ok else f"取消加粗失败: {reason}"
-        return done
+        必须以整张列表一次算完再动手：逐篇「谁刚加粗谁就是赢家」的写法下，同一批里
+        后处理的旧版会把先处理的新版取消掉。判断依据是列表现状（font-weight）而不是
+        本地记录——历史帖可能没进过记录，也可能被人改过。
 
-    def reconcile_bold(self, records_path: str, pages: int = 3, dry_run: bool = False) -> dict:
-        """按「分类 + 版本线」把加粗收敛成每类每线只有最新一篇，一共 4 组。
-
-        自动流程只在发帖/补高亮成功后顺带取消同线旧帖的加粗，够不着历史遗留和人工
-        改过的状态（例如 Java版资讯 里 26.3 正式版和 26.4 快照 8 同时加粗）。这条
-        命令以版块列表为准整体对一次账：4 组（Java 正式版/测试版、基岩版正式版/测试版）
-        各挑 tid 最大的一篇，没加粗的补上加粗和该组的颜色，比它旧的同组加粗帖取消
-        加粗。可以反复跑，结果一致。
+        `allow_bold=False` 只取消更旧的加粗、不补加粗（补高亮流程用这个模式，免得
+        捎带手改动与本次无关的版本线）；补加粗失败时整组保持原样，避免把一条版本线
+        弄成「一篇都不加粗」。
         """
         stats = {"groups": 0, "bolded": 0, "unbolded": 0, "failed": 0, "skipped": 0}
-        records = load_thread_records(records_path)
-        try:
-            rows = self.fetch_forum_threads(pages=pages)
-        except requests.RequestException as e:
-            log_error("[加粗收敛] 读版块列表失败: %s", e)
-            return stats
-        if not rows:
-            log_error("[加粗收敛] 版块列表没有解析出任何帖子")
-            return stats
-
         version_typeids = self._bold_category_typeids()
         groups: dict[tuple[int, str], list[ForumThread]] = {}
-        for row in rows:
+        for row in rows or []:
             if row.typeid not in version_typeids:
                 continue
             family = _bold_family(row.title, (self._record_for_tid(records, row.tid) or {})
@@ -1635,12 +1667,18 @@ class MCBBSPoster:
                 continue
             groups.setdefault((row.typeid, family), []).append(row)
 
-        actions: list[tuple[str, ForumThread, str, str]] = []
+        plans: list[tuple[str, ForumThread, str, list[ForumThread]]] = []
         for (typeid, family), group in sorted(groups.items()):
             stats["groups"] += 1
             group.sort(key=lambda item: item.tid)  # tid 递增 ≈ 发帖顺序，最后一篇最新
             newest = group[-1]
             label = f"{newest.type_name or f'typeid={typeid}'}／{_FAMILY_NAMES[family]}"
+            if not newest.bold and not allow_bold:
+                # 补高亮流程不负责补加粗：最新那篇都没加粗，这组就不该动
+                continue
+            older = [row for row in group if row.tid != newest.tid and row.bold]
+            if not older and newest.bold:
+                continue
             color = self._family_color(newest, group, records)
             if not color:
                 stats["skipped"] += 1
@@ -1649,59 +1687,114 @@ class MCBBSPoster:
                 continue
             log_info("    · %s: 最新是 tid=%s（%s）", label, newest.tid,
                      "已加粗" if newest.bold else "待加粗")
-            if not newest.bold:
-                actions.append(("bold", newest, color, label))
-            for row in group:
-                if row.tid != newest.tid and row.bold:
-                    actions.append(("unbold", row, row.color or color, label))
+            plans.append((label, newest, color, older))
 
-        if not actions:
-            log_info("[加粗收敛] %d 组都已是最新一篇加粗，本次不动手", stats["groups"])
+        if not plans:
             return stats
         if dry_run:
-            for action, row, color, label in actions:
-                log_info("  [Dry Run] %s | %s | tid=%s | %s | %s",
-                         label, "加粗" if action == "bold" else "取消加粗",
-                         row.tid, color, row.title)
-            log_info("[Dry Run] 加粗收敛共 %d 个动作（%d 组），未改论坛",
-                     len(actions), stats["groups"])
+            for label, newest, color, older in plans:
+                if not newest.bold:
+                    log_info("  [Dry Run] %s | 加粗 | tid=%s | %s | %s",
+                             label, newest.tid, color, newest.title)
+                for row in older:
+                    log_info("  [Dry Run] %s | 取消加粗 | tid=%s | %s | %s",
+                             label, row.tid, row.color or color, row.title)
             return stats
 
         if not self.session:
             self.login()
-        for action, row, color, label in actions:
-            try:
-                ok, reason = self.highlight_thread(row.tid, color, bold=action == "bold")
-            except requests.RequestException as e:
-                ok, reason = False, f"请求失败: {e}"
+        for label, newest, color, older in plans:
+            if not newest.bold:
+                ok, reason = self._submit_highlight(records, newest, color, bold=True)
+                if not ok:
+                    # 最新那篇没加粗成功，就别动同组的旧帖，否则整组一个都不加粗
+                    stats["failed"] += 1
+                    log_warning("    ⚠ %s 加粗失败，本组保持原样: %s（%s）",
+                                label, newest.title, reason)
+                    continue
+                stats["bolded"] += 1
+                log_info("    → 已加粗: %s（tid=%s，%s）", newest.title, newest.tid, label)
+            for row in older:
+                # 颜色只认站点现值或本地记录；认不出就别动它——换成配置里的兜底色
+                # 等于顺手改了人家的颜色
+                record = self._record_for_tid(records, row.tid) or {}
+                row_color = row.color or record.get("color", "")
+                if not highlight_color_index(row_color):
+                    stats["skipped"] += 1
+                    log_warning("    ⚠ 认不出该帖的颜色，保留原样: %s（tid=%s）",
+                                row.title, row.tid)
+                    continue
+                ok, reason = self._submit_highlight(records, row, row_color, bold=False)
+                if ok:
+                    stats["unbolded"] += 1
+                    log_info("    → 已取消旧版加粗: %s（tid=%s）", row.title, row.tid)
+                else:
+                    stats["failed"] += 1
+                    log_warning("    ⚠ 取消旧版加粗失败: %s（%s）", row.title, reason)
+        return stats
+
+    def _submit_highlight(self, records: dict, row: ForumThread, color: str,
+                          bold: bool) -> tuple[bool, str]:
+        """提交一次高亮并把结果同步进本地记录；失败时只记原因，不改记录里的颜色。"""
+        try:
+            ok, reason = self.highlight_thread(row.tid, color, bold=bold)
+        except requests.RequestException as e:
+            ok, reason = False, f"请求失败: {e}"
+        record = self._record_for_tid(records, row.tid)
+        if record is None and bold and ok:
+            # 站点上有条目但本地没登记（例如人工发的版本帖），补一条便于后续对账
+            record = {"tid": row.tid, "fid": self.forum_fid, "typeid": row.typeid,
+                      "url": f"{self.base_url}/thread-{row.tid}-1-1.html",
+                      "title": row.title, "forum_name": "", "news_type": "manual",
+                      "color": color, "bold": True, "state": "done", "posted_at": "",
+                      "registered_at": _timestamp(),
+                      "attempts": 0, "last_error": "", "tid_source": "加粗收敛"}
+            records[f"tid_{row.tid}"] = record
+        if record is not None:
             if ok:
-                stats["bolded" if action == "bold" else "unbolded"] += 1
-                log_info("    → 已%s: %s（tid=%s，%s）",
-                         "加粗" if action == "bold" else "取消加粗", row.title, row.tid, label)
-            else:
-                stats["failed"] += 1
-                log_warning("    ⚠ %s失败: %s（%s）", label,
-                            "加粗" if action == "bold" else "取消加粗", row.title, reason)
-            record = self._record_for_tid(records, row.tid)
-            if record is None and action == "bold" and ok:
-                # 站点上有条目但本地没登记（例如人工发的版本帖），补一条便于后续对账
-                record = {"tid": row.tid, "fid": self.forum_fid, "typeid": row.typeid,
-                          "url": f"{self.base_url}/thread-{row.tid}-1-1.html",
-                          "title": row.title, "forum_name": "", "news_type": "manual",
-                          "color": color, "bold": True, "state": "done", "posted_at": "",
-                          "registered_at": _timestamp(),
-                          "attempts": 0, "last_error": "", "tid_source": "加粗收敛"}
-                records[f"tid_{row.tid}"] = record
-            if record is not None:
-                record["bold"] = (action == "bold") if ok else bool(record.get("bold"))
+                record["bold"] = bold
                 record["color"] = color or record.get("color", "")
-                record["last_error"] = "" if ok else reason
-                record["updated_at"] = _timestamp()
-                if action == "bold" and ok:
+                record["last_error"] = ""
+                if bold:
                     # 上过色就不再是「历史未处理」：免得 --highlight-legacy 再刷一遍
                     record["state"] = "done"
                     record["highlighted_at"] = _timestamp()
+            else:
+                record["last_error"] = reason
+            record["updated_at"] = _timestamp()
+        return ok, reason
+
+    def reconcile_bold(self, records_path: str, pages: int = 5, dry_run: bool = False) -> dict:
+        """按「分类 + 版本线」把加粗收敛成每类每线只有最新一篇，一共 4 组。
+
+        自动流程只在补高亮成功后顺带取消同线旧帖的加粗，够不着历史遗留和人工改过的
+        状态（例如 Java版资讯 里 26.3 正式版和 26.4 快照 8 同时加粗）。这条命令以版块
+        列表为准整体对一次账，可以反复跑。默认读 5 页：只读 3 页时第三页之后的加粗帖
+        既扫不到也取消不了，等于「对完账还剩两篇加粗」。
+
+        返回的 `ok` 说明这次对账有没有失败，CLI 据此决定退出码。
+        """
+        stats = {"ok": False, "groups": 0, "bolded": 0, "unbolded": 0,
+                 "failed": 0, "skipped": 0}
+        records = load_thread_records(records_path)
+        try:
+            rows = self.fetch_forum_threads(pages=pages)
+        except requests.RequestException as e:
+            log_error("[加粗收敛] 读版块列表失败: %s", e)
+            return stats
+        if not rows:
+            log_error("[加粗收敛] 版块列表没有解析出任何帖子")
+            return stats
+
+        stats.update(self._converge_bold(records, rows, dry_run=dry_run))
+        stats["ok"] = True
+        if dry_run:
+            log_info("[Dry Run] 加粗收敛共 %d 个动作（%d 组），未改论坛",
+                     stats["bolded"] + stats["unbolded"], stats["groups"])
+            return stats
         self._save_records(records_path, records)
+        if stats["failed"]:
+            stats["ok"] = False
         log_info("[加粗收敛] %d 组 | 加粗 %d | 取消加粗 %d | 失败 %d | 跳过 %d",
                  stats["groups"], stats["bolded"], stats["unbolded"],
                  stats["failed"], stats["skipped"])
@@ -1764,7 +1857,9 @@ class MCBBSPoster:
         """删掉已经过期的 legacy 登记，返回条数。
 
         legacy 记录的本意是「历史帖还没上色，随时可以提升」；老到超出窗口之后
-        这条记录就只是一行永远用不上的数据。待办（pending）和加粗中的记录不动。
+        这条记录就只是一行永远用不上的数据。两种记录不动：待办（pending、legacy 里
+        加粗中的），以及**站点上仍然加粗的**——本地 bold 可能是旧的，删掉就再也找不到
+        这条加粗帖了。
         """
         dropped = 0
         for stem in list(records):
@@ -1772,6 +1867,8 @@ class MCBBSPoster:
             if record.get("state") != "legacy" or record.get("bold"):
                 continue
             site_row = site_rows.get(record.get("tid"))
+            if site_row is not None and site_row.bold:
+                continue
             if self._stale_thread(site_row, _artifact_release_time(save_dir, stem)):
                 records.pop(stem, None)
                 dropped += 1
@@ -1786,9 +1883,9 @@ class MCBBSPoster:
         return (now - started) > max_days * 86400
 
     def _expired(self, rec: dict, now: float) -> bool:
-        """记录是否已经超过「等审核」的上限（按发帖/登记时间算，不是更新时间）。"""
+        """记录是否已经超过「等审核」的上限（从登记/提升那一刻算，不是发帖时间）。"""
         max_hours = self.highlight.get("max_age_hours") or 0
-        started = _record_time(rec)
+        started = _waiting_since(rec)
         if not max_hours or started is None:
             return False
         return (now - started) > max_hours * 3600
@@ -1843,13 +1940,7 @@ class MCBBSPoster:
         titles = _scan_output_titles(save_dir)
         colors = self.highlight.get("colors") or {}
         exclude = self.highlight.get("exclude_forums") or []
-        # 颜色与加粗只有版块列表看得到：登记时以站点现状为准，别写死成 false
-        try:
-            site_rows = {row.tid: row for row in self.fetch_forum_threads(pages=pages)}
-        except requests.RequestException as e:
-            log_warning("    ⚠ 读版块列表失败，历史登记的颜色/加粗回退到配置值: %s", e)
-            site_rows = {}
-        # 版块列表带每行的发帖日期：过期判断以它为准（产物日期只做兜底）
+        # 颜色、加粗、发帖日期只有版块列表看得到：抓一次，登记和过期判断都用它
         try:
             site_rows = {row.tid: row for row in self.fetch_forum_threads(pages=pages)}
         except requests.RequestException as e:
@@ -1870,6 +1961,11 @@ class MCBBSPoster:
             if item.recy:
                 stats["recycled"] += 1
                 log_info("    → 跳过历史登记（标题带删除线）: %s", item.title)
+                # 已有的记录也要作废：帖子带删除线 = 已删/测试稿/撤掉 AI 翻译，
+                # 留着记录的话下一次 --highlight-legacy 还会把它重新刷上高亮
+                if stem in records and records[stem].get("state") == "legacy":
+                    records.pop(stem, None)
+                    stats["pruned"] += 1
                 continue
             skipped_reason = _forum_excluded(item.forum_name, item.forum_fid, exclude)
             if skipped_reason:
@@ -1903,7 +1999,10 @@ class MCBBSPoster:
                 "color": color,
                 "bold": bool(site_row.bold) if site_row else False,
                 "state": "legacy",
-                "posted_at": "",
+                # 发帖日期取版块列表上的真实值：留空会让 _record_time 退到登记时间，
+                # 一篇两个月前的帖子就被当成今天发的，老到该扔还留在窗口里
+                "posted_at": (f"{site_row.posted}T00:00:00"
+                              if site_row and site_row.posted else ""),
                 "registered_at": _timestamp(),
                 "updated_at": _timestamp(),
                 "attempts": 0,
@@ -1920,7 +2019,7 @@ class MCBBSPoster:
                          item.forum_name or "版块未知")
 
         if not dry_run:
-            stats["pruned"] = self._drop_stale_legacy(records, save_dir, site_rows)
+            stats["pruned"] += self._drop_stale_legacy(records, save_dir, site_rows)
         if (stats["recorded"] or stats["refreshed"] or stats["pruned"]) and not dry_run:
             self._save_records(records_path, records)
         for name, fid in sorted({(item.forum_name, item.forum_fid)
@@ -1984,17 +2083,29 @@ class MCBBSPoster:
         """用版块列表的现状刷新一条 legacy 记录，返回是否有变化。
 
         历史登记只写本地记录、不上色，站点上的颜色/加粗随时可能被人改过；重跑
-        --index-history 时以站点为准纠正，避免记录和站上长期不一致。
+        --index-history 时以站点为准纠正，避免记录和站上长期不一致。分类和发帖日期
+        一起补：早先版本没写这两个字段，缺了分类就没法参与「同组只留最新一篇加粗」。
         """
         bold = bool(site_row.bold) if site_row else bool(record.get("bold"))
         color = (site_row.color if site_row else "") or record.get("color", "")
         if not color:
             color = colors.get(record.get("news_type", ""), "")
-        changed = (bold != bool(record.get("bold"))) or (color != record.get("color"))
+        typeid = record.get("typeid")
+        if not typeid:
+            typeid = (getattr(site_row, "typeid", None) if site_row else None) or \
+                self.sortid_map.get(record.get("news_type", ""))
+        posted = record.get("posted_at") or ""
+        if site_row is not None and getattr(site_row, "posted", ""):
+            posted = f"{site_row.posted}T00:00:00"
+        changed = (bold != bool(record.get("bold"))) or (color != record.get("color")) \
+            or (typeid != record.get("typeid")) or (posted != (record.get("posted_at") or ""))
         if not changed:
             return False
         record["bold"] = bold
         record["color"] = color
+        record["typeid"] = typeid
+        if posted:
+            record["posted_at"] = posted
         record["updated_at"] = _timestamp()
         return True
 
@@ -2012,6 +2123,9 @@ class MCBBSPoster:
             rec["state"] = "pending"
             rec["attempts"] = 0
             rec["last_error"] = ""
+            # 提升等于「从现在开始等审核」：registered_at 不重置的话，一篇老帖的提升
+            # 会让 _expired 立刻判超时，等于白提升
+            rec["registered_at"] = _timestamp()
             rec["updated_at"] = _timestamp()
             promoted += 1
             log_info("    → 提升为待高亮: %s（tid=%s）", stem, rec.get("tid"))
@@ -2031,32 +2145,44 @@ class MCBBSPoster:
         if not color:
             log_debug("    → 类型 %s 没有配置高亮色，跳过登记", news_type)
             return
+        if not highlight_color_index(color):
+            # 配置写了个不在 Discuz 色板里的色值：登记了也一定会被站点拒绝，
+            # 不如当场报出来（别让它变成一轮又一轮的重试）
+            log_warning("    ⚠ 类型 %s 的色值 %s 不在 Discuz 色板内，跳过高亮登记",
+                        news_type, color)
+            return
 
         path = thread_records_path(news_dir)
         records = load_thread_records(path)
         previous = records.get(stem) or {}
         now = _timestamp()
+        # 同一个 stem 又发了一次（重试或重发）：旧记录的 tid 和年龄属于上一篇帖子，
+        # 沿用会被当成「还是那一篇」——高亮打到旧帖，或按老年龄直接判过期
+        same_thread = bool(result.tid) and result.tid == previous.get("tid")
+        posted_at = previous.get("posted_at") if same_thread else ""
         records[stem] = {
-            "tid": result.tid or previous.get("tid"),
+            "tid": result.tid,
             "fid": self.forum_fid,
             "typeid": self.sortid_map.get(news_type),
-            "url": result.url if result.url.startswith("http") else previous.get("url", ""),
+            "url": (result.url if result.url.startswith("http")
+                    else (previous.get("url", "") if same_thread else "")),
             "title": title,
             "news_type": news_type,
             "color": color,
             "bold": news_type in (self.highlight.get("bold_types") or []),
             "state": "pending",
-            "posted_at": previous.get("posted_at") or now,
-            "registered_at": previous.get("registered_at") or now,
+            "posted_at": posted_at or now,
+            "registered_at": now,
             "updated_at": now,
-            "attempts": previous.get("attempts", 0),
+            "attempts": 0,
             "last_error": "",
         }
-        try:
-            save_thread_records(path, records)
-        except OSError:
-            log_warning("    ⚠ 高亮登记写入失败（不影响发帖）", exc_info=True)
-            return
+        # 走 _save_records 而不是 save_thread_records：它会先按窗口清理过期记录，
+        # 否则「只发帖、没别的写盘」的运行永远不清账本
+        before = _records_digest(records)
+        self._save_records(path, records)
+        if _records_digest(records) != before:
+            log_debug("    → 高亮登记时顺带清理了过期记录")
 
         tid_hint = f"tid={result.tid}" if result.tid else "帖子 ID 待从列表补齐"
         bold_hint = "（加粗）" if records[stem]["bold"] else ""
@@ -2178,16 +2304,17 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
     poster = MCBBSPoster(config)
 
     if args.highlight_status:
-        poster.highlight_status(records_path)
-        return 0
+        stats = poster.highlight_status(records_path)
+        # 读不到版块列表时 highlight_status 什么都没查（checked=0），别报成功
+        return 0 if stats.get("checked") else 1
 
     if args.reconcile_bold:
         try:
-            poster.reconcile_bold(records_path, dry_run=args.dry_run)
+            stats = poster.reconcile_bold(records_path, dry_run=args.dry_run)
         except Exception as e:
             log_error(f"[!] 加粗收敛失败: {e}")
             return 1
-        return 0
+        return 0 if stats.get("ok") else 1
 
     if args.highlight_stem:
         records = load_thread_records(records_path)
@@ -2208,10 +2335,18 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         record["state"] = "pending"
         record["attempts"] = 0
         record["last_error"] = ""
+        record["registered_at"] = _timestamp()
         record["updated_at"] = _timestamp()
-        save_thread_records(records_path, records)
+        poster._save_records(records_path, records)
         log_info("[高亮] 已把 %s 标记为待补高亮（tid=%s）",
                  args.highlight_stem, record.get("tid"))
+        # 只处理这一条：别的 pending 是别的运行该管的，别被单篇验证顺手带上
+        try:
+            stats = poster.process_pending_highlights(records_path, only=args.highlight_stem)
+        except Exception as e:
+            log_error(f"[!] 补高亮失败: {e}")
+            return 1
+        return 0 if stats["failed"] == 0 else 1
 
     if args.highlight_tid:
         if not highlight_color_index(args.color or ""):
@@ -2220,25 +2355,42 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
                       "#2B65B7 / #8F2A90 / #EC1282），收到: %s", args.color or "未指定")
             return 1
         records = load_thread_records(records_path)
-        key = f"tid_{args.highlight_tid}"
-        record = records.get(key) or {}
-        row = next((item for item in poster.fetch_forum_threads(pages=3)
-                    if item.tid == args.highlight_tid), None)
+        # 站点上有同 tid 的记录就复用它，别再另建一条 tid_<n>：同一篇帖子出现两条记录
+        # 会让 --highlight-status 报两遍、_record_for_tid 也可能读到过期的那条
+        key = next((stem for stem, rec in records.items()
+                    if rec.get("tid") == args.highlight_tid), f"tid_{args.highlight_tid}")
+        record = dict(records.get(key) or {})
+        try:
+            row = next((item for item in poster.fetch_forum_threads(pages=3)
+                        if item.tid == args.highlight_tid), None)
+        except requests.RequestException as e:
+            log_error("[!] 读版块列表失败，无法确认这篇帖子的现状: %s", e)
+            return 1
         if row is None:
-            log_warning("    ⚠ 版块列表前 3 页里没有 tid=%s，标题/分类留空（不参与取消加粗）",
+            log_warning("    ⚠ 版块列表前 3 页里没有 tid=%s，不参与「同组只留最新一篇加粗」",
                         args.highlight_tid)
+        if args.bold:
+            bold = True
+        elif args.no_bold:
+            bold = False
+        else:
+            # 没显式指定就沿用站上现状：默认 False 会把人家人工加粗的帖子取消加粗
+            bold = bool(row.bold) if row is not None else bool(record.get("bold"))
         record.update({
             "tid": args.highlight_tid,
             "fid": poster.forum_fid,
-            "typeid": row.typeid if row else record.get("typeid"),
+            # 查不到这一行就别留着旧分类：过期的 typeid 会让收敛去动别的帖子
+            "typeid": row.typeid if row else None,
             "url": f"{poster.base_url}/thread-{args.highlight_tid}-1-1.html",
             "title": row.title if row else record.get("title", ""),
             "news_type": record.get("news_type", "manual"),
             "color": args.color,
-            "bold": True if args.bold else (False if args.no_bold else bool(record.get("bold"))),
+            "bold": bold,
             "state": "pending",
-            "posted_at": record.get("posted_at") or _timestamp(),
-            "registered_at": record.get("registered_at") or _timestamp(),
+            # 发帖日期用版块列表上的真实值，否则 _too_old 会把一篇老帖当成今天发的
+            "posted_at": (f"{row.posted}T00:00:00"
+                          if row and row.posted else (record.get("posted_at") or _timestamp())),
+            "registered_at": _timestamp(),
             "updated_at": _timestamp(),
             "attempts": 0,
             "last_error": "",
@@ -2250,10 +2402,16 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
                      "加粗" if record["bold"] else "不加粗", record["title"] or "标题未知")
             return 0
         records[key] = record
-        save_thread_records(records_path, records)
+        poster._save_records(records_path, records)
         log_info("[高亮] 已登记手工指定的帖子: tid=%s（%s %s）",
                  args.highlight_tid, args.color,
                  "加粗" if record["bold"] else "不加粗")
+        try:
+            stats = poster.process_pending_highlights(records_path, only=key)
+        except Exception as e:
+            log_error(f"[!] 补高亮失败: {e}")
+            return 1
+        return 0 if stats["failed"] == 0 else 1
 
     if args.index_history:
         try:
@@ -2308,7 +2466,8 @@ def main():
     parser.add_argument("--highlight-stem", metavar="STEM",
                         help="只补这一篇的高亮（单篇验证用，配合 --bold/--no-bold 可强制样式）")
     parser.add_argument("--highlight-tid", type=int, metavar="TID",
-                        help="不依赖 output 产物，直接对指定帖子设置高亮（需配 --color）")
+                        help="不依赖 output 产物，直接对指定帖子设置高亮（需配 --color；"
+                             "不加 --bold/--no-bold 时沿用站上现状）")
     parser.add_argument("--color", metavar="HEX",
                         help="配合 --highlight-tid：Discuz 色板内的色值，如 #EC1282")
     parser.add_argument("--bold", action="store_true",

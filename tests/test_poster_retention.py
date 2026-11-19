@@ -125,6 +125,25 @@ class TestTooOld:
         poster_obj = _make_poster({"max_age_days": 30})
         assert poster_obj._too_old(_record(posted_at=_days_ago(31)), time.time()) is True
 
+    def test_negative_limit_is_rejected(self):
+        """负数会让窗口变成「立刻过期」，合并配置时直接丢掉。"""
+        poster_obj = _make_poster({"max_age_days": -5})
+        assert poster_obj._max_age_days() == poster.DEFAULT_HIGHLIGHT["max_age_days"]
+
+    def test_promote_restarts_the_waiting_clock(self, tmp_path):
+        """提升一条老 legacy 记录要重置「等审核」的起算点，否则立刻判超时。"""
+        poster_obj = _make_poster({"max_age_days": 30, "max_age_hours": 168})
+        path = _write_records(tmp_path, {"news_a": _record(
+            state="legacy", posted_at=_days_ago(20), registered_at=_days_ago(20))})
+
+        poster_obj.promote_legacy(path, 1)
+
+        record = _read_records(path)["news_a"]
+        assert record["state"] == "pending"
+        assert poster_obj._expired(record, time.time()) is False
+        # 但「帖子太老」这条判据仍按真实的发帖时间算
+        assert poster_obj._too_old(record, time.time()) is False
+
     def test_within_limit(self):
         poster_obj = _make_poster({"max_age_days": 30})
         assert poster_obj._too_old(_record(posted_at=_days_ago(29)), time.time()) is False
@@ -323,14 +342,17 @@ class TestIndexHistoryAgeGate:
 
         assert "news_a" in _read_records(str(tmp_path / ".mcbbs_threads.json"))
 
-    def test_dry_run_does_not_prune_or_write(self, tmp_path):
+    def test_dry_run_does_not_prune_or_write(self, tmp_path, monkeypatch):
         poster_obj = self._poster(tmp_path, "2026-05-05T15:34:00Z")
         _write_records(tmp_path, {"news_a": _record(state="legacy", posted_at="",
                                                     registered_at=_days_ago(1))})
+        writes = []
+        monkeypatch.setattr(poster, "save_thread_records", lambda *a: writes.append(a))
 
         stats = poster_obj.index_history(str(tmp_path), dry_run=True)
 
         assert stats["pruned"] == 0
+        assert writes == []
         assert "news_a" in _read_records(str(tmp_path / ".mcbbs_threads.json"))
 
     def test_reposted_old_article_is_kept_while_on_the_board(self, tmp_path):
@@ -375,6 +397,133 @@ class TestIndexHistoryAgeGate:
         poster_obj.index_history(str(tmp_path))
 
         assert "news_a" in _read_records(str(tmp_path / ".mcbbs_threads.json"))
+
+
+    def test_posts_real_date_into_posted_at(self, tmp_path):
+        """登记时把版块列表上的真实发帖日期写进 posted_at，别让老帖按登记时间算年龄。"""
+        recent = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+        poster_obj = self._poster(tmp_path, recent)
+        poster_obj.fetch_forum_threads = lambda pages=3: [
+            poster.ForumThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=False, posted="2026-11-10"),
+        ]
+
+        poster_obj.index_history(str(tmp_path))
+
+        record = _read_records(str(tmp_path / ".mcbbs_threads.json"))["news_a"]
+        assert record["posted_at"] == "2026-11-10T00:00:00"
+
+    def test_struck_thread_invalidates_existing_record(self, tmp_path):
+        """帖子被打了删除线（已删/测试稿），已有的 legacy 登记也要作废。"""
+        recent = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+        poster_obj = self._poster(tmp_path, recent)
+        _write_records(tmp_path, {"news_a": _record(state="legacy", posted_at="",
+                                                    registered_at=_days_ago(1))})
+        poster_obj.fetch_my_threads = lambda pages=15: [
+            poster.MyThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
+                            recy=True, forum_fid=45, forum_name="幻翼块讯"),
+        ]
+
+        stats = poster_obj.index_history(str(tmp_path))
+
+        assert stats["recycled"] == 1
+        assert "news_a" not in _read_records(str(tmp_path / ".mcbbs_threads.json"))
+
+    def test_refresh_fills_missing_typeid(self, tmp_path):
+        """老记录没有 typeid 就参与不了「同组只留最新一篇加粗」，刷新时补上。"""
+        recent = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() - 86400))
+        poster_obj = self._poster(tmp_path, recent)
+        _write_records(tmp_path, {"news_a": _record(state="legacy", typeid=None,
+                                                    posted_at="", registered_at=_days_ago(1))})
+        poster_obj.fetch_forum_threads = lambda pages=3: [
+            poster.ForumThread(tid=6808, title="Minecraft 26.4 快照 9 [AI翻译]",
+                               typeid=4, color="#3C9D40", bold=False,
+                               posted=time.strftime("%Y-%m-%d")),
+        ]
+
+        stats = poster_obj.index_history(str(tmp_path))
+
+        assert stats["refreshed"] == 1
+        assert _read_records(str(tmp_path / ".mcbbs_threads.json"))["news_a"]["typeid"] == 4
+
+
+class TestResolveTids:
+    """补帖子 ID：查不到可以忍，查到但对不上才算「找不到这篇帖子」。"""
+
+    def test_login_failure_does_not_count_attempt(self):
+        poster_obj = _make_poster({"max_age_days": 30})
+        poster_obj.session = None
+
+        def boom():
+            raise poster.LoginRejected("验证码过不去")
+
+        poster_obj.login = boom
+        records = {"news_a": _record(tid=None, title="找不到的标题", attempts=0)}
+
+        poster_obj._resolve_tids(records, dict(records), time.time())
+
+        assert records["news_a"]["attempts"] == 0
+        assert records["news_a"]["state"] == "pending"
+
+    def test_excluded_forum_rows_are_not_used(self):
+        poster_obj = _make_poster({"max_age_days": 30, "exclude_forums": ["块讯回收区"]})
+        poster_obj.session = QuietSession()
+        poster_obj.fetch_my_threads = lambda pages=2: [
+            poster.MyThread(tid=6816, title="TwitchCon 揭晓 [AI翻译]", recy=False,
+                            forum_fid=45, forum_name="块讯回收区"),
+        ]
+        records = {"news_a": _record(tid=None, title="TwitchCon 揭晓 [AI翻译]")}
+
+        poster_obj._resolve_tids(records, dict(records), time.time())
+
+        assert not records["news_a"].get("tid")
+
+    def test_fallback_only_when_single_missing(self):
+        """多条待补时不猜「列表里那个新帖」是谁。"""
+        poster_obj = _make_poster({"max_age_days": 30})
+        poster_obj.session = QuietSession()
+        poster_obj.fetch_my_threads = lambda pages=2: [
+            poster.MyThread(tid=6816, title="完全对不上的标题", forum_fid=45),
+        ]
+        records = {
+            "news_a": _record(tid=None, title="甲"),
+            "news_b": _record(tid=None, title="乙"),
+        }
+
+        poster_obj._resolve_tids(records, dict(records), time.time())
+
+        assert all(not rec.get("tid") for rec in records.values())
+
+
+class TestRegisterHighlight:
+    def test_repost_starts_fresh(self, tmp_path):
+        """同一个 stem 又发了一次：旧的 tid / 年龄不能沿用到新帖上。"""
+        poster_obj = _make_poster({"max_age_days": 30})
+        _write_records(tmp_path, {"news_a": _record(
+            tid=6000, posted_at=_days_ago(90), registered_at=_days_ago(90), attempts=4)})
+
+        poster_obj._register_highlight(
+            "news_a", str(tmp_path),
+            poster.PostResult(url=f"{BASE}/thread-6816-1-1.html", tid=6816),
+            "normal", "新帖")
+
+        record = _read_records(str(tmp_path / ".mcbbs_threads.json"))["news_a"]
+        assert record["tid"] == 6816
+        assert record["attempts"] == 0
+        assert record["posted_at"] > _days_ago(1)
+
+    def test_invalid_colour_is_not_registered(self, tmp_path):
+        poster_obj = _make_poster({
+            "max_age_days": 30,
+            "colors": {"normal": "#123456"},
+        })
+
+        poster_obj._register_highlight(
+            "news_a", str(tmp_path),
+            poster.PostResult(url=f"{BASE}/thread-6816-1-1.html", tid=6816),
+            "normal", "新帖")
+
+        assert not (tmp_path / ".mcbbs_threads.json").exists()
 
 
 class TestArtifactReleaseTime:

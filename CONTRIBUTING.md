@@ -81,6 +81,7 @@ MCTTK/
 ├── docs/                      # 文档
 │   ├── USAGE.md               # 完整用法与全部配置项
 │   ├── DOCKER.md              # Docker 部署说明
+│   ├── images/icon.webp       # README 顶部的项目图标（72×72，无损 webp）
 │   └── archive/               # 历史评审与 PR 记录
 ├── data/                      # 本地原始数据（不入库）：latest.tsv、mcmeta 语言文件
 ├── archive/                   # 历史归档（不入库）：上一代项目、实验脚本、本地备份

@@ -1,6 +1,8 @@
 <div align="center">
 
-# ⛏️ 矿译通
+<img src="docs/images/icon.webp" width="96" alt="矿译通 icon">
+
+# 矿译通
 
 **Minecraft Translation Toolkit**
 

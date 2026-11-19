@@ -682,3 +682,30 @@ class TestHighlightCli:
             {"username": "u", "password": "p"}, str(tmp_path), records_path)
 
         assert code == 1
+
+    @pytest.mark.parametrize("outcome", [
+        {"stale": 1},      # 超过 max_age_days，不再处理
+        {"gave_up": 1},    # 等审核超时 / 标题找不到
+        {"dropped": 1},    # 帖子落在 exclude_forums 里
+    ])
+    def test_highlight_stem_not_applied_exits_nonzero(self, tmp_path, monkeypatch, outcome):
+        """单篇验证没真设上时不能返回 0：stale/gave_up/dropped 都不计入 failed。"""
+        class FakePoster:
+            def __init__(self, config):
+                pass
+
+            def _save_records(self, records_path, records):
+                poster.save_thread_records(records_path, records)
+
+            def process_pending_highlights(self, records_path, only=None):
+                return {"pending": 1, "highlighted": 0, "failed": 0, **outcome}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+        _write_records(tmp_path, {"news_a": _legacy(tid=6808, state="legacy")})
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_stem="news_a", bold=True),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 1

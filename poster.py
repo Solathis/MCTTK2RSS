@@ -2306,6 +2306,17 @@ def _preview_records(records_path: str, state: str, limit: int | None = None) ->
     return len(records)
 
 
+def _targeted_exit_code(stats: dict) -> int:
+    """单篇高亮命令的退出码：只有「真的设上了」才算成功。
+
+    `failed` 只统计站点拒绝/请求出错那两类；记录过期（stale）、等审核超时（gave_up）、
+    落在排除版块（dropped）都不加 `failed`，只判它会让没生效的单篇验证也以 0 退出，
+    在脚本里等于谎报成功。
+    """
+    applied = int(stats.get("highlighted") or 0)
+    return 0 if applied and not stats.get("failed") else 1
+
+
 def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> int:
     """--highlight-only / --index-history / --highlight-legacy 的入口，都不发帖。"""
     if not os.path.isdir(news_dir):
@@ -2361,7 +2372,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         except Exception as e:
             log_error(f"[!] 补高亮失败: {e}")
             return 1
-        return 0 if stats["failed"] == 0 else 1
+        return _targeted_exit_code(stats)
 
     if args.highlight_tid:
         if not highlight_color_index(args.color or ""):
@@ -2426,7 +2437,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         except Exception as e:
             log_error(f"[!] 补高亮失败: {e}")
             return 1
-        return 0 if stats["failed"] == 0 else 1
+        return _targeted_exit_code(stats)
 
     if args.index_history:
         try:

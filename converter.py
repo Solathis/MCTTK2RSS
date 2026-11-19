@@ -314,17 +314,18 @@ def _bbcode_to_opus(bbcode: str, doc: OpusDocument) -> None:
     markdown_to_paragraphs(_bbcode_to_markdown(_strip_hidden_bbcode(bbcode)), doc)
 
 
-def _bili_lead_line(json_data: dict) -> str:
-    """专栏开头的一句话摘要（BBCode），没有 translated_summary 时返回空串。
+def _bili_lead_summary(json_data: dict) -> str:
+    """专栏开头那句话摘要的纯文本，没有 translated_summary 时返回空串。
 
     为什么在最前面：B站「动态-专栏」只预览开头约 90 字，署名模块与标题都在它后面，
     摘要不放第一个，预览里就只剩千篇一律的 AI 提示。老 JSON 没有这个字段（没重跑翻译），
     此时照旧开头，不报错也不补造。
+
+    返回纯文本而不是拼好的 BBCode：摘要是模型生成的文字，跟元信息一样直接交给
+    Markdown 渲染即可，别走模块那套 BBCode → Markdown 解析，否则摘要里出现
+    `[url=…]` / `[b]` 会被当成排版指令。
     """
-    summary = str(json_data.get("translated_summary") or "").strip()
-    if not summary:
-        return ""
-    return f"[b]摘要：[/b]{summary}"
+    return str(json_data.get("translated_summary") or "").strip()
 
 
 # ── BBCode 渲染器 ───────────────────────────────────
@@ -661,9 +662,9 @@ class J2MMConverter:
         parts = []
         article_type = _detect_article_type(json_data.get('title', ''))
 
-        lead = _bili_lead_line(json_data)
+        lead = _bili_lead_summary(json_data)
         if lead:
-            parts.append(_bbcode_to_html(lead))
+            parts.append(markdown_to_html(f"**摘要：**{lead}"))
 
         for m in self._get_modules('start', article_type, platform='bilibili'):
             parts.append(_bbcode_to_html(_module_text(m)))
@@ -712,9 +713,9 @@ class J2MMConverter:
         article_type = _detect_article_type(json_data.get('title', ''))
         doc = OpusDocument()
 
-        lead = _bili_lead_line(json_data)
+        lead = _bili_lead_summary(json_data)
         if lead:
-            _bbcode_to_opus(lead, doc)
+            doc.text(f"**摘要：**{lead}", markdown=True)
 
         for m in self._get_modules('start', article_type, platform='bilibili'):
             _bbcode_to_opus(_module_text(m), doc)

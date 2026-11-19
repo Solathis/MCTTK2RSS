@@ -240,6 +240,15 @@ class TestSampleConfig:
         assert data["mcbbs"]["password"] == "", "模板里不能出现真实密码"
         assert data["mcbbs"]["username"] == "", "模板里不能出现真实用户名"
 
+    def test_sample_has_new_sections(self):
+        """新增配置段必须进模板，不能只写进 DEFAULT_CONFIG。
+
+        只靠默认值兜底的话，拉新版本的部署永远在用默认值，模板与代码悄悄分叉。
+        """
+        data = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        assert "summary" in data, "config.sample.json 必须包含 summary 段"
+        assert "summarize_system" in data["prompts"], "config.sample.json 必须包含摘要提示词"
+
     def test_sample_ships_with_tls_verification_on(self):
         """模板默认开着校验：关掉它等于把带 API key 的请求暴露给中间人。"""
         data = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))

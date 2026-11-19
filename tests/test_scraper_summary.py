@@ -13,7 +13,12 @@ from scraper import _clean_summary, _clip_summary, summarize_translated
 def _cfg(**summary):
     base = {"enabled": True, "max_chars": 20, "input_max_chars": 100}
     base.update(summary)
-    return {"prompts": {"summarize_system": "写摘要"}, "summary": base}
+    return {
+        "prompts": {"summarize_system": "写摘要"},
+        "summary": base,
+        # 摘要只服务专栏：专栏关掉时不该产生任何调用
+        "bilibili": {"enabled": True},
+    }
 
 
 def _blocks(*texts, block_type="p"):
@@ -128,12 +133,45 @@ class TestFallbacks:
         ]
         assert summarize_translated(blocks, config=_cfg(max_chars=100)) == "正文一"
 
+    def test_fallback_uses_other_blocks_when_no_paragraph(self, api):
+        """纯更新日志（正文全是列表）也得截出一句，不能直接空着。"""
+        api.result = None
+        blocks = [
+            {"type": "h2", "translated_text": "更改"},
+            {"type": "li", "translated_text": "新增方块"},
+        ]
+        assert summarize_translated(blocks, config=_cfg(max_chars=100)) == "更改 新增方块"
+
     def test_fallback_is_clipped_to_limit(self, api):
         """兜底路径是「正文截取」，不截就等于把整段正文塞进摘要。"""
         api.result = None
         out = summarize_translated(_blocks("甲" * 50 + "。"), config=_cfg(max_chars=10))
 
         assert len(out) <= 10
+
+    def test_skipped_when_bilibili_disabled(self, api):
+        """专栏没开时摘要没有使用者，别花这次调用。"""
+        cfg = _cfg()
+        cfg["bilibili"] = {"enabled": False}
+
+        assert summarize_translated(_blocks("正文一"), config=cfg) == ""
+        assert api.calls == []
+
+    def test_request_error_falls_back_to_body(self, api, monkeypatch):
+        """translate_text 没兜住的请求异常不能让整篇文章被跳过。"""
+        def boom(*args, **kwargs):
+            raise scraper.requests.exceptions.ChunkedEncodingError("连接中断")
+
+        monkeypatch.setattr(scraper, "translate_text", boom)
+
+        assert summarize_translated(_blocks("第一段内容"), config=_cfg()) == "第一段内容"
+
+    def test_bad_limit_config_uses_default(self, api):
+        """配置里把 max_chars 写成 "80字" 不能把文章整篇带崩。"""
+        api.result = "一条摘要"
+        out = summarize_translated(_blocks("正文一"), config=_cfg(max_chars="80字"))
+
+        assert out == "一条摘要"
 
     def test_zero_limit_returns_empty(self, api):
         assert summarize_translated(_blocks("正文一"), config=_cfg(max_chars=0)) == ""

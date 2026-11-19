@@ -514,6 +514,15 @@ class TestConvertToBiliOpus:
         paras = self.conv.convert_to_bili_opus(data)
         assert all("摘要：" not in _words(p) for p in paras)
 
+    def test_summary_bbcode_stays_literal(self):
+        """摘要是生成的文字，不能被模块那套 BBCode 解析成排版/链接。"""
+        data = self._data()
+        data["translated_summary"] = "[b]粗[/b] [url=https://a.com]工具[/url]"
+        paras = self.conv.convert_to_bili_opus(data)
+
+        assert _words(paras[0]) == "摘要：[b]粗[/b] [url=https://a.com]工具[/url]"
+        assert all(node["node_type"] != 4 for node in paras[0]["text"]["nodes"])
+
 
 # ── 两套渲染器的契约 ─────────────────────────────────
 

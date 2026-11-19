@@ -2393,9 +2393,26 @@ def _clip_summary(text: str, limit: int) -> str:
     return head.rstrip()
 
 
+def _summary_setting(summary_cfg: dict, key: str, default: int) -> int:
+    """读摘要的字数配置；写错（`"80字"`、非数字）时退回默认值。
+
+    一篇文章不该因为配置里一个笔误被整篇跳过：摘要只是开头的一句话。
+    """
+    value = summary_cfg.get(key, default)
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        log_warning("[摘要] summary.%s 不是数字（%r），按默认值 %s 处理", key, value, default)
+        return default
+
+
 def _local_summary(blocks: list, limit: int) -> str:
-    """不调 API 的兜底摘要：取正文前几段 p 块（标题/列表项读起来不像一句话）。"""
-    return _clip_summary(_summary_text(blocks, limit, types=("p",)), limit)
+    """不调 API 的兜底摘要：优先正文段落，整篇只有列表/标题时才退而取任意可读块。
+
+    只认 p 块的话，纯更新日志（正文全是 li）会截出空串，专栏开头就退回模板化署名。
+    """
+    text = _summary_text(blocks, limit, types=("p",)) or _summary_text(blocks, limit)
+    return _clip_summary(text, limit)
 
 
 def summarize_translated(blocks: list, title: str = "", config=None) -> str:
@@ -2408,8 +2425,12 @@ def summarize_translated(blocks: list, title: str = "", config=None) -> str:
     开头空着不行。
     """
     cfg = config or _get_cfg()
+    if not (cfg.get("bilibili") or {}).get("enabled"):
+        # 摘要只服务 B站专栏：专栏没开就别为每篇文章白花一次 API 调用
+        log_debug("[摘要] B站 专栏未启用，跳过摘要")
+        return ""
     summary_cfg = cfg.get("summary") or {}
-    limit = int(summary_cfg.get("max_chars", 80) or 0)
+    limit = _summary_setting(summary_cfg, "max_chars", 80)
     if limit <= 0 or not blocks:
         return ""
 
@@ -2418,13 +2439,13 @@ def summarize_translated(blocks: list, title: str = "", config=None) -> str:
         log_info("[摘要] 已关闭 API 总结，改用正文截取（%d 字）: %s", len(summary), summary)
         return summary
 
-    excerpt = _summary_text(blocks, int(summary_cfg.get("input_max_chars", 6000) or 0))
+    excerpt = _summary_text(blocks, _summary_setting(summary_cfg, "input_max_chars", 6000))
     if not excerpt:
         return ""
     # 上下限只是"提醒"，写进提示词让模型自己收敛，程序不按字数硬切：更新日志重构时
     # 常常一篇文章塞进一堆改动，长一点的摘要也比被切成半句话有用（专栏预览本来
     # 也只显示开头约 90 字，长出来的部分在预览里自然看不到）
-    floor = min(max(int(summary_cfg.get("min_chars", 0) or 0), 0), limit)
+    floor = min(max(_summary_setting(summary_cfg, "min_chars", 0), 0), limit)
     system_prompt = str((cfg.get("prompts") or {}).get("summarize_system") or "").strip()
     if 0 < floor < limit:
         system_prompt += (
@@ -2437,7 +2458,14 @@ def summarize_translated(blocks: list, title: str = "", config=None) -> str:
     user_content = f"标题：{title}\n\n正文：\n{excerpt}" if title else f"正文：\n{excerpt}"
 
     started = time.monotonic()
-    raw = translate_text(user_content, system_prompt=system_prompt, use_glossary=False, config=cfg)
+    try:
+        raw = translate_text(user_content, system_prompt=system_prompt, use_glossary=False, config=cfg)
+    except requests.RequestException as e:
+        # translate_text 只兜了 Timeout / ConnectionError / HTTPError，其余请求异常
+        # （TooManyRedirects、ChunkedEncodingError 等）会漏出来。摘要只是锦上添花，
+        # 绝不能因此让整篇文章在 process_article 里被跳过
+        log_warning("[摘要] 请求失败（%s），改用正文截取", e)
+        raw = None
     summary = _clean_summary(raw or "")
     if not summary:
         summary = _local_summary(blocks, limit)

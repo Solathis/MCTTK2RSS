@@ -10,9 +10,13 @@ output/*.json
 # 专栏 HTML 产物与 tools/preview_bili_html.py 生成的预览页
 output/*.html
 
-# 注意：.posted.json *会* 被 git 跟踪
-# 注意：.state.json 不会 被 git 跟踪
-# 注意：.mcbbs_threads.json（帖子高亮/审核记录）不会 被 git 跟踪
+# 运行期状态文件一律不入库：它们属于具体部署的 output 卷，入库只会让工作区永远 dirty，
+# 而且仓库里那份必然是过期快照（曾经靠一个自动提交的 workflow 同步，那个 workflow 已停用）。
+# 想跨机器保留发布记录，请备份 output 卷或单独导出这几份 json，不要塞回 git。
+output/.posted.json
+output/.state.json
+output/.posted_bili.json
+output/.mcbbs_threads.json
 
 # 配置文件：本地配置不入库（模板见 config/config.sample.json），备份文件同样不入库
 # config/modules_config.json 与 config/config.sample.json 仍然入库

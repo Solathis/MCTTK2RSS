@@ -837,3 +837,8 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
   `output/.posted_bili.json` 后会先把现有文章重新记为「已投稿」做基线（一篇都不投），
   要真补投就用 `--post-only --bili-backfill`。删除 `output/.mcbbs_threads.json` 只是丢掉
   高亮的追踪记录（已发出去的帖子不受影响），但发帖后还没补上高亮的帖子就找不回来了
+- **状态文件不入库**：`.state.json` / `.posted.json` / `.posted_bili.json` /
+  `.mcbbs_threads.json` 都写在输出目录里、被 `.gitignore` 显式忽略 —— 它们属于具体部署的
+  `output` 卷，不是源码。换机器、重建卷、重装容器之前先备份这几份 json：尤其是
+  `.posted.json`，它没了就等于「一篇都没发过」，默认开启的 `retry.backfill_unposted`
+  会把卷里还留着的文章重新发一遍

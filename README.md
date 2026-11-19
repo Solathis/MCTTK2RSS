@@ -195,7 +195,8 @@ docker compose up -d --build           # 容器化运行，默认每小时一轮
   换输出目录**不会**阻止往线上论坛发帖
 - **状态文件**：`output/.state.json`（已处理的新闻）、`.posted.json`（已发布的）、
   `.posted_bili.json`（已投稿的）、`.mcbbs_threads.json`（高亮追踪）—— 删除语义见
-  [docs/USAGE.md](docs/USAGE.md#注意事项)
+  [docs/USAGE.md](docs/USAGE.md#注意事项)。它们都**不入库**，跟着部署的 `output` 卷走，
+  换机器或重建卷之前记得备份
 
 ## 许可证
 

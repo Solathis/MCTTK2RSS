@@ -1,7 +1,11 @@
-﻿# 使用手册
+# 使用手册
 
 > README 只留最短上手路径。这里是完整用法：安装、全部配置项、CLI 参数、日志、
 > 新闻来源、词汇表与注意事项。贡献与提交流程见 [CONTRIBUTING.md](../CONTRIBUTING.md)。
+
+**目录**：[快速开始](#快速开始) · [日志](#日志) · [新闻来源](#新闻来源) ·
+[新闻类型过滤](#新闻类型过滤) · [模块系统](#模块系统) · [智能词汇表](#智能词汇表) ·
+[智能去重机制](#智能去重机制) · [配置参考](#配置参考) · [注意事项](#注意事项)
 
 ## 快速开始
 
@@ -683,7 +687,7 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
     "sections": []
   },
   "http": {
-    "verify_ssl": false,
+    "verify_ssl": true,
     "ca_bundle": "",
     "user_agent": "Mozilla/5.0 ...",
     "proxies": { "http": "", "https": "" },
@@ -710,8 +714,10 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
       "enabled": true,
       "colors": { "java_release": "#EE1B2E", "normal": "#EC1282" },
       "bold_types": ["java_release", "bedrock_release"],
+      "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
-      "max_age_hours": 168
+      "max_age_hours": 168,
+      "max_age_days": 30
     }
   },
   "bilibili": {
@@ -810,9 +816,13 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
   后续批次不再重复撞 400。HTTP 错误会连同响应体一起打印，便于定位原因
 - **Feedback 抓取 TLS 报错**：`curl_cffi` 自带 certifi 信任库、不走系统证书存储，
   代理 / VPN / 杀毒软件做 TLS 中间人解密时会报
-  `curl: (60) unable to get local issuer certificate`。`http.verify_ssl: false`
-  现在同时作用于 `curl_cffi`（跳过校验）；想保留校验时用 `http.ca_bundle` 指向
-  中间人软件的 CA 证书（`.pem`）。日志会给出对应的处理建议
+  `curl: (60) unable to get local issuer certificate`。正确做法是用 `http.ca_bundle`
+  指向中间人软件的 CA 证书（`.pem`），校验照旧保留；`http.verify_ssl: false` 只是最后手段，
+  它同时关掉 `requests` 与 `curl_cffi` 两边的校验 —— 而翻译请求带着 bearer API key，
+  关掉校验等于把密钥和文章正文交给中间人。日志会给出这两种处理建议
+- **配置模板里的占位符**：`openai_compat.host` 默认是 `api.example.com`、`model` 是
+  `gpt-4o`，`main.py` 见到 `example` 会当成「翻译 API 未配置」直接退出（`--post-only`
+  除外）。复制模板后必须把 host / model 换成自己的服务商
 - **Feedback 被 Cloudflare 拦截**：页面与 RSS 会返回挑战页（`403` + `cf-mitigated: challenge`），
   这是站点的机器人防护，硬碰没有意义。抓取默认走 Zendesk Help Center 公开 API
   （见上文 [Feedback 网站](#feedback-网站)）：列表接口一次带回标题、链接与正文，

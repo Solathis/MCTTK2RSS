@@ -204,9 +204,14 @@ def _fetch_all_news(config: dict) -> list:
     return all_news
 
 
-def _filter_and_check_state(all_news: list, config: dict, state_file: str):
+def _filter_and_check_state(all_news: list, config: dict, state_file: str,
+                            dry_run: bool = False):
     """
     类型过滤 + 加载状态 + 首次运行检测 + 过滤已处理。
+
+    `dry_run=True` 时只报告「真跑会怎么处理」，绝不写状态：首次运行的基线（把现有新闻
+    标记为已处理、把 output 里已有的产物标记为已发布）一旦在 dry-run 里落盘，用户按
+    README 的顺序「先 --dry-run 再真跑」时，真跑就什么都做不了了。
 
     Returns:
         (new_news, state, posted_urls) 或 None（首次运行/无新内容时）
@@ -226,6 +231,10 @@ def _filter_and_check_state(all_news: list, config: dict, state_file: str):
     posted_urls = set(state.get("posted_urls", []))
 
     if state.get("_first_run", False):
+        if dry_run:
+            log_info("[主] 检测到首次运行：真跑会把当前 %d 条新闻标记为已处理（不发布历史内容）；"
+                     "本次 --dry-run 不写状态", len(filtered))
+            return None
         log_info("[主] 检测到首次运行，将当前 %d 条新闻标记为已处理（不发布历史内容）", len(filtered))
         posted_urls.update(n['url'] for n in filtered)
         state["posted_urls"] = list(posted_urls)
@@ -430,7 +439,7 @@ def run_scrape(config: dict, state_file: str, dry_run: bool = False, stats: dict
         log_warning("[主] 所有来源都没有取到新闻，本次结束")
         return []
 
-    result = _filter_and_check_state(all_news, config, state_file)
+    result = _filter_and_check_state(all_news, config, state_file, dry_run=dry_run)
     if result is None:
         return []
     new_news, state, posted_urls = result

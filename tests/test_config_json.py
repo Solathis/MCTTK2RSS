@@ -228,3 +228,21 @@ class TestSampleConfig:
         assert data["openai_compat"]["api_key"] == "", "模板里不能出现真实 API Key"
         assert data["mcbbs"]["password"] == "", "模板里不能出现真实密码"
         assert data["mcbbs"]["username"] == "", "模板里不能出现真实用户名"
+
+    def test_sample_ships_with_tls_verification_on(self):
+        """模板默认开着校验：关掉它等于把带 API key 的请求暴露给中间人。"""
+        data = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        assert data["http"]["verify_ssl"] is True
+
+    def test_config_with_bom_still_loads(self, tmp_path):
+        """Windows 编辑器另存的 UTF-8 会带 BOM，不能让整份配置回落默认值。"""
+        import scraper
+
+        path = tmp_path / "config.json"
+        path.write_text('{"openai_compat": {"host": "api.mojang.com", "api_key": "k"}}',
+                        encoding="utf-8-sig")
+
+        config = scraper.load_config(str(path))
+
+        assert config["openai_compat"]["host"] == "api.mojang.com"
+        assert config["openai_compat"]["api_key"] == "k"

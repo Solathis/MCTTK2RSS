@@ -347,6 +347,10 @@ python poster.py --highlight-status
 python poster.py --highlight-stem news_xxx --bold --dry-run
 python poster.py --highlight-stem news_xxx --bold
 python poster.py --highlight-stem news_xxx --no-bold
+
+# 不依赖 output 产物，直接指定一篇帖子（色值必须给，取 Discuz 色板）
+python poster.py --highlight-tid 6816 --color "#EC1282" --dry-run
+python poster.py --highlight-tid 6816 --color "#EC1282"
 ```
 
 ## 日志

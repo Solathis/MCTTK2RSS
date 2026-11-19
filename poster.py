@@ -1859,6 +1859,47 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         log_info("[高亮] 已把 %s 标记为待补高亮（tid=%s）",
                  args.highlight_stem, record.get("tid"))
 
+    if args.highlight_tid:
+        if not highlight_color_index(args.color or ""):
+            log_error("[!] --highlight-tid 需要用 --color 指定 Discuz 色板内的色值"
+                      "（顶栏色板：#EE1B2E / #EE5023 / #996600 / #3C9D40 / #2897C5 / "
+                      "#2B65B7 / #8F2A90 / #EC1282），收到: %s", args.color or "未指定")
+            return 1
+        records = load_thread_records(records_path)
+        key = f"tid_{args.highlight_tid}"
+        record = records.get(key) or {}
+        row = next((item for item in poster.fetch_forum_threads(pages=3)
+                    if item.tid == args.highlight_tid), None)
+        if row is None:
+            log_warning("    ⚠ 版块列表前 3 页里没有 tid=%s，标题/分类留空（不参与取消加粗）",
+                        args.highlight_tid)
+        record.update({
+            "tid": args.highlight_tid,
+            "fid": poster.forum_fid,
+            "typeid": row.typeid if row else record.get("typeid"),
+            "url": f"{poster.base_url}/thread-{args.highlight_tid}-1-1.html",
+            "title": row.title if row else record.get("title", ""),
+            "news_type": record.get("news_type", "manual"),
+            "color": args.color,
+            "bold": True if args.bold else (False if args.no_bold else bool(record.get("bold"))),
+            "state": "pending",
+            "posted_at": record.get("posted_at") or _timestamp(),
+            "updated_at": _timestamp(),
+            "attempts": 0,
+            "last_error": "",
+            "tid_source": "手工指定",
+        })
+        if args.dry_run:
+            log_info("[Dry Run] 将提交: tid=%s | %s（色号 %s）| %s | %s",
+                     args.highlight_tid, args.color, highlight_color_index(args.color),
+                     "加粗" if record["bold"] else "不加粗", record["title"] or "标题未知")
+            return 0
+        records[key] = record
+        save_thread_records(records_path, records)
+        log_info("[高亮] 已登记手工指定的帖子: tid=%s（%s %s）",
+                 args.highlight_tid, args.color,
+                 "加粗" if record["bold"] else "不加粗")
+
     if args.index_history:
         try:
             poster.login()
@@ -1908,10 +1949,14 @@ def main():
                         help="对照站点现有颜色/加粗检查本地记录（只读，不改论坛）")
     parser.add_argument("--highlight-stem", metavar="STEM",
                         help="只补这一篇的高亮（单篇验证用，配合 --bold/--no-bold 可强制样式）")
+    parser.add_argument("--highlight-tid", type=int, metavar="TID",
+                        help="不依赖 output 产物，直接对指定帖子设置高亮（需配 --color）")
+    parser.add_argument("--color", metavar="HEX",
+                        help="配合 --highlight-tid：Discuz 色板内的色值，如 #EC1282")
     parser.add_argument("--bold", action="store_true",
-                        help="配合 --highlight-stem：这次强制加粗")
+                        help="配合 --highlight-stem / --highlight-tid：这次强制加粗")
     parser.add_argument("--no-bold", action="store_true",
-                        help="配合 --highlight-stem：这次强制不加粗")
+                        help="配合 --highlight-stem / --highlight-tid：这次强制不加粗")
     args = parser.parse_args()
 
     config = load_poster_config()
@@ -1922,7 +1967,8 @@ def main():
     state_file = os.path.join(news_dir, ".posted.json")
 
     if (args.highlight_only or args.index_history or args.highlight_status
-            or args.highlight_stem or args.highlight_legacy is not None):
+            or args.highlight_stem or args.highlight_tid
+            or args.highlight_legacy is not None):
         sys.exit(_run_highlight_cli(args, config, news_dir, thread_records_path(news_dir)))
 
     if not config["username"] or not config["password"]:

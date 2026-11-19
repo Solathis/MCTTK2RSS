@@ -371,8 +371,8 @@ class TestHighlightStatus:
 class TestHighlightCli:
     def _args(self, **overrides):
         base = {"index_history": False, "highlight_legacy": None, "highlight_stem": None,
-                "highlight_only": True, "highlight_status": False,
-                "bold": False, "no_bold": False, "dry_run": False}
+                "highlight_tid": None, "color": None, "highlight_only": True,
+                "highlight_status": False, "bold": False, "no_bold": False, "dry_run": False}
         base.update(overrides)
         return argparse.Namespace(**base)
 
@@ -490,6 +490,71 @@ class TestHighlightCli:
 
         assert code == 0
         assert _read_records(records_path)["news_a"]["state"] == "legacy"
+
+    def test_highlight_tid_requires_colour(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(poster, "MCBBSPoster", lambda config: type("P", (), {})())
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_tid=6816),
+            {"username": "u", "password": "p"},
+            str(tmp_path), str(tmp_path / ".mcbbs_threads.json"))
+        assert code == 1
+
+    def test_highlight_tid_creates_manual_record(self, tmp_path, monkeypatch):
+        """手工指定的帖子不依赖 output 产物，键名用 tid_<n>。"""
+        calls = []
+
+        class FakePoster:
+            forum_fid = 45
+            base_url = BASE
+
+            def __init__(self, config):
+                pass
+
+            def fetch_forum_threads(self, pages=3):
+                return [poster.ForumThread(6816, "TwitchCon 揭晓 2027 年首个游戏更新",
+                                           typeid=16, color="", bold=False)]
+
+            def process_pending_highlights(self, records_path):
+                calls.append(records_path)
+                return {"pending": 1, "highlighted": 1}
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_tid=6816, color="#EC1282"),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        record = _read_records(records_path)["tid_6816"]
+        assert record["tid"] == 6816
+        assert record["color"] == "#EC1282"
+        assert record["bold"] is False
+        assert record["typeid"] == 16
+        assert record["state"] == "pending"
+        assert calls == [records_path]
+
+    def test_highlight_tid_dry_run_writes_nothing(self, tmp_path, monkeypatch):
+        class FakePoster:
+            forum_fid = 45
+            base_url = BASE
+
+            def __init__(self, config):
+                pass
+
+            def fetch_forum_threads(self, pages=3):
+                return []
+
+        monkeypatch.setattr(poster, "MCBBSPoster", FakePoster)
+        records_path = str(tmp_path / ".mcbbs_threads.json")
+
+        code = poster._run_highlight_cli(
+            self._args(highlight_only=False, highlight_tid=6816, color="#EC1282",
+                       bold=True, dry_run=True),
+            {"username": "u", "password": "p"}, str(tmp_path), records_path)
+
+        assert code == 0
+        assert not (tmp_path / ".mcbbs_threads.json").exists()
 
     def test_highlight_stem_unknown_reports_error(self, tmp_path, monkeypatch):
         monkeypatch.setattr(poster, "MCBBSPoster", lambda config: type("P", (), {})())

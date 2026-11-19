@@ -652,7 +652,8 @@ python tools/sync_glossary.py --no-index               # 不写 glossary/glossar
 
 **官方推荐的定时方式是容器 + `output` 卷**（`scheduler.py`，见
 [docs/DOCKER.md](DOCKER.md)），因为 Actions 的 runner 是临时的：每次运行都从仓库全新
-checkout 一份，而 `output/` 与四个状态文件都**不入库**（见上面「注意事项」里的状态文件说明）。
+checkout 一份，而 `output/`（产物 + 四份状态文件）都**不入库**（见上面「注意事项」里的
+状态文件说明）。
 
 这带来一个很隐蔽的坑：
 
@@ -661,16 +662,50 @@ checkout 一份，而 `output/` 与四个状态文件都**不入库**（见上�
 - 于是工作流是绿的、日志里「首次运行，已标记 N 条」，但**一篇都不会翻译、也不会发布**；
   下一次运行又从头来一遍，永远发不出东西。
 
-所以用 Actions 定时跑，必须自己解决状态持久化，可选做法：
+所以用 Actions 定时跑，必须自己解决持久化。**要跨 run 保留的是整个 `output/`**，不是
+「状态文件那几份 json」——产物和状态是一体的，少哪一半都会出事：
+
+| 只保留 | 结果 |
+| --- | --- |
+| 只留状态文件（产物丢了） | 某一轮生成了文章但没发出去（登录失败、站点拒绝），下一轮已经没有那篇产物可补发，而它的 URL 早记进 `.state.json` —— **这篇永远发不出去** |
+| 只留产物（状态丢了） | 每一轮都被当成「首次运行」：把当前抓到的新闻记为已处理、把现有产物记为已发布，然后结束；日志是绿的，一篇都不会发 |
+| 缺 `.posted.json`（`.state.json` 还在） | 等于「一篇都没发过」，默认开启的 `retry.backfill_unposted` 会把目录里留着的文章重新发一遍 |
+| 缺 `.posted_bili.json` | 启用专栏后 `--post-only` 会先把现有文章整批记为「已投稿」做基线，一篇都不投 |
+| 缺 `.mcbbs_threads.json` | 发帖后还没补上高亮的帖子找不回来（已发出去的帖子本身不受影响） |
+
+可选做法：
 
 | 做法 | 说明 |
 | --- | --- |
-| 把状态文件提交回仓库 | 老办法：跑完 `git add -f output/.state.json output/.posted.json && git commit -m "chore: update state [skip ci]" && git push`。注意这些文件已被 `.gitignore` 忽略，`git add` 必须带 `-f`；仓库里那份历史状态就是这么做出来的，后来随着 workflow 停用而停在旧值 |
-| artifact / cache | 用 `actions/upload-artifact` + `download-artifact`（跨 run 取回较绕）或 `actions/cache`（有淘汰策略）保存 `output/` 的状态文件 |
+| 把 `output/` 提交回仓库 | 老办法：跑完把状态与产物一起提交回一个分支（仓库里那份历史状态就是这么来的，后来随着 workflow 停用而停在旧值）。`output/` 整体被 `.gitignore` 忽略，`git add` 必须带 `-f` |
+| artifact / cache | `actions/upload-artifact` + `download-artifact`（跨 run 取回要显式给 `run-id`），或 `actions/cache`（key 不可覆盖，见下）保存整个 `output/` |
 | 独立状态分支 / 外部存储 | 把状态目录指到另一个分支或对象存储，工作流只读写状态，不碰主仓库历史 |
 
-无论选哪种，`.state.json`（哪些 URL 处理过）和 `.posted.json`（哪些产物发过）都必须跨 run
-留存；只保留产出文件、不保留状态，就会出现上面「每次都是首次运行」或者「每次都重复发布」。
+选「提交回仓库」时，收尾那一步要容忍「目录不存在」和「没有变化」，否则 `&&` 链会断在
+中间、状态根本没提交；Actions 的干净 runner 也没有配 git 提交身份，`git commit` 会直接
+失败：
+
+```bash
+git add -f output 2>/dev/null || true
+git diff --cached --quiet || {
+  git -c user.name="mcttk-bot" -c user.email="mcttk-bot@users.noreply.github.com" \
+      commit -m "chore: update state [skip ci]"
+  git push
+}
+```
+
+另外两条容易踩的：
+
+- `actions/cache` 的 key **不可覆盖**：用固定 key 会一直命中第一份旧状态，后面更新的状态
+  永远存不进去。要用每次运行唯一的 key + `restore-keys` 取最近一份，例如
+  `key: mcttk-state-${{ github.run_id }}`、`restore-keys: mcttk-state-`；
+- 两个 run 撞在一起（手动触发撞上定时任务）会拿着同一份状态各发一遍，站点上就是重复帖。
+  用 `concurrency: {group: mcttk, cancel-in-progress: false}` 让同一时间只有一个 run。
+
+状态文件本身是原子写（先写同目录临时文件再 `os.replace`），被 kill 不会留下半截 JSON；
+但工作流仍应只在**任务成功**时上传/提交状态，失败的 run 别覆盖上一份完整快照 ——
+干净 runner 上读到缺失或坏掉的 `.state.json` 会按首次运行处理，那一轮抓到的新闻就被
+当成历史跳过了。
 
 `CONTRIBUTING.md` 的「持续集成与发版」写了仓库自带的两个工作流只做 CI 与发布，定时抓取
 不在其中；`scrape.yml.BAK` 是早期那套 Actions 定时抓取的备份，已停用。
@@ -845,7 +880,8 @@ checkout 一份，而 `output/` 与四个状态文件都**不入库**（见上�
 - **Feedback 抓取 TLS 报错**：`curl_cffi` 自带 certifi 信任库、不走系统证书存储，
   代理 / VPN / 杀毒软件做 TLS 中间人解密时会报
   `curl: (60) unable to get local issuer certificate`。正确做法是用 `http.ca_bundle`
-  指向中间人软件的 CA 证书（`.pem`），校验照旧保留；`http.verify_ssl: false` 只是最后手段，
+  指向中间人软件的 CA 证书（`.pem`），校验照旧保留——这份 CA 对翻译请求、新闻抓取、
+  头图下载、论坛发帖、专栏投稿全都生效；`http.verify_ssl: false` 只是最后手段，
   它同时关掉 `requests` 与 `curl_cffi` 两边的校验 —— 而翻译请求带着 bearer API key，
   关掉校验等于把密钥和文章正文交给中间人。日志会给出这两种处理建议
 - **配置模板里的占位符**：`openai_compat.host` 默认是 `api.example.com`、`model` 是
@@ -867,6 +903,24 @@ checkout 一份，而 `output/` 与四个状态文件都**不入库**（见上�
   高亮的追踪记录（已发出去的帖子不受影响），但发帖后还没补上高亮的帖子就找不回来了
 - **状态文件不入库**：`.state.json` / `.posted.json` / `.posted_bili.json` /
   `.mcbbs_threads.json` 都写在输出目录里、被 `.gitignore` 显式忽略 —— 它们属于具体部署的
-  `output` 卷，不是源码。换机器、重建卷、重装容器之前先备份这几份 json：尤其是
-  `.posted.json`，它没了就等于「一篇都没发过」，默认开启的 `retry.backfill_unposted`
-  会把卷里还留着的文章重新发一遍
+  `output` 卷，不是源码。换机器、重建卷、重装容器之前把整个 `output/` 备份出来：只丢
+  `.posted.json` 而 `.state.json` 还在，等于「一篇都没发过」，默认开启的
+  `retry.backfill_unposted` 会把还留着的文章重新发一遍；两份一起丢反倒是「首次运行」——
+  现有产物被记成已发布（不重发），但这一次抓到的新闻会被当成历史跳过。
+  跨 run 怎么留存见 [用 GitHub Actions 定时跑](#用-github-actions-定时跑可选需要自己接)
+- **忽略规则只覆盖默认目录**：`.gitignore` 里写的是 `output/` 下的文件。把
+  `output.save_dir`（或 `--dir`）指到仓库内的其它目录时，自己补一条忽略规则，否则
+  `git add -A` 会把运行期状态和产物一起提交进去
+- **从旧版本升级（v0.4.0 及更早）**：那些版本的 `output/.posted.json` 是**入库**文件，
+  发帖会改它；直接 `git pull` 会撞上 modify/delete 冲突或「local changes would be
+  overwritten」。先备份本机那份、让开仓库里的副本，拉完再放回去：
+
+  ```bash
+  cp output/.posted.json /tmp/mcttk-posted.json   # 备份运行期账本
+  git checkout -- output/.posted.json             # 丢弃本地改动，pull 才能过
+  git pull
+  cp /tmp/mcttk-posted.json output/.posted.json   # 放回运行期账本
+  ```
+
+  别顺手把这份账本删了：`.posted.json` 没了而 `.state.json` 还在，下一轮会把输出目录里
+  的文章重新发一遍

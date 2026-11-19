@@ -257,6 +257,40 @@ class TestHighlightRegistration:
         assert not (tmp_path / ".mcbbs_threads.json").exists()
 
 
+class TestCredentials:
+    """账号密码可以从 .env 走环境变量覆盖；缺失时提示要说清缺哪个。"""
+
+    def test_env_overrides_empty_password(self, tmp_path, monkeypatch):
+        config_path = tmp_path / "config.json"
+        config_path.write_text(
+            json.dumps({"mcbbs": {"username": "from_file", "password": ""}}),
+            encoding="utf-8",
+        )
+        fake_value = "test-value"
+        monkeypatch.setenv("MCBBS_USERNAME", "from_env")
+        monkeypatch.setenv("MCBBS_PASSWORD", fake_value)
+
+        cfg = poster.load_poster_config(str(config_path))
+
+        assert cfg["username"] == "from_env"
+        assert cfg["password"] == fake_value
+
+    def test_hint_names_the_missing_variable(self, monkeypatch):
+        monkeypatch.delenv("MCBBS_USERNAME", raising=False)
+        monkeypatch.delenv("MCBBS_PASSWORD", raising=False)
+
+        hint = poster._login_config_hint({"username": "newspaper", "password": ""})
+
+        assert "缺 MCBBS_PASSWORD" in hint
+        assert "MCBBS_USERNAME" not in hint.split("；")[0]
+        assert ".env" in hint
+
+    def test_hint_reports_loaded_env(self, monkeypatch):
+        monkeypatch.setenv("MCBBS_PASSWORD", "test-value")
+        hint = poster._login_config_hint({"username": "", "password": ""})
+        assert "未读到" not in hint
+
+
 class TestHighlightConfig:
     def test_partial_config_keeps_defaults(self, tmp_path):
         config_path = tmp_path / "config.json"

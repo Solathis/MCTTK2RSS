@@ -31,7 +31,9 @@ from log_setup import current_log_path, log_debug, log_error, log_info, log_warn
 from utils import (
     CONFIG_DIR,
     MODULE_TYPE_MAP,
+    PROJECT_ROOT,
     find_image,
+    load_dotenv,
     load_posted,
     load_thread_records,
     save_posted,
@@ -1451,6 +1453,21 @@ class MCBBSPoster:
 # `from poster import load_posted` 的老调用方与测试仍然有效。
 
 
+def _login_config_hint(config: dict) -> str:
+    """账号密码缺失时的排查提示：只说有没有，不输出任何值。"""
+    missing = [name for name, key in (("MCBBS_USERNAME", "username"),
+                                      ("MCBBS_PASSWORD", "password"))
+               if not config.get(key)]
+    env_path = os.path.join(PROJECT_ROOT, ".env")
+    env_loaded = bool(os.environ.get("MCBBS_USERNAME") or os.environ.get("MCBBS_PASSWORD"))
+    return (
+        f"缺 {' / '.join(missing) or '（无）'}；.env={env_path}"
+        f"（{'存在' if os.path.isfile(env_path) else '不存在'}），"
+        f"环境变量{'已读到' if env_loaded else '未读到'}；"
+        f"也可以写进 config/config.json 的 mcbbs.username / mcbbs.password"
+    )
+
+
 # ── CLI 入口 ─────────────────────────────────────────
 
 def _preview_records(records_path: str, state: str, limit: int | None = None) -> int:
@@ -1479,7 +1496,7 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         log_info("[Dry Run] --index-history 要登录读「我的帖子」，去掉 --dry-run 再跑")
         return 0
     if args.index_history and (not config.get("username") or not config.get("password")):
-        log_error("[!] 未配置 MCBBS 账号密码！请设置 .env 的 MCBBS_USERNAME / MCBBS_PASSWORD")
+        log_error("[!] 未配置 MCBBS 账号密码！%s", _login_config_hint(config))
         return 1
 
     poster = MCBBSPoster(config)
@@ -1540,7 +1557,7 @@ def main():
         sys.exit(_run_highlight_cli(args, config, news_dir, thread_records_path(news_dir)))
 
     if not config["username"] or not config["password"]:
-        log_error("[!] 未配置 MCBBS 账号密码！请设置 config.json 中的 mcbbs 部分")
+        log_error("[!] 未配置 MCBBS 账号密码！%s", _login_config_hint(config))
         sys.exit(1)
 
     # 扫描新闻文件
@@ -1620,5 +1637,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # .env 里的 MCBBS_USERNAME / MCBBS_PASSWORD 只有显式加载一次才会进环境变量；
+    # main.py 在 import 时就做了，这条独立入口（--highlight-only 等）以前漏了
+    load_dotenv()
     setup_logging()
     main()

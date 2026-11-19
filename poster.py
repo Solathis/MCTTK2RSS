@@ -1490,7 +1490,7 @@ class MCBBSPoster:
         限量提升。标题带删除线（已删除/测试稿/撤掉 AI 翻译的旧帖）和落在回收区等
         排除版块里的帖子一律不登记。
         """
-        stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0,
+        stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0, "refreshed": 0,
                  "no_color": 0, "recycled": 0, "excluded": 0, "site_bold": 0}
         threads = self.fetch_my_threads(pages=pages)
         stats["threads"] = len(threads)
@@ -1514,6 +1514,7 @@ class MCBBSPoster:
             if not stem:
                 continue
             stats["matched"] += 1
+            site_row = site_rows.get(item.tid)
             if item.recy:
                 stats["recycled"] += 1
                 log_info("    → 跳过历史登记（标题带删除线）: %s", item.title)
@@ -1524,11 +1525,15 @@ class MCBBSPoster:
                 log_info("    → 跳过历史登记（%s）: %s", skipped_reason, item.title)
                 continue
             if stem in records:
+                # 历史登记是可刷新的：早先版本把 bold 写死成 false，重跑要能纠正
                 stats["skipped"] += 1
+                existing = records[stem]
+                if existing.get("state") == "legacy" and self._refresh_legacy(
+                        existing, site_row, colors):
+                    stats["refreshed"] += 1
                 continue
 
             news_type = _local_news_type(save_dir, stem)
-            site_row = site_rows.get(item.tid)
             site_color = site_row.color if site_row else ""
             color = site_color or colors.get(news_type, "")
             if not color:
@@ -1561,16 +1566,35 @@ class MCBBSPoster:
                          "（站点已加粗）" if site_row and site_row.bold else "",
                          item.forum_name or "版块未知")
 
-        if stats["recorded"] and not dry_run:
+        if (stats["recorded"] or stats["refreshed"]) and not dry_run:
             self._save_records(records_path, records)
         for name, fid in sorted({(item.forum_name, item.forum_fid)
                                  for item in threads if item.forum_name}):
             log_debug("    · 列表出现的版块: %s（fid=%s）", name, fid)
         log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条（其中站点已加粗 %d 条）| "
-                 "已有记录 %d 条 | 删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
+                 "已有记录 %d 条（刷新 %d 条）| 删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
                  stats["threads"], stats["matched"], stats["recorded"], stats["site_bold"],
-                 stats["skipped"], stats["recycled"], stats["excluded"], stats["no_color"])
+                 stats["skipped"], stats["refreshed"],
+                 stats["recycled"], stats["excluded"], stats["no_color"])
         return stats
+
+    def _refresh_legacy(self, record: dict, site_row, colors: dict) -> bool:
+        """用版块列表的现状刷新一条 legacy 记录，返回是否有变化。
+
+        历史登记只写本地记录、不上色，站点上的颜色/加粗随时可能被人改过；重跑
+        --index-history 时以站点为准纠正，避免记录和站上长期不一致。
+        """
+        bold = bool(site_row.bold) if site_row else bool(record.get("bold"))
+        color = (site_row.color if site_row else "") or record.get("color", "")
+        if not color:
+            color = colors.get(record.get("news_type", ""), "")
+        changed = (bold != bool(record.get("bold"))) or (color != record.get("color"))
+        if not changed:
+            return False
+        record["bold"] = bold
+        record["color"] = color
+        record["updated_at"] = _timestamp()
+        return True
 
     def promote_legacy(self, records_path: str, limit: int) -> int:
         """把最近的 N 条历史登记提升成待补高亮；真正的上色交给补高亮流程。"""

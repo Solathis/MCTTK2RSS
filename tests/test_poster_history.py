@@ -251,6 +251,42 @@ class TestIndexHistorySiteState:
         assert record["color"] == "#3C9D40"
         assert record["bold"] is False
 
+    def test_refreshes_stale_legacy_bold(self, tmp_path, monkeypatch):
+        """早先版本把 legacy 的 bold 写死 false，重跑要按站点现状纠正。"""
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 8")
+        _write_records(tmp_path, {"news_a": _legacy(tid=6773, bold=False, color="#3C9D40")})
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6773, "Minecraft 26.4 快照 8 [AI翻译]")])
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [
+                                poster.ForumThread(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                                                   typeid=4, color="#3C9D40", bold=True)])
+
+        stats = _make_poster().index_history(str(tmp_path))
+
+        assert stats["refreshed"] == 1
+        record = _read_records(tmp_path / ".mcbbs_threads.json")["news_a"]
+        assert record["bold"] is True
+        assert record["state"] == "legacy"
+
+    def test_refresh_does_not_touch_pending_records(self, tmp_path, monkeypatch):
+        """pending/done 是我们自己提交的状态，不能被历史刷新覆盖。"""
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 8")
+        _write_records(tmp_path, {"news_a": _legacy(tid=6773, state="pending", bold=True)})
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6773, "Minecraft 26.4 快照 8 [AI翻译]")])
+        monkeypatch.setattr(MCBBSPoster, "fetch_forum_threads",
+                            lambda self, pages=3: [
+                                poster.ForumThread(6773, "Minecraft 26.4 快照 8 [AI翻译]",
+                                                   typeid=4, bold=False)])
+
+        stats = _make_poster().index_history(str(tmp_path))
+
+        assert stats["refreshed"] == 0
+        assert _read_records(tmp_path / ".mcbbs_threads.json")["news_a"]["bold"] is True
+
 
 class TestPromoteLegacy:
     def test_promotes_newest_limit(self, tmp_path):

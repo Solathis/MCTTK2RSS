@@ -104,6 +104,7 @@ DEFAULT_HIGHLIGHT = {
         "normal": "#EC1282",
     },
     "bold_types": ["java_release", "bedrock_release"],
+    "exclude_forums": ["块讯回收区"],
     "max_attempts": 6,
     "max_age_hours": 168,
 }
@@ -127,6 +128,12 @@ def _merge_highlight(raw) -> dict:
     bold_types = raw.get("bold_types")
     if isinstance(bold_types, list):
         merged["bold_types"] = [str(item) for item in bold_types]
+    exclude_forums = raw.get("exclude_forums")
+    if isinstance(exclude_forums, list):
+        merged["exclude_forums"] = [
+            item for item in exclude_forums
+            if not isinstance(item, bool) and isinstance(item, (int, str))
+        ]
     for key in ("max_attempts", "max_age_hours"):
         value = raw.get(key)
         if isinstance(value, int) and not isinstance(value, bool):
@@ -168,11 +175,40 @@ def _timestamp() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-_MY_THREAD_LINK_RE = re.compile(
-    r'href="((?:forum\.php\?mod=viewthread&(?:amp;)?tid=\d+|thread-\d+-1-1\.html)[^"]*)"'
-    r"[^>]*>(.*?)</a>",
-    re.S,
+_MY_THREAD_ANCHOR_RE = re.compile(r"<a\b([^>]*)>(.*?)</a>", re.S | re.I)
+_TID_IN_ANCHOR_RE = re.compile(
+    r'href="(?:forum\.php\?mod=viewthread&(?:amp;)?tid=(\d+)|thread-(\d+)-1-1\.html)'
 )
+_FORUM_LINK_RE = re.compile(
+    r'forum\.php\?mod=forumdisplay&(?:amp;)?fid=(\d+)[^"]*"[^>]*>([^<]{1,40})</a>', re.I
+)
+_STRUCK_INLINE_RE = re.compile(r"line-through", re.I)
+_STRUCK_TAG_RE = re.compile(r"^\s*<(del|s|strike)\b", re.I)
+
+
+@dataclass(frozen=True)
+class MyThread:
+    """「我的帖子」列表里的一行。
+
+    recy 是站点对回收站帖子的标记（标题加删除线，Discuz 模板的 class="recy"）：
+    这类帖子要么已删除、要么测试后删除、要么人工翻译后撤掉 AI 翻译版，
+    都不该再回填高亮。forum_* 用来按版块排除（例如块讯回收区）。
+    """
+
+    tid: int
+    title: str
+    recy: bool = False
+    forum_fid: int | None = None
+    forum_name: str = ""
+
+
+@dataclass(frozen=True)
+class ThreadProbe:
+    """帖子页探测结果：游客可见性，以及面包屑里透露的版块信息。"""
+
+    visible: bool | None
+    forum_fid: int | None = None
+    crumb: str = ""
 
 
 def _normalize_title(text: str) -> str:
@@ -181,26 +217,75 @@ def _normalize_title(text: str) -> str:
     return re.sub(r"\s+", " ", unescape(plain)).strip()
 
 
-def _parse_my_threads(html: str) -> list[tuple[int, str]]:
-    """从「我的帖子」列表里取 [(tid, 标题), ...]，同一 tid 只留第一次出现。
+def _is_struck(attrs: str, inner: str) -> bool:
+    """标题是否带删除线：Discuz 用 class="recy"，个别模板写成内联样式或 <del>。"""
+    if _STRUCK_INLINE_RE.search(attrs or ""):
+        return True
+    lowered = (attrs or "").lower()
+    if re.search(r'class="[^"]*\brecy\b', lowered):
+        return True
+    return bool(_STRUCK_TAG_RE.match(inner or ""))
+
+
+def _parse_my_threads(html: str) -> list[MyThread]:
+    """从「我的帖子」列表里取每行帖子的 tid、标题、删除线和版块。
 
     列表页每行都有多个指向同一帖子的链接（标题、回复数、最后回复），所以按 tid
-    去重；回复数/时间这类噪声文本也会被收进来，但标题匹配时自然会被忽略。
+    去重、只留第一次出现的那个。版块名取该行标题之后那一格里的版块链接（Discuz
+    默认模板版块列在标题右侧）；取不到就留空，补高亮阶段还会按帖子页面包屑复核。
     """
-    threads: list[tuple[int, str]] = []
+    page = html or ""
+    anchors: list[tuple[int, int, int, str, str]] = []
     seen: set[int] = set()
-    for match in _MY_THREAD_LINK_RE.finditer(html or ""):
-        tid = _extract_tid(match.group(1))
-        title = _normalize_title(match.group(2))
+    for match in _MY_THREAD_ANCHOR_RE.finditer(page):
+        attrs, inner = match.group(1), match.group(2)
+        tid_match = _TID_IN_ANCHOR_RE.search(attrs)
+        tid = int(tid_match.group(1) or tid_match.group(2)) if tid_match else None
+        title = _normalize_title(inner)
         if not tid or not title or title.isdigit() or tid in seen:
             continue
         seen.add(tid)
-        threads.append((tid, title))
+        anchors.append((match.start(), match.end(), tid, attrs, inner))
+
+    threads: list[MyThread] = []
+    for index, (_start, end, tid, attrs, inner) in enumerate(anchors):
+        next_start = anchors[index + 1][0] if index + 1 < len(anchors) else len(page)
+        forum_match = _FORUM_LINK_RE.search(page[end:next_start])
+        threads.append(MyThread(
+            tid=tid,
+            title=_normalize_title(inner),
+            recy=_is_struck(attrs, inner),
+            forum_fid=int(forum_match.group(1)) if forum_match else None,
+            forum_name=_normalize_title(forum_match.group(2)) if forum_match else "",
+        ))
     return threads
 
 
-def thread_is_public(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> bool | None:
-    """以游客身份探测帖子是否对外可见：True 可见 / False 不可见 / None 探测失败。
+def _forum_excluded(forum_name: str, forum_fid: int | None, exclude) -> str:
+    """命中版块排除名单时返回原因，否则空串。
+
+    名单里字符串按"版块名包含"匹配（站点的回收区名字未必只有一种写法），
+    整数按 fid 精确匹配。
+    """
+    for item in exclude or []:
+        if isinstance(item, bool):
+            continue
+        if isinstance(item, int):
+            if forum_fid is not None and forum_fid == item:
+                return f"版块 fid={item} 已排除"
+            continue
+        name = str(item).strip()
+        if name and name in (forum_name or ""):
+            return f"版块「{name}」已排除"
+    return ""
+
+
+_PROBE_CRUMB_RE = re.compile(r'<div id="pt"[^>]*>(.*?)</div>', re.S)
+_PROBE_FID_RE = re.compile(r"forum\.php\?mod=forumdisplay&(?:amp;)?fid=(\d+)")
+
+
+def probe_thread(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> ThreadProbe:
+    """以游客身份探测帖子：能不能被看到，以及它落在哪个版块。
 
     必须用不带 cookie 的会话：作者本人和版主都能看到审核中的帖子，拿登录态探测
     会把「审核中」误判成「已过审」。Discuz 对审核中或已删除的帖子回 404 提示页。
@@ -211,13 +296,25 @@ def thread_is_public(base_url: str, tid: int, timeout: int = LOGIN_TIMEOUT) -> b
             session.headers.update({"User-Agent": UA})
             response = session.get(url, timeout=timeout)
     except requests.RequestException:
-        log_debug("    过审探测失败: %s", url, exc_info=True)
-        return None
+        log_debug("    帖子探测失败: %s", url, exc_info=True)
+        return ThreadProbe(None)
     if response.status_code == 404:
-        return False
+        return ThreadProbe(False)
     if response.status_code >= 400:
-        return None
-    return 'id="thread_subject"' in (response.text or "")
+        return ThreadProbe(None)
+
+    html = response.text or ""
+    if 'id="thread_subject"' not in html:
+        return ThreadProbe(False)
+    block = _PROBE_CRUMB_RE.search(html)
+    crumb_html = block.group(1) if block else ""
+    fid_match = _PROBE_FID_RE.search(crumb_html)
+    return ThreadProbe(
+        True,
+        forum_fid=int(fid_match.group(1)) if fid_match else None,
+        crumb=_normalize_title(crumb_html),
+    )
+
 
 
 def _dump_threads_html(html: str) -> str:
@@ -1061,15 +1158,15 @@ class MCBBSPoster:
             log_warning(f"    ⚠ 高亮未生效（tid={tid}）: {reason}")
         return ok, reason
 
-    def fetch_my_threads(self, pages: int = 2) -> list[tuple[int, str]]:
-        """拉「我的帖子」列表，返回 [(tid, 标题), ...]；待审核的帖子也在里面。
+    def fetch_my_threads(self, pages: int = 2) -> list[MyThread]:
+        """拉「我的帖子」列表，返回 MyThread 列表；待审核、回收站的帖子也在里面。
 
-        待审核的帖子按 tid 倒序排在最前，但我们可能又发了几篇，所以留一点余量
-        （默认两页）。解析不出内容时把页面落盘，方便对上站点的自定义模板。
+        待审核/回收站的帖子按 tid 倒序排在最前，但我们可能又发了几篇，所以留一点
+        余量（默认两页）。解析不出内容时把页面落盘，方便对上站点的自定义模板。
         """
         if not self.session:
             raise RuntimeError("未登录，请先调用 login()")
-        threads: list[tuple[int, str]] = []
+        threads: list[MyThread] = []
         seen: set[int] = set()
         for page in range(1, max(pages, 1) + 1):
             url = f"{self.base_url}/home.php?mod=space&do=thread&view=me&type=thread"
@@ -1084,10 +1181,10 @@ class MCBBSPoster:
                     path = _dump_threads_html(response.text)
                     log_warning("    ⚠ 「我的帖子」没有解析出任何帖子（页面已存: %s）", path or "落盘失败")
                 break
-            for tid, title in page_threads:
-                if tid not in seen:
-                    seen.add(tid)
-                    threads.append((tid, title))
+            for item in page_threads:
+                if item.tid not in seen:
+                    seen.add(item.tid)
+                    threads.append(item)
         return threads
 
     def process_pending_highlights(self, records_path: str) -> dict:
@@ -1096,7 +1193,8 @@ class MCBBSPoster:
         站点对审核中的帖子拒绝高亮，所以探测这一步必须先做：不登录就能排除掉
         绝大多数「还没过审」的项，省掉一轮验证码。返回统计供日志汇总。
         """
-        stats = {"pending": 0, "highlighted": 0, "unbolded": 0, "gave_up": 0, "failed": 0}
+        stats = {"pending": 0, "highlighted": 0, "unbolded": 0, "gave_up": 0,
+                 "failed": 0, "dropped": 0}
         records = load_thread_records(records_path)
         pending = {stem: rec for stem, rec in records.items() if rec.get("state") == "pending"}
         if not pending:
@@ -1107,6 +1205,7 @@ class MCBBSPoster:
         if missing:
             self._resolve_tids(records, missing)
 
+        exclude = self.highlight.get("exclude_forums") or []
         now = time.time()
         ready: list[str] = []
         for stem, rec in pending.items():
@@ -1115,12 +1214,12 @@ class MCBBSPoster:
                 if self._count_attempt(rec, "「我的帖子」里还没找到这篇帖子", now):
                     stats["gave_up"] += 1
                 continue
-            visible = thread_is_public(self.base_url, int(tid))
-            if visible is None:
+            probe = probe_thread(self.base_url, int(tid))
+            if probe.visible is None:
                 rec["last_error"] = "过审探测失败（网络异常，下轮重试）"
                 rec["updated_at"] = _timestamp()
                 continue
-            if not visible:
+            if not probe.visible:
                 # 还在审核里不算一次失败：审核是人工的，多久都有可能
                 if self._expired(rec, now):
                     rec["state"] = "gave_up"
@@ -1129,6 +1228,15 @@ class MCBBSPoster:
                     stats["gave_up"] += 1
                 else:
                     rec["last_error"] = "仍在审核中"
+                continue
+            skipped = _forum_excluded(probe.crumb, probe.forum_fid, exclude)
+            if skipped:
+                # 被移动/删除到回收区、或者落在排除版块里的帖子，永远不该上高亮
+                rec["state"] = "dropped"
+                rec["last_error"] = skipped
+                rec["updated_at"] = _timestamp()
+                stats["dropped"] += 1
+                log_info("    → 跳过高亮（%s）: %s", skipped, rec.get("title", stem))
                 continue
             ready.append(stem)
 
@@ -1161,9 +1269,9 @@ class MCBBSPoster:
             # 探测/登记结果无论如何都要落盘：登录失败也不该把上一轮的进展丢掉
             self._save_records(records_path, records)
 
-        log_info("[高亮] 待补 %d 篇 | 已设置 %d | 取消加粗 %d | 放弃 %d | 失败 %d",
+        log_info("[高亮] 待补 %d 篇 | 已设置 %d | 取消加粗 %d | 放弃 %d | 失败 %d | 跳过 %d",
                  stats["pending"], stats["highlighted"], stats["unbolded"],
-                 stats["gave_up"], stats["failed"])
+                 stats["gave_up"], stats["failed"], stats["dropped"])
         return stats
 
     def _resolve_tids(self, records: dict, missing: dict) -> None:
@@ -1181,13 +1289,15 @@ class MCBBSPoster:
             log_warning("    ⚠ 「我的帖子」里没有任何可用条目，无法补齐帖子 ID")
             return
 
-        by_title = {_normalize_title(title): tid for tid, title in threads}
+        # 删除线（回收站）的行不能拿来认领：它们要么已删、要么是撤掉 AI 翻译的旧稿
+        alive = [item for item in threads if not item.recy]
+        by_title = {_normalize_title(item.title): item.tid for item in alive}
         known = {rec.get("tid") for rec in records.values() if rec.get("tid")}
-        newest = max(tid for tid, _title in threads)
+        newest = max((item.tid for item in alive), default=0)
         for stem, rec in missing.items():
             tid = by_title.get(_normalize_title(rec.get("title", "")))
             source = "标题匹配"
-            if not tid and newest not in known:
+            if not tid and newest and newest not in known:
                 tid, source = newest, "列表新增兜底"
             if not tid:
                 continue
@@ -1265,14 +1375,16 @@ class MCBBSPoster:
         except OSError:
             log_warning("    ⚠ 帖子记录写入失败: %s", records_path, exc_info=True)
 
-    def index_history(self, save_dir: str, pages: int = 15) -> dict:
+    def index_history(self, save_dir: str, pages: int = 15, dry_run: bool = False) -> dict:
         """把「我的帖子」里对得上本地产物的历史帖登记成 legacy，不动论坛。
 
         历史帖从来没有高亮记录。如果直接登记成 pending，下一轮会把整版帖子一次
         刷上颜色（几百条管理记录）；所以这里只登记，想真上色再用 --highlight-legacy
-        限量提升。
+        限量提升。标题带删除线（已删除/测试稿/撤掉 AI 翻译的旧帖）和落在回收区等
+        排除版块里的帖子一律不登记。
         """
-        stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0, "no_color": 0}
+        stats = {"threads": 0, "matched": 0, "recorded": 0, "skipped": 0,
+                 "no_color": 0, "recycled": 0, "excluded": 0}
         threads = self.fetch_my_threads(pages=pages)
         stats["threads"] = len(threads)
         if not threads:
@@ -1282,12 +1394,22 @@ class MCBBSPoster:
         records = load_thread_records(records_path)
         titles = _scan_output_titles(save_dir)
         colors = self.highlight.get("colors") or {}
+        exclude = self.highlight.get("exclude_forums") or []
 
-        for tid, thread_title in threads:
-            stem = titles.get(_normalize_title(thread_title))
+        for item in threads:
+            stem = titles.get(_normalize_title(item.title))
             if not stem:
                 continue
             stats["matched"] += 1
+            if item.recy:
+                stats["recycled"] += 1
+                log_info("    → 跳过历史登记（标题带删除线）: %s", item.title)
+                continue
+            skipped_reason = _forum_excluded(item.forum_name, item.forum_fid, exclude)
+            if skipped_reason:
+                stats["excluded"] += 1
+                log_info("    → 跳过历史登记（%s）: %s", skipped_reason, item.title)
+                continue
             if stem in records:
                 stats["skipped"] += 1
                 continue
@@ -1299,10 +1421,11 @@ class MCBBSPoster:
                 log_debug("    → 跳过历史登记（类型没有高亮色）: %s（%s）", stem, news_type)
                 continue
             records[stem] = {
-                "tid": tid,
-                "fid": self.forum_fid,
-                "url": f"{self.base_url}/thread-{tid}-1-1.html",
-                "title": thread_title,
+                "tid": item.tid,
+                "fid": item.forum_fid or self.forum_fid,
+                "url": f"{self.base_url}/thread-{item.tid}-1-1.html",
+                "title": item.title,
+                "forum_name": item.forum_name,
                 "news_type": news_type,
                 "color": color,
                 "bold": False,
@@ -1314,12 +1437,19 @@ class MCBBSPoster:
                 "tid_source": "历史登记",
             }
             stats["recorded"] += 1
+            if dry_run:
+                log_info("    · 将登记: %s | tid=%s | %s %s | %s",
+                         stem, item.tid, news_type, color, item.forum_name or "版块未知")
 
-        if stats["recorded"]:
+        if stats["recorded"] and not dry_run:
             self._save_records(records_path, records)
-        log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条 | 已有记录 %d 条 | 无色跳过 %d 条",
-                 stats["threads"], stats["matched"], stats["recorded"],
-                 stats["skipped"], stats["no_color"])
+        for name, fid in sorted({(item.forum_name, item.forum_fid)
+                                 for item in threads if item.forum_name}):
+            log_debug("    · 列表出现的版块: %s（fid=%s）", name, fid)
+        log_info("[历史] 列表 %d 条 | 对上产物 %d 条 | 新登记 %d 条 | 已有记录 %d 条 | "
+                 "删除线跳过 %d 条 | 排除版块跳过 %d 条 | 无色跳过 %d 条",
+                 stats["threads"], stats["matched"], stats["recorded"], stats["skipped"],
+                 stats["recycled"], stats["excluded"], stats["no_color"])
         return stats
 
     def promote_legacy(self, records_path: str, limit: int) -> int:
@@ -1492,9 +1622,6 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         log_error(f"[!] 新闻目录不存在: {news_dir}")
         return 1
 
-    if args.index_history and args.dry_run:
-        log_info("[Dry Run] --index-history 要登录读「我的帖子」，去掉 --dry-run 再跑")
-        return 0
     if args.index_history and (not config.get("username") or not config.get("password")):
         log_error("[!] 未配置 MCBBS 账号密码！%s", _login_config_hint(config))
         return 1
@@ -1507,7 +1634,9 @@ def _run_highlight_cli(args, config: dict, news_dir: str, records_path: str) -> 
         except Exception as e:
             log_error(f"[!] 登录失败: {e}")
             return 1
-        poster.index_history(news_dir)
+        poster.index_history(news_dir, dry_run=args.dry_run)
+        if args.dry_run:
+            log_info("[Dry Run] 以上是历史登记结果，未写入任何记录")
         return 0
 
     if args.highlight_legacy is not None:

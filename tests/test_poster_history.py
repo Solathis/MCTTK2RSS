@@ -93,8 +93,8 @@ class TestIndexHistory:
     def test_records_matched_history_as_legacy(self, tmp_path, monkeypatch):
         _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 9", translated="Minecraft 26.4 快照 9")
         monkeypatch.setattr(MCBBSPoster, "fetch_my_threads", lambda self, pages=2: [
-            (6816, "Minecraft 26.4 快照 9 [AI翻译]"),
-            (6815, "和产物对不上的帖子"),
+            poster.MyThread(6816, "Minecraft 26.4 快照 9 [AI翻译]", forum_name="幻翼块讯"),
+            poster.MyThread(6815, "和产物对不上的帖子", forum_name="幻翼块讯"),
         ])
 
         stats = _make_poster().index_history(str(tmp_path))
@@ -112,7 +112,8 @@ class TestIndexHistory:
         _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 9")
         _write_records(tmp_path, {"news_a": _legacy(tid=6816, state="done")})
         monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
-                            lambda self, pages=2: [(6816, "Minecraft 26.4 快照 9 [AI翻译]")])
+                            lambda self, pages=2: [
+                                poster.MyThread(6816, "Minecraft 26.4 快照 9 [AI翻译]")])
 
         stats = _make_poster().index_history(str(tmp_path))
 
@@ -123,12 +124,68 @@ class TestIndexHistory:
     def test_skips_type_without_color(self, tmp_path, monkeypatch):
         _seed_news(tmp_path, "news_c", title="某条时评", message="[module_commentary_header]正文")
         monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
-                            lambda self, pages=2: [(6820, "某条时评 [AI翻译]")])
+                            lambda self, pages=2: [poster.MyThread(6820, "某条时评 [AI翻译]")])
 
         stats = _make_poster().index_history(str(tmp_path))
 
         assert stats["recorded"] == 0
         assert stats["no_color"] == 1
+        assert not (tmp_path / ".mcbbs_threads.json").exists()
+
+    def test_skips_struck_threads(self, tmp_path, monkeypatch):
+        """标题带删除线 = 帖子已删除/测试稿/撤掉 AI 翻译，不能登记。"""
+        _seed_news(tmp_path, "news_a", title="Minecraft 电影建造挑战投票活动")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6700, "Minecraft 电影建造挑战投票活动 [AI翻译]",
+                                                recy=True, forum_name="幻翼块讯")])
+
+        stats = _make_poster().index_history(str(tmp_path))
+
+        assert stats["recorded"] == 0
+        assert stats["recycled"] == 1
+        assert not (tmp_path / ".mcbbs_threads.json").exists()
+
+    def test_skips_excluded_forum_by_name(self, tmp_path, monkeypatch):
+        """落在「块讯回收区」的帖子即使标题正常也不能登记。"""
+        _seed_news(tmp_path, "news_a", title="Minecraft 电影建造挑战投票活动")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6701, "Minecraft 电影建造挑战投票活动 [AI翻译]",
+                                                forum_name="块讯回收区")])
+
+        stats = _make_poster().index_history(str(tmp_path))
+
+        assert stats["recorded"] == 0
+        assert stats["excluded"] == 1
+        assert not (tmp_path / ".mcbbs_threads.json").exists()
+
+    def test_skips_excluded_forum_by_fid(self, tmp_path, monkeypatch):
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 9")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6702, "Minecraft 26.4 快照 9 [AI翻译]",
+                                                forum_fid=47)])
+
+        poster_obj = MCBBSPoster({
+            "base_url": BASE, "forum_fid": 45, "username": "newspaper", "password": "secret",
+            "highlight": {"exclude_forums": [47]},
+        })
+        stats = poster_obj.index_history(str(tmp_path))
+
+        assert stats["recorded"] == 0
+        assert stats["excluded"] == 1
+
+    def test_dry_run_reports_without_writing(self, tmp_path, monkeypatch):
+        _seed_news(tmp_path, "news_a", title="Minecraft 26.4 快照 9")
+        monkeypatch.setattr(MCBBSPoster, "fetch_my_threads",
+                            lambda self, pages=2: [
+                                poster.MyThread(6703, "Minecraft 26.4 快照 9 [AI翻译]",
+                                                forum_name="幻翼块讯")])
+
+        stats = _make_poster().index_history(str(tmp_path), dry_run=True)
+
+        assert stats["recorded"] == 1
         assert not (tmp_path / ".mcbbs_threads.json").exists()
 
 

@@ -165,6 +165,7 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
       "enabled": true,
       "colors": { "java_release": "#EE1B2E", "java_snapshot": "#3C9D40" },
       "bold_types": ["java_release", "bedrock_release"],
+      "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
       "max_age_hours": 168
     }
@@ -174,7 +175,17 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 
 `colors` 按新闻类型给色值，缺省（或没有这个类型）就不高亮；`bold_types` 里的类型
 会加粗，且新帖高亮成功后会**自动取消同类型旧帖的加粗**（同色重提交、只把样式位
-清零）；`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+清零）；`exclude_forums` 是永不回填高亮的版块，写名字（按"包含"匹配）或 `fid`
+（按精确匹配）；`max_attempts` / `max_age_hours` 是补高亮的放弃条件。
+
+历史登记（`--index-history`）会直接跳过两类帖子：
+
+- **标题带删除线**：站点对回收站帖子用 `class="recy"` 加删除线，说明它已删除、
+  是测试稿、或者人工翻译后撤掉了 AI 翻译版；
+- **落在 `exclude_forums` 里的版块**：例如块讯回收区。
+
+补高亮阶段还会用帖子页面的面包屑复核一次版块（帖子过审后被移动/删除的情况），
+命中排除名单的直接标记为 `dropped`，不会再去提交高亮。
 
 默认色值对应幻翼块讯版规「二、高亮设定」：
 
@@ -186,7 +197,7 @@ Discuz 里设置不了高亮，所以发帖时只登记一条待补记录：每�
 | `commentary` | 时评（一般不高亮） | 不配颜色 |
 
 高亮状态记在 `output/.mcbbs_threads.json`（`state` 取 `pending` / `done` / `gave_up` /
-`legacy`），与「发没发」的 `output/.posted.json` 分开：
+`dropped` / `legacy`），与「发没发」的 `output/.posted.json` 分开：
 
 - 发帖成功只写一条 `pending`，帖子 ID 拿不到时靠「我的帖子」按标题补齐
 - 每轮运行先游客探测帖子页：仍在审核不算重试，超过 `max_attempts`/`max_age_hours` 才放弃
@@ -295,6 +306,8 @@ python main.py --no-json
 python poster.py --highlight-only
 
 # 把「我的帖子」里对得上 output 产物的历史帖登记为 legacy（只写本地记录，不动论坛）
+# 删除线帖子、落在 exclude_forums 里的版块会被跳过；加 --dry-run 只打印不写文件
+python poster.py --index-history --dry-run
 python poster.py --index-history
 
 # 把最近 3 条历史登记提升为待高亮并执行（会真的改论坛，先用 --dry-run 看清单）
@@ -657,7 +670,8 @@ python converter.py news.json --markdown-only
   - `fetch_my_threads()` — 拉「我的帖子」列表（含待审核项），用于补帖子 ID
   - `index_history(dir)` / `promote_legacy(records, n)` — 历史帖登记与限量提升
   - `process_pending_highlights(records)` — 补高亮：游客探测过审 → 需要才登录 → 上色/改加粗
-- `thread_is_public(base, tid)` — 游客视角探测帖子是否对外可见（`True`/`False`/`None` 探测失败）
+- `probe_thread(base, tid)` — 游客视角探测帖子是否可见（`ThreadProbe.visible` 为
+  `True`/`False`/`None` 探测失败），顺带取出面包屑里的版块 `fid` 与版块名，用于排除回收区
 
 ### bili/poster.py
 

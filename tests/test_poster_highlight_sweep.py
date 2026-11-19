@@ -94,21 +94,43 @@ def _make_poster(session=None) -> MCBBSPoster:
     return poster_obj
 
 
+def _probe(visible, forum=None, fid=None):
+    """构造探测结果；forum 是面包屑文本，用来验证版块排除。"""
+    return poster.ThreadProbe(visible, forum_fid=fid, crumb=forum or "")
+
+
+def _visible(*_args, **_kwargs):
+    return _probe(True)
+
+
+def _invisible(*_args, **_kwargs):
+    return _probe(False)
+
+
+def _unknown(*_args, **_kwargs):
+    return _probe(None)
+
+
 def _read_records(path) -> dict:
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 
 def _list_html(*rows) -> str:
-    """拼一段「我的帖子」列表：rows 是 (tid, 标题) 或 (tid, 标题, 链接样式)。"""
+    """拼一段「我的帖子」列表：rows 是 (tid, 标题[, 样式[, 版块名[, 删除线]]])。"""
     parts = []
     for row in rows:
         tid, title = row[0], row[1]
         style = row[2] if len(row) > 2 else "query"
+        forum = row[3] if len(row) > 3 else ""
+        struck = row[4] if len(row) > 4 else False
         href = (f"thread-{tid}-1-1.html" if style == "static"
                 else f"forum.php?mod=viewthread&amp;tid={tid}")
-        parts.append(f'<tbody><tr><th><a href="{href}" class="s xst">{title}</a></th>'
-                     f'<td class="num"><a href="{href}">3</a></td></tr></tbody>')
+        title_class = ' class="s xst recy"' if struck else ' class="s xst"'
+        forum_cell = (f'<td><a href="forum.php?mod=forumdisplay&amp;fid=45" class="xg1">'
+                      f"{forum}</a></td>" if forum else "")
+        parts.append(f"<tbody><tr><th><a href=\"{href}\"{title_class}>{title}</a></th>"
+                     f'<td class="num"><a href="{href}">3</a></td>{forum_cell}</tr></tbody>')
     return "".join(parts)
 
 
@@ -116,15 +138,40 @@ class TestMyThreadsParser:
     def test_parses_both_link_styles_and_dedupes(self):
         html = _list_html((6816, "TwitchCon 揭晓 2027 年首个游戏更新"), (6815, "The Humblers 觉醒"))
         threads = poster._parse_my_threads(html)
-        assert threads == [
+        assert [(item.tid, item.title) for item in threads] == [
             (6816, "TwitchCon 揭晓 2027 年首个游戏更新"),
             (6815, "The Humblers 觉醒"),
         ]
+        assert all(not item.recy for item in threads)
 
     def test_static_links_and_entities(self):
         html = ('<a href="thread-6808-1-1.html" class="s xst">'
                 "Minecraft 26.4 &amp; 快照 9 [AI翻译]</a>")
-        assert poster._parse_my_threads(html) == [(6808, "Minecraft 26.4 & 快照 9 [AI翻译]")]
+        threads = poster._parse_my_threads(html)
+        assert [(item.tid, item.title) for item in threads] == [
+            (6808, "Minecraft 26.4 & 快照 9 [AI翻译]")
+        ]
+
+    def test_recy_class_marks_deleted(self):
+        """站点的删除线就是 class="recy"（style_3_home_space.css 里定义了 line-through）。"""
+        html = _list_html((6710, "Minecraft 电影建造挑战投票活动 [AI翻译]", "query", "", True))
+        assert poster._parse_my_threads(html)[0].recy is True
+
+    def test_inline_line_through_also_marks_deleted(self):
+        html = ('<a href="thread-6711-1-1.html" class="s xst" '
+                'style="text-decoration: line-through">旧帖</a>')
+        assert poster._parse_my_threads(html)[0].recy is True
+
+    def test_del_wrapper_marks_deleted(self):
+        html = '<a href="thread-6712-1-1.html" class="s xst"><del>旧帖</del></a>'
+        assert poster._parse_my_threads(html)[0].recy is True
+
+    def test_forum_name_and_fid_taken_from_row(self):
+        html = _list_html((6713, "帖子标题", "query", "块讯回收区"))
+        item = poster._parse_my_threads(html)[0]
+        assert item.forum_name == "块讯回收区"
+        assert item.forum_fid == 45
+        assert item.recy is False
 
     def test_ignores_links_without_title_text(self):
         html = ('<a href="forum.php?mod=viewthread&tid=6816&highlight=x"></a>'
@@ -135,11 +182,16 @@ class TestMyThreadsParser:
         assert poster._parse_my_threads("<html><body>登录后查看</body></html>") == []
 
 
-class TestThreadVisibility:
+class TestThreadProbe:
     def test_visible_page(self, monkeypatch):
         monkeypatch.setattr(poster.requests, "Session", lambda: SweepSession(
+            '<div id="pt"><a href="forum-news-1.html">幻翼块讯</a> '
+            '<a href="forum.php?mod=forumdisplay&amp;fid=45&amp;filter=typeid">[块讯]</a></div>'
             '<span id="thread_subject">标题</span>'))
-        assert poster.thread_is_public(BASE, 6808) is True
+        probe = poster.probe_thread(BASE, 6808)
+        assert probe.visible is True
+        assert probe.forum_fid == 45
+        assert "幻翼块讯" in probe.crumb
 
     def test_404_means_not_visible(self, monkeypatch):
         class NotFoundSession(SweepSession):
@@ -147,12 +199,12 @@ class TestThreadVisibility:
                 return FakeResponse("<title>提示信息</title>", status_code=404)
 
         monkeypatch.setattr(poster.requests, "Session", lambda: NotFoundSession())
-        assert poster.thread_is_public(BASE, 999999) is False
+        assert poster.probe_thread(BASE, 999999).visible is False
 
     def test_page_without_thread_subject_means_not_visible(self, monkeypatch):
         monkeypatch.setattr(poster.requests, "Session", lambda: SweepSession(
             "<h1>提示信息</h1><p>请先登录</p>"))
-        assert poster.thread_is_public(BASE, 6808) is False
+        assert poster.probe_thread(BASE, 6808).visible is False
 
     def test_network_error_is_unknown(self, monkeypatch):
         class BoomSession(SweepSession):
@@ -160,12 +212,12 @@ class TestThreadVisibility:
                 raise poster.requests.ConnectionError("boom")
 
         monkeypatch.setattr(poster.requests, "Session", lambda: BoomSession())
-        assert poster.thread_is_public(BASE, 6808) is None
+        assert poster.probe_thread(BASE, 6808).visible is None
 
 
 class TestSweep:
     def test_still_in_audit_does_not_login(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: False)
+        monkeypatch.setattr(poster, "probe_thread", _invisible)
         monkeypatch.setattr(MCBBSPoster, "login", lambda self: (_ for _ in ()).throw(
             AssertionError("还没过审就登录了")))
         path = _write_records(tmp_path, {"news_x": _record()})
@@ -180,7 +232,7 @@ class TestSweep:
         assert "审核" in record["last_error"]
 
     def test_highlights_once_approved(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         session = SweepSession()
         path = _write_records(tmp_path, {"news_x": _record()})
 
@@ -194,8 +246,35 @@ class TestSweep:
         assert record["highlighted_at"]
         assert record["last_error"] == ""
 
+    def test_drops_threads_moved_to_excluded_forum(self, tmp_path, monkeypatch):
+        """帖子被移到「块讯回收区」后仍然对外可见，但绝不该上高亮。"""
+        monkeypatch.setattr(poster, "probe_thread",
+                            lambda base, tid, **kwargs: _probe(True, forum="块讯回收区"))
+        session = SweepSession()
+        path = _write_records(tmp_path, {"news_x": _record()})
+
+        stats = _make_poster(session).process_pending_highlights(path)
+
+        assert stats["dropped"] == 1
+        assert stats["highlighted"] == 0
+        assert session.posts == []
+        record = _read_records(path)["news_x"]
+        assert record["state"] == "dropped"
+        assert "块讯回收区" in record["last_error"]
+
+    def test_threads_in_normal_forum_are_highlighted(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(poster, "probe_thread",
+                            lambda base, tid, **kwargs: _probe(True, forum="幻翼块讯"))
+        session = SweepSession()
+        path = _write_records(tmp_path, {"news_x": _record()})
+
+        stats = _make_poster(session).process_pending_highlights(path)
+
+        assert stats["highlighted"] == 1
+        assert stats["dropped"] == 0
+
     def test_probe_error_keeps_attempt_count(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: None)
+        monkeypatch.setattr(poster, "probe_thread", _unknown)
         path = _write_records(tmp_path, {"news_x": _record()})
 
         _make_poster(SweepSession()).process_pending_highlights(path)
@@ -206,7 +285,7 @@ class TestSweep:
         assert "网络" in record["last_error"]
 
     def test_failure_counts_attempt_and_keeps_pending(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         session = SweepSession(highlight_responses=[FakeResponse(FAIL_RESPONSE)])
         path = _write_records(tmp_path, {"news_x": _record()})
 
@@ -219,7 +298,7 @@ class TestSweep:
         assert "没有权限" in record["last_error"]
 
     def test_gives_up_after_max_attempts(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         limit = poster.DEFAULT_HIGHLIGHT["max_attempts"]
         session = SweepSession(highlight_responses=[FakeResponse(FAIL_RESPONSE)])
         path = _write_records(tmp_path, {"news_x": _record(attempts=limit - 1)})
@@ -231,7 +310,7 @@ class TestSweep:
         assert record["state"] == "gave_up"
 
     def test_gives_up_when_waiting_too_long(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: False)
+        monkeypatch.setattr(poster, "probe_thread", _invisible)
         old = time.strftime(
             "%Y-%m-%dT%H:%M:%S",
             time.localtime(time.time() - (poster.DEFAULT_HIGHLIGHT["max_age_hours"] + 1) * 3600),
@@ -252,12 +331,12 @@ class TestSweep:
             return True
 
         monkeypatch.setattr(MCBBSPoster, "login", fake_login)
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: False)
+        monkeypatch.setattr(poster, "probe_thread", _invisible)
         waiting = _write_records(tmp_path, {"news_x": _record()})
         _make_poster(None).process_pending_highlights(waiting)
         assert logged_in == []
 
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         ready = _write_records(tmp_path, {"news_x": _record()})
         _make_poster(None).process_pending_highlights(ready)
         assert logged_in == [1]
@@ -266,11 +345,11 @@ class TestSweep:
         poster_obj = _make_poster(None)
         stats = poster_obj.process_pending_highlights(str(tmp_path / ".mcbbs_threads.json"))
         assert stats == {"pending": 0, "highlighted": 0, "unbolded": 0,
-                         "gave_up": 0, "failed": 0}
+                         "gave_up": 0, "failed": 0, "dropped": 0}
         assert poster_obj.session is None
 
     def test_network_error_while_highlighting_counts_failure(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
 
         def boom(self, tid, color, bold=False, fid=None):
             raise poster.requests.ConnectionError("boom")
@@ -291,8 +370,8 @@ class TestSweep:
             raise RuntimeError("验证码识别率过低")
 
         monkeypatch.setattr(MCBBSPoster, "login", deny_login)
-        monkeypatch.setattr(poster, "thread_is_public",
-                            lambda base, tid, **kwargs: tid == 7001)
+        monkeypatch.setattr(poster, "probe_thread",
+                            lambda base, tid, **kwargs: _probe(tid == 7001))
         path = _write_records(tmp_path, {
             "waiting": _record(tid=7000),
             "ready": _record(tid=7001),
@@ -308,7 +387,7 @@ class TestSweep:
 
 class TestTidResolution:
     def test_matches_title_from_my_threads(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         html = _list_html((6900, "Minecraft 26.4 快照 9 [AI翻译]"), (6899, "别的帖子"))
         session = SweepSession(list_html=html)
         path = _write_records(tmp_path, {
@@ -324,7 +403,7 @@ class TestTidResolution:
         assert session.posts[0][1]["data"]["moderate[]"] == "6900"
 
     def test_falls_back_to_newest_tid_when_title_changed(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         html = _list_html((6901, "标题被版主改过"), (6700, "旧帖子"))
         session = SweepSession(list_html=html)
         path = _write_records(tmp_path, {
@@ -368,7 +447,7 @@ class TestTidResolution:
 
 class TestUnboldPredecessors:
     def test_new_release_unbolds_previous_one(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         session = SweepSession()
         path = _write_records(tmp_path, {
             "news_new": _record(tid=7000, news_type="java_release", color="#EE1B2E", bold=True),
@@ -387,7 +466,7 @@ class TestUnboldPredecessors:
         assert unbold_data["highlight_style[1]"] == "0"
 
     def test_other_types_untouched(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         session = SweepSession()
         path = _write_records(tmp_path, {
             "news_new": _record(tid=7000, news_type="java_release", color="#EE1B2E", bold=True),
@@ -402,7 +481,7 @@ class TestUnboldPredecessors:
         assert _read_records(path)["news_old"]["bold"] is True
 
     def test_non_bold_new_post_unbolds_nothing(self, tmp_path, monkeypatch):
-        monkeypatch.setattr(poster, "thread_is_public", lambda base, tid, **kwargs: True)
+        monkeypatch.setattr(poster, "probe_thread", _visible)
         session = SweepSession()
         path = _write_records(tmp_path, {
             "news_new": _record(tid=7000),

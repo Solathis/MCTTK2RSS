@@ -152,6 +152,7 @@
         "normal": "#EC1282"
       },
       "bold_types": ["java_release", "bedrock_release"],
+      "exclude_forums": ["块讯回收区"],
       "max_attempts": 6,
       "max_age_hours": 168
     }

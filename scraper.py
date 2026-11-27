@@ -297,22 +297,51 @@ def _read_glossary_file(glossary_path: str) -> dict:
         "soft_strict": data.get("soft_strict", {}),
         "ambiguous": data.get("ambiguous", {}),
         "placeholders": data.get("placeholders", {}),
+        "promote": data.get("promote", []),
     }
 
 
 def _merge_glossaries(manual: dict, auto: dict) -> dict:
-    """合并手写层与自动层：同名条目一律以手写层为准"""
+    """合并手写层与自动层：同名条目一律以手写层为准
+
+    三层都走同一套规则：先取自动层里没被强制层占用的条目，再用手写层同名条目覆盖。
+    所以手写层也能声明 soft / soft_strict —— 想把"多半是普通英文词"的条目从
+    命中即注入降级成条件注入时，改词表就够了，不用动代码。
+
+    反方向由 promote 负责：手写层只点名英文（不重复译名），把自动层里被分到
+    soft / soft_strict 的条目提回强制层，注入强度与译名一致性校验都按 hard 走。
+    """
     if not manual and not auto:
         return {}
 
     merged_terms = {**(auto.get("terms") or {}), **(manual.get("terms") or {})}
     taken = {k.lower() for k in merged_terms}
 
-    def _drop_taken(layer: dict) -> dict:
-        return {k: v for k, v in (layer or {}).items() if k.lower() not in taken}
+    def _merge_conditioned(name: str) -> dict:
+        """自动层软条目 + 手写层软条目，都被强制层占用的同名条目踢掉"""
+        return {
+            **{k: v for k, v in (auto.get(name) or {}).items() if k.lower() not in taken},
+            **{k: v for k, v in (manual.get(name) or {}).items() if k.lower() not in taken},
+        }
 
-    merged_soft = _drop_taken(auto.get("soft"))
-    merged_strict = _drop_taken(auto.get("soft_strict"))
+    merged_soft = _merge_conditioned("soft")
+    merged_strict = _merge_conditioned("soft_strict")
+
+    # promote：只点名英文，译名仍然只来自有一份词条的那一层
+    unpromoted = []
+    for name in manual.get("promote") or []:
+        wanted = str(name).lower()
+        for layer in (merged_soft, merged_strict):
+            key = next((k for k in layer if k.lower() == wanted), None)
+            if key is not None:
+                merged_terms[key] = layer.pop(key)
+                break
+        else:
+            unpromoted.append(str(name))
+    if unpromoted and auto:
+        # 已升级为强制层的词、或自动层数据源里没有的词都会走到这里，属于可放行的维护信号
+        log_debug(f"[词汇表] promote 名单未生效（自动层无对应条件层词条）: {', '.join(unpromoted)}")
+
     # 手写层已经用条件说明表达过歧义，这里只补自动层的歧义记录
     merged_ambiguous = {
         k: v for k, v in (auto.get("ambiguous") or {}).items() if k.lower() not in taken

@@ -198,6 +198,71 @@ class TestMergeGlossaries:
         assert merged["soft"]["Bedrock"] == "基岩"
         assert merged["soft_strict"]["Speed"] == "迅捷"
 
+    def test_manual_soft_layer_merged(self):
+        """手写层也能声明 soft：把常用词从"命中即注入"降级成"条件注入"不用改代码"""
+        manual = {"terms": {}, "soft": {"Pale": "苍白"}}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["soft"]["Pale"] == "苍白"
+        assert merged["soft"]["Bedrock"] == "基岩"      # 自动层条目照旧保留
+        assert "Pale" not in merged["terms"]
+
+    def test_manual_soft_overrides_auto_soft(self):
+        manual = {"soft": {"Bedrock": "手写基岩"}}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["soft"]["Bedrock"] == "手写基岩"
+
+    def test_manual_soft_strict_layer_merged(self):
+        manual = {"soft_strict": {"Smite": "亡灵杀手"}}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["soft_strict"]["Smite"] == "亡灵杀手"
+        assert merged["soft_strict"]["Speed"] == "迅捷"
+
+    def test_manual_soft_dropped_when_term_exists(self):
+        """同一词条既进 terms 又进 soft 时，强制层优先，soft 那份丢掉"""
+        manual = {"terms": {"Pale": "苍白"}, "soft": {"Pale": "苍白"}}
+        merged = _merge_glossaries(manual, {})
+        assert merged["terms"]["Pale"] == "苍白"
+        assert "Pale" not in merged["soft"]
+
+    def test_manual_soft_injects_conditionally(self):
+        """手写 soft 走的是条件注入：句中普通用法不注入，整段独立出现才注入"""
+        manual = {"soft": {"Pale": "苍白"}}
+        merged = _merge_glossaries(manual, {})
+        assert select_relevant_terms("The pale sky", merged) == {}
+        assert select_relevant_terms("Pale", merged)["Pale"]["tier"] == "soft"
+
+    def test_promote_moves_soft_to_hard(self):
+        """promote 只点名英文，译名仍来自自动层那一份，不重复抄写"""
+        manual = {"promote": ["Bedrock"]}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["terms"]["Bedrock"] == "基岩"
+        assert "Bedrock" not in merged["soft"]
+
+    def test_promote_matches_name_case_insensitively(self):
+        manual = {"promote": ["speed"]}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["terms"]["Speed"] == "迅捷"
+        assert "Speed" not in merged["soft_strict"]
+
+    def test_promote_unknown_name_ignored(self):
+        """名单里写错词不该炸，也不该动其它条目"""
+        manual = {"promote": ["No Such Term"]}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged == _merge_glossaries({}, self.auto)
+
+    def test_promote_does_not_override_manual_term(self):
+        manual = {"terms": {"Bedrock": "手写基岩"}, "promote": ["Bedrock"]}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["terms"]["Bedrock"] == "手写基岩"
+        assert "Bedrock" not in merged["soft"]
+
+    def test_promote_applies_to_manual_soft(self):
+        """手写 soft 也能被 promote 提回强制层（同一份词表内自洽）"""
+        manual = {"soft": {"Pale": "苍白"}, "promote": ["Pale"]}
+        merged = _merge_glossaries(manual, {})
+        assert merged["terms"]["Pale"] == "苍白"
+        assert "Pale" not in merged["soft"]
+
     def test_placeholders_from_manual(self):
         merged = _merge_glossaries(self.manual, self.auto)
         assert merged["placeholders"] == {"(*)": "[英文原词]"}
@@ -207,6 +272,11 @@ class TestMergeGlossaries:
 
     def test_missing_file_returns_empty(self, tmp_path):
         assert _read_glossary_file(str(tmp_path / "nope.json")) == {}
+
+    def test_promote_read_from_manual_file(self, tmp_path):
+        path = tmp_path / "glossary.json"
+        path.write_text(json.dumps({"promote": ["Pale"]}, ensure_ascii=False), encoding="utf-8")
+        assert _read_glossary_file(str(path))["promote"] == ["Pale"]
 
     def test_directory_path_returns_empty(self, tmp_path):
         """docker-compose 挂载不存在的文件时会建同名目录，要当成"没有词表\""""

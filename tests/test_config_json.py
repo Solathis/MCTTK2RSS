@@ -71,6 +71,13 @@ class TestConfigStructure:
         assert api["site_base"].startswith("https://")
         assert isinstance(api["pageSize"], int) and api["pageSize"] > 0
 
+    def test_version_manifest_url_templates(self, config):
+        """四类 slug 缺一类，对应类型就会被版本清单静默跳过（预发布/RC 踩过）。"""
+        templates = config.get("version_manifest", {}).get("url_templates", {})
+        for news_type in ("java_snapshot", "java_prerelease", "java_rc", "java_release"):
+            assert news_type in templates, f"version_manifest.url_templates 缺少: {news_type}"
+            assert "{version_id}" in templates[news_type], f"{news_type} 模板缺少 {{version_id}}"
+
     def test_http_keys(self, config):
         http = config["http"]
         for key in ["verify_ssl", "user_agent", "accept", "proxies", "timeout"]:

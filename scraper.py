@@ -33,13 +33,28 @@ try:
     from log_setup import get_logger, human_size, log_debug, log_error, log_info, log_warning
     logger = get_logger()
 except ImportError:
-    # 如果日志模块不可用，使用简单的 print 替代
+    # 如果日志模块不可用，使用简单的 print 替代。
+    # 签名必须与 log_setup.log_*(message, *args, **kwargs) 一致：模块里大量调用
+    # 形如 log_info("... %s", value)，只收一个参数会在日志模块缺失时 TypeError，
+    # 把调用方（例如版本清单探测、新闻获取）直接打断。
     import logging
     logger = logging.getLogger("mcttk")
-    def log_info(msg): print(f"[INFO] {msg}")
-    def log_error(msg, exc_info=False): print(f"[ERROR] {msg}")
-    def log_debug(msg): print(f"[DEBUG] {msg}")
-    def log_warning(msg): print(f"[WARNING] {msg}")
+
+    def _fallback_log(level, message, args):
+        print(f"[{level}] {message % args if args else message}")
+
+    def log_info(message, *args, **kwargs):
+        _fallback_log("INFO", message, args)
+
+    def log_warning(message, *args, **kwargs):
+        _fallback_log("WARNING", message, args)
+
+    def log_debug(message, *args, **kwargs):
+        _fallback_log("DEBUG", message, args)
+
+    def log_error(message, *args, **kwargs):
+        _fallback_log("ERROR", message, args)
+
     def human_size(num_bytes):
         return f"{num_bytes} B" if num_bytes is not None else "-"
 
@@ -117,12 +132,17 @@ DEFAULT_CONFIG = {
     "version_manifest": {
         "enabled": True,
         "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+        # max_versions 是探测窗口（最多 HEAD N 个候选），不是产出上限：
+        # 按产出计数时，模板配错会一路扫到清单尾部，发出成百上千个请求
         "max_versions": 5,
-        # 官网对不同类型使用不同 slug：快照是 minecraft-{ver}，
-        # 正式版是 minecraft-java-edition-{ver}（实测 RC/预发布没有文章页）。
-        # 未在此列出的类型会被跳过，避免生成 404 候选。
+        # 官网对不同类型用不同 slug（均已实测）：快照 minecraft-26-4-snapshot-9、
+        # 预发布 minecraft-26-4-pre-release-2、RC minecraft-26-3-release-candidate-3、
+        # 正式版 minecraft-java-edition-26-3。预发布 / RC 的 -pre- / -rc- 由
+        # _version_id_to_url() 展开成官网的完整写法；未在此列出的类型会被跳过。
         "url_templates": {
             "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+            "java_prerelease": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+            "java_rc": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
             "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
         }
     },
@@ -1778,15 +1798,26 @@ def get_latest_news_list(page_size=None, config=None):
 def _version_id_to_url(version_id: str, news_type: str, cfg: dict):
     """把版本 ID 拼成官网文章 URL；该类型没有对应文章页时返回 None。
 
-    官网对快照与正式版使用不同 slug
-    （minecraft-26-4-snapshot-1 / minecraft-java-edition-26-3），
-    且 Release Candidate / 预发布版没有对应文章页。
+    官网按类型使用不同 slug（均已实测）：
+      快照   minecraft-26-4-snapshot-9
+      预发布 minecraft-26-4-pre-release-2
+      RC     minecraft-26-3-release-candidate-3
+      正式版 minecraft-java-edition-26-3
+    Piston 的版本 ID 却是 26.4-pre-2 / 26.3-rc-3 / 1.21.5-pre1，
+    所以要把 `-pre` / `-rc` 展开成官网的 `-pre-release` / `-release-candidate`。
     """
     templates = cfg.get("version_manifest", {}).get("url_templates", {})
     template = templates.get(news_type)
     if not template:
         return None
-    return template.format(version_id=version_id.replace(".", "-"))
+    slug = version_id.replace(".", "-")
+    # 后面可能直接跟数字（1.21.5-pre1）也可能还有分隔符（26.4-pre-2），
+    # 官网统一写成 -pre-release-N / -release-candidate-N
+    if news_type == "java_prerelease":
+        slug = re.sub(r"-pre-?(\d)", r"-pre-release-\1", slug)
+    elif news_type == "java_rc":
+        slug = re.sub(r"-rc-?(\d)", r"-release-candidate-\1", slug)
+    return template.format(version_id=slug)
 
 
 def _classify_version_type(version_id: str, version_type: str) -> str:
@@ -1800,6 +1831,34 @@ def _classify_version_type(version_id: str, version_type: str) -> str:
     if re.search(r"-pre[-.\d]*$", vid):
         return "java_prerelease"
     return "java_snapshot"
+
+
+def _article_page_exists(url: str, cfg: dict) -> bool:
+    """探测官网文章页是否已上线；只有明确的 404/410 才算不存在。
+
+    版本清单经常比官网文章页先更新（26.4-pre-2：清单 10:00Z、文章 11:30Z），
+    这时拼出来的 URL 会 404。若把它当普通失败，`max_article_attempts` 会在
+    文章上线前就把 URL 记成「已处理」，这篇文章就永久丢了；另外官网偶尔会
+    把文章挂到别的 slug（26.4 Snapshot 10 实际在 snapshot-9 下），盲拼出来的
+    URL 永远不会成功。所以发现阶段先探测一次，不存在就不入队。
+
+    网络异常、TLS/代理错误、其它状态码（如 403 反爬）一律按「可能存在」放行：
+    探测只是过滤明显不存在的候选，不能因为探测本身失败把正常候选吞掉。
+    """
+    try:
+        response = requests.head(
+            url, headers=_make_headers(cfg),
+            timeout=int(cfg["http"].get("timeout", 120)),
+            verify=http_verify(cfg["http"]), proxies=_make_proxies(cfg),
+            allow_redirects=True,
+        )
+    except requests.RequestException as e:
+        log_debug("[Manifest] 文章页探测失败，按可能存在处理: %s（%s）", url, e)
+        return True
+    if response.status_code in (404, 410):
+        log_info("[Manifest] 文章页尚未上线，跳过: %s（HTTP %s）", url, response.status_code)
+        return False
+    return True
 
 
 def get_java_news_from_manifest(config=None):
@@ -1823,7 +1882,7 @@ def get_java_news_from_manifest(config=None):
     max_versions = max(int(vm_cfg.get("max_versions", 5)), 1)
 
     try:
-        log_debug("[Manifest] 请求版本清单: %s（最多取 %d 个版本）", manifest_url, max_versions)
+        log_debug("[Manifest] 请求版本清单: %s（最多探测 %d 个候选）", manifest_url, max_versions)
         call_started = time.monotonic()
         response = requests.get(
             manifest_url, headers=_make_headers(cfg),
@@ -1837,8 +1896,13 @@ def get_java_news_from_manifest(config=None):
         return []
 
     news_list = []
+    probed = 0
     for version in versions:
-        if len(news_list) >= max_versions:
+        # max_versions 是「探测窗口」：最多 HEAD 多少次，而不是最多产出多少条。
+        # 按产出计数时，模板配错或官网暂时缺页会让循环一路扫到清单尾部，发出
+        # 成百上千个 HEAD；按探测计数后每轮最多 max_versions 次请求，窗口内
+        # 未上线的文章页下一轮还会重新探测。
+        if probed >= max_versions:
             break
         version_id = version.get("id", "")
         version_type = version.get("type", "")
@@ -1848,7 +1912,10 @@ def get_java_news_from_manifest(config=None):
         news_type = _classify_version_type(version_id, version_type)
         article_url = _version_id_to_url(version_id, news_type, cfg)
         if not article_url:
-            # 未配置该类型的 URL 模板（如 RC / 预发布），跳过以免产生 404 候选
+            # 未配置该类型的 URL 模板，跳过（不知道 slug 规则就拼不出文章页）
+            continue
+        probed += 1
+        if not _article_page_exists(article_url, cfg):
             continue
         news_list.append({
             "title": f"Minecraft {version_id}",
@@ -1860,8 +1927,8 @@ def get_java_news_from_manifest(config=None):
             "_version_type": news_type,
         })
 
-    log_info("[Manifest] 版本清单 %d 个版本 → %d 条 Java 版本候选（最多取 %d 条，用时 %s）",
-             len(versions), len(news_list), max_versions, _elapsed(call_started))
+    log_info("[Manifest] 版本清单 %d 个版本 → 探测 %d 个候选，得到 %d 条 Java 版本候选（探测上限 %d 个，用时 %s）",
+             len(versions), probed, len(news_list), max_versions, _elapsed(call_started))
     for news in news_list:
         log_debug("[Manifest]   - [%s] %s", news.get("_version_type"), news["url"])
     return news_list

@@ -33,13 +33,28 @@ try:
     from log_setup import get_logger, human_size, log_debug, log_error, log_info, log_warning
     logger = get_logger()
 except ImportError:
-    # 如果日志模块不可用，使用简单的 print 替代
+    # 如果日志模块不可用，使用简单的 print 替代。
+    # 签名必须与 log_setup.log_*(message, *args, **kwargs) 一致：模块里大量调用
+    # 形如 log_info("... %s", value)，只收一个参数会在日志模块缺失时 TypeError，
+    # 把调用方（例如版本清单探测、新闻获取）直接打断。
     import logging
     logger = logging.getLogger("mcttk")
-    def log_info(msg): print(f"[INFO] {msg}")
-    def log_error(msg, exc_info=False): print(f"[ERROR] {msg}")
-    def log_debug(msg): print(f"[DEBUG] {msg}")
-    def log_warning(msg): print(f"[WARNING] {msg}")
+
+    def _fallback_log(level, message, args):
+        print(f"[{level}] {message % args if args else message}")
+
+    def log_info(message, *args, **kwargs):
+        _fallback_log("INFO", message, args)
+
+    def log_warning(message, *args, **kwargs):
+        _fallback_log("WARNING", message, args)
+
+    def log_debug(message, *args, **kwargs):
+        _fallback_log("DEBUG", message, args)
+
+    def log_error(message, *args, **kwargs):
+        _fallback_log("ERROR", message, args)
+
     def human_size(num_bytes):
         return f"{num_bytes} B" if num_bytes is not None else "-"
 

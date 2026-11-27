@@ -132,6 +132,8 @@ DEFAULT_CONFIG = {
     "version_manifest": {
         "enabled": True,
         "manifest_url": "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+        # max_versions 是探测窗口（最多 HEAD N 个候选），不是产出上限：
+        # 按产出计数时，模板配错会一路扫到清单尾部，发出成百上千个请求
         "max_versions": 5,
         # 官网对不同类型用不同 slug（均已实测）：快照 minecraft-26-4-snapshot-9、
         # 预发布 minecraft-26-4-pre-release-2、RC minecraft-26-3-release-candidate-3、
@@ -1880,7 +1882,7 @@ def get_java_news_from_manifest(config=None):
     max_versions = max(int(vm_cfg.get("max_versions", 5)), 1)
 
     try:
-        log_debug("[Manifest] 请求版本清单: %s（最多取 %d 个版本）", manifest_url, max_versions)
+        log_debug("[Manifest] 请求版本清单: %s（最多探测 %d 个候选）", manifest_url, max_versions)
         call_started = time.monotonic()
         response = requests.get(
             manifest_url, headers=_make_headers(cfg),
@@ -1894,8 +1896,13 @@ def get_java_news_from_manifest(config=None):
         return []
 
     news_list = []
+    probed = 0
     for version in versions:
-        if len(news_list) >= max_versions:
+        # max_versions 是「探测窗口」：最多 HEAD 多少次，而不是最多产出多少条。
+        # 按产出计数时，模板配错或官网暂时缺页会让循环一路扫到清单尾部，发出
+        # 成百上千个 HEAD；按探测计数后每轮最多 max_versions 次请求，窗口内
+        # 未上线的文章页下一轮还会重新探测。
+        if probed >= max_versions:
             break
         version_id = version.get("id", "")
         version_type = version.get("type", "")
@@ -1907,6 +1914,7 @@ def get_java_news_from_manifest(config=None):
         if not article_url:
             # 未配置该类型的 URL 模板，跳过（不知道 slug 规则就拼不出文章页）
             continue
+        probed += 1
         if not _article_page_exists(article_url, cfg):
             continue
         news_list.append({
@@ -1919,8 +1927,8 @@ def get_java_news_from_manifest(config=None):
             "_version_type": news_type,
         })
 
-    log_info("[Manifest] 版本清单 %d 个版本 → %d 条 Java 版本候选（最多取 %d 条，用时 %s）",
-             len(versions), len(news_list), max_versions, _elapsed(call_started))
+    log_info("[Manifest] 版本清单 %d 个版本 → 探测 %d 个候选，得到 %d 条 Java 版本候选（探测上限 %d 个，用时 %s）",
+             len(versions), probed, len(news_list), max_versions, _elapsed(call_started))
     for news in news_list:
         log_debug("[Manifest]   - [%s] %s", news.get("_version_type"), news["url"])
     return news_list

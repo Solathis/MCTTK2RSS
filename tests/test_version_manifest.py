@@ -7,7 +7,8 @@ URL 规则经实测确认：
   RC     -> minecraft-{ver}-release-candidate-{n}
   正式版 -> minecraft-java-edition-{ver}
 候选文章页会先做 HEAD 探测：只有 404/410 才跳过（清单常早于官网文章页更新），
-网络错误或其它状态码按「存在」放行，避免探测本身吞掉候选。
+网络错误或其它状态码按「存在」放行，避免探测本身吞掉候选。`max_versions` 是
+探测次数上限（不是产出条数）：窗口内未上线的候选下一轮会重新探测。
 """
 import copy
 
@@ -130,13 +131,15 @@ class TestGetJavaNewsFromManifest:
     MISSING_URL = PREFIX + "minecraft-26-4-snapshot-10"
 
     def _patch(self, monkeypatch, *, payload=None, get_error=None,
-               head_status=200, head_error=None):
+               head_status=200, head_error=None, calls=None):
         def fake_get(url, **kwargs):
             if get_error:
                 raise get_error
             return _FakeResponse(payload if payload is not None else self._PAYLOAD)
 
         def fake_head(url, **kwargs):
+            if calls is not None:
+                calls.append(url)
             if head_error:
                 raise head_error
             if callable(head_status):
@@ -175,8 +178,33 @@ class TestGetJavaNewsFromManifest:
         news = get_java_news_from_manifest(config=_cfg(max_versions=5))
         urls = [n["url"] for n in news]
         assert self.MISSING_URL not in urls
-        # 被跳过后继续往更早的版本补足 5 条
-        assert PREFIX + "minecraft-java-edition-26-3" in urls
+        # 被跳过的那次探测也占名额（最多 HEAD 5 次），所以只得到 4 条
+        assert len(urls) == 4
+        assert PREFIX + "minecraft-java-edition-26-3" not in urls
+
+    def test_probe_count_is_capped_by_max_versions(self, monkeypatch):
+        calls = []
+        self._patch(monkeypatch, head_status=404, calls=calls)
+        assert get_java_news_from_manifest(config=_cfg(max_versions=3)) == []
+        assert len(calls) == 3, "max_versions 是探测次数上限，不能扫到清单尾部"
+
+    def test_unavailable_candidate_is_reprobed_on_next_scan(self, monkeypatch):
+        statuses = {self.MISSING_URL: 404}
+        self._patch(monkeypatch, head_status=statuses)
+        first = [n["url"] for n in get_java_news_from_manifest(config=_cfg(max_versions=5))]
+        assert self.MISSING_URL not in first
+
+        # 下一轮文章页上线后，同一个候选仍在探测窗口内，应当被重新发现
+        statuses[self.MISSING_URL] = 200
+        second = [n["url"] for n in get_java_news_from_manifest(config=_cfg(max_versions=5))]
+        assert self.MISSING_URL in second
+
+    def test_unmapped_types_do_not_consume_probe_budget(self, monkeypatch):
+        self._patch(monkeypatch)
+        cfg = _cfg(max_versions=1,
+                   url_templates={"java_release": PREFIX + "minecraft-java-edition-{version_id}"})
+        news = get_java_news_from_manifest(config=cfg)
+        assert [n["_version_type"] for n in news] == ["java_release"]
 
     def test_probe_network_error_keeps_candidate(self, monkeypatch):
         # 探测失败（代理/TLS/超时）不能把候选吞掉，交给后续解析再判断

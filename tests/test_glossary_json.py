@@ -123,6 +123,20 @@ class TestLayerPolicy:
         overlap = sorted(en for en in glossary.get("terms") or {} if en.lower() in promoted)
         assert not overlap, f"这些词已经在 terms 里，promote 名单可以去掉: {overlap}"
 
+    def test_release_names_are_non_empty(self, glossary):
+        """大版本/历届更新名单独成段，值不能为空"""
+        releases = glossary.get("release_names", {})
+        assert isinstance(releases, dict), "release_names 必须是英文 → 中文的对象"
+        for en, zh in releases.items():
+            assert isinstance(en, str) and en.strip(), f"release_names 有空键: {en!r}"
+            assert isinstance(zh, str) and zh.strip(), f"release_names 的译文为空: {en!r}"
+
+    def test_release_names_not_duplicated_in_terms(self, glossary):
+        """同一版本名只写一处，避免同一条术语在两个段里各写一份"""
+        releases = {en.lower() for en in glossary.get("release_names") or {}}
+        overlap = sorted(en for en in glossary.get("terms") or {} if en.lower() in releases)
+        assert not overlap, f"这些版本名同时出现在 terms 与 release_names: {overlap}"
+
 
 @needs_auto
 class TestAgainstAutoLayer:
@@ -147,7 +161,7 @@ class TestAgainstAutoLayer:
         auto = self._auto_index(auto_glossary)
         duplicated = [
             f"{en} → {zh}"
-            for name in ("terms", "soft", "soft_strict")
+            for name in ("release_names", "terms", "soft", "soft_strict")
             for en, zh in (glossary.get(name) or {}).items()
             if zh in auto.get(en.lower(), [])
         ]

@@ -263,6 +263,25 @@ class TestMergeGlossaries:
         assert merged["terms"]["Pale"] == "苍白"
         assert "Pale" not in merged["soft"]
 
+    def test_release_names_go_hard(self):
+        """大版本/更新名单独成段，合并后与强制层同等对待"""
+        manual = {"release_names": {"Chase the Skies": "追逐天空(*)"}}
+        merged = _merge_glossaries(manual, self.auto)
+        assert merged["terms"]["Chase the Skies"] == "追逐天空(*)"
+        assert merged["terms"]["Sulfur Cube"] == "硫方怪"      # 自动层条目照旧保留
+
+    def test_release_names_read_from_manual_file(self, tmp_path):
+        path = tmp_path / "glossary.json"
+        path.write_text(json.dumps({"release_names": {"Deep Freeze": "至深寒意"}}, ensure_ascii=False),
+                        encoding="utf-8")
+        assert _read_glossary_file(str(path))["release_names"] == {"Deep Freeze": "至深寒意"}
+
+    def test_terms_override_release_names(self):
+        """同名时以手写层 terms 为准：分段只是为了维护方便"""
+        manual = {"terms": {"Deep Freeze": "手写译名"}, "release_names": {"Deep Freeze": "至深寒意"}}
+        merged = _merge_glossaries(manual, {})
+        assert merged["terms"]["Deep Freeze"] == "手写译名"
+
     def test_placeholders_from_manual(self):
         merged = _merge_glossaries(self.manual, self.auto)
         assert merged["placeholders"] == {"(*)": "[英文原词]"}

@@ -638,6 +638,22 @@ B站「动态-专栏」只预览正文开头约 90 字（实测 93 字，见
 被 promote 的词按 `terms` 的规则命中即注入，也参与译名一致性校验；名单里写错词不会影响其它条目，
 只在 debug 日志里提示一次。
 
+### 大版本名（release_names）
+
+历届更新名（`Adventure Update`、`Update Aquatic`、`Trails & Tales`…）与 26.x 的 game drop 名
+（`Chase the Skies`、`Tiny Takeover`、`Chaos Cubed`…）单独放在 `release_names` 段：
+
+```json
+"release_names": {
+  "Update Aquatic": "水域更新",
+  "Chase the Skies": "追逐天空(*)"
+}
+```
+
+它和 `terms` 一样进强制层（加载时并入，同名时以 `terms` 为准），单独成段只是为了让维护时
+一眼找到、不跟方块/生物词条混在一起。官方语言文件里没有任何更新名，所以这一段只能手写。
+`(*)` 表示译文后面补英文原词，用于营销味重、需要保留英文的版本名。
+
 ### 同步官方术语表
 
 ```bash

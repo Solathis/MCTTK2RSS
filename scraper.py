@@ -293,6 +293,7 @@ def _read_glossary_file(glossary_path: str) -> dict:
         return {}
     return {
         "terms": data.get("terms", {}),
+        "release_names": data.get("release_names", {}),
         "soft": data.get("soft", {}),
         "soft_strict": data.get("soft_strict", {}),
         "ambiguous": data.get("ambiguous", {}),
@@ -310,11 +311,18 @@ def _merge_glossaries(manual: dict, auto: dict) -> dict:
 
     反方向由 promote 负责：手写层只点名英文（不重复译名），把自动层里被分到
     soft / soft_strict 的条目提回强制层，注入强度与译名一致性校验都按 hard 走。
+
+    release_names（大版本/更新名）也是强制层，单独成段只是为了维护时一眼找到，
+    同名冲突时以手写层 terms 为准。
     """
     if not manual and not auto:
         return {}
 
-    merged_terms = {**(auto.get("terms") or {}), **(manual.get("terms") or {})}
+    merged_terms = {
+        **(auto.get("terms") or {}),
+        **(manual.get("release_names") or {}),
+        **(manual.get("terms") or {}),
+    }
     taken = {k.lower() for k in merged_terms}
 
     def _merge_conditioned(name: str) -> dict:

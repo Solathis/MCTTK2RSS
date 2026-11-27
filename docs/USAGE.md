@@ -430,6 +430,8 @@ grep "来源 minecraft_api" logs/mcttk_*.log    # 确认官方 API 是否有返�
     "max_versions": 5,
     "url_templates": {
       "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_prerelease": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_rc": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
       "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
     }
   }
@@ -437,9 +439,13 @@ grep "来源 minecraft_api" logs/mcttk_*.log    # 确认官方 API 是否有返�
 ```
 
 - 两个来源的结果会**按 URL 合并去重**；API 已返回同一篇文章时保留 API 版本（元数据更全）
-- 官网对快照与正式版使用**不同 slug**（`minecraft-26-4-snapshot-1` / `minecraft-java-edition-26-3`），
-  因此按类型分别配置模板；`url_templates` 中未列出的类型会被跳过
-- RC / 预发布版官网没有对应文章页，默认不生成候选，避免产生 404
+- 官网对四类版本使用**不同 slug**：快照 `minecraft-26-4-snapshot-9`、预发布
+  `minecraft-26-4-pre-release-2`、RC `minecraft-26-3-release-candidate-3`、正式版
+  `minecraft-java-edition-26-3`。Piston 的版本 ID 是 `26.4-pre-2` / `26.3-rc-3`，
+  程序会把 `-pre` / `-rc` 展开成官网写法；`url_templates` 中未列出的类型会被跳过
+- 候选生成后先做一次 HEAD 探测：只有明确的 404/410 才跳过。版本清单常早于官网
+  文章页更新（例如 26.4-pre-2 清单 10:00Z、文章 11:30Z），盲拼 URL 在这段时间会
+  404；网络异常或其它状态码按「可能存在」放行，避免探测本身吞掉候选
 - 实测：API 返回窗口内只有 `26.4 Snapshot 1`，而版本清单补齐了 `26.3-snapshot-8/9/10`
 
 ### Minecraft 官方 API
@@ -792,6 +798,8 @@ git diff --cached --quiet || {
     "max_versions": 5,
     "url_templates": {
       "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_prerelease": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_rc": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
       "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
     }
   },

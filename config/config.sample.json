@@ -29,6 +29,8 @@
     "max_versions": 5,
     "url_templates": {
       "java_snapshot": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_prerelease": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
+      "java_rc": "https://www.minecraft.net/zh-hans/article/minecraft-{version_id}",
       "java_release": "https://www.minecraft.net/zh-hans/article/minecraft-java-edition-{version_id}"
     }
   },

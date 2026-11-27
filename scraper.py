@@ -305,59 +305,67 @@ def _read_glossary_file(glossary_path: str) -> dict:
 def _merge_glossaries(manual: dict, auto: dict) -> dict:
     """合并手写层与自动层：同名条目一律以手写层为准
 
-    三层都走同一套规则：先取自动层里没被强制层占用的条目，再用手写层同名条目覆盖。
-    所以手写层也能声明 soft / soft_strict —— 想把"多半是普通英文词"的条目从
-    命中即注入降级成条件注入时，改词表就够了，不用动代码。
+    三层走同一套规则：按优先级依次收进来，同名（大小写不敏感）只留最先出现的那条。
+    优先级从高到低：手写 terms → release_names → 自动 terms → 手写 soft / soft_strict
+    → 自动 soft / soft_strict。这样
 
-    反方向由 promote 负责：手写层只点名英文（不重复译名），把自动层里被分到
-    soft / soft_strict 的条目提回强制层，注入强度与译名一致性校验都按 hard 走。
+    * 手写层能声明 soft / soft_strict，把"多半是普通英文词"的条目降级成条件注入；
+    * 手写层的 soft 也能压过自动层的 soft_strict，注入强度以手写层为准；
+    * 同一词条只会落进一层，不会出现两条只差大小写的词条在匹配时互相遮挡
+      （`_build_term_index` 遇到同名同长度的候选是取先来的那条）。
 
-    release_names（大版本/更新名）也是强制层，单独成段只是为了维护时一眼找到，
-    同名冲突时以手写层 terms 为准。
+    promote 是反方向：手写层只点名英文、不重复译名，把条件层的条目提回强制层，
+    注入强度与译名一致性校验都按 hard 走。
     """
     if not manual and not auto:
         return {}
 
-    merged_terms = {
-        **(auto.get("terms") or {}),
-        **(manual.get("release_names") or {}),
-        **(manual.get("terms") or {}),
-    }
-    taken = {k.lower() for k in merged_terms}
+    # 越靠前优先级越高，第二项决定落进哪一层（也就是命中后的注入强度）
+    sources = (
+        (manual.get("terms"), "terms"),
+        (manual.get("release_names"), "terms"),
+        (auto.get("terms"), "terms"),
+        (manual.get("soft"), "soft"),
+        (manual.get("soft_strict"), "soft_strict"),
+        (auto.get("soft"), "soft"),
+        (auto.get("soft_strict"), "soft_strict"),
+    )
+    merged = {"terms": {}, "soft": {}, "soft_strict": {}}
+    taken = set()   # 小写英文：同一词条只保留优先级最高的那条
+    for layer, tier in sources:
+        for key, value in (layer or {}).items():
+            low = key.lower()
+            if low in taken:
+                continue
+            taken.add(low)
+            merged[tier][key] = value
 
-    def _merge_conditioned(name: str) -> dict:
-        """自动层软条目 + 手写层软条目，都被强制层占用的同名条目踢掉"""
-        return {
-            **{k: v for k, v in (auto.get(name) or {}).items() if k.lower() not in taken},
-            **{k: v for k, v in (manual.get(name) or {}).items() if k.lower() not in taken},
-        }
-
-    merged_soft = _merge_conditioned("soft")
-    merged_strict = _merge_conditioned("soft_strict")
-
-    # promote：只点名英文，译名仍然只来自有一份词条的那一层
+    # promote：只点名英文，译名仍然只来自词条本身
     unpromoted = []
     for name in manual.get("promote") or []:
         wanted = str(name).lower()
-        for layer in (merged_soft, merged_strict):
-            key = next((k for k in layer if k.lower() == wanted), None)
+        for tier in ("soft", "soft_strict"):
+            key = next((k for k in merged[tier] if k.lower() == wanted), None)
             if key is not None:
-                merged_terms[key] = layer.pop(key)
+                merged["terms"][key] = merged[tier].pop(key)
                 break
         else:
             unpromoted.append(str(name))
-    if unpromoted and auto:
-        # 已升级为强制层的词、或自动层数据源里没有的词都会走到这里，属于可放行的维护信号
-        log_debug(f"[词汇表] promote 名单未生效（自动层无对应条件层词条）: {', '.join(unpromoted)}")
+    if unpromoted:
+        # 已经在强制层、或者词条压根不存在（例如没挂自动词表）都会落到这里
+        log_debug(f"[词汇表] promote 名单未命中条件层词条: {', '.join(unpromoted)}")
 
-    # 手写层已经用条件说明表达过歧义，这里只补自动层的歧义记录
+    # 手写层已经用条件说明表达过歧义，这里只补自动层的歧义记录。
+    # 用 promote 之后的强制层做判断：进了强制层就等于"译名已定"，不再挂着歧义备注。
+    hard = {k.lower() for k in merged["terms"]}
     merged_ambiguous = {
-        k: v for k, v in (auto.get("ambiguous") or {}).items() if k.lower() not in taken
+        k: v for k, v in (auto.get("ambiguous") or {}).items() if k.lower() not in hard
     }
+
     return {
-        "terms": merged_terms,
-        "soft": merged_soft,
-        "soft_strict": merged_strict,
+        "terms": merged["terms"],
+        "soft": merged["soft"],
+        "soft_strict": merged["soft_strict"],
         "ambiguous": merged_ambiguous,
         "placeholders": manual.get("placeholders") or auto.get("placeholders") or {},
     }
@@ -366,12 +374,13 @@ def _merge_glossaries(manual: dict, auto: dict) -> dict:
 def load_glossary(glossary_path: str = None) -> dict:
     """加载词汇表
 
-    - 传入路径：只读该文件（测试与自定义场景）
+    - 传入路径：只读该文件，但同样走一遍合并归一（release_names 并进强制层、
+      promote 生效），否则自定义词表里的这两段会被静默忽略
     - 不传路径：读取 glossary.json（手写）并叠加 glossary.auto.json（自动生成），
       同名条目以手写为准
     """
     if glossary_path is not None:
-        return _read_glossary_file(glossary_path)
+        return _merge_glossaries(_read_glossary_file(glossary_path), {})
 
     here = GLOSSARY_DIR
     manual = _read_glossary_file(os.path.join(here, GLOSSARY_FILE))
@@ -379,6 +388,11 @@ def load_glossary(glossary_path: str = None) -> dict:
     if manual.get("terms") and not auto:
         log_info(f"[词汇表] 未找到 {GLOSSARY_AUTO_FILE}，仅使用手写词表"
                  f"（运行 python tools/sync_glossary.py 可同步官方术语）")
+        if manual.get("promote"):
+            # promote 只是点名，译名都来自自动层；没有自动层这些词就真的没有译名可用，
+            # 必须显式报出来，否则表现为"安静地少了一批术语"
+            log_warning(f"[词汇表] 未加载 {GLOSSARY_AUTO_FILE}，promote 名单里 "
+                        f"{len(manual['promote'])} 个词没有译名来源，本次不会注入")
     return _merge_glossaries(manual, auto)
 
 

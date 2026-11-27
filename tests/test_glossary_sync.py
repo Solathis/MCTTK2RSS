@@ -16,6 +16,7 @@ from scraper import (
     build_glossary_prompt,
     build_glossary_prompt_for,
     find_relevant_terms,
+    load_glossary,
     select_relevant_terms,
     translate_blocks,
 )
@@ -281,6 +282,52 @@ class TestMergeGlossaries:
         manual = {"terms": {"Deep Freeze": "手写译名"}, "release_names": {"Deep Freeze": "至深寒意"}}
         merged = _merge_glossaries(manual, {})
         assert merged["terms"]["Deep Freeze"] == "手写译名"
+
+    def test_manual_soft_beats_auto_soft_strict(self):
+        """同一词条在自动层是 soft_strict、手写层是 soft 时，以手写层的注入强度为准"""
+        manual = {"soft": {"Speed": "速度"}}
+        auto = {"soft_strict": {"Speed": "迅捷"}}
+        merged = _merge_glossaries(manual, auto)
+        assert merged["soft"]["Speed"] == "速度"
+        assert "Speed" not in merged["soft_strict"]
+
+    def test_case_only_duplicate_resolved(self):
+        """只差大小写的同名条目只留优先级最高的那条（匹配本身不区分大小写）"""
+        manual = {"terms": {"deep freeze": "手写译名"}}
+        auto = {"terms": {"Deep Freeze": "至深寒意"}}
+        merged = _merge_glossaries(manual, auto)
+        assert merged["terms"] == {"deep freeze": "手写译名"}
+        assert len(find_relevant_terms("Deep Freeze is here", merged)) == 1
+
+    def test_promoted_term_drops_ambiguity(self):
+        """进了强制层就不再挂歧义备注，否则它会被排除在译名一致性校验之外"""
+        manual = {"promote": ["Speed"]}
+        auto = {
+            "soft_strict": {"Speed": "迅捷"},
+            "ambiguous": {"Speed": {"primary": "迅捷", "others": ["速度"]}},
+        }
+        merged = _merge_glossaries(manual, auto)
+        assert merged["terms"]["Speed"] == "迅捷"
+        assert "Speed" not in merged["ambiguous"]
+
+    def test_promote_without_auto_invents_nothing(self):
+        """没有自动层时 promote 无处取译名：不编造译名、也不炸，其它条目照旧"""
+        manual = {"terms": {"Snapshot": "快照"}, "promote": ["Ghast"]}
+        merged = _merge_glossaries(manual, {})
+        assert merged["terms"] == {"Snapshot": "快照"}
+
+    def test_custom_glossary_is_normalized(self, tmp_path):
+        """自定义词表也走合并归一，否则 release_names / promote 会被静默忽略"""
+        path = tmp_path / "glossary.json"
+        path.write_text(json.dumps({
+            "release_names": {"Deep Freeze": "至深寒意"},
+            "soft": {"Pale": "苍白"},
+            "promote": ["Pale"],
+        }, ensure_ascii=False), encoding="utf-8")
+        loaded = load_glossary(str(path))
+        assert loaded["terms"]["Deep Freeze"] == "至深寒意"
+        assert loaded["terms"]["Pale"] == "苍白"
+        assert "Pale" not in loaded["soft"]
 
     def test_placeholders_from_manual(self):
         merged = _merge_glossaries(self.manual, self.auto)

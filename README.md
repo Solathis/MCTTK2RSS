@@ -12,7 +12,7 @@ Minecraft 官方资讯 → 中文社区，一条自动化流水线
 [![Release](https://github.com/jiubook/MCTTK/actions/workflows/release.yml/badge.svg)](https://github.com/jiubook/MCTTK/actions/workflows/release.yml)
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/Docker-ghcr.io-2496ED?logo=docker&logoColor=white)](https://github.com/jiubook/MCTTK/pkgs/container/mcttk)
-[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html)
+[![License](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html)
 [![MCBBS紀念版2群](https://img.shields.io/badge/MCBBS紀念版2群-1020121333-orange.svg?logo=qq)](https://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=cWimZfaBzg4kpFrpt9G9yErBqBuarD6z&authKey=sjcLaLvI%2B2fvv6sAIugP4Jj1Z8HsnJB%2FZ1rya%2Bfa%2BTWUxfh1CL0x3AOAC3hbPORm&noverify=0&group_code=1020121333)
 
 </div>
@@ -201,6 +201,7 @@ docker compose up -d --build           # 容器化运行，默认每小时一轮
 
 ## 许可证
 
-本工具以 [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html) 协议发布。
+本工具以 [GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0.zh-cn.html) 协议发布
+（即 GPL-3.0 或其任何更新版本，由使用者选择）。
 
 AI 翻译作品以 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hans) 协议发布。

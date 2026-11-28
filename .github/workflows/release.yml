@@ -99,7 +99,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=MCTTK 矿译通
             org.opencontainers.image.description=Minecraft 新闻自动爬取 + 翻译 + 发布
-            org.opencontainers.image.licenses=GPL-3.0-only
+            org.opencontainers.image.licenses=GPL-3.0-or-later
 
       - name: 构建并推送镜像
         uses: docker/build-push-action@v6

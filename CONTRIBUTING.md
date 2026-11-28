@@ -132,6 +132,12 @@ MCTTK/
 - 允许在分支上整理自己的历史（rebase / squash），但**评审开始后不要 force push**；
   确需重排先在 PR 里说明。
 
+### 贡献的授权
+
+本仓库以 [GPL-3.0-or-later](LICENSE)（GPL-3.0 或其任何更新版本）发布。提交 PR / patch 即表示
+你同意该贡献按同一协议授权（inbound = outbound）：版权仍归你，但不额外附加条款。
+写这一条是为了将来变更协议时不必逐个回头找贡献者补签。
+
 ### Commit
 
 沿用 **Conventional Commits + 中文标题**：

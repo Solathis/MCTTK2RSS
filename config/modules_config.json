@@ -159,7 +159,7 @@
       "title": "开源协议",
       "platform": "all",
       "order": 2001,
-      "content": "[size=2][b]【本Ai工具以 [url=https://www.gnu.org/licenses/gpl-3.0.zh-cn.html]GPL-3.0[/url] 协议发布】\n【本Ai翻译作品以 [url=https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hans]CC BY-SA 4.0[/url] 协议发布】[/b][/size]",
+      "content": "[size=2][b]【本Ai工具以 [url=https://www.gnu.org/licenses/gpl-3.0.zh-cn.html]GPL-3.0-or-later[/url] 协议发布】\n【本Ai翻译作品以 [url=https://creativecommons.org/licenses/by-sa/4.0/deed.zh-hans]CC BY-SA 4.0[/url] 协议发布】[/b][/size]",
       "position": "end",
       "enabled": true
     },
